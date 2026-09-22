@@ -347,7 +347,7 @@ def collect(home, config_dir, now):
 
     projects = parse_projects(_read(os.path.join(data, "projects.md")) or "")
     mates = parse_secondmates(_read(os.path.join(data, "secondmates.md")) or "")
-    ship_name = cfg.get("ship_project") or os.path.basename(os.path.normpath(home))
+    ship_name = os.path.basename(os.path.normpath(home))
     by_key = {p["name"].lower(): p for p in projects}
 
     homes = [("main", home)] + [(m["id"], m["home"]) for m in mates if not m["remote"]]
