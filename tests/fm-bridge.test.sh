@@ -50,7 +50,7 @@ printf '#!/usr/bin/env bash\nexit 1\n' > "$FAKEBIN/tmux"
 chmod +x "$FAKEBIN/tmux"
 cat > "$CFG/bridge.json" <<'EOF'
 {"port": 7373, "bind": "tailscale", "first_mate": "Denver",
- "names": {"alpha": {"title": "Alpha Course", "short": "ALPHA", "kind": "Course"}},
+ "names": {"alpha": {"title": "Alpha Course", "short": "ALPHA", "kind": "Course"}, "beta": {"short": "B<&>"}},
  "links": [{"project": "alpha", "label": "class folder", "url": "https://drive.google.com/drive/folders/abc"},
            {"project": "beta", "label": "not a web link", "url": "file:///etc/passwd"}]}
 EOF
@@ -90,6 +90,8 @@ pass "projects registry parses posture, dates and description apart"
   = "alpha-mate|$MATE|alpha|false" ] || fail "secondmates registry: id, home, projects and placement"
 [ "$(jq -r '.mates[0].scope' <<<"$parsed")" = "the alpha course, its decks and its quizzes" ] \
   || fail "secondmates registry: scope may hold commas"
+[ "$(jq -r '.mates | map(.id) | join(",")' <<<"$parsed")" = "alpha-mate" ] \
+  || fail "secondmates registry: a record with an empty home is skipped like the owner does"
 pass "secondmates registry parses the local record form"
 
 [ "$(jq -r '.archive | map("\(.id):\(.repo):\(.completion.date)") | join(",")' <<<"$parsed")" \
@@ -139,6 +141,10 @@ grep -q '<div class="tcard blocked"><div class="p">ALPHA</div>Build the quiz onc
   || fail "Board tab: a blocked item is marked and its blocked-by token is not shown"
 grep -q 'ALPHA &middot; 5 Sep</div>Chapter three decks</div>' "$PAGE" \
   || fail "Board tab: done cards carry project and date, without the pull request address"
+grep -q 'B&lt;&amp;&gt; &middot; 2 Sep</div>Module one handout</div>' "$PAGE" \
+  || fail "Board tab: a done card escapes its configured project short name"
+grep -q 'A note whose date carries words' "$PAGE" \
+  && fail "Board tab: a Done record whose date does not parse is not done this month"
 pass "Board tab columns hold every open item and this month's Done"
 
 [ "$(single team-waiting)" = 4 ] || fail "Team tab: the captain's row counts what waits on him"

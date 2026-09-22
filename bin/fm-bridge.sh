@@ -154,11 +154,11 @@ EOF
   [ -n "$host" ] || exit 1
   [ "$mode" = fallback ] && [ "$retry" -eq 1 ] && give_up=300
   mkdir -p "$STATE"
-  printf '%s %s %s\n' "$host" "$port" "$mode" > "$ADDRFILE"
-  if [ "$mode" = fallback ]; then
-    echo "fm-bridge: Tailscale is not running; binding 127.0.0.1 only, so the iPad cannot reach it" >&2
-  fi
   if [ "$foreground" -eq 1 ]; then
+    printf '%s %s %s\n' "$host" "$port" "$mode" > "$ADDRFILE"
+    if [ "$mode" = fallback ]; then
+      echo "fm-bridge: Tailscale is not running; binding 127.0.0.1 only, so the iPad cannot reach it" >&2
+    fi
     exec python3 "$PY" serve --home "$FM_HOME" --config-dir "$CONFIG" \
       --host "$host" --port "$port" --give-up-after "$give_up"
   fi
@@ -168,6 +168,10 @@ EOF
   if [ -n "$(server_pid)" ]; then
     echo "fm-bridge: already running (pid $(server_pid)) on http://$host:$port/"
     return 0
+  fi
+  printf '%s %s %s\n' "$host" "$port" "$mode" > "$ADDRFILE"
+  if [ "$mode" = fallback ]; then
+    echo "fm-bridge: Tailscale is not running; binding 127.0.0.1 only, so the iPad cannot reach it" >&2
   fi
   nohup python3 "$PY" serve --home "$FM_HOME" --config-dir "$CONFIG" \
     --host "$host" --port "$port" >> "$LOG" 2>&1 < /dev/null &

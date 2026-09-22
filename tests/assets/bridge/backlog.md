@@ -14,3 +14,4 @@
 ## Done
 - [x] d1 - Chapter three decks https://github.com/octo/alpha-repo/pull/3 (repo: alpha) (kind: ship) (merged 2026-09-05)
 - [x] d2 - Last month's module (repo: beta) (kind: ship) (done 2026-08-30)
+- [x] d5 - A note whose date carries words (repo: alpha) (kind: ship) (merged 2026-09-06 pending release)

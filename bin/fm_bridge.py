@@ -10,6 +10,9 @@ state come from bin/fm-fleet-snapshot.sh --json, the canonical read-only fleet
 reader ("human views must render this output instead of parsing state files
 again"). It is run once for this home and once inside every registered local
 second mate's home, so items handed to a mate still count under their project.
+Each run keeps the snapshot's own walk of registered mate homes at its smallest
+bound (FM_SNAPSHOT_SECONDMATES=1; 0 would lift the bound, not disable it),
+since the Bridge snapshots every mate home itself and never reads that walk.
 tasks-axi was checked first: its list output is TOON and truncates long titles,
 and its --json flag applies to mutations only, so it is not a reader here.
 Two small inputs the snapshot does not cover are parsed directly, each against
@@ -128,7 +131,7 @@ def parse_secondmates(text):
                         "home": m.group(5).strip(), "scope": m.group(6).strip(),
                         "projects": _split_projects(m.group(7)),
                         "added": m.group(8), "remote": True})
-    return out
+    return [m for m in out if m["home"] and m["scope"]]
 
 
 _ARCHIVE_DONE_RE = re.compile(r"^- \[x\] ([A-Za-z0-9._-]+) - (.*)$")
@@ -187,7 +190,7 @@ def _snapshot(home, now):
     env = {k: v for k, v in os.environ.items()
            if not (k.startswith("FM_") and k.endswith("_OVERRIDE"))}
     env["FM_HOME"] = home
-    env["FM_SNAPSHOT_SECONDMATES"] = "0"
+    env["FM_SNAPSHOT_SECONDMATES"] = "1"
     env["FM_SNAPSHOT_NOW"] = now.astimezone(_dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     proc = subprocess.run([SNAPSHOT, "--json"], env=env, capture_output=True,
                           text=True, timeout=120, check=False)
@@ -367,7 +370,7 @@ def collect(home, config_dir, now):
             return
         if bucket == "done":
             date = (rec.get("completion") or {}).get("date")
-            if not date or not date.startswith(month):
+            if _parse_day(date) is None or not date.startswith(month):
                 return
         else:
             date = None
@@ -517,12 +520,19 @@ def e(value):
     return html.escape(text, quote=True)
 
 
+def _parse_day(date):
+    try:
+        return _dt.date.fromisoformat(date) if isinstance(date, str) else None
+    except ValueError:
+        return None
+
+
 def _day(date, today):
-    if not date:
+    d = _parse_day(date)
+    if d is None:
         return ""
     if date == today:
         return "today"
-    d = _dt.date.fromisoformat(date)
     return "%d %s" % (d.day, d.strftime("%b"))
 
 
@@ -652,11 +662,10 @@ def _round_robin(items):
 def _column(model, title, key, items, more_text):
     cards = []
     for it in items[:BOARD_CARDS]:
-        tag = _short(model, it["project"])
-        if it["bucket"] == "done":
-            tag += " &middot; " + e(_day(it["date"], model["today"]))
-        else:
-            tag = e(tag)
+        tag = e(_short(model, it["project"]))
+        day = _day(it["date"], model["today"]) if it["bucket"] == "done" else ""
+        if day:
+            tag += " &middot; " + e(day)
         cls = "tcard blocked" if it["blocked"] else "tcard"
         cards.append('<div class="%s"><div class="p">%s</div>%s</div>' % (cls, tag, e(_clip(it["title"], 110))))
     rest = len(items) - BOARD_CARDS
@@ -700,7 +709,8 @@ def render(model):
     if model["config_error"]:
         notices.append("The Bridge settings file could not be read, so no links are shown.")
     if total["waiting"]:
-        oldest = min((it["since"] for it in items if it["bucket"] == "waiting" and it["since"]), default=None)
+        oldest = min((it["since"] for it in items
+                      if it["bucket"] == "waiting" and _parse_day(it["since"]) is not None), default=None)
         n = total["waiting"]
         banner = "%s waiting on you across all projects" % ("1 thing is" if n == 1 else "%d things are" % n)
         if oldest:
