@@ -9,6 +9,7 @@ on:
 
 permissions:
   contents: read
+  pull-requests: read
 
 # GitHub concurrency groups retain at most one pending run, replacing older
 # pending runs even when cancel-in-progress is false. Give body-bearing events
@@ -26,5 +27,29 @@ jobs:
       github.event.pull_request.user.login != 'github-actions[bot]' &&
       github.event.pull_request.user.login != 'dependabot[bot]'
     steps:
+      # The event payload freezes the body as it was when the event fired. The
+      # pipeline pushes first and rewrites the body (with the attestation for
+      # that push) seconds later, and that edit does not reliably start an
+      # 'edited' run, so the synchronize run judged a stale body and re-runs
+      # replayed it. Judge the PR as the forge holds it now instead; the gate
+      # itself (signature, head bind, required steps) is unchanged.
+      - name: Read the live pull request body and head
+        id: live
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_API: ${{ github.event.pull_request.url }}
+        run: |
+          set -eu
+          gh api "$PR_API" > "$RUNNER_TEMP/pr.json"
+          delim="NM_BODY_$(openssl rand -hex 16)"
+          {
+            echo "head-sha=$(jq -r '.head.sha' "$RUNNER_TEMP/pr.json")"
+            echo "body<<$delim"
+            jq -r '.body // ""' "$RUNNER_TEMP/pr.json"
+            echo "$delim"
+          } >> "$GITHUB_OUTPUT"
       - name: Verify no-mistakes signature and pipeline attestation
         uses: kunchenguid/no-mistakes/.github/actions/require-no-mistakes@32d396ac0f29135daf7fcb9964aba9d5f4e796d6 # post-v1.57.1, untagged (action added in #819)
+        with:
+          pr-body: ${{ steps.live.outputs.body }}
+          pr-head-sha: ${{ steps.live.outputs.head-sha }}
