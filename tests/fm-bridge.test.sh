@@ -27,12 +27,13 @@ FAKEBIN=$(fm_fakebin "$TMP_ROOT")
 mkdir -p "$HOME_DIR/data/x" "$HOME_DIR/state" "$HOME_DIR/projects/alpha" "$HOME_DIR/config" \
   "$MATE/data/y" "$MATE/state" "$CFG" "$RUN"
 HOME_DIR=$(cd "$HOME_DIR" && pwd)
-cp "$FIX/projects.md" "$FIX/backlog.md" "$FIX/done-archive.md" "$FIX/captain.md" "$FIX/learnings.md" \
-  "$HOME_DIR/data/"
-sed "s|@MATE_HOME@|$MATE|" "$FIX/secondmates.md" > "$HOME_DIR/data/secondmates.md"
-cp "$FIX/AGENTS.md" "$HOME_DIR/projects/alpha/AGENTS.md"
-cp "$FIX/decision.md" "$HOME_DIR/data/x/decision-quiz-private.md"
-cp "$FIX/mate-backlog.md" "$MATE/data/backlog.md"
+for record in projects backlog done-archive captain learnings; do
+  cp "$FIX/$record.txt" "$HOME_DIR/data/$record.md"
+done
+sed "s|@MATE_HOME@|$MATE|" "$FIX/secondmates.txt" > "$HOME_DIR/data/secondmates.md"
+cp "$FIX/AGENTS.txt" "$HOME_DIR/projects/alpha/AGENTS.md"
+cp "$FIX/decision.txt" "$HOME_DIR/data/x/decision-quiz-private.md"
+cp "$FIX/mate-backlog.txt" "$MATE/data/backlog.md"
 cat > "$HOME_DIR/state/w1.meta" <<EOF
 window=fx:1
 endpoint_task_id=w1
