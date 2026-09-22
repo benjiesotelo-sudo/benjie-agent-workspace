@@ -1,0 +1,1 @@
+timeout-minutes=30 matrix={"shard"=>[1, 2, 3, 4]} fail-fast=false

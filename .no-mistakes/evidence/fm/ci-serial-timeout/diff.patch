@@ -1,0 +1,32 @@
+diff --git a/.github/workflows/ci.yml b/.github/workflows/ci.yml
+index 51480a5..3e1c73d 100644
+--- a/.github/workflows/ci.yml
++++ b/.github/workflows/ci.yml
+@@ -129,10 +129,10 @@ jobs:
+   tests-portable-serial:
+     name: Behavior portable serial ${{ matrix.shard }}
+     runs-on: ubuntu-latest
+-    # Measured whole remainder is ~42 min of serial work; the balanced shards
+-    # are ~10.6 min each. Cap is a hang tripwire with roughly 2x margin, not the
+-    # expected healthy end of the lane.
+-    timeout-minutes: 20
++    # Measured shards now run up to ~19 min of serial work on a busy runner.
++    # Cap is a hang tripwire with margin above that, not the expected healthy
++    # end of the lane; rebalancing to more shards is tracked separately.
++    timeout-minutes: 30
+     strategy:
+       # Every shard reports so one failure never hides another shard's result.
+       fail-fast: false
+diff --git a/docs/fm-test-portable-shards.md b/docs/fm-test-portable-shards.md
+index 116e685..bd877b9 100644
+--- a/docs/fm-test-portable-shards.md
++++ b/docs/fm-test-portable-shards.md
+@@ -111,7 +111,7 @@ Portable shards, each portable serial shard, and the Herdr lane upload runner-ge
+ | Lane | Bound | Rationale |
+ |---|---|---|
+ | portable parallel 1/2 | job `timeout-minutes: 10` | The measured shard sums are about three minutes and the timeout is a hang tripwire. |
+-| portable serial 1-4 | job `timeout-minutes: 20` | Each balanced shard is about eleven minutes of measured script time, leaving roughly 2x hang-tripwire margin for job setup and runner-speed spread. |
++| portable serial 1-4 | job `timeout-minutes: 30` | Shards measure up to about 19 minutes on a busy runner, so the cap is a hang tripwire with margin above that. |
+ | Herdr | family-run step `timeout-minutes: 20`; job `timeout-minutes: 75` backstop | Healthy runs finish around 7 minutes, so the step bound is the hang tripwire (cleanup and timing artifacts still upload) while the job cap stays a last-resort backstop. |
+ 
+ Timeouts are hang tripwires rather than expected healthy durations.
