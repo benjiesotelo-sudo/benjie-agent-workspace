@@ -1,0 +1,14 @@
+ok - projects registry parses posture, dates and description apart
+ok - secondmates registry parses the local record form
+ok - done archive and memory headings parse
+ok - Bridge tab counts every project, the mate's items and the ship
+ok - Board tab columns hold every open item and this month's Done
+ok - Team and Office tab shows mates, the worker and the counters
+ok - Memory tab shows headings and counts only
+ok - Documents tab renders the configured links
+ok - the page carries no em dash and no backlog body text
+ok - first run writes an example config seeded from the registry
+ok - a wildcard address is refused
+ok - without Tailscale the server binds 127.0.0.1 and status says so
+ok - the server serves only the page and the health check
+ok - install writes an absolute plist, bootstraps it, and proves the job from its log

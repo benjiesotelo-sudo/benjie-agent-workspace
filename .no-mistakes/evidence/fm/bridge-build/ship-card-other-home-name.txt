@@ -1,0 +1,3 @@
+scopes: ['alpha', 'beta', 'homeship', 'ship']
+ship {'waiting': '1', 'queued': '0', 'in_flight': '0', 'done': '0'}
+homeship {'waiting': '0', 'queued': '1', 'in_flight': '0', 'done': '0'}

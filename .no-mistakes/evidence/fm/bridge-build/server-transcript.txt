@@ -1,0 +1,17 @@
+$ cat fg.log
+fm-bridge: Tailscale is not running; binding 127.0.0.1 only, so the iPad cannot reach it
+2026-09-22T23:41:05 bridge: listening on http://127.0.0.1:60059/
+2026-09-22T23:41:05 bridge: "GET /healthz HTTP/1.1" 200 -
+$ fm-bridge.sh status
+running: yes, answering on http://127.0.0.1:60059/ (none)
+address: Tailscale was not running at start; bound to 127.0.0.1 only, so the iPad cannot reach it
+tailscale: not running
+$ curl /healthz
+ok
+
+GET / -> 200
+GET /healthz -> 200
+GET /data/backlog.md -> 404
+GET /?file=data/backlog.md -> 200
+GET /../../etc/passwd -> 404
+POST / -> 501
