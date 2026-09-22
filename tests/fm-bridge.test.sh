@@ -28,12 +28,12 @@ mkdir -p "$HOME_DIR/data/x" "$HOME_DIR/state" "$HOME_DIR/projects/alpha" "$HOME_
   "$MATE/data/y" "$MATE/state" "$CFG" "$RUN"
 HOME_DIR=$(cd "$HOME_DIR" && pwd)
 for record in projects backlog done-archive captain learnings; do
-  cp "$FIX/$record.txt" "$HOME_DIR/data/$record.md"
+  cp "$FIX/$record.fixture" "$HOME_DIR/data/$record.md"
 done
-sed "s|@MATE_HOME@|$MATE|" "$FIX/secondmates.txt" > "$HOME_DIR/data/secondmates.md"
-cp "$FIX/AGENTS.txt" "$HOME_DIR/projects/alpha/AGENTS.md"
-cp "$FIX/decision.txt" "$HOME_DIR/data/x/decision-quiz-private.md"
-cp "$FIX/mate-backlog.txt" "$MATE/data/backlog.md"
+sed "s|@MATE_HOME@|$MATE|" "$FIX/secondmates.fixture" > "$HOME_DIR/data/secondmates.md"
+cp "$FIX/AGENTS.fixture" "$HOME_DIR/projects/alpha/AGENTS.md"
+cp "$FIX/decision.fixture" "$HOME_DIR/data/x/decision-quiz-private.md"
+cp "$FIX/mate-backlog.fixture" "$MATE/data/backlog.md"
 cat > "$HOME_DIR/state/w1.meta" <<EOF
 window=fx:1
 endpoint_task_id=w1
