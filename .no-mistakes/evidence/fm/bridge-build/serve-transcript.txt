@@ -1,0 +1,41 @@
+$ fm-bridge.sh start --bind 0.0.0.0 --foreground
+fm-bridge: refusing to bind a wildcard address (0.0.0.0); use tailscale or one address
+exit=1
+$ fm-bridge.sh start
+fm-bridge: Tailscale is not running; binding 127.0.0.1 only, so the iPad cannot reach it
+fm-bridge: serving http://127.0.0.1:7391/ (pid 21399)
+exit=0
+$ fm-bridge.sh status
+running: yes, answering on http://127.0.0.1:7391/ (detached pid 21399)
+address: Tailscale was not running at start; bound to 127.0.0.1 only, so the iPad cannot reach it
+tailscale: not running
+last log line: 2026-09-23T14:15:24 bridge: "GET /healthz HTTP/1.1" 200 -
+exit=0
+$ cat state/bridge.addr
+127.0.0.1 7391 fallback
+$ fm-bridge.sh start   (second start while running)
+fm-bridge: already running (pid 21399) on http://127.0.0.1:7391/
+exit=0
+$ cat state/bridge.addr
+127.0.0.1 7391 fallback
+$ GET / -> 200
+$ GET /healthz -> 200
+$ GET /?file=/etc/passwd -> 200
+$ GET /../etc/passwd -> 404
+$ GET /data/backlog.md -> 404
+$ GET /favicon.ico -> 404
+$ POST / -> 501
+$ PUT / -> 501
+$ DELETE / -> 501
+$ GET /healthz body: ok
+
+$ fm-bridge.sh stop
+fm-bridge: stopped pid 21399
+exit=0
+$ fm-bridge.sh status
+running: no answer on http://127.0.0.1:7391/ (none)
+address: Tailscale was not running at start; bound to 127.0.0.1 only, so the iPad cannot reach it
+tailscale: not running
+last log line: 2026-09-23T14:16:51 bridge: "GET / HTTP/1.1" 200 -
+exit=0
+$ GET / after stop -> 000

@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Bridge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&display=swap">
+<style>
+:root{
+  --bg:#faf9f5; --surface:#ffffff; --surface-2:#f3f1ea; --line:#e6e2d6; --line-2:#d9d3c3;
+  --ink:#1f1d19; --ink-2:#5b574d; --ink-3:#8a8477;
+  --accent:#d97757; --accent-ink:#9c4a2f; --accent-soft:#f6e3da;
+  --good:#3f7d5a; --good-soft:#e2efe6; --warn:#a56b12; --warn-soft:#f7ead2; --idle:#7b7a9a; --idle-soft:#e9e8f3;
+  --radius:12px; --pill:999px;
+  --display:"Archivo",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --prose:"Crimson Pro",Georgia,"Times New Roman",serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#1b1a17; --surface:#24221e; --surface-2:#2c2a25; --line:#37342d; --line-2:#46423a;
+    --ink:#f1ede4; --ink-2:#c3bdb0; --ink-3:#8f897b;
+    --accent:#e6906f; --accent-ink:#f0b39a; --accent-soft:#3b2a22;
+    --good:#7fbf9a; --good-soft:#233329; --warn:#e0b060; --warn-soft:#3a2f1a; --idle:#a9a7c9; --idle-soft:#2a2934;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#1b1a17; --surface:#24221e; --surface-2:#2c2a25; --line:#37342d; --line-2:#46423a;
+  --ink:#f1ede4; --ink-2:#c3bdb0; --ink-3:#8f897b;
+  --accent:#e6906f; --accent-ink:#f0b39a; --accent-soft:#3b2a22;
+  --good:#7fbf9a; --good-soft:#233329; --warn:#e0b060; --warn-soft:#3a2f1a; --idle:#a9a7c9; --idle-soft:#2a2934;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--display);font-size:15px;line-height:1.45;-webkit-font-smoothing:antialiased}
+a{color:var(--accent-ink);text-decoration:none;border-bottom:1px solid var(--line-2)}
+a:hover{border-bottom-color:var(--accent)}
+.wrap{max-width:1180px;margin:0 auto;padding:0 16px 48px}
+header.top{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 0 10px;border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:baseline;gap:12px}
+.brand h1{font-size:22px;font-weight:700;letter-spacing:-.01em;margin:0}
+.brand .sub{font-family:var(--prose);font-size:16px;color:var(--ink-2);font-style:italic}
+.meta{font-size:12.5px;color:var(--ink-3);text-align:right}
+.meta b{color:var(--ink-2);font-weight:600}
+nav.tabs{display:flex;gap:6px;flex-wrap:wrap;padding:12px 0 6px;position:sticky;top:0;background:var(--bg);z-index:5}
+nav.tabs button{font:inherit;font-weight:600;font-size:13.5px;padding:8px 14px;border-radius:var(--pill);border:1px solid var(--line-2);background:var(--surface);color:var(--ink-2);cursor:pointer}
+nav.tabs button[aria-selected="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+nav.tabs button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+section.tab{display:none;padding-top:14px}
+section.tab.active{display:block}
+.note{font-family:var(--prose);font-size:16.5px;color:var(--ink-2);margin:6px 0 16px;max-width:70ch}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px 16px 14px;min-width:0}
+.card h3{margin:0 0 2px;font-size:16px;font-weight:700;letter-spacing:-.005em}
+.card .kicker{font-size:11.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3);margin-bottom:8px}
+.card .desc{font-family:var(--prose);font-size:15.5px;color:var(--ink-2);margin:0 0 10px;overflow-wrap:anywhere}
+.stats{display:flex;gap:14px;flex-wrap:wrap;margin:8px 0 10px}
+.stats.four{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.stat{min-width:0}
+.stat b{display:block;font-size:22px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.stat span{font-size:11.5px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.06em}
+.pill{display:inline-block;font-size:11.5px;font-weight:600;padding:3px 9px;border-radius:var(--pill);border:1px solid transparent}
+.pill.captain{background:var(--accent-soft);color:var(--accent-ink)}
+.pill.live{background:var(--good-soft);color:var(--good)}
+.pill.idle{background:var(--idle-soft);color:var(--idle)}
+.pill.parked{background:var(--surface-2);color:var(--ink-2);border-color:var(--line-2)}
+.pill.warn{background:var(--warn-soft);color:var(--warn)}
+ul.calls{list-style:none;margin:6px 0 0;padding:0}
+ul.calls li{font-family:var(--prose);font-size:15.5px;padding:7px 0;border-top:1px dashed var(--line);overflow-wrap:anywhere}
+ul.calls li:first-child{border-top:none}
+ul.calls li .who{font-family:var(--display);font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-3);margin-right:8px}
+.links{display:flex;gap:8px 14px;flex-wrap:wrap;font-size:13px;margin-top:8px}
+.board{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+@media (max-width:820px){.board{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:480px){.board{grid-template-columns:1fr}}
+.col{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius);padding:10px;min-width:0}
+.col h4{margin:2px 4px 10px;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-2);display:flex;justify-content:space-between}
+.col h4 b{font-variant-numeric:tabular-nums;color:var(--ink)}
+.tcard{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:9px 10px;margin-bottom:8px;font-size:13.5px;min-width:0;overflow-wrap:anywhere}
+.tcard .p{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-3);margin-bottom:3px}
+.tcard.blocked{border-left:3px solid var(--warn)}
+.more{font-size:12.5px;color:var(--ink-3);padding:4px 6px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:11.5px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-3);font-weight:600}
+td.num{font-variant-numeric:tabular-nums;text-align:right}
+.scroll{overflow-x:auto}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:7px;vertical-align:middle}
+.dot.live{background:var(--good);box-shadow:0 0 0 3px var(--good-soft)}
+.dot.idle{background:var(--idle);box-shadow:0 0 0 3px var(--idle-soft)}
+.dot.you{background:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.two{display:grid;grid-template-columns:1.1fr .9fr;gap:14px}
+@media (max-width:820px){.two{grid-template-columns:1fr}}
+.list{margin:0;padding:0;list-style:none}
+.list li{padding:9px 0;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;align-items:baseline}
+.list li:first-child{border-top:none}
+.list li small{color:var(--ink-3);font-size:12px;white-space:nowrap}
+.banner{background:var(--accent-soft);border:1px solid var(--line);border-radius:var(--radius);padding:10px 14px;font-family:var(--prose);font-size:15.5px;color:var(--accent-ink);margin:0 0 14px}
+footer{margin-top:28px;padding-top:12px;border-top:1px solid var(--line);font-size:12.5px;color:var(--ink-3);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+@media (prefers-reduced-motion:no-preference){.dot.live{animation:pulse 2.4s ease-in-out infinite}@keyframes pulse{0%,100%{box-shadow:0 0 0 3px var(--good-soft)}50%{box-shadow:0 0 0 6px var(--good-soft)}}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <h1>The Bridge</h1>
+      <span class="sub">where every project stands, on one page</span>
+    </div>
+    <div class="meta"><b>Wednesday 23 September 2026, 14:15</b><br>rendered from the live records, refreshes on open</div>
+  </header>
+
+  <nav class="tabs" role="tablist" aria-label="Bridge views">
+    <button role="tab" aria-selected="true" data-tab="bridge">Bridge</button>
+    <button role="tab" aria-selected="false" data-tab="board">Board</button>
+    <button role="tab" aria-selected="false" data-tab="team">Team &amp; Office</button>
+    <button role="tab" aria-selected="false" data-tab="memory">Memory</button>
+    <button role="tab" aria-selected="false" data-tab="docs">Documents</button>
+  </nav>
+
+  <section class="tab active" id="tab-bridge" role="tabpanel">
+    <p class="note">One card per project. The number that matters is <b>waiting on you</b>: decisions only you can make. Everything else is either moving or done.</p>
+    <div class="banner">4 things are waiting on you across all projects, the oldest since 29 Aug. No workers are under way.</div>
+    <div class="grid"><div class="card" data-project="alpha"><div class="kicker">Course &middot; parked since 10 Sep</div><h3>Alpha Course <span class="pill parked">parked</span></h3><p class="desc">Alpha course materials for a class; decks and notes</p><div class="stats four" data-scope="alpha"><div class="stat"><b data-count="waiting">2</b><span>waiting on you</span></div><div class="stat"><b data-count="queued">2</b><span>queued</span></div><div class="stat"><b data-count="in_flight">1</b><span>in flight</span></div><div class="stat"><b data-count="done">2</b><span>done this month</span></div></div><ul class="calls"><li><span class="who">do</span>Choose the quiz format</li><li><span class="who">decide</span>Decide the chapter five review point</li></ul><div class="links"><a href="https://drive.google.com/drive/folders/abc" rel="noopener">class folder</a><a href="https://github.com/octo/alpha-repo" rel="noopener">repository</a></div></div><div class="card" data-project="beta"><div class="kicker">Project &middot; added 1 Sep</div><h3>beta <span class="pill captain">1 decision</span></h3><p class="desc">Beta outreach programme, delivered in modules</p><div class="stats four" data-scope="beta"><div class="stat"><b data-count="waiting">1</b><span>waiting on you</span></div><div class="stat"><b data-count="queued">2</b><span>queued</span></div><div class="stat"><b data-count="in_flight">0</b><span>in flight</span></div><div class="stat"><b data-count="done">1</b><span>done this month</span></div></div><ul class="calls"><li><span class="who">decide</span>Approve the module outline</li></ul></div><div class="card" data-project="ship"><div class="kicker">Fleet &middot; this machine</div><h3>The ship itself <span class="pill captain">1 decision</span></h3><p class="desc">Housekeeping that belongs to no project, and work on the first mate itself.</p><div class="stats four" data-scope="ship"><div class="stat"><b data-count="waiting">1</b><span>waiting on you</span></div><div class="stat"><b data-count="queued">1</b><span>queued</span></div><div class="stat"><b data-count="in_flight">0</b><span>in flight</span></div><div class="stat"><b data-count="done">0</b><span>done this month</span></div></div><ul class="calls"><li><span class="who">do</span>Tick a profile setting only the captain can reach</li></ul></div></div>
+  </section>
+
+  <section class="tab" id="tab-board" role="tabpanel">
+    <p class="note">Every open item, by state. <b>Waiting on you</b> is its own column on purpose: it is the only column nobody else can empty.</p>
+    <div class="board"><div class="col" data-column="waiting"><h4>Waiting on you <b data-count="waiting">4</b></h4><div class="tcard"><div class="p">R&amp;D</div>Choose the quiz format</div><div class="tcard"><div class="p">beta</div>Approve the module outline</div><div class="tcard"><div class="p">Ship</div>Tick a profile setting only the captain can reach</div><div class="tcard"><div class="p">R&amp;D</div>Decide the chapter five review point</div></div><div class="col" data-column="queued"><h4>Queued <b data-count="queued">5</b></h4><div class="tcard"><div class="p">beta</div>Revisit the venue later</div><div class="tcard blocked"><div class="p">R&amp;D</div>Build the quiz once the format is chosen</div><div class="tcard"><div class="p">Ship</div>Update the ship&#x27;s own tooling</div><div class="tcard"><div class="p">beta</div>Print the handouts</div><div class="tcard"><div class="p">R&amp;D</div>Add a text layer to the chapter PDFs</div></div><div class="col" data-column="in_flight"><h4>In flight <b data-count="in_flight">1</b></h4><div class="tcard"><div class="p">R&amp;D</div>Build chapter four</div></div><div class="col" data-column="done"><h4>Done this month <b data-count="done">3</b></h4><div class="tcard"><div class="p">R&amp;D &middot; 12 Sep</div>Chapter four notes</div><div class="tcard"><div class="p">R&amp;D &middot; 5 Sep</div>Chapter three decks</div><div class="tcard"><div class="p">beta &middot; 2 Sep</div>Module one handout</div></div></div>
+  </section>
+
+  <section class="tab" id="tab-team" role="tabpanel">
+    <p class="note">Who is on the ship and what each one is doing right now. Second mates are permanent and sleep between jobs; workers are hired for one job and let go.</p>
+    <div class="two">
+      <div class="card">
+        <div class="kicker">Team</div>
+        <div class="scroll"><table>
+          <tr><th>Who</th><th>Charge</th><th>Now</th></tr>
+          <tr><td><span class="dot you"></span><b>You</b></td><td>Captain. Vision, decisions, merges.</td><td data-count="team-waiting">4 decisions waiting</td></tr><tr><td><span class="dot live"></span><b>Denver</b></td><td>First mate. Every project, routing, supervision.</td><td>Standing by</td></tr><tr data-mate="alpha-mate"><td><span class="dot idle"></span><b>alpha-mate</b></td><td>Second mate. Persistent second mate for the alpha course</td><td>Idle, 2 items in its list, 1 waiting on you</td></tr>
+        </table></div>
+      </div>
+      <div class="card">
+        <div class="kicker">Office &middot; live workers</div>
+        <ul class="list"><li><span>No workers are running.</span></li></ul>
+        
+        <div class="stats"><div class="stat"><b data-count="stale">0</b><span>waiting too long</span></div><div class="stat"><b data-count="login">0</b><span>blocked on a login</span></div><div class="stat"><b data-count="prs">0</b><span>pull requests open</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="tab" id="tab-memory" role="tabpanel">
+    <p class="note">What the ship remembers about you and about itself, and where. Read only; changes still happen by talking to Denver.</p>
+    <div class="grid"><div class="card"><div class="kicker">About you</div><h3>Captain preferences</h3><p class="desc">3 sections, 10 lines, about 43 tokens.</p><ul class="calls"><li>Who the captain is</li><li>Standing instructions</li><li>Working style</li></ul></div><div class="card"><div class="kicker">About the ship</div><h3>Fleet learnings</h3><p class="desc">2 sections, 7 lines, about 19 tokens.</p><ul class="calls"><li>Git on this Mac</li><li>Google Drive</li></ul></div><div class="card"><div class="kicker">Project memory</div><h3>alpha</h3><p class="desc">2 sections, 11 lines, about 28 tokens.</p><ul class="calls"><li>Build</li><li>Maintaining this file</li></ul></div><div class="card"><div class="kicker">Decisions on record</div><h3>Decision files</h3><p class="desc">Every decision you made, in your words, one file each. <b data-count="decision-files">1</b> on record, newest first.</p><ul class="calls"><li>The quiz stays private (today)</li></ul></div></div>
+  </section>
+
+  <section class="tab" id="tab-docs" role="tabpanel">
+    <p class="note">Everything produced for you, by where it lives. Drive links open in Drive; repository links open on GitHub.</p>
+    <div class="grid"><div class="card" data-docs="alpha"><div class="kicker">Drive</div><h3>Alpha Course</h3><ul class="calls"><li><a href="https://drive.google.com/drive/folders/abc" rel="noopener">class folder</a></li></ul></div></div>
+  </section>
+
+  <footer>
+    <span>Read only. The board shows; you decide; Denver dispatches.</span>
+    <span>Served on this Mac, reachable from the iPad over Tailscale.</span>
+  </footer>
+</div>
+<script>
+(function(){
+  var tabs=document.querySelectorAll('nav.tabs [role=tab]');
+  var panels=document.querySelectorAll('section.tab');
+  function show(id){
+    tabs.forEach(function(t){t.setAttribute('aria-selected', t.dataset.tab===id ? 'true':'false');});
+    panels.forEach(function(p){p.classList.toggle('active', p.id==='tab-'+id);});
+    try{localStorage.setItem('bridge.tab',id);}catch(e){}
+  }
+  tabs.forEach(function(t){t.addEventListener('click',function(){show(t.dataset.tab);});});
+  document.querySelectorAll('[data-goto]').forEach(function(a){a.addEventListener('click',function(ev){ev.preventDefault();show(a.dataset.goto);window.scrollTo(0,0);});});
+  var saved=null; try{saved=localStorage.getItem('bridge.tab');}catch(e){}
+  var hash=(location.hash||'').slice(1);
+  if(hash && document.getElementById('tab-'+hash)) show(hash);
+  else if(saved && document.getElementById('tab-'+saved)) show(saved);
+})();
+</script>
+</body>
+</html>
