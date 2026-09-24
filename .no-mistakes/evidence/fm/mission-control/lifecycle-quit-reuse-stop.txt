@@ -1,0 +1,21 @@
+$ herdr pane send-text w1:p1 q      # quit the screen
+$ herdr pane read w1:p1 (last lines: back at the shell, terminal restored)
+M38NCJ5S6MMX9Z4QYMW50J94/bin/fm-mission-control.sh' r
+un
+benjie@Benjamins-Mac-mini-2 homeship %
+$ fm-mission-control.sh status
+running: no, workspace w1 exists but no pane runs the screen; fix with: fm-mission-control.sh start
+$ fm-mission-control.sh start     # reuses the idle pane, no second workspace
+fm-mission-control: running in workspace w1 (pane w1:p1)
+$ herdr workspace list (labels)
+[{"workspace_id":"w1","label":"mission-control"},{"workspace_id":"w2","label":"fm-agent"},{"workspace_id":"w3","label":"mate-agent"}]
+$ fm-mission-control.sh status
+running: yes, workspace w1, pane w1:p1
+$ fm-mission-control.sh stop
+fm-mission-control: closed workspace w1
+$ fm-mission-control.sh status
+running: no (mission-control workspace not found)
+$ fm-mission-control.sh stop      # again
+fm-mission-control: not running (no mission-control workspace)
+$ herdr workspace list (labels)
+[{"workspace_id":"w2","label":"fm-agent"},{"workspace_id":"w3","label":"mate-agent"}]

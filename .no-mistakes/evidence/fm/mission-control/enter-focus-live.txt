@@ -1,0 +1,8 @@
+$ herdr pane list (focused, lab session)   # before
+["w1:p1"]            # w1:p1 = the mission-control pane
+$ herdr pane send-keys w1:p1 down ; herdr pane send-keys w1:p1 down   # select Alpha in the team list
+$ herdr pane send-keys w1:p1 enter
+$ herdr pane list (focused, lab session)   # after
+["w3:p1"]            # w3:p1 = Alpha's agent pane (cwd alpha-mate-home)
+$ herdr agent list   # after: focus changed nothing about agent state
+[{"pane_id":"w2:p1","agent_status":"done"},{"pane_id":"w3:p1","agent_status":"working"}]

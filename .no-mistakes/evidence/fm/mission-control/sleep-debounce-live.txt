@@ -1,0 +1,8 @@
+11:50:25 report First mate pane w2:p1 idle
+--- 11:50:40 (+15s)
+11:49  First mate wakes up
+ ● First mate first mate          working, 1 intern on jobs, 3 waiting on you                                      every project
+--- 11:51:00 (+35s)
+11:50  First mate falls asleep
+11:49  First mate wakes up
+ z First mate first mate          standing by, 3 waiting on you                                                    every project

@@ -1,0 +1,5 @@
+# Files created or modified under the lab home tree since the lab started (only the tester's own edits expected: state/g2.meta, data/backlog.md):
+homeship/state/g2.meta
+homeship/data/backlog.md
+# config dir contents:
+# end

@@ -1,0 +1,12 @@
+Run: fm-mission-control.sh run in a 163x50 pty, TERM=xterm-256color, COLORTERM unset
+truecolor SGR (38;2/48;2) count: 0
+256-colour SGR (38;5/48;5) count: 5630
+bytes written while animating 3s->8s: 10218
+bytes written while paused 9s->14s: 0
+CPU seconds animating over 4.9s: 0.21; paused over 4.9s: 0.09
+after resize to 80x24 the screen says: ['Make this pane bigger: Mission Control needs 96 x 36, this pane is 80 x 24.']
+after resize to 140x46 the office returns: True | clear-screen issued: True
+last bytes on SIGTERM: b'z\x1b[0m\x1b[?1000l\x1b[?1006l\x1b[?7h\x1b[?25h\x1b[?1049l'
+exit code: 0
+herdr agent list poll intervals (s): 2.17 2.17 2.17 2.16 2.11 2.12 2.17 2.13 2.17 
+COLORTERM=truecolor run: truecolor SGR count 2300 | 256-colour SGR count 0 | q exit restores: True

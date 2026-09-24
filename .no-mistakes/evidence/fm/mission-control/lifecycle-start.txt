@@ -1,0 +1,13 @@
+$ fm-mission-control.sh status
+running: no (mission-control workspace not found)
+$ fm-mission-control.sh start
+fm-mission-control: running in workspace w1 (pane w1:p1)
+$ fm-mission-control.sh start   # again
+fm-mission-control: already running in workspace w1 (pane w1:p1)
+$ fm-mission-control.sh status
+running: yes, workspace w1, pane w1:p1
+$ herdr workspace list | labels
+(eval):8: no such file or directory: /Users/benjie/.no-mistakes/worktrees/40995176e50b/01M38NCJ5S6MMX9Z4QYMW50J94/bin/fm-herdr-lab.sh run fm-lab-mc-62449-26860
+$ herdr workspace list (labels)
+$ herdr workspace list (labels)
+[{"workspace_id":"w1","label":"mission-control"}]
