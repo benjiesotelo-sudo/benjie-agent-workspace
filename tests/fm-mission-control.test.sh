@@ -211,6 +211,32 @@ assert "more above" in text and "The setup itself" in text and "WAITING ON YOU F
 assert "│ alpha " not in text, text
 assert mc._pick_project(ui, scene, down=True) and ui.project == "alpha", ui.project
 PY
+
+# A working mate with two registered projects cannot say which one it is on;
+# a working mate with one registered project is on that one.
+TWO="$TMP_ROOT/twoship"
+mkdir -p "$TWO/data" "$TWO/state" "$TWO/config" "$TMP_ROOT/pair/data" "$TMP_ROOT/pair/state" \
+  "$TMP_ROOT/solo/data" "$TMP_ROOT/solo/state"
+cp "$MANY/data/projects.md" "$MANY/data/backlog.md" "$TWO/data/"
+for m in pair solo; do
+  printf '# Backlog\n\n## In flight\n## Queued\n## Done\n' > "$TMP_ROOT/$m/data/backlog.md"
+done
+{
+  echo "# Second mates"
+  echo "- pair-mate - Two projects (home: $TMP_ROOT/pair; scope: alpha and beta; projects: alpha, beta; added 2026-09-01)"
+  echo "- solo-mate - One project (home: $TMP_ROOT/solo; scope: extra one; projects: extra1; added 2026-09-01)"
+} > "$TWO/data/secondmates.md"
+jq -n --arg pair "$TMP_ROOT/pair" --arg solo "$TMP_ROOT/solo" '{result: {agents: [
+  {pane_id: "w1:p1", agent_status: "working", cwd: $pair},
+  {pane_id: "w2:p1", agent_status: "working", cwd: $solo}]}}' > "$TMP_ROOT/two.json"
+TJ=$(mc "$TWO" frame --agents "$TMP_ROOT/two.json" --view projects --format json) || fail "two-mate json failed"
+two() {  # <name> <jq path>
+  jq -r --arg n "$1" ".projects[] | select(.name == \$n) | $2" <<<"$TJ"
+}
+[ "$(two alpha .lead)" = PAIR ] && [ "$(two beta .lead)" = PAIR ] || fail "both projects are in the pair mate's charge"
+[ "$(two alpha .status)" = parked ] || fail "a working mate with two projects does not make its parked one active"
+[ "$(two beta .status)" = quiet ] || fail "a working mate with two projects does not make its quiet one active"
+[ "$(two extra1 .status)" = active ] || fail "a working mate with one project makes that project active"
 pass "the Projects view shows one card per project with status, person in charge, counts and decisions"
 
 L=$(mc "$HOME_DIR" frame --agents "$AGENTS" --view calendar)

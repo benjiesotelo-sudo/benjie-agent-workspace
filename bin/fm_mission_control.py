@@ -52,9 +52,10 @@ PROJECTS. One card per registered project except this home's own repository,
 in registry order, then "The setup itself" for items with no project, as on
 the Bridge. A card is Active when a working intern's project is it, its person
 in charge (the second mate whose registered projects include it, else the
-first mate, who never counts as working on one project) is working, or it has
-work in flight; else Parked when its registry note says the captain parked it;
-else Quiet. Its counts are the Bridge's buckets and its bar is done this month
+first mate) is working and has no other registered project, or it has work in
+flight; else Parked when its registry note says the captain parked it; else
+Quiet. The first mate, and a mate with several projects, never count as
+working on any one of them by themselves. Its counts are the Bridge's buckets and its bar is done this month
 against done plus everything still open. The picked card lists its first
 three items waiting on the captain under the grid.
 
@@ -1484,7 +1485,7 @@ def project_cards(model, crew):
             lead = fm
             desc = "Housekeeping that belongs to no project, and work on the first mate itself."
             name = "The setup itself"
-        agent_on = pname in working or (lead is not fm and lead["status"] == "work")
+        agent_on = pname in working or (lead is not fm and len(mate["projects"]) == 1 and lead["status"] == "work")
         if agent_on or counts["in_flight"]:
             status = "active"
         elif p and p.get("parked"):
