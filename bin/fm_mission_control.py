@@ -52,7 +52,7 @@ TEAM. The crew as an org chart: the captain, then the first mate as chief of
 staff, joined to one role card per registered second mate, each with the
 office's standing sprite in the agent's own shirt and hair colours. A mate's
 role is its registered scope up to the first colon; the card also names the
-projects it owns, its state (working, asleep, or on another machine) and how
+projects it owns, its state (working, asleep, or away on another machine) and how
 many open items its list holds and how many wait on the captain. Live interns
 branch off the first mate's line or sit under their mate's card, one line
 each; the rows that do not fit are counted instead. Up and down pick a mate's
@@ -1453,7 +1453,7 @@ TEAM_CARD_MAX_W = 58
 WIRE = H("#3a4250")  # the org chart's connecting lines
 TEAM_CARD_H = 7     # a role card's rows, borders included: the portrait is five rows tall
 TEAM_STATES = {"working": ("● working", GREEN), "asleep": ("z asleep", ZZZ),
-               "elsewhere": ("on another machine", DIM)}
+               "elsewhere": ("away", DIM)}
 
 
 class _Pixels:
@@ -2161,7 +2161,9 @@ def _handle_input(data, ui, scene, feed):
             if ui.view == "team" and scene.model is not None:
                 cards = team_cards(scene.model, scene.crew)
                 i = _team_pick(ui, cards)
-                ui.selected = cards[1 + i]["key"] if i is not None else ui.selected
+                if i is None:
+                    continue
+                ui.selected = cards[1 + i]["key"]
             m_ = next((c for c in scene.crew if c["key"] == ui.selected), None)
             if m_ is None:
                 continue
