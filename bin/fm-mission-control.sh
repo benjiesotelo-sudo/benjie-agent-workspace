@@ -2,10 +2,11 @@
 # fm-mission-control.sh - Mission Control, the crew as a live read-only office.
 #
 # Mission Control draws the whole crew as an animated pixel-art office, plus a
-# task board and a card per project, in one terminal pane; bin/fm_mission_control.py owns what it
-# reads, how the crew maps onto the office, and how frames are drawn. It is
-# read-only: it never writes a record, never sends keys or prompts to an
-# agent, and never starts or stops one.
+# task board and a card per project, in one terminal pane;
+# bin/fm_mission_control.py owns what it reads, how the crew maps onto the
+# office, and how frames are drawn. It is read-only: it never writes a
+# record, never sends keys or prompts to an agent, and never starts or stops
+# one.
 #
 # Commands:
 #   run                     draw the screen in this terminal until q

@@ -55,9 +55,9 @@ in charge (the second mate whose registered projects include it, else the
 first mate) is working and has no other registered project, or it has work in
 flight; else Parked when its registry note says the captain parked it; else
 Quiet. The first mate, and a mate with several projects, never count as
-working on any one of them by themselves. Its counts are the Bridge's buckets and its bar is done this month
-against done plus everything still open. The picked card lists its first
-three items waiting on the captain under the grid.
+working on any one of them by themselves. Its counts are the Bridge's buckets
+and its bar is done this month against done plus everything still open. The
+picked card lists its first three items waiting on the captain under the grid.
 
 DRAWING. Each character cell is two pixels: an upper half block with the top
 pixel as foreground and the bottom pixel as background, 24-bit colour when the
