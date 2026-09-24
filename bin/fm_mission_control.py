@@ -7,8 +7,8 @@ the crew maps onto the office, and how frames are drawn and written.
 
 READ ONLY. Nothing here writes a record, sends a key or a prompt to an agent,
 or starts or stops anything. The one outward call besides the reads is
-`herdr agent focus` when the captain presses Enter on a team row, which only
-moves the captain's own view to that agent's pane.
+`herdr agent focus` when the captain presses Enter on a team row or a picked
+Team card, which only moves the captain's own view to that agent's pane.
 
 WHAT IT READS.
   Records   bin/fm_bridge.py collect(), the Bridge's single reader: backlog

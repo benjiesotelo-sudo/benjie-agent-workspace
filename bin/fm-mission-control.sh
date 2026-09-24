@@ -24,8 +24,8 @@
 # Keys while running: 1-9 switch view, p pauses the animation, q quits,
 # up/down pick an agent in the team list and Enter moves your Herdr view to
 # its pane (`herdr agent focus`, navigation only); on the Team view up/down
-# pick a second mate's card instead. Tapping a tab switches view
-# when the terminal reports mouse clicks.
+# pick a second mate's card instead and Enter moves to that mate's pane.
+# Tapping a tab switches view when the terminal reports mouse clicks.
 #
 # start creates the workspace with `herdr workspace create --label
 # mission-control --no-focus` in this home and types the run command into its
