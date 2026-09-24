@@ -41,7 +41,7 @@
 # FM_MC_HERDR replaces the herdr command and is split on spaces, so a lab can
 # route every call through `bin/fm-herdr-lab.sh run <session>`; start passes it
 # into the pane so the screen's own reads use it too. FM_MC_COLORS forces
-# truecolor or 256 colours; by default COLORTERM decides.
+# truecolor or 256 colours; by default what the terminal advertises decides.
 set -eu
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"

@@ -50,10 +50,11 @@ route and the home), so the wall starts empty on every run.
 
 DRAWING. Each character cell is two pixels: an upper half block with the top
 pixel as foreground and the bottom pixel as background, 24-bit colour when the
-terminal advertises it (COLORTERM truecolor or 24bit, or FM_MC_COLORS), the
-256-colour cube otherwise. Frames are diffed and only changed cells are
-written. Ticks run at 10 per second while someone walks, 5 while a screen is
-lit, and 2.5 otherwise; paused or unchanged frames write nothing.
+terminal advertises it (COLORTERM truecolor or 24bit, a TERM containing
+"direct", or FM_MC_COLORS), the 256-colour cube otherwise. Frames are diffed
+and only changed cells are written. Ticks run at 10 per second while someone
+walks, 5 while a screen is lit, and 2.5 otherwise; paused or unchanged frames
+write nothing.
 """
 
 import datetime as _dt
