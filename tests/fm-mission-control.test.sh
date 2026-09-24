@@ -3,9 +3,9 @@
 # bin/fm_mission_control.py): one-frame snapshots from fixture records and a
 # saved `herdr agent list`, asserting desks, working and asleep states, interns
 # beside the right person in charge, the second-floor sign at seven mates, the
-# inbox count and the task columns; then the live screen in a pseudo-terminal,
-# which must redraw only what changed and restore the terminal on q and on
-# SIGTERM. The record parsers themselves are covered by fm-bridge.test.sh.
+# inbox count, the task columns and the project cards; then the live screen in
+# a pseudo-terminal, which must redraw only what changed, pick project cards
+# with up/down, and restore the terminal on q and on SIGTERM. The record parsers themselves are covered by fm-bridge.test.sh.
 # Fixtures are the Bridge's, in tests/assets/bridge/.
 set -u
 
@@ -148,6 +148,96 @@ grep -q '■ setup' <<<"$B" || fail "the ship's own items carry the setup tag"
 grep -q 'oldest decision waiting: 29 Aug' <<<"$B" || fail "the oldest waiting decision is dated"
 grep -q 'A body line that the Bridge never shows' <<<"$B" && fail "backlog bodies must never be printed"
 pass "the Tasks view shows four columns with the Bridge's counts"
+
+# --- the projects view -----------------------------------------------------
+
+P=$(mc "$HOME_DIR" frame --agents "$AGENTS" --view projects --size 170x50) || fail "projects frame failed"
+PJ=$(mc "$HOME_DIR" frame --agents "$AGENTS" --view projects --format json) || fail "projects json failed"
+card() {  # <name> <jq path>
+  jq -r --arg n "$1" ".projects[] | select(.name == \$n) | $2" <<<"$PJ"
+}
+[ "$(jq -r '[.projects[].name] | join(",")' <<<"$PJ")" = "alpha,beta,The setup itself" ] \
+  || fail "one card per registered project in registry order, the home's own repository folded into the setup card"
+grep -Eq '^ 2 projects +1 active +0 parked +1 quiet' <<<"$P" || fail "the header counts projects by status"
+[ "$(card alpha .status)" = active ] || fail "a project with a working agent and work in flight is active, even when parked"
+[ "$(card beta .status)" = quiet ] || fail "a project with nothing moving is quiet"
+[ "$(card alpha .lead)" = Alpha ] || fail "a project a second mate has registered is in its charge"
+[ "$(card beta .lead)" = Denver ] || fail "a project no second mate has registered is in the first mate's charge"
+[ "$(card "The setup itself" .lead)" = Denver ] || fail "the setup itself is in the first mate's charge"
+[ "$(card alpha '.counts | [.waiting, .queued, .in_flight, .done] | join(" ")')" = "2 2 1 2" ] \
+  || fail "alpha's four counts come from the Bridge's buckets, got $(card alpha .counts)"
+[ "$(card "The setup itself" '.counts | [.waiting, .queued] | join(" ")')" = "1 1" ] \
+  || fail "items with no project, and the home's own, count on the setup card"
+for want in '│ alpha +Active  │' '│ beta +Quiet  │' '│ The setup itself +Quiet  │' \
+  '│ 2 waiting on you +2 queued ' '│ 1 in flight +2 done this month ' '━ 29%  2/7 │' \
+  '│ ■ Alpha in charge ' '│ ■ Denver in charge ' '│ Alpha course materials for a class; decks and notes'; do
+  grep -Eq "$want" <<<"$P" || fail "a project card shows: $want"
+done
+grep -q 'octo/alpha-repo' <<<"$P" && fail "the card description leaves out the repository"
+grep -q ' WAITING ON YOU FOR ALPHA ' <<<"$P" || fail "the first card is picked and its decisions show underneath"
+grep -Eq '^   do +Choose the quiz format +2 Sep *$' <<<"$P" || fail "a picked card lists what waits on the captain"
+grep -Eq '^   decide +Decide the chapter five review point +8 Sep *$' <<<"$P" || fail "a held decision reads decide"
+grep -q "$TMP_ROOT" <<<"$P" && fail "no raw path may reach the projects view"
+grep -Eq '\b(a1|c1|m1|q1|s1)\b' <<<"$P" && fail "no task id may reach the projects view"
+grep -q '—' <<<"$P" && fail "the projects view never shows an em dash"
+
+MANY="$TMP_ROOT/manyship"
+mkdir -p "$MANY/data" "$MANY/state" "$MANY/config"
+cp "$FIX/projects.fixture" "$MANY/data/projects.md"
+for n in 1 2 3 4 5 6; do
+  echo "- extra$n [local-only] - Extra project number $n (added 2026-09-01)" >> "$MANY/data/projects.md"
+done
+printf '# Backlog\n\n## In flight\n## Queued\n## Done\n' > "$MANY/data/backlog.md"
+PM=$(mc "$MANY" frame --view projects --size 96x36) || fail "many-project frame failed"
+grep -Eq '^ 9 projects +0 active +1 parked +8 quiet' <<<"$PM" || fail "the header counts every project"
+grep -Eq '│ alpha +Parked  │' <<<"$PM" || fail "a project its registry note parks, with nothing moving, is parked"
+grep -Eq '│ homeship +Quiet  │' <<<"$PM" || fail "another home's repository is an ordinary project"
+grep -q 'more below' <<<"$PM" || fail "cards past the pane's height are announced"
+grep -q 'extra6' <<<"$PM" && fail "a short pane shows only the rows that fit"
+grep -q 'Nothing waits on you here.' <<<"$PM" || fail "a picked card with no decisions says so"
+PYTHONPATH="$ROOT/bin" FM_BRIDGE_NOW=2026-09-20T10:00:00 PATH="$FAKEBIN:$PATH" \
+  python3 - "$MANY" <<'PY' || fail "picking the last card scrolls the grid to it"
+import os
+import sys
+import fm_mission_control as mc
+home = os.path.realpath(sys.argv[1])
+model = mc.bridge.collect(home, home + "/config", mc.bridge._now())
+scene, ui = mc.Scene(), mc.UI()
+scene.observe(model, mc.build_crew(model, [], home), 36)
+ui.view = "projects"
+assert mc._pick_project(ui, scene, down=False) and ui.project == "", ui.project
+text = mc.compose(scene, mc.Renderer(), ui, 96, 36, mc.bridge._now())[0].text()
+assert "more above" in text and "The setup itself" in text and "WAITING ON YOU FOR THE SETUP ITSELF" in text, text
+assert "│ alpha " not in text, text
+assert mc._pick_project(ui, scene, down=True) and ui.project == "alpha", ui.project
+PY
+
+# A working mate with two registered projects cannot say which one it is on;
+# a working mate with one registered project is on that one.
+TWO="$TMP_ROOT/twoship"
+mkdir -p "$TWO/data" "$TWO/state" "$TWO/config" "$TMP_ROOT/pair/data" "$TMP_ROOT/pair/state" \
+  "$TMP_ROOT/solo/data" "$TMP_ROOT/solo/state"
+cp "$MANY/data/projects.md" "$MANY/data/backlog.md" "$TWO/data/"
+for m in pair solo; do
+  printf '# Backlog\n\n## In flight\n## Queued\n## Done\n' > "$TMP_ROOT/$m/data/backlog.md"
+done
+{
+  echo "# Second mates"
+  echo "- pair-mate - Two projects (home: $TMP_ROOT/pair; scope: alpha and beta; projects: alpha, beta; added 2026-09-01)"
+  echo "- solo-mate - One project (home: $TMP_ROOT/solo; scope: extra one; projects: extra1; added 2026-09-01)"
+} > "$TWO/data/secondmates.md"
+jq -n --arg pair "$TMP_ROOT/pair" --arg solo "$TMP_ROOT/solo" '{result: {agents: [
+  {pane_id: "w1:p1", agent_status: "working", cwd: $pair},
+  {pane_id: "w2:p1", agent_status: "working", cwd: $solo}]}}' > "$TMP_ROOT/two.json"
+TJ=$(mc "$TWO" frame --agents "$TMP_ROOT/two.json" --view projects --format json) || fail "two-mate json failed"
+two() {  # <name> <jq path>
+  jq -r --arg n "$1" ".projects[] | select(.name == \$n) | $2" <<<"$TJ"
+}
+[ "$(two alpha .lead)" = PAIR ] && [ "$(two beta .lead)" = PAIR ] || fail "both projects are in the pair mate's charge"
+[ "$(two alpha .status)" = parked ] || fail "a working mate with two projects does not make its parked one active"
+[ "$(two beta .status)" = quiet ] || fail "a working mate with two projects does not make its quiet one active"
+[ "$(two extra1 .status)" = active ] || fail "a working mate with one project makes that project active"
+pass "the Projects view shows one card per project with status, person in charge, counts and decisions"
 
 L=$(mc "$HOME_DIR" frame --agents "$AGENTS" --view calendar)
 grep -q 'Calendar is coming next' <<<"$L" || fail "a later view shows its coming-next note"
@@ -311,6 +401,17 @@ cp "$TMP_ROOT/backlog.saved" "$HOME_DIR/data/backlog.md"
 [ "$(tail -c ${#RESTORE} "$TMP_ROOT/term.raw")" = "$RESTORE" ] || fail "SIGTERM restores the terminal"
 screen "$TMP_ROOT/term" 2 | grep -q 'Denver asks you Pick' || fail "a newly filed captain item reads as the owner asking you"
 pass "the live screen switches views, quits on q and SIGTERM, and restores the terminal"
+
+UP=$'\e[A'
+DOWN=$'\e[B'
+code=$(drive "$TMP_ROOT/pick" "4=4,5=$DOWN,6=$UP$UP,7=q") || fail "the pty driver failed"
+[ "$code" = 0 ] || fail "the projects run quits cleanly, got exit $code"
+screen "$TMP_ROOT/pick" 2 | grep -q 'WAITING ON YOU FOR ALPHA' || fail "key 4 opens the projects with the first card picked"
+screen "$TMP_ROOT/pick" 3 | grep -q 'WAITING ON YOU FOR BETA' || fail "down picks the next card"
+screen "$TMP_ROOT/pick" 3 | grep -q 'Approve the module outline' || fail "the picked card's decisions show underneath"
+screen "$TMP_ROOT/pick" 4 | grep -q 'WAITING ON YOU FOR THE SETUP ITSELF' || fail "up from the first card wraps to the last"
+screen "$TMP_ROOT/pick" 4 | grep -q 'LIVE ACTIVITY' && fail "up/down on the projects stays on the projects"
+pass "up and down pick a project card on the live screen"
 
 # A second mate home that cannot be read for a while invents no events.
 BACKLOG_M="$MATE/data/backlog.md"
