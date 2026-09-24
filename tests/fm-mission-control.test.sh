@@ -291,6 +291,20 @@ grep -q 'a local file' <<<"$AL" || fail "a path in a title or note reads as a lo
 grep -Eq '\.config|secret\.yml|notes\.md' <<<"$AL" && fail "no raw path may reach the approvals screen"
 grep -q "$TMP_ROOT" <<<"$AL" && fail "no temporary path may reach the approvals screen"
 
+MANY="$TMP_ROOT/manyship"
+mkdir -p "$MANY/data" "$MANY/state" "$MANY/config"
+cp "$FIX/projects.fixture" "$MANY/data/projects.md"
+{
+  printf '# Backlog\n\n## In flight\n## Queued\n'
+  for n in $(seq 10 39); do printf -- '- [ ] q%d - Settle question number %d (kind: captain) (since 2026-08-%02d)\n' "$n" "$n" "$((n - 9))"; done
+  printf '## Done\n'
+} > "$MANY/data/backlog.md"
+AM=$(mc "$MANY" frame --view approvals) || fail "many-decision approvals frame failed"
+grep -Eq '^┌─ THE DECISION ─+ 3 more below ─┐$' <<<"$AM" \
+  || fail "the decisions past the fold are counted on the panel's top border, got: $(grep 'THE DECISION' <<<"$AM")"
+[ "$(grep -c 'Settle question number' <<<"$AM")" = 28 ] || fail "27 list rows and the panel title show in full"
+[ "$(grep -c 'more below' <<<"$AM")" = 1 ] || fail "no list row carries the more-below label"
+
 pass "the Approvals view groups what waits on the captain by agent, oldest first, in plain words"
 
 L=$(mc "$HOME_DIR" frame --agents "$AGENTS" --view calendar)
@@ -347,9 +361,10 @@ chmod +x "$FAKEBIN/herdr-list"
 drive() {  # <out-prefix> <actions> - runs the screen at 132x44; actions: "<seconds>=<keys|TERM>,..."
   # Writes <out-prefix>.raw (every byte written) and <out-prefix>.screens (the
   # emulated screen text just before each action), and prints the exit code.
-  # DRIVE_HOME, DRIVE_AGENTS and DRIVE_ROWS replace the home, the agent list and the height.
+  # DRIVE_HOME, DRIVE_AGENTS and DRIVE_ROWS replace the home, the agent list and the height;
+  # DRIVE_NOW pins the Bridge clock for that run, else the real clock dates things.
   PATH="$FAKEBIN:$PATH" FM_HOME="${DRIVE_HOME:-$HOME_DIR}" DRIVE_AGENTS="${DRIVE_AGENTS:-$AGENTS}" \
-    FM_MC_HERDR="$FAKEBIN/herdr-list" FM_MC_COLORS=truecolor python3 - "$MC" "$1" "$2" "${DRIVE_ROWS:-44}" <<'PY'
+    FM_MC_HERDR="$FAKEBIN/herdr-list" FM_MC_COLORS=truecolor ${DRIVE_NOW:+env FM_BRIDGE_NOW=$DRIVE_NOW} python3 - "$MC" "$1" "$2" "${DRIVE_ROWS:-44}" <<'PY'
 import os, pty, re, sys, struct, fcntl, termios, time, select, signal
 mc, prefix, actions, rows = sys.argv[1:]
 plan = sorted((float(t), a) for t, a in (x.split("=", 1) for x in actions.split(",")))
@@ -448,15 +463,14 @@ j = data.rfind(b"\x1b[0m\x1b[?1000l")
 sys.exit(0 if 0 <= i < j and j - i < 400 else 1)
 PY
 # Up and down move the Approvals highlight; Enter answers nothing.
-# The live screen dates things by the real clock, so ages are not pinned here.
 UP=$'\e[A'
 DOWN=$'\e[B'
 ENTER=$'\r'
-code=$(drive "$TMP_ROOT/ap" "4=3,5=$DOWN,6=$DOWN$DOWN$DOWN,7=$UP,8=$ENTER,9=q") || fail "the pty driver failed"
+code=$(DRIVE_NOW=2026-09-20T10:00:00 drive "$TMP_ROOT/ap" "4=3,5=$DOWN,6=$DOWN$DOWN$DOWN,7=$UP,8=$ENTER,9=q") || fail "the pty driver failed"
 [ "$code" = 0 ] || fail "the approvals run quits cleanly, got exit $code"
 screen "$TMP_ROOT/ap" 2 | grep -q 'sits with Denver, the ship' || fail "key 3 opens Approvals on the oldest decision"
 screen "$TMP_ROOT/ap" 3 | grep -Eq '^ ▸ .*Choose the quiz format' || fail "down highlights the next decision"
-screen "$TMP_ROOT/ap" 3 | grep -Eq 'asked 2 Sep, [0-9]+ days ago, sits with Denver, project alpha' \
+screen "$TMP_ROOT/ap" 3 | grep -q 'asked 2 Sep, 18 days ago, sits with Denver, project alpha' \
   || fail "the panel follows the highlight"
 screen "$TMP_ROOT/ap" 4 | grep -q 'sits with Alpha, project alpha' || fail "down crosses into the next agent and stops at the end"
 screen "$TMP_ROOT/ap" 5 | grep -Eq '^ ▸ .*Approve the module outline' || fail "up moves back"

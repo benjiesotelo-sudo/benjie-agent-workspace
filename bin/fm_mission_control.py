@@ -1706,8 +1706,6 @@ def _approvals_screen(cv, ui, scene):
     off = 0
     if at and at[-1] >= room:
         off = at[-1] - room + 1
-        if at[0] - off > 0 and lines[at[0] - 1][0] == "group":
-            off = min(off, at[0] - 1)
     for i, (kind, p, j) in enumerate(lines[off:off + room]):
         r = top + i
         if kind == "group":
@@ -1732,10 +1730,8 @@ def _approvals_screen(cv, ui, scene):
             tc = H(colors.get(pname.lower() if pname else None, FIRST_MATE_COLOR))
             cv.put(14, r, clip("■ " + tag, qc - 16), tc, None, True)
         cv.put(qc, r, ln, INK if on else H("#c3cbd5"), None, on and j == 0)
-    if off > 0:
-        cv.put(C - 12, top, " more above ", DIM)
-    if off + room < len(lines):
-        cv.put(C - 12, bottom, " more below ", DIM)
+    above = len({p[0]["key"] for k, p, _ in lines[:off] if k == "item"})
+    below = len({p[0]["key"] for k, p, _ in lines[off + room:] if k == "item"})
 
     # The picked decision in full: title, who holds it, and its note.
     it = next(x for x in rows if x["key"] == pick)
@@ -1743,6 +1739,13 @@ def _approvals_screen(cv, ui, scene):
     r0 = R - 2 - panel_h
     _box(cv, 0, r0, C, panel_h, H("#262d38"))
     cv.put(2, r0, " THE DECISION ", AMBER, None, True)
+    c = C - 2
+    for n, where in ((below, "below"), (above, "above")):
+        if n:
+            s = " %d more %s " % (n, where)
+            c -= len(s)
+            cv.put(c, r0, s, DIM)
+            c -= 1
     w = C - 6
     title = wrap(_plain(it["title"]), w)
     if len(title) > 2:
