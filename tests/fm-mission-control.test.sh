@@ -190,19 +190,21 @@ pass "seven mates open a second floor with a sign, busiest downstairs"
 
 cat > "$FAKEBIN/herdr-list" <<SH
 #!/usr/bin/env bash
-[ "\$1 \$2" = "agent list" ] && exec cat "$AGENTS"
+[ -e "$TMP_ROOT/herdr-down" ] && exit 1
+[ "\$1 \$2" = "agent list" ] && exec cat "\$DRIVE_AGENTS"
 exit 0
 SH
 chmod +x "$FAKEBIN/herdr-list"
 drive() {  # <out-prefix> <actions> - runs the screen at 132x44; actions: "<seconds>=<keys|TERM>,..."
   # Writes <out-prefix>.raw (every byte written) and <out-prefix>.screens (the
   # emulated screen text just before each action), and prints the exit code.
-  PATH="$FAKEBIN:$PATH" FM_HOME="$HOME_DIR" FM_MC_HERDR="$FAKEBIN/herdr-list" FM_MC_COLORS=truecolor \
-    python3 - "$MC" "$1" "$2" <<'PY'
+  # DRIVE_HOME, DRIVE_AGENTS and DRIVE_ROWS replace the home, the agent list and the height.
+  PATH="$FAKEBIN:$PATH" FM_HOME="${DRIVE_HOME:-$HOME_DIR}" DRIVE_AGENTS="${DRIVE_AGENTS:-$AGENTS}" \
+    FM_MC_HERDR="$FAKEBIN/herdr-list" FM_MC_COLORS=truecolor python3 - "$MC" "$1" "$2" "${DRIVE_ROWS:-44}" <<'PY'
 import os, pty, re, sys, struct, fcntl, termios, time, select, signal
-mc, prefix, actions = sys.argv[1:]
+mc, prefix, actions, rows = sys.argv[1:]
 plan = sorted((float(t), a) for t, a in (x.split("=", 1) for x in actions.split(",")))
-COLS, ROWS = 132, 44
+COLS, ROWS = 132, int(rows)
 grid = [[" "] * COLS for _ in range(ROWS)]
 pos = [0, 0]
 tok = re.compile(r"\x1b\[([0-9;?]*)([A-Za-z])|\x1b.|[\s\S]")
@@ -273,16 +275,21 @@ screen() {  # <prefix> <n> - the emulated screen before action n (1-based)
   awk -v n="$2" 'BEGIN { k = 1 } /^=====$/ { k++; next } k == n' "$1.screens"
 }
 RESTORE=$'\e[0m\e[?1000l\e[?1006l\e[?7h\e[?25h\e[?1049l'
-code=$(drive "$TMP_ROOT/q" "4=2,5=1,5.5=p,7=q") || fail "the pty driver failed"
+# Over the "2 Tasks" tab: a wheel scroll is not a tap, a left press is.
+WHEEL=$'\e[<64;31;1M'
+TAP=$'\e[<0;31;1M'
+code=$(drive "$TMP_ROOT/q" "4=$WHEEL,4.5=2,5.5=1,6=$TAP,7=1,7.5=p,9=q") || fail "the pty driver failed"
 [ "$code" = 0 ] || fail "q quits cleanly, got exit $code"
 grep -q $'\e\\[?1049h' "$TMP_ROOT/q.raw" || fail "the screen enters the alternate screen"
 grep -q $'\e\\[?1006h' "$TMP_ROOT/q.raw" || fail "the screen asks for SGR mouse reporting"
 [ "$(tail -c ${#RESTORE} "$TMP_ROOT/q.raw")" = "$RESTORE" ] || fail "q restores the terminal last"
 screen "$TMP_ROOT/q" 1 | grep -q 'LIVE ACTIVITY' || fail "the office is drawn live"
 screen "$TMP_ROOT/q" 1 | grep -q 'inbox 4' || fail "the live office shows the inbox count"
-screen "$TMP_ROOT/q" 2 | grep -q 'WAITING ON YOU' || fail "key 2 switches to the task board"
-screen "$TMP_ROOT/q" 3 | grep -q 'LIVE ACTIVITY' || fail "key 1 switches back to the office"
-screen "$TMP_ROOT/q" 4 | grep -q ' PAUSED ' || fail "p pauses the animation"
+screen "$TMP_ROOT/q" 2 | grep -q 'LIVE ACTIVITY' || fail "a wheel scroll over a tab does not switch views"
+screen "$TMP_ROOT/q" 3 | grep -q 'WAITING ON YOU' || fail "key 2 switches to the task board"
+screen "$TMP_ROOT/q" 4 | grep -q 'LIVE ACTIVITY' || fail "key 1 switches back to the office"
+screen "$TMP_ROOT/q" 5 | grep -q 'WAITING ON YOU' || fail "tapping a tab switches to it"
+screen "$TMP_ROOT/q" 7 | grep -q ' PAUSED ' || fail "p pauses the animation"
 python3 - "$TMP_ROOT/q.raw" <<'PY' || fail "a paused screen writes almost nothing"
 import sys
 data = open(sys.argv[1], "rb").read()
@@ -304,6 +311,76 @@ cp "$TMP_ROOT/backlog.saved" "$HOME_DIR/data/backlog.md"
 [ "$(tail -c ${#RESTORE} "$TMP_ROOT/term.raw")" = "$RESTORE" ] || fail "SIGTERM restores the terminal"
 screen "$TMP_ROOT/term" 2 | grep -q 'Denver asks you Pick' || fail "a newly filed captain item reads as the owner asking you"
 pass "the live screen switches views, quits on q and SIGTERM, and restores the terminal"
+
+# A second mate home that cannot be read for a while invents no events.
+BACKLOG_M="$MATE/data/backlog.md"
+code=$(drive "$TMP_ROOT/lost" \
+  "1=SH:chmod 000 $BACKLOG_M && touch $BACKLOG_M,8=SH:chmod 644 $BACKLOG_M && touch $BACKLOG_M,15=q") \
+  || fail "the pty driver failed"
+chmod 644 "$BACKLOG_M"
+[ "$code" = 0 ] || fail "the unreadable-home run quits cleanly, got exit $code"
+screen "$TMP_ROOT/lost" 2 | grep -q 'its records could not be read' || fail "the unreadable mate home is disclosed"
+screen "$TMP_ROOT/lost" 3 | grep -q 'its records could not be read' && fail "the mate home reads again"
+for n in 2 3; do
+  screen "$TMP_ROOT/lost" "$n" | grep -Eq 'goes home|calls in an intern|asks you|left a question' \
+    && fail "an unreadable read is not a change (screen $n)"
+  [ -z "$(screen "$TMP_ROOT/lost" "$n" | grep -o 'Alpha finished.*' | sort | uniq -d)" ] \
+    || fail "a completion is logged once, not again after a failed read (screen $n)"
+  [ "$(screen "$TMP_ROOT/lost" "$n" | grep -c "Alpha's intern")" = 2 ] \
+    || fail "the mate's interns stay through a failed read (screen $n)"
+done
+pass "a second mate home that cannot be read keeps its last good read"
+
+# Herdr stops answering after one good read: the notice says what is shown.
+code=$(drive "$TMP_ROOT/down" "1=SH:touch $TMP_ROOT/herdr-down,6=q") || fail "the pty driver failed"
+rm -f "$TMP_ROOT/herdr-down"
+screen "$TMP_ROOT/down" 2 | grep -q 'showing what it' || fail "the Herdr notice says the last states are shown"
+screen "$TMP_ROOT/down" 2 | grep -q 'everyone looks asleep' && fail "the Herdr notice must not claim everyone is asleep"
+screen "$TMP_ROOT/down" 2 | grep -q 'working' || fail "the last known working state stays on screen"
+pass "a Herdr outage keeps the last states and says so"
+
+# A mate seated upstairs that leaves the registry still retires.
+cp "$BIG/data/secondmates.md" "$TMP_ROOT/big-mates.saved"
+code=$(DRIVE_HOME="$BIG" DRIVE_AGENTS="$TMP_ROOT/big.json" DRIVE_ROWS=60 \
+  drive "$TMP_ROOT/up" "5=SH:sed -i.bak /m6-mate/d $BIG/data/secondmates.md,14=q") || fail "the pty driver failed"
+cp "$TMP_ROOT/big-mates.saved" "$BIG/data/secondmates.md"
+screen "$TMP_ROOT/up" 1 | grep -q '1 upstairs, 0 working' || fail "the sixth mate starts upstairs"
+screen "$TMP_ROOT/up" 2 | grep -Eq '□ M6 +second mate +retired' || fail "the upstairs mate has a retired row"
+screen "$TMP_ROOT/up" 2 | grep -q 'M6 retires' || fail "the activity column shows the retirement"
+screen "$TMP_ROOT/up" 2 | grep -q 'upstairs,' && fail "nobody is left upstairs"
+pass "a mate that leaves the registry from upstairs goes on the alumni wall"
+
+# A pane that stops working keeps its desk lit for SLEEP_AFTER seconds, and
+# the team list agrees with the desk.
+PYTHONPATH="$ROOT/bin" FM_BRIDGE_NOW=2026-09-20T10:00:00 PATH="$FAKEBIN:$PATH" \
+  python3 - "$HOME_DIR" <<'PY' || fail "the sleep timer settles working and asleep together"
+import os
+import sys
+import fm_mission_control as mc
+home = os.path.realpath(sys.argv[1])
+model = mc.bridge.collect(home, home + "/config", mc.bridge._now())
+timer, scene = mc.SleepTimer(), mc.Scene()
+
+
+def at(t, status):
+    agents = [{"pane": "w1:p1", "status": status, "cwds": {home}}]
+    crew = mc.build_crew(model, timer.apply(agents, t), home)
+    scene.observe(model, crew, 44)
+    return crew[0], scene.actors["fm"]
+
+
+fm, a = at(0, "working")
+assert fm["status"] == "work" and a.state == "work"
+fm, a = at(2, "idle")
+assert timer.due() == 2 + mc.SLEEP_AFTER, timer.due()
+fm, a = at(1 + mc.SLEEP_AFTER, "idle")
+assert fm["status"] == "work" and fm["doing"].startswith("working") and a.state == "work", (fm, a.state)
+fm, a = at(2 + mc.SLEEP_AFTER, "idle")
+assert fm["status"] == "sleep" and fm["doing"].startswith("standing by") and a.state == "sleep", (fm, a.state)
+assert timer.due() is None
+assert scene.feed[0]["text"] == "falls asleep", scene.feed[0]
+PY
+pass "an idle pane falls asleep after SLEEP_AFTER seconds, on the desk and the team list alike"
 
 bash -n "$MC" || fail "fm-mission-control.sh has a syntax error"
 pass "fm-mission-control.sh parses"

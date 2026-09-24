@@ -221,6 +221,33 @@ def parse_agents(text):
     return out
 
 
+class SleepTimer:
+    """A pane that stops working still reads as working for SLEEP_AFTER seconds."""
+
+    def __init__(self):
+        self.awake = {}     # pane -> None while working, else when it went idle
+
+    def apply(self, agents, now):
+        awake, out = {}, []
+        for a in agents:
+            pane = a["pane"]
+            if a["status"] == "working":
+                awake[pane] = None
+            elif pane in self.awake:
+                since = self.awake[pane] if self.awake[pane] is not None else now
+                if now - since < SLEEP_AFTER:
+                    awake[pane] = since
+                    a = dict(a, status="working")
+            out.append(a)
+        self.awake = awake
+        return out
+
+    def due(self):
+        """When the next idle pane falls asleep, or None."""
+        stamps = [s for s in self.awake.values() if s is not None]
+        return min(stamps) + SLEEP_AFTER if stamps else None
+
+
 def _endpoint_pane(task, session):
     if task.get("backend") != "herdr":
         return None
@@ -459,7 +486,6 @@ class Actor:
         self.bang = 0
         self.bubble = ""
         self.slot = None
-        self.idle_since = None
         self.errand = False     # on an inbox trip or packing up; keeps its place meanwhile
 
 
@@ -533,11 +559,11 @@ class Scene:
         return lane + [(17, L.walk_y), (17, L.inbox_y)], list(reversed(lane)) + [(hx, hy)]
 
     # -- observation ---------------------------------------------------------
-    def observe(self, model, crew, pane_rows, now=None):
+    def observe(self, model, crew, pane_rows):
         self.model = model
+        prev_mates = {c["key"]: c for c in self.crew if c["kind"] == "mate"}
         self.crew = crew
         first = self.first
-        stamp = time.monotonic() if now is None else now
         items = model["items"]
         self.counts = bridge._counts(items)
         self.inbox_real = self.counts["waiting"]
@@ -548,9 +574,18 @@ class Scene:
 
         # Mates this screen watched leave the registry pack up and walk out.
         if not first:
-            for key, a in list(self.actors.items()):
-                if a.member["kind"] == "mate" and key not in live_keys and key not in self.retired:
+            for key, m in prev_mates.items():
+                if key in live_keys or key in self.retired:
+                    continue
+                a = self.actors.get(key)
+                if a is not None:
                     self.retire(a)
+                    continue
+                a = Actor(m)
+                a.state = a.rest = "retired"
+                self.retired[key] = a
+                self.alumni.append(m)
+                self.log(m["name"], "retires; photo goes up on the alumni wall", m["color"])
         mates = [c for c in desk_members if c["kind"] == "mate"]
         retired = [dict(a.member, retired=True, status="sleep") for a in self.retired.values()]
         layout = Layout(mates, retired, pane_rows, interns)
@@ -578,7 +613,7 @@ class Scene:
                     self.log(m["name"], "joins the crew", m["color"])
                 continue
             a.member = m
-            self._apply_status(a, want, first, stamp)
+            self._apply_status(a, want, first)
             if relayout and a.state != "walk":
                 self.place(a)
 
@@ -686,9 +721,8 @@ class Scene:
                 return s
         return None
 
-    def _apply_status(self, a, want, first, stamp):
+    def _apply_status(self, a, want, first):
         if want == "work":
-            a.idle_since = None
             if a.rest != "work":
                 a.rest = "work"
                 if not first:
@@ -700,15 +734,11 @@ class Scene:
             return
         if a.rest == "sleep":
             return
-        if a.idle_since is None:
-            a.idle_since = stamp
-        if first or stamp - a.idle_since >= SLEEP_AFTER:
-            a.rest = "sleep"
-            a.idle_since = None
-            if a.state == "work":
-                a.state = "sleep"
-            if not first:
-                self.log(a.member["name"], "falls asleep", a.member["color"])
+        a.rest = "sleep"
+        if a.state == "work":
+            a.state = "sleep"
+        if not first:
+            self.log(a.member["name"], "falls asleep", a.member["color"])
 
     def settle(self, a):
         a.route = None
@@ -1185,7 +1215,6 @@ class UI:
         self.toast = ""
         self.toast_until = 0.0
         self.tab_hits = []
-        self.team_rows = {}
 
 
 def _chrome(cv, ui, now):
@@ -1270,7 +1299,6 @@ def _office_screen(cv, ui, scene, renderer, now, records_ok, notice):
     note_r = R - 4
     last = note_r - 1 if note_r > tr + 3 else R - 3
     r = tr + 2
-    ui.team_rows = {}
     people = [m for m in scene.crew if m["kind"] != "intern"]
     interns = [m for m in scene.crew if m["kind"] == "intern"]
     upstairs = {m["key"] for m in L.upstairs}
@@ -1294,7 +1322,6 @@ def _office_screen(cv, ui, scene, renderer, now, records_ok, notice):
         doing = "waking up" if a is not None and a.bang > 0 else m["doing"]
         cv.put(34, r, clip(doing, path_c - 36), INK if m["status"] == "work" else QUIET)
         cv.put(path_c, r, clip(m["path"], C - path_c - 1), DIM)
-        ui.team_rows[r] = m["key"]
         r += 1
     if not interns and r <= last:
         cv.put(1, r, "·", DIMMER)
@@ -1307,7 +1334,7 @@ def _office_screen(cv, ui, scene, renderer, now, records_ok, notice):
 
 
 def _glyph(m, a):
-    if a is not None and a.state == "retired":
+    if m["status"] == "retired":
         return "□", H("#8a6d2b")
     if a is not None and a.state in ("walk", "stand"):
         return "◐", AMBER
@@ -1415,10 +1442,7 @@ def compose(scene, renderer, ui, cols, rows, now, records_ok=True, notice=None):
         cv.put(2, 4, notice or "Reading the ship's records...", SOFT)
         return cv, False
     if ui.view == "office":
-        if rows < min_rows(scene.layout.height):
-            cv.put(2, 4, "Make this pane taller to see the whole office.", AMBER)
-        else:
-            _office_screen(cv, ui, scene, renderer, now, records_ok, notice)
+        _office_screen(cv, ui, scene, renderer, now, records_ok, notice)
     elif ui.view == "tasks":
         _tasks_screen(cv, scene.model)
     else:
@@ -1522,6 +1546,19 @@ def to_ansi(cv, mode="truecolor"):
 # Live data: records and agents, gathered off the drawing thread
 # ---------------------------------------------------------------------------
 
+def keep_last_good(model, last):
+    """A second mate home that could not be read this time keeps its last good read."""
+    lost = {hid for hid in model["errors"] if last and hid in last["snapshots"]}
+    if not lost:
+        return model
+    snaps = dict(model["snapshots"])
+    for hid in lost:
+        snaps[hid] = last["snapshots"][hid]
+    items = [it for it in model["items"] if it["owner"] not in lost] + \
+        [it for it in last["items"] if it["owner"] in lost]
+    return dict(model, snapshots=snaps, items=items)
+
+
 class Feed:
     def __init__(self, home, config_dir, herdr):
         self.home, self.config_dir, self.herdr = home, config_dir, herdr
@@ -1530,6 +1567,7 @@ class Feed:
         self.model_at = 0.0
         self.model_error = None
         self.agents = []
+        self.agents_read = False
         self.agents_error = None
         self.gen = 0
         self.poke = threading.Event()
@@ -1547,8 +1585,9 @@ class Feed:
     def _records_loop(self):
         while not self.stop.is_set():
             started = time.monotonic()
+            self.poke.clear()
             try:
-                model = bridge.collect(self.home, self.config_dir, bridge._now())
+                model = keep_last_good(bridge.collect(self.home, self.config_dir, bridge._now()), self.model)
                 with self.lock:
                     self.model, self.model_error, self.model_at = model, None, time.monotonic()
                     self.gen += 1
@@ -1556,7 +1595,6 @@ class Feed:
                 with self.lock:
                     self.model_error = str(exc) if isinstance(exc, RuntimeError) else "the records could not be read"
                     self.gen += 1
-            self.poke.clear()
             self.poke.wait(RECORDS_MAX_AGE)
             gap = RECORDS_MIN_GAP - (time.monotonic() - started)
             if gap > 0:
@@ -1595,15 +1633,16 @@ class Feed:
                 proc = subprocess.run(self.herdr + ["agent", "list"], capture_output=True, text=True,
                                       timeout=5, check=False)
                 agents = parse_agents(proc.stdout) if proc.returncode == 0 else None
-                err = None if agents is not None else "Herdr's agent list could not be read"
             except (OSError, subprocess.SubprocessError):
-                agents, err = None, "Herdr's agent list could not be read"
+                agents = None
             with self.lock:
                 if agents is not None:
                     changed = [(a["pane"], a["status"], tuple(sorted(a["cwds"]))) for a in agents] != \
                         [(a["pane"], a["status"], tuple(sorted(a["cwds"]))) for a in self.agents]
-                    self.agents = agents
+                    self.agents, self.agents_read, err = agents, True, None
                 else:
+                    err = "Herdr's agent list could not be read just now; showing what it last said." \
+                        if self.agents_read else "Herdr's agent list could not be read, so everyone looks asleep."
                     changed = self.agents_error != err
                 if changed or self.agents_error != err:
                     self.gen += 1
@@ -1677,6 +1716,7 @@ def run(home, config_dir, herdr):
     term = Terminal()
     feed = Feed(home, config_dir, herdr)
     scene, renderer, ui = Scene(), Renderer(), UI()
+    sleeper = SleepTimer()
     enc = Encoder(color_mode())
     wake_r, wake_w = os.pipe()
     os.set_blocking(wake_w, False)
@@ -1730,12 +1770,14 @@ def run(home, config_dir, herdr):
                 term.write("\x1b[0m\x1b[2J")
                 dirty = True
             gen, model, agents, model_err, agents_err, _at = feed.snapshot()
-            if gen != last_gen and model is not None:
-                crew = build_crew(model, agents, home, session, own_pane, first_mate_name(config_dir))
+            now_m = time.monotonic()
+            due = sleeper.due()
+            if model is not None and (gen != last_gen or (due is not None and now_m >= due)):
+                crew = build_crew(model, sleeper.apply(agents, now_m), home, session, own_pane,
+                                  first_mate_name(config_dir))
                 scene.observe(model, crew, size[1])
                 last_gen = gen
                 dirty = True
-            now_m = time.monotonic()
             if now_m >= next_frame:
                 if ui.paused or scene.model is None:
                     next_frame = now_m + 1.0
@@ -1751,7 +1793,7 @@ def run(home, config_dir, herdr):
                 notice = "The records could not be read just now (%s); showing the last good read." % model_err \
                     if scene.model is not None else "The records could not be read just now; trying again."
             elif agents_err:
-                notice = "Herdr's agent list could not be read, so everyone looks asleep."
+                notice = agents_err
             cv, _small = compose(scene, renderer, ui, size[0], size[1], bridge._now(),
                                  records_ok=model_err is None, notice=notice)
             cells = cv.cells()
@@ -1775,17 +1817,12 @@ def _handle_input(data, ui, scene, feed):
         tok = m.group(0)
         if m.group(1) is not None:
             btn, x, y, kind = int(m.group(1)), int(m.group(2)), int(m.group(3)), m.group(4)
-            if kind != b"M" or btn & 32 or btn & 3 != 0:
+            if kind != b"M" or btn & (3 | 32 | 64 | 128) or y != 1:
                 continue
-            col, row = x - 1, y - 1
-            if row == 0:
-                for c0, c1, i in ui.tab_hits:
-                    if c0 <= col < c1:
-                        ui.view = VIEWS[i]
-                        changed = True
-            elif row in ui.team_rows and ui.view == "office":
-                ui.selected = ui.team_rows[row]
-                changed = True
+            for c0, c1, i in ui.tab_hits:
+                if c0 <= x - 1 < c1:
+                    ui.view = VIEWS[i]
+                    changed = True
             continue
         if tok in (b"q", b"Q"):
             ui.view = "quit"
@@ -1793,13 +1830,13 @@ def _handle_input(data, ui, scene, feed):
         if len(tok) == 1 and b"1" <= tok <= b"9":
             ui.view = VIEWS[int(tok) - 1]
             changed = True
-        elif tok in (b"p", b"P", b" "):
+        elif tok in (b"p", b"P"):
             ui.paused = not ui.paused
             changed = True
-        elif tok in (b"\x1b[A", b"\x1bOA", b"\x1b[B", b"\x1bOB", b"k", b"j"):
+        elif tok in (b"\x1b[A", b"\x1bOA", b"\x1b[B", b"\x1bOB"):
             keys = [m_["key"] for m_ in scene.crew]
             if keys:
-                down = tok in (b"\x1b[B", b"\x1bOB", b"j")
+                down = tok in (b"\x1b[B", b"\x1bOB")
                 if ui.selected in keys:
                     i = (keys.index(ui.selected) + (1 if down else -1)) % len(keys)
                 else:
@@ -1817,9 +1854,6 @@ def _handle_input(data, ui, scene, feed):
             else:
                 ui.toast = "%s has no open pane to show" % m_["name"]
             ui.toast_until = time.monotonic() + 3
-            changed = True
-        elif tok == b"\x1b" and ui.selected:
-            ui.selected = None
             changed = True
     return changed
 
