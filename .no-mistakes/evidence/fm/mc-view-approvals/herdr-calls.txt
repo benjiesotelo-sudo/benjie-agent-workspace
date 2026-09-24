@@ -1,0 +1,4 @@
+# herdr calls: office down+Enter (control)
+agent focus w1:p1 (1x), agent list (3x)
+# herdr calls: approvals runs incl. Enter on fixture, many and empty homes
+agent list only; no agent focus

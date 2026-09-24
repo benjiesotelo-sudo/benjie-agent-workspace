@@ -1,0 +1,449 @@
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System     Sun 10:00 
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀    ▀▀▀▀▀▀▀▀▀   ▀▀▀▀▀▀▀▀▀▀▀▀▀           │ LIVE ACTIVITY real                
+                       ▀▀ ▀▀ ▀▀ ▀▀       ▀▀▀▀▀▀▀ ▀▀▀▀▀▀  ▀   ▀ ▀ ▀ ▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀           │                                   
+     ▀▀   ▀▀   ▀▀                        ▀▀▀▀▀▀▀ ▀▀▀▀▀▀      ▀ ▀ ▀ ▀     ▀▀▀▀▀▀▀▀▀▀▀            │ 12 Sep Alpha finished Chapter     
+▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀│        four notes                 
+   ▀alumni             tasks        ▀▀▀      ▀▀▀▀▀▀▀        plan         memory         ▀▀▀▀▀▀▀ │                                   
+  ▀   ▀                             ▀▀▀▀▀▀▀  ▀▀▀▀▀▀▀                                      ▀ ▀   │ 5 Sep  Denver finished Chapter    
+                           ▀▀▀▀▀  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                                   ▀ ▀   │        three decks                
+   ▀▀▀                       ▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                                   ▀ ▀   │                                   
+                                          ▀   ▀                                           ▀ ▀   │ 2 Sep  Denver finished Module one 
+                                          ▀▀▀▀▀                                           ▀ ▀   │        handout                    
+                                         ▀     ▀                                          ▀ ▀   │                                   
+                                         ▀▀▀▀▀▀▀                                                │                                   
+                                         Denver                                         ▀▀▀▀▀▀▀ │                                   
+   ▀▀▀▀▀▀▀▀▀                             working                                       system   │                                   
+                                                                                         ok     │                                   
+    ▀▀▀▀▀▀▀z                                                                                    │                                   
+ ▀▀▀▀▀▀▀▀▀z▀Z▀                                                                                  │                                   
+ ▀▀▀▀▀▀▀▀▀▀▀▀▀                                                                                  │                                   
+     ▀▀▀▀▀                                                                                      │                                   
+                                                                                                │                                   
+                                                                                                │                                   
+     ▀▀▀▀▀                                                                                      │                                   
+     Alpha                                                                                      │                                   
+    asleep                                                                                    ▀▀│                                   
+ ▀▀▀▀▀▀▀▀                                                                                       │                                   
+ CAPTAIN                    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                  ▀   ▀       │                                   
+                                          ▀▀▀▀▀▀▀▀▀                                  ▀▀▀        │                                   
+       ▀                            ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                                       │                                   
+                  inbox 4             ▀▀▀▀         ▀▀▀▀                                         │                                   
+          ▀▀▀▀▀▀▀                       ▀▀▀         ▀▀▀                                       ▀▀│                                   
+─ TEAM ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   NAME       ROLE                DOING NOW                                         PATH (the project it works in)                  
+ ● Denver     first mate          working, 3 waiting on you                         every project                                   
+ z Alpha      second mate         asleep, 2 jobs listed, 1 waiting on you           projects/alpha                                  
+ · interns    one job each        none right now                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+   Interns stand beside their person in charge for one job, then go home. Sleeping agents cost nothing.                             
+                                                                                                                                    
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down pick an agent   enter talk to it   p pause   q quit                                    updates by itself 
+=====
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System     Sun 10:00 
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                                                    
+ 4 decisions wait on you, with 2 agents   oldest since 29 Aug, 22 days ago                                read only, answer in chat 
+                                                                                                                                    
+── Denver 3 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ ▸   22 days  ■ setup                 Tick a profile setting only the captain can reach                                             
+     18 days  ■ alpha                 Choose the quiz format                                                                        
+     17 days  ■ beta                  Approve the module outline                                                                    
+                                                                                                                                    
+── Alpha 1 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+     12 days  ■ alpha                 Decide the chapter five review point                                                          
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+┌─ THE DECISION ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│  Tick a profile setting only the captain can reach                                                                               │
+│  asked 29 Aug, 22 days ago, sits with Denver, the ship's own setup                                                               │
+│  A body line that the Bridge never shows.                                                                                        │
+│                                                                                                                                  │
+│                                                                                                                                  │
+│                                                                                                                                  │
+│                                                                                                                                  │
+└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down read each decision   answers happen in chat, not here   q quit                         updates by itself 
+=====
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System     Sun 10:00 
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                                                    
+ 4 decisions wait on you, with 2 agents   oldest since 29 Aug, 22 days ago                                read only, answer in chat 
+                                                                                                                                    
+── Denver 3 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+     22 days  ■ setup                 Tick a profile setting only the captain can reach                                             
+ ▸   18 days  ■ alpha                 Choose the quiz format                                                                        
+     17 days  ■ beta                  Approve the module outline                                                                    
+                                                                                                                                    
+── Alpha 1 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+     12 days  ■ alpha                 Decide the chapter five review point                                                          
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+┌─ THE DECISION ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│  Choose the quiz format                                                                                                          │
+│  asked 2 Sep, 18 days ago, sits with Denver, project alpha                                                                       │
+│  No further notes on this one.                                                                                                   │
+│                                                                                                                                  │
+│                                                                                                                                  │
+│                                                                                                                                  │
+│                                                                                                                                  │
+└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down read each decision   answers happen in chat, not here   q quit                         updates by itself 
+=====
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System     Sun 10:00 
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                                                    
+ 4 decisions wait on you, with 2 agents   oldest since 29 Aug, 22 days ago                                read only, answer in chat 
+                                                                                                                                    
+── Denver 3 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+     22 days  ■ setup                 Tick a profile setting only the captain can reach                                             
+     18 days  ■ alpha                 Choose the quiz format                                                                        
+ ▸   17 days  ■ beta                  Approve the module outline                                                                    
+                                                                                                                                    
+── Alpha 1 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+     12 days  ■ alpha                 Decide the chapter five review point                                                          
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+┌─ THE DECISION ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│  Approve the module outline                                                                                                      │
+│  asked 3 Sep, 17 days ago, sits with Denver, project beta                                                                        │
+│  needs the captain's call                                                                                                        │
+│                                                                                                                                  │
+│                                                                                                                                  │
+│                                                                                                                                  │
+│                                                                                                                                  │
+└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down read each decision   answers happen in chat, not here   q quit                         updates by itself 
+=====
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System     Sun 10:00 
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                                                    
+ 4 decisions wait on you, with 2 agents   oldest since 29 Aug, 22 days ago                                read only, answer in chat 
+                                                                                                                                    
+── Denver 3 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+     22 days  ■ setup                 Tick a profile setting only the captain can reach                                             
+     18 days  ■ alpha                 Choose the quiz format                                                                        
+     17 days  ■ beta                  Approve the module outline                                                                    
+                                                                                                                                    
+── Alpha 1 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ ▸   12 days  ■ alpha                 Decide the chapter five review point                                                          
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+┌─ THE DECISION ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│  Decide the chapter five review point                                                                                            │
+│  asked 8 Sep, 12 days ago, sits with Alpha, project alpha                                                                        │
+│  the captain's call                                                                                                              │
+│                                                                                                                                  │
+│                                                                                                                                  │
+│                                                                                                                                  │
+│                                                                                                                                  │
+└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down read each decision   answers happen in chat, not here   q quit                         updates by itself 
+=====
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System     Sun 10:00 
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                                                    
+ 4 decisions wait on you, with 2 agents   oldest since 29 Aug, 22 days ago                                read only, answer in chat 
+                                                                                                                                    
+── Denver 3 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+     22 days  ■ setup                 Tick a profile setting only the captain can reach                                             
+     18 days  ■ alpha                 Choose the quiz format                                                                        
+ ▸   17 days  ■ beta                  Approve the module outline                                                                    
+                                                                                                                                    
+── Alpha 1 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+     12 days  ■ alpha                 Decide the chapter five review point                                                          
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+┌─ THE DECISION ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│  Approve the module outline                                                                                                      │
+│  asked 3 Sep, 17 days ago, sits with Denver, project beta                                                                        │
+│  needs the captain's call                                                                                                        │
+│                                                                                                                                  │
+│                                                                                                                                  │
+│                                                                                                                                  │
+│                                                                                                                                  │
+└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down read each decision   answers happen in chat, not here   q quit                         updates by itself 
+=====
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System     Sun 10:00 
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                                                    
+ 4 decisions wait on you, with 2 agents   oldest since 29 Aug, 22 days ago                                read only, answer in chat 
+                                                                                                                                    
+── Denver 3 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+     22 days  ■ setup                 Tick a profile setting only the captain can reach                                             
+     18 days  ■ alpha                 Choose the quiz format                                                                        
+ ▸   17 days  ■ beta                  Approve the module outline                                                                    
+                                                                                                                                    
+── Alpha 1 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+     12 days  ■ alpha                 Decide the chapter five review point                                                          
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+┌─ THE DECISION ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│  Approve the module outline                                                                                                      │
+│  asked 3 Sep, 17 days ago, sits with Denver, project beta                                                                        │
+│  needs the captain's call                                                                                                        │
+│                                                                                                                                  │
+│                                                                                                                                  │
+│                                                                                                                                  │
+│                                                                                                                                  │
+└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down read each decision   answers happen in chat, not here   q quit                         updates by itself 
+=====
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System     Sun 10:00 
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                                                    
+ 2 projects    1 active    0 parked    1 quiet                                                 real list, same one the Bridge reads 
+                                                                                                                                    
+┌─────────────────────────────────────────┐ ┌─────────────────────────────────────────┐ ┌─────────────────────────────────────────┐ 
+│ alpha                           Active  │ │ beta                             Quiet  │ │ The setup itself                 Quiet  │ 
+│ Alpha course materials for a class;     │ │ Beta outreach programme, delivered in   │ │ Housekeeping that belongs to no         │ 
+│ decks and notes                         │ │ modules                                 │ │ project, and work on the first mate...  │ 
+│ 2 waiting on you    2 queued            │ │ 1 waiting on you    2 queued            │ │ 1 waiting on you    1 queued            │ 
+│ 1 in flight         2 done this month   │ │ 0 in flight         1 done this month   │ │ 0 in flight         0 done this month   │ 
+│ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 29%  2/7 │ │ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 25%  1/4 │ │ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0%  0/2 │ 
+│ ■ Alpha in charge                       │ │ ■ Denver in charge                      │ │ ■ Denver in charge                      │ 
+└─────────────────────────────────────────┘ └─────────────────────────────────────────┘ └─────────────────────────────────────────┘ 
+                                                                                                                                    
+─ WAITING ON YOU FOR ALPHA ─────────────────────────────────────────────────────────────────────────────────────────────────────────
+   do      Choose the quiz format                                                                                             2 Sep 
+   decide  Decide the chapter five review point                                                                               8 Sep 
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down pick a project   p pause   q quit                                                      updates by itself 
+=====
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System     Sun 10:00 
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                                                    
+                                                                                                                                    
+  Calendar is coming next. Press 1 for the office or 2 for the task board.                                                          
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down pick an agent   enter talk to it   p pause   q quit                                    updates by itself 
+=====
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System     Sun 10:00 
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                                                    
+ 4 decisions wait on you, with 2 agents   oldest since 29 Aug, 22 days ago                                read only, answer in chat 
+                                                                                                                                    
+── Denver 3 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+     22 days  ■ setup                 Tick a profile setting only the captain can reach                                             
+     18 days  ■ alpha                 Choose the quiz format                                                                        
+ ▸   17 days  ■ beta                  Approve the module outline                                                                    
+                                                                                                                                    
+── Alpha 1 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+     12 days  ■ alpha                 Decide the chapter five review point                                                          
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+┌─ THE DECISION ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│  Approve the module outline                                                                                                      │
+│  asked 3 Sep, 17 days ago, sits with Denver, project beta                                                                        │
+│  needs the captain's call                                                                                                        │
+│                                                                                                                                  │
+│                                                                                                                                  │
+│                                                                                                                                  │
+│                                                                                                                                  │
+└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down read each decision   answers happen in chat, not here   q quit                         updates by itself 

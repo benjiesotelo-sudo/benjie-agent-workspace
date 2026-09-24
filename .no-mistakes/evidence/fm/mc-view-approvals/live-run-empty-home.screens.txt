@@ -1,0 +1,179 @@
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System     Sun 10:00 
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀    ▀▀▀▀▀▀▀▀▀   ▀▀▀▀▀▀▀▀▀▀▀▀▀           │ LIVE ACTIVITY real                
+                                         ▀▀▀▀▀▀▀ ▀▀▀▀▀▀  ▀   ▀ ▀ ▀ ▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀           │                                   
+     ▀▀   ▀▀   ▀▀                        ▀▀▀▀▀▀▀ ▀▀▀▀▀▀      ▀ ▀ ▀ ▀     ▀▀▀▀▀▀▀▀▀▀▀            │                                   
+▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀│                                   
+   ▀alumni             tasks                                plan         memory         ▀▀▀▀▀▀▀ │                                   
+  ▀   ▀                             ▀▀▀▀▀▀▀  ▀▀z▀Z▀▀                                      ▀ ▀   │                                   
+                           ▀▀▀▀▀  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                                   ▀ ▀   │                                   
+   ▀▀▀                       ▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                                   ▀ ▀   │                                   
+                                          ▀▀▀▀▀                                           ▀ ▀   │                                   
+                                                                                          ▀ ▀   │                                   
+                                                                                          ▀ ▀   │                                   
+                                          ▀▀▀▀▀                                                 │                                   
+                                       First mate                                       ▀▀▀▀▀▀▀ │                                   
+                                         asleep                                        system   │                                   
+                                                                                         ok     │                                   
+                                                                                                │                                   
+                                                                                                │                                   
+                                                                                                │                                   
+                                                                                                │                                   
+                                                                                                │                                   
+                                                                                                │                                   
+                                                                                                │                                   
+                                                                                                │                                   
+                                                                                              ▀▀│                                   
+ ▀▀▀▀▀▀▀▀                                                                                       │                                   
+ CAPTAIN                    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                  ▀   ▀       │                                   
+                                          ▀▀▀▀▀▀▀▀▀                                  ▀▀▀        │                                   
+       ▀                            ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                                       │                                   
+                  inbox 0             ▀▀▀▀         ▀▀▀▀                                         │                                   
+          ▀▀▀▀▀▀▀                       ▀▀▀         ▀▀▀                                       ▀▀│                                   
+─ TEAM ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   NAME       ROLE                DOING NOW                                         PATH (the project it works in)                  
+ z First mate first mate          standing by                                       every project                                   
+ · interns    one job each        none right now                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+   Interns stand beside their person in charge for one job, then go home. Sleeping agents cost nothing.                             
+                                                                                                                                    
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down pick an agent   enter talk to it   p pause   q quit                                    updates by itself 
+=====
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System     Sun 10:00 
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                                                    
+                                                                                                                                    
+   Nothing waits on you.                                                                                                            
+                                                                                                                                    
+   Every decision has been made; the crew carries on by itself.                                                                     
+   When an agent needs your word, it shows up here and in the office inbox.                                                         
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down read each decision   answers happen in chat, not here   q quit                         updates by itself 
+=====
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System     Sun 10:00 
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                                                    
+                                                                                                                                    
+   Nothing waits on you.                                                                                                            
+                                                                                                                                    
+   Every decision has been made; the crew carries on by itself.                                                                     
+   When an agent needs your word, it shows up here and in the office inbox.                                                         
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down read each decision   answers happen in chat, not here   q quit                         updates by itself 
+=====
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System     Sun 10:00 
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                                                    
+                                                                                                                                    
+   Nothing waits on you.                                                                                                            
+                                                                                                                                    
+   Every decision has been made; the crew carries on by itself.                                                                     
+   When an agent needs your word, it shows up here and in the office inbox.                                                         
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down read each decision   answers happen in chat, not here   q quit                         updates by itself 
