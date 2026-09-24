@@ -1,0 +1,44 @@
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System     Sun 10:00
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀    ▀▀▀▀▀▀▀▀▀   ▀▀▀▀▀▀▀▀▀▀▀▀▀           │ LIVE ACTIVITY real
+                                         ▀▀▀▀▀▀▀ ▀▀▀▀▀▀  ▀   ▀ ▀ ▀ ▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀           │
+     ▀▀   ▀▀   ▀▀                        ▀▀▀▀▀▀▀ ▀▀▀▀▀▀      ▀ ▀ ▀ ▀     ▀▀▀▀▀▀▀▀▀▀▀            │
+▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀│
+   ▀alumni             tasks                                plan         memory         ▀▀▀▀▀▀▀ │
+  ▀   ▀                             ▀▀▀▀▀▀▀  ▀▀▀z▀▀▀                                      ▀ ▀   │
+                           ▀▀▀▀▀  ▀▀▀▀▀▀▀▀▀▀▀▀▀z▀▀▀▀▀▀▀                                   ▀ ▀   │
+   ▀▀▀                       ▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                                   ▀ ▀   │
+                                          ▀▀▀▀▀                                           ▀ ▀   │
+                                                                                          ▀ ▀   │
+                                                                                          ▀ ▀   │
+                                          ▀▀▀▀▀                                                 │
+                                       First mate                                       ▀▀▀▀▀▀▀ │
+   ▀▀▀▀▀▀▀▀▀                    ▀▀▀▀▀▀▀▀▀asleep              ▀▀▀▀▀▀▀▀▀                 system   │
+                                                              ▀▀▀▀▀                      ok     │
+    ▀▀▀▀▀▀▀z                     ▀▀▀▀▀▀▀z                     ▀▀▀▀▀▀▀     4 upstairs, 0 working │
+ ▀▀▀▀▀▀▀▀▀z▀▀▀                ▀▀▀▀▀▀▀▀▀z▀▀▀                ▀▀▀▀▀▀▀▀▀▀▀▀▀                        │
+ ▀▀▀▀▀▀▀▀▀▀▀▀▀                ▀▀▀▀▀▀▀▀▀▀▀▀▀                ▀▀▀▀▀▀▀▀▀▀▀▀▀                        │
+     ▀▀▀▀▀                        ▀▀▀▀▀                        ▀   ▀                            │
+                                                               ▀▀▀▀▀                            │
+                                                              ▀     ▀                           │
+     ▀▀▀▀▀                        ▀▀▀▀▀                       ▀▀▀▀▀▀▀                           │
+      M1                           M2                           M7                              │
+    asleep                       asleep                       working                         ▀▀│
+ ▀▀▀▀▀▀▀▀                                                                                       │
+ CAPTAIN                    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                  ▀   ▀       │
+                                          ▀▀▀▀▀▀▀▀▀                                  ▀▀▀        │
+       ▀                            ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                                       │
+                  inbox 0             ▀▀▀▀         ▀▀▀▀                                         │
+          ▀▀▀▀▀▀▀                       ▀▀▀         ▀▀▀                                       ▀▀│
+─ TEAM ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   NAME       ROLE                DOING NOW                                         PATH (the project it works in)
+ z First mate first mate          standing by                                       every project
+ z M1         second mate         asleep, its window is closed                      projects/p1
+ z M2         second mate         asleep, 0 jobs listed                             projects/p2
+ z M3         second mate, ups... asleep, its window is closed                      projects/p3
+ z M4         second mate, ups... asleep, its window is closed                      projects/p4
+ z M5         second mate, ups... asleep, its window is closed                      projects/p5
+   Interns stand beside their person in charge for one job, then go home. Sleeping agents cost nothing.
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down pick an agent   enter talk to it   p pause   q quit                                    updates by itself

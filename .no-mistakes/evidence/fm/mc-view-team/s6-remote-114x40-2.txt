@@ -1,0 +1,40 @@
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory       Sun 10:00
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+ 1 second mate    0 working    2 asleep or away    0 interns on jobs     real crew, from the second mate registry
+
+                                   ┌──────────────────────────────────────────┐
+                                   │ You, the captain: decisions and merges   │
+                                   │ nothing waits on you                     │
+                                   └─────────────────────┬────────────────────┘
+                                                         │
+                           ┌─────────────────────────────┴────────────────────────────┐
+                           │  ▀   ▀   First mate                             z asleep │
+                           │  ▀▀ ▀▀   Chief of staff: routes the work and supervises  │
+                           │          the crew                                        │
+                           │ ▀▀▀▀▀▀▀  owns every project                              │
+                           │          0 in its list                                   │
+                           └─────────────────────────────┬────────────────────────────┘
+                                                         │
+                            ┌────────────────────────────┴───────────────────────────┐
+                            │  ▀   ▀   FAR                                      away │
+                            │  ▀▀ ▀▀   Far course                                    │
+                            │                                                        │
+                            │ ▀▀▀▀▀▀▀  owns alpha                                    │
+                            │          its list is on another machine                │
+                            └────────────────────────────────────────────────────────┘
+
+
+
+
+─ ABOUT FAR ──────────────────────────────────────────────────────────────────────────────────────────────────────
+   Mate on the other box.
+   Scope: the far course: its decks
+
+
+
+─ ALUMNI ─────────────────────────────────────────────────────────────────────────────────────────────────────────
+   No one has retired yet.
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down pick a second mate   enter talk to it   p pause   q quit             updates by itself
