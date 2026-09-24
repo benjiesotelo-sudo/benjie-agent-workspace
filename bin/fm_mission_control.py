@@ -59,9 +59,11 @@ seven day columns of DAY_MIN_WIDTH fit; left and right move a week, t comes
 back. A day shows the Done records completed on it (this month's items plus the
 Bridge's history of other months) and, from today on, open items due on it: a
 hold-until date first, else the one date a title clearly names (a day and a
-month name with an optional weekday and year, or YYYY-MM-DD). A title with two
-different dates, a weekday that does not match, numbers only, or a yearless
-date with no reading within half a year of today is skipped rather than guessed.
+full month name with an optional full weekday name and year, or YYYY-MM-DD).
+Abbreviations such as Sep or Sat and ordinals such as 27th are not read. A
+title with two different dates, a weekday that does not match, numbers only,
+or a yearless date with no reading within half a year of today is skipped
+rather than guessed.
 
 DRAWING. Each character cell is two pixels: an upper half block with the top
 pixel as foreground and the bottom pixel as background, 24-bit colour when the
@@ -1463,12 +1465,11 @@ DAY_MIN_WIDTH = 18
 _WEEKDAYS = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
 _MONTHS = ["january", "february", "march", "april", "may", "june", "july", "august",
            "september", "october", "november", "december"]
-_MONTH_WORD = r"(Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|June?|July?|Aug(?:ust)?|" \
-              r"Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)"
-_WEEKDAY_WORD = r"(?:(Mon|Tues?|Wed(?:nes)?|Thu(?:rs?)?|Fri|Sat(?:ur)?|Sun)(?:day)?,?\s+)?"
+_MONTH_WORD = "(%s)" % "|".join(m.capitalize() for m in _MONTHS)
+_WEEKDAY_WORD = r"(?:(%s),?\s+)?" % "|".join(d.capitalize() for d in _WEEKDAYS)
 _TITLE_DATES = [
-    ("dmy", re.compile(r"\b%s(\d{1,2})(?:st|nd|rd|th)?\s+%s\b(?:,?\s+(\d{4})\b)?" % (_WEEKDAY_WORD, _MONTH_WORD))),
-    ("mdy", re.compile(r"\b%s%s\s+(\d{1,2})(?:st|nd|rd|th)?\b(?:,?\s+(\d{4})\b)?" % (_WEEKDAY_WORD, _MONTH_WORD))),
+    ("dmy", re.compile(r"\b%s(\d{1,2})\s+%s\b(?:,?\s+(\d{4})\b)?" % (_WEEKDAY_WORD, _MONTH_WORD))),
+    ("mdy", re.compile(r"\b%s%s\s+(\d{1,2})\b(?:,?\s+(\d{4})\b)?" % (_WEEKDAY_WORD, _MONTH_WORD))),
     ("iso", re.compile(r"\b(\d{4})-(\d{2})-(\d{2})\b")),
 ]
 
@@ -1508,9 +1509,8 @@ def title_date(title, today):
             else:
                 wd, a, b, y = m.groups()
                 day, mon = (a, b) if kind == "dmy" else (b, a)
-                month = next(i for i, name in enumerate(_MONTHS) if name.startswith(mon.lower()[:3])) + 1
-                weekday = next((i for i, name in enumerate(_WEEKDAYS) if wd and name.startswith(wd.lower()[:3])),
-                               None)
+                month = _MONTHS.index(mon.lower()) + 1
+                weekday = _WEEKDAYS.index(wd.lower()) if wd else None
                 d = _resolve_day(int(day), month, int(y) if y else None, weekday, today)
             if d is None:
                 return None
@@ -1565,11 +1565,9 @@ def read_services(home, self_running=False):
         try:
             proc = subprocess.run(["ps", "-A", "-o", "command="], capture_output=True, text=True,
                                   timeout=3, check=False)
+            homes = {" run --home %s --config-dir " % h for h in (home, _real(home)) if h}
             for line in proc.stdout.splitlines():
-                args = line.split()
-                if "run" in args and any(a.endswith("fm_mission_control.py") for a in args) and \
-                        "--home" in args and args.index("--home") + 1 < len(args) and \
-                        _real(args[args.index("--home") + 1]) == _real(home):
+                if "fm_mission_control.py" in line and any(h in line for h in homes):
                     mc_state = "running"
                     break
         except (OSError, subprocess.SubprocessError):
