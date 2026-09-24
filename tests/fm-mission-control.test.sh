@@ -181,7 +181,7 @@ grep -Eq '\b(a1|q1|m2|alpha-mate)\b' <<<"$TM" && fail "no id may reach the Team 
 # mate's green (#2fbf71) and the mate's teal (#3fb6c9), next to skin (#e2b48f).
 TA=$(mc "$HOME_DIR" frame --agents "$AGENTS" --view team --size 170x50 --format ansi) || fail "team ansi failed"
 for rgb in '47;191;113' '63;182;201'; do
-  grep -q "38;2;$rgb;48;2;$rgb" <<<"$TA" || fail "the portraits draw in the agents' own colours: $rgb"
+  sed 1d <<<"$TA" | grep -q "38;2;$rgb;48;2;$rgb" || fail "the portraits draw in the agents' own colours: $rgb"
 done
 grep -q '8;2;226;180;143' <<<"$TA" || fail "the portraits draw their faces in skin colour"
 T96=$(mc "$HOME_DIR" frame --agents "$AGENTS" --view team --size 96x36) || fail "a small team frame failed"
