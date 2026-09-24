@@ -24,6 +24,12 @@ WHAT IT READS.
             first_mate_name is the first mate's name on its desk, in the team
             list and in the activity column; "First mate" when absent.
             Reread on every crew update, so an edit shows without a restart.
+  Services  for the Calendar's always-running strip, every SERVICES_EVERY
+            seconds: `launchctl print gui/<uid>/com.firstmate.bridge` (the
+            Bridge's LaunchAgent; "state = running" is running, any other
+            answer stopped, no job off) and, from `frame` only, `ps` for a
+            `fm_mission_control.py run` on this home; a running screen counts
+            itself. Second mates take their state from the crew below.
 
 MATCHING a Herdr agent to a crew member, first rule that applies:
   a worker    the pane in its task's recorded Herdr endpoint (fleet snapshot
@@ -47,6 +53,15 @@ home launched it, else the mate whose registered projects include its project,
 else the first mate. The alumni wall shows mates this screen watched leave the
 registry; retirement leaves no durable record (fm-teardown.sh removes the
 route and the home), so the wall starts empty on every run.
+
+THE CALENDAR. A week from Sunday to Saturday, or from today when fewer than
+seven day columns of DAY_MIN_WIDTH fit; left and right move a week, t comes
+back. A day shows the Done records completed on it (this month's items plus the
+Bridge's history of other months) and, from today on, open items due on it: a
+hold-until date first, else the one date a title clearly names (a day and a
+month name with an optional weekday and year, or YYYY-MM-DD). A title with two
+different dates, a weekday that does not match, numbers only, or a yearless
+date with no reading within half a year of today is skipped rather than guessed.
 
 DRAWING. Each character cell is two pixels: an upper half block with the top
 pixel as foreground and the bottom pixel as background, 24-bit colour when the
@@ -74,6 +89,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import fm_bridge as bridge  # noqa: E402  - the one owner of the record readers
 
 AGENT_POLL_SECONDS = 2.0
+SERVICES_EVERY = 10.0
 RECORDS_MAX_AGE = 120.0
 RECORDS_MIN_GAP = 3.0
 SLEEP_AFTER = 30.0
@@ -1223,6 +1239,8 @@ class UI:
         self.toast = ""
         self.toast_until = 0.0
         self.tab_hits = []
+        self.week = 0           # Calendar: weeks from this one
+        self.services = []      # Calendar: read_services()
 
 
 def _chrome(cv, ui, now):
@@ -1436,6 +1454,249 @@ def _later_screen(cv, name):
     cv.put(2, 4, "%s is coming next. Press 1 for the office or 2 for the task board." % name, SOFT)
 
 
+# ---------------------------------------------------------------------------
+# Calendar: a week of what got done and what is due, under what always runs
+# ---------------------------------------------------------------------------
+
+BRIDGE_AGENT = "com.firstmate.bridge"     # bin/fm-bridge.sh's LaunchAgent label
+DAY_MIN_WIDTH = 18
+_WEEKDAYS = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+_MONTHS = ["january", "february", "march", "april", "may", "june", "july", "august",
+           "september", "october", "november", "december"]
+_MONTH_WORD = r"(Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|June?|July?|Aug(?:ust)?|" \
+              r"Sep(?:t(?:ember)?)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)"
+_WEEKDAY_WORD = r"(?:(Mon|Tues?|Wed(?:nes)?|Thu(?:rs?)?|Fri|Sat(?:ur)?|Sun)(?:day)?,?\s+)?"
+_TITLE_DATES = [
+    ("dmy", re.compile(r"\b%s(\d{1,2})(?:st|nd|rd|th)?\s+%s\b(?:,?\s+(\d{4})\b)?" % (_WEEKDAY_WORD, _MONTH_WORD))),
+    ("mdy", re.compile(r"\b%s%s\s+(\d{1,2})(?:st|nd|rd|th)?\b(?:,?\s+(\d{4})\b)?" % (_WEEKDAY_WORD, _MONTH_WORD))),
+    ("iso", re.compile(r"\b(\d{4})-(\d{2})-(\d{2})\b")),
+]
+
+
+def _resolve_day(day, month, year, weekday, today):
+    """One calendar day, or None when it would take a guess."""
+    if year is not None:
+        years = [year]
+    else:
+        years = [today.year - 1, today.year, today.year + 1]
+    found = []
+    for y in years:
+        try:
+            d = _dt.date(y, month, day)
+        except ValueError:
+            continue
+        if weekday is not None and d.weekday() != weekday:
+            continue
+        found.append(d)
+    if year is None:
+        # No year: only a reading within half a year of today counts.
+        found = [d for d in found if abs((d - today).days) <= 182]
+    return found[0] if len(found) == 1 else None
+
+
+def title_date(title, today):
+    """The one date a title clearly names ("Sunday 27 September", "2026-09-27"), else None."""
+    days = set()
+    spans = []
+    for kind, rx in _TITLE_DATES:
+        for m in rx.finditer(title):
+            if any(m.start() < e and s < m.end() for s, e in spans):
+                continue
+            spans.append((m.start(), m.end()))
+            if kind == "iso":
+                d = _resolve_day(int(m.group(3)), int(m.group(2)), int(m.group(1)), None, today)
+            else:
+                wd, a, b, y = m.groups()
+                day, mon = (a, b) if kind == "dmy" else (b, a)
+                month = next(i for i, name in enumerate(_MONTHS) if name.startswith(mon.lower()[:3])) + 1
+                weekday = next((i for i, name in enumerate(_WEEKDAYS) if wd and name.startswith(wd.lower()[:3])),
+                               None)
+                d = _resolve_day(int(day), month, int(y) if y else None, weekday, today)
+            if d is None:
+                return None
+            days.add(d)
+    return days.pop() if len(days) == 1 else None
+
+
+def week_days(today, offset, count):
+    """The days on screen: Sunday to Saturday, or from today when fewer fit."""
+    if count >= 7:
+        start = today - _dt.timedelta(days=(today.weekday() + 1) % 7)
+    else:
+        start = today
+    start += _dt.timedelta(days=7 * offset)
+    return [start + _dt.timedelta(days=i) for i in range(min(7, count))]
+
+
+def calendar(model, days):
+    """{day: [entry]} for the given days: what was done, then what is due."""
+    today = bridge._parse_day(model["today"])
+    want = set(days)
+    out = {d: [] for d in days}
+    for it in list(model["items"]) + list(model.get("history") or []):
+        if it["bucket"] == "done":
+            d = bridge._parse_day(it["date"])
+            mark = "done"
+        else:
+            d = bridge._parse_day(it.get("until")) or title_date(it["title"], today)
+            if d is not None and d < today:
+                continue
+            mark = "due"
+        if d in want:
+            out[d].append(dict(it, mark=mark))
+    for d in days:
+        out[d].sort(key=lambda it: (it["mark"] != "due", it["project"] or "", it["title"]))
+    return out
+
+
+def read_services(home, self_running=False):
+    """What always runs on this Mac: [(name, one-word state)], mates excluded."""
+    bridge_state = "off"
+    try:
+        proc = subprocess.run(["launchctl", "print", "gui/%d/%s" % (os.getuid(), BRIDGE_AGENT)],
+                              capture_output=True, text=True, timeout=3, check=False)
+        if proc.returncode == 0:
+            m = re.search(r"^\s*state = (.+)$", proc.stdout, re.M)
+            bridge_state = "running" if m and m.group(1).strip() == "running" else "stopped"
+    except (OSError, subprocess.SubprocessError):
+        pass
+    mc_state = "running" if self_running else "off"
+    if not self_running:
+        try:
+            proc = subprocess.run(["ps", "-A", "-o", "command="], capture_output=True, text=True,
+                                  timeout=3, check=False)
+            for line in proc.stdout.splitlines():
+                args = line.split()
+                if "run" in args and any(a.endswith("fm_mission_control.py") for a in args) and \
+                        "--home" in args and args.index("--home") + 1 < len(args) and \
+                        _real(args[args.index("--home") + 1]) == _real(home):
+                    mc_state = "running"
+                    break
+        except (OSError, subprocess.SubprocessError):
+            pass
+    return [("Bridge", bridge_state), ("Mission Control", mc_state)]
+
+
+STATE_COLORS = {"running": GREEN, "working": GREEN, "asleep": ZZZ, "stopped": AMBER,
+                "closed": QUIET, "remote": QUIET, "off": DIMMER}
+
+
+def _mate_word(m):
+    if m["doing"] == "works on another machine":
+        return "remote"
+    if m["status"] == "work":
+        return "working"
+    return "asleep" if m.get("pane") else "closed"
+
+
+def _week_words(days, today, offset):
+    first, last = days[0], days[-1]
+    if first.month == last.month:
+        span = "%d to %d %s" % (first.day, last.day, last.strftime("%B"))
+    else:
+        span = "%d %s to %d %s" % (first.day, first.strftime("%B"), last.day, last.strftime("%B"))
+    if last.year != today.year:
+        span += " %d" % last.year
+    if offset == 0:
+        rel = "this week"
+    elif abs(offset) == 1:
+        rel = "next week" if offset > 0 else "last week"
+    else:
+        rel = ("in %d weeks" if offset > 0 else "%d weeks ago") % abs(offset)
+    return span, rel
+
+
+def _calendar_screen(cv, ui, model, crew):
+    C, R = cv.C, cv.R
+    today = bridge._parse_day(model["today"])
+    n = max(1, min(7, (C + 1) // (DAY_MIN_WIDTH + 1)))
+    days = week_days(today, ui.week, n)
+    cal = calendar(model, days)
+    colors = project_colors(model)
+
+    span, rel = _week_words(days, today, ui.week)
+    cv.put(1, 3, span, INK, None, True)
+    c = 1 + len(span) + 2
+    cv.put(c, 3, " %s " % rel, BG if ui.week == 0 else INK, GREEN if ui.week == 0 else H("#262d38"), True)
+    c += len(rel) + 4
+    n_done = sum(1 for d in days for it in cal[d] if it["mark"] == "done")
+    n_due = sum(1 for d in days for it in cal[d] if it["mark"] == "due")
+    counts = "%d done, %d due" % (n_done, n_due)
+    cv.put(c, 3, counts, DIM)
+    hint = "left/right another week   t this week"
+    if C - len(hint) - 1 > c + len(counts) + 2:
+        cv.put(C - len(hint) - 1, 3, hint, DIMMER)
+
+    # Always running: the Bridge, this screen, and every second mate.
+    _box(cv, 0, 5, C, 3, H("#262d38"))
+    cv.put(2, 5, " ALWAYS RUNNING ", INK, None, True)
+    chips = list(ui.services) + [(m["name"], _mate_word(m)) for m in crew if m["kind"] == "mate"]
+    c = 2
+    for i, (name, word) in enumerate(chips):
+        chip = "● %s %s" % (name, word)
+        rest = len(chips) - i
+        if c + len(chip) > C - 2 - (len("+%d more" % rest) + 3 if rest > 1 else 0):
+            cv.put(c, 6, "+%d more" % rest, DIM)
+            break
+        col = STATE_COLORS.get(word, DIM)
+        cv.put(c, 6, "●", col)
+        cv.put(c + 2, 6, clean(name), INK, None, True)
+        cv.put(c + 3 + len(name), 6, word, col)
+        c += len(chip) + 4
+
+    # The week grid.
+    w = (C - (n - 1)) // n
+    top, bottom = 9, R - 3
+    for j, d in enumerate(days):
+        c0 = j * (w + 1)
+        is_today = d == today
+        if is_today:
+            for r in range(top, bottom + 1):
+                for cc in range(c0, c0 + w):
+                    k = r * C + cc
+                    cv.top[k] = cv.bot[k] = H("#11171f")
+        head = "%s %d" % (d.strftime("%a"), d.day)
+        if d.day == 1 or j == 0:
+            head += " %s" % d.strftime("%b")
+        cv.put(c0 + 1, top, head, GREEN if is_today else (DIM if d < today else INK), None, True)
+        if is_today:
+            cv.put(c0 + w - 7, top, " today ", BG, GREEN, True)
+        cv.put(c0, top + 1, "─" * w, GREEN if is_today else LINE)
+        entries = cal[d]
+        r = top + 2
+        if not entries:
+            cv.put(c0 + 1, r, clip("nothing finished" if d < today else "nothing due", w - 2), DIMMER)
+            continue
+        # Two title lines per block while the day has room, else one.
+        tall = len(entries) * 4 <= bottom - r + 1
+        bh = 4 if tall else 3
+        room = (bottom - r + 1) // bh
+        shown = entries if len(entries) <= room else entries[:max(0, room - 1)]
+        for it in shown:
+            pname = it["project"]
+            tag = SHIP_TAG if pname is None else clean(bridge._short(model, pname))
+            pc = H(colors.get(pname.lower() if pname else None, FIRST_MATE_COLOR))
+            due = it["mark"] == "due"
+            edge = pc if due else mix(pc, BG, 0.45)
+            _box(cv, c0 + 1, r, w - 2, bh, edge)
+            mark = " %s " % it["mark"]
+            cv.put(c0 + 2, r, " %s " % clip(tag, w - 7 - len(mark)), pc, None, True)
+            cv.put(c0 + w - 2 - len(mark), r, mark, AMBER if due else DIM, None, due)
+            lines = wrap(clean(it["title"]), w - 6)
+            if len(lines) > bh - 2:
+                lines = lines[:bh - 3] + [clip(" ".join(lines[bh - 3:]), w - 6)]
+            for i, ln in enumerate(lines):
+                cv.put(c0 + 3, r + 1 + i, ln, INK if due else SOFT)
+            r += bh
+        more = len(entries) - len(shown)
+        if more > 0:
+            cv.put(c0 + 2, r, "+%d more" % more, DIM)
+    for j in range(1, n):
+        cc = j * (w + 1) - 1
+        for r in range(top, bottom + 1):
+            cv.put(cc, r, "┼" if r == top + 1 else "│", LINE)
+
+
 def compose(scene, renderer, ui, cols, rows, now, records_ok=True, notice=None):
     """One frame, or the one-line too-small message."""
     cv = Canvas(cols, rows)
@@ -1453,6 +1714,8 @@ def compose(scene, renderer, ui, cols, rows, now, records_ok=True, notice=None):
         _office_screen(cv, ui, scene, renderer, now, records_ok, notice)
     elif ui.view == "tasks":
         _tasks_screen(cv, scene.model)
+    elif ui.view == "calendar":
+        _calendar_screen(cv, ui, scene.model, scene.crew)
     else:
         _later_screen(cv, TABS[VIEWS.index(ui.view)])
     return cv, False
@@ -1562,9 +1825,11 @@ def keep_last_good(model, last):
     snaps = dict(model["snapshots"])
     for hid in lost:
         snaps[hid] = last["snapshots"][hid]
-    items = [it for it in model["items"] if it["owner"] not in lost] + \
-        [it for it in last["items"] if it["owner"] in lost]
-    return dict(model, snapshots=snaps, items=items)
+    kept = {}
+    for key in ("items", "history"):
+        kept[key] = [it for it in model.get(key) or [] if it["owner"] not in lost] + \
+            [it for it in last.get(key) or [] if it["owner"] in lost]
+    return dict(model, snapshots=snaps, **kept)
 
 
 class Feed:
@@ -1577,6 +1842,8 @@ class Feed:
         self.agents = []
         self.agents_read = False
         self.agents_error = None
+        self.services = []
+        self._services_at = None
         self.gen = 0
         self.poke = threading.Event()
         self.stop = threading.Event()
@@ -1656,6 +1923,9 @@ class Feed:
                     self.gen += 1
                 self.agents_error = err
             self._watch()
+            if self._services_at is None or time.monotonic() - self._services_at >= SERVICES_EVERY:
+                self.services = read_services(self.home, self_running=True)
+                self._services_at = time.monotonic()
             self.stop.wait(max(1.0, AGENT_POLL_SECONDS))
 
     def focus(self, pane):
@@ -1796,6 +2066,7 @@ def run(home, config_dir, herdr):
                 dirty = True
             if not dirty:
                 continue
+            ui.services = feed.services
             notice = None
             if model_err:
                 notice = "The records could not be read just now (%s); showing the last good read." % model_err \
@@ -1838,6 +2109,9 @@ def _handle_input(data, ui, scene, feed):
         if len(tok) == 1 and b"1" <= tok <= b"9":
             ui.view = VIEWS[int(tok) - 1]
             changed = True
+        elif ui.view == "calendar" and tok in (b"\x1b[C", b"\x1bOC", b"\x1b[D", b"\x1bOD", b"t", b"T"):
+            ui.week = 0 if tok in (b"t", b"T") else ui.week + (1 if tok in (b"\x1b[C", b"\x1bOC") else -1)
+            changed = True
         elif tok in (b"p", b"P"):
             ui.paused = not ui.paused
             changed = True
@@ -1878,6 +2152,7 @@ def frame(home, config_dir, agents_text, view, cols, rows, fmt, session="default
     scene.observe(model, crew, rows)
     ui = UI()
     ui.view = view
+    ui.services = read_services(home) if view == "calendar" else []
     cv, small = compose(scene, Renderer(), ui, cols, rows, bridge._now())
     if fmt == "ansi":
         return to_ansi(cv)
