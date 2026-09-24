@@ -1,0 +1,224 @@
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System     Sun 10:00
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀    ▀▀▀▀▀▀▀▀▀   ▀▀▀▀▀▀▀▀▀▀▀▀▀           │ LIVE ACTIVITY real
+                                         ▀▀▀▀▀▀▀ ▀▀▀▀▀▀  ▀   ▀ ▀ ▀ ▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀           │
+     ▀▀   ▀▀   ▀▀      ▀▀                ▀▀▀▀▀▀▀ ▀▀▀▀▀▀      ▀ ▀ ▀ ▀     ▀▀▀▀▀▀▀▀▀▀▀            │
+▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀│
+   ▀alumni             tasks                                plan         memory         ▀▀▀▀▀▀▀ │
+  ▀   ▀                             ▀▀▀▀▀▀▀  ▀▀▀z▀▀▀                                      ▀ ▀   │
+                           ▀▀▀▀▀  ▀▀▀▀▀▀▀▀▀▀▀▀▀z▀Z▀▀▀▀▀                                   ▀ ▀   │
+   ▀▀▀                       ▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                                   ▀ ▀   │
+                                          ▀▀▀▀▀                                           ▀ ▀   │
+                                                                                          ▀ ▀   │
+                                                                                          ▀ ▀   │
+                                          ▀▀▀▀▀                                                 │
+                                       First mate                                       ▀▀▀▀▀▀▀ │
+                                         asleep                                        system   │
+                                                                                         ok     │
+                                                                                                │
+                                                                                                │
+                                                                                                │
+                                                                                                │
+                                                                                                │
+                                                                                                │
+                                                                                                │
+                                                                                                │
+                                                                                              ▀▀│
+ ▀▀▀▀▀▀▀▀                                                                                       │
+ CAPTAIN                    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                  ▀   ▀       │
+                                          ▀▀▀▀▀▀▀▀▀                                  ▀▀▀        │
+       ▀   ▀▀▀▀▀                    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                                       │
+           ▀▀▀▀▀  inbox 30            ▀▀▀▀         ▀▀▀▀                                         │
+          ▀▀▀▀▀▀▀                       ▀▀▀         ▀▀▀                                       ▀▀│
+─ TEAM ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   NAME       ROLE                DOING NOW                                         PATH (the project it works in)
+ z First mate first mate          standing by, 30 waiting on you                    every project
+ · interns    one job each        none right now
+
+
+
+
+   Interns stand beside their person in charge for one job, then go home. Sleeping agents cost nothing.
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down pick an agent   enter talk to it   p pause   q quit                                    updates by itself
+===== next =====
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System     Sun 10:00
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+ 30 decisions wait on you, with 1 agent   oldest since 1 Aug, 50 days ago                                 read only, answer in chat
+
+── First mate 30 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ ▸   50 days  ■ setup                 Settle question number 10
+     49 days  ■ setup                 Settle question number 11
+     48 days  ■ setup                 Settle question number 12
+     47 days  ■ setup                 Settle question number 13
+     46 days  ■ setup                 Settle question number 14
+     45 days  ■ setup                 Settle question number 15
+     44 days  ■ setup                 Settle question number 16
+     43 days  ■ setup                 Settle question number 17
+     42 days  ■ setup                 Settle question number 18
+     41 days  ■ setup                 Settle question number 19
+     40 days  ■ setup                 Settle question number 20
+     39 days  ■ setup                 Settle question number 21
+     38 days  ■ setup                 Settle question number 22
+     37 days  ■ setup                 Settle question number 23
+     36 days  ■ setup                 Settle question number 24
+     35 days  ■ setup                 Settle question number 25
+     34 days  ■ setup                 Settle question number 26
+     33 days  ■ setup                 Settle question number 27
+     32 days  ■ setup                 Settle question number 28
+     31 days  ■ setup                 Settle question number 29
+     30 days  ■ setup                 Settle question number 30
+     29 days  ■ setup                 Settle question number 31
+     28 days  ■ setup                 Settle question number 32
+     27 days  ■ setup                 Settle question number 33
+     26 days  ■ setup                 Settle question number 34
+     25 days  ■ setup                 Settle question number 35
+     24 days  ■ setup                 Settle question number 36
+┌─ THE DECISION ──────────────────────────────────────────────────────────────────────────────────────────────────── 3 more below ─┐
+│  Settle question number 10                                                                                                       │
+│  asked 1 Aug, 50 days ago, sits with First mate, the ship's own setup                                                            │
+│  No further notes on this one.                                                                                                   │
+│                                                                                                                                  │
+│                                                                                                                                  │
+│                                                                                                                                  │
+│                                                                                                                                  │
+└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down read each decision   answers happen in chat, not here   q quit                         updates by itself
+===== next =====
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System     Sun 10:00
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+ 30 decisions wait on you, with 1 agent   oldest since 1 Aug, 50 days ago                                 read only, answer in chat
+
+     49 days  ■ setup                 Settle question number 11
+     48 days  ■ setup                 Settle question number 12
+     47 days  ■ setup                 Settle question number 13
+     46 days  ■ setup                 Settle question number 14
+     45 days  ■ setup                 Settle question number 15
+     44 days  ■ setup                 Settle question number 16
+     43 days  ■ setup                 Settle question number 17
+     42 days  ■ setup                 Settle question number 18
+     41 days  ■ setup                 Settle question number 19
+     40 days  ■ setup                 Settle question number 20
+     39 days  ■ setup                 Settle question number 21
+     38 days  ■ setup                 Settle question number 22
+     37 days  ■ setup                 Settle question number 23
+     36 days  ■ setup                 Settle question number 24
+     35 days  ■ setup                 Settle question number 25
+     34 days  ■ setup                 Settle question number 26
+     33 days  ■ setup                 Settle question number 27
+     32 days  ■ setup                 Settle question number 28
+     31 days  ■ setup                 Settle question number 29
+     30 days  ■ setup                 Settle question number 30
+     29 days  ■ setup                 Settle question number 31
+     28 days  ■ setup                 Settle question number 32
+     27 days  ■ setup                 Settle question number 33
+     26 days  ■ setup                 Settle question number 34
+     25 days  ■ setup                 Settle question number 35
+     24 days  ■ setup                 Settle question number 36
+     23 days  ■ setup                 Settle question number 37
+ ▸   22 days  ■ setup                 Settle question number 38
+┌─ THE DECISION ───────────────────────────────────────────────────────────────────────────────────── 1 more above ─ 1 more below ─┐
+│  Settle question number 38                                                                                                       │
+│  asked 29 Aug, 22 days ago, sits with First mate, the ship's own setup                                                           │
+│  No further notes on this one.                                                                                                   │
+│                                                                                                                                  │
+│                                                                                                                                  │
+│                                                                                                                                  │
+│                                                                                                                                  │
+└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down read each decision   answers happen in chat, not here   q quit                         updates by itself
+===== next =====
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System     Sun 10:00
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+ 30 decisions wait on you, with 1 agent   oldest since 1 Aug, 50 days ago                                 read only, answer in chat
+
+     48 days  ■ setup                 Settle question number 12
+     47 days  ■ setup                 Settle question number 13
+     46 days  ■ setup                 Settle question number 14
+     45 days  ■ setup                 Settle question number 15
+     44 days  ■ setup                 Settle question number 16
+     43 days  ■ setup                 Settle question number 17
+     42 days  ■ setup                 Settle question number 18
+     41 days  ■ setup                 Settle question number 19
+     40 days  ■ setup                 Settle question number 20
+     39 days  ■ setup                 Settle question number 21
+     38 days  ■ setup                 Settle question number 22
+     37 days  ■ setup                 Settle question number 23
+     36 days  ■ setup                 Settle question number 24
+     35 days  ■ setup                 Settle question number 25
+     34 days  ■ setup                 Settle question number 26
+     33 days  ■ setup                 Settle question number 27
+     32 days  ■ setup                 Settle question number 28
+     31 days  ■ setup                 Settle question number 29
+     30 days  ■ setup                 Settle question number 30
+     29 days  ■ setup                 Settle question number 31
+     28 days  ■ setup                 Settle question number 32
+     27 days  ■ setup                 Settle question number 33
+     26 days  ■ setup                 Settle question number 34
+     25 days  ■ setup                 Settle question number 35
+     24 days  ■ setup                 Settle question number 36
+     23 days  ■ setup                 Settle question number 37
+     22 days  ■ setup                 Settle question number 38
+ ▸   21 days  ■ setup                 Settle question number 39
+┌─ THE DECISION ──────────────────────────────────────────────────────────────────────────────────────────────────── 2 more above ─┐
+│  Settle question number 39                                                                                                       │
+│  asked 30 Aug, 21 days ago, sits with First mate, the ship's own setup                                                           │
+│  No further notes on this one.                                                                                                   │
+│                                                                                                                                  │
+│                                                                                                                                  │
+│                                                                                                                                  │
+│                                                                                                                                  │
+└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down read each decision   answers happen in chat, not here   q quit                         updates by itself
+===== next =====
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System     Sun 10:00
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+ 30 decisions wait on you, with 1 agent   oldest since 1 Aug, 50 days ago                                 read only, answer in chat
+
+── First mate 30 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ ▸   50 days  ■ setup                 Settle question number 10
+     49 days  ■ setup                 Settle question number 11
+     48 days  ■ setup                 Settle question number 12
+     47 days  ■ setup                 Settle question number 13
+     46 days  ■ setup                 Settle question number 14
+     45 days  ■ setup                 Settle question number 15
+     44 days  ■ setup                 Settle question number 16
+     43 days  ■ setup                 Settle question number 17
+     42 days  ■ setup                 Settle question number 18
+     41 days  ■ setup                 Settle question number 19
+     40 days  ■ setup                 Settle question number 20
+     39 days  ■ setup                 Settle question number 21
+     38 days  ■ setup                 Settle question number 22
+     37 days  ■ setup                 Settle question number 23
+     36 days  ■ setup                 Settle question number 24
+     35 days  ■ setup                 Settle question number 25
+     34 days  ■ setup                 Settle question number 26
+     33 days  ■ setup                 Settle question number 27
+     32 days  ■ setup                 Settle question number 28
+     31 days  ■ setup                 Settle question number 29
+     30 days  ■ setup                 Settle question number 30
+     29 days  ■ setup                 Settle question number 31
+     28 days  ■ setup                 Settle question number 32
+     27 days  ■ setup                 Settle question number 33
+     26 days  ■ setup                 Settle question number 34
+     25 days  ■ setup                 Settle question number 35
+     24 days  ■ setup                 Settle question number 36
+┌─ THE DECISION ──────────────────────────────────────────────────────────────────────────────────────────────────── 3 more below ─┐
+│  Settle question number 10                                                                                                       │
+│  asked 1 Aug, 50 days ago, sits with First mate, the ship's own setup                                                            │
+│  No further notes on this one.                                                                                                   │
+│                                                                                                                                  │
+│                                                                                                                                  │
+│                                                                                                                                  │
+│                                                                                                                                  │
+└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down read each decision   answers happen in chat, not here   q quit                         updates by itself

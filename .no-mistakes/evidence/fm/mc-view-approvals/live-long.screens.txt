@@ -1,0 +1,134 @@
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System     Sun 10:00
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀    ▀▀▀▀▀▀▀▀▀   ▀▀▀▀▀▀▀▀▀▀▀▀▀           │ LIVE ACTIVITY real
+                       ▀▀                ▀▀▀▀▀▀▀ ▀▀▀▀▀▀  ▀   ▀ ▀ ▀ ▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀           │
+     ▀▀   ▀▀   ▀▀                        ▀▀▀▀▀▀▀ ▀▀▀▀▀▀      ▀ ▀ ▀ ▀     ▀▀▀▀▀▀▀▀▀▀▀            │
+▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀│
+   ▀alumni             tasks                                plan         memory         ▀▀▀▀▀▀▀ │
+  ▀   ▀                             ▀▀▀▀▀▀▀  ▀▀▀z▀▀▀                                      ▀ ▀   │
+                           ▀▀▀▀▀  ▀▀▀▀▀▀▀▀▀▀▀▀▀z▀Z▀▀▀▀▀                                   ▀ ▀   │
+   ▀▀▀                       ▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                                   ▀ ▀   │
+                                          ▀▀▀▀▀                                           ▀ ▀   │
+                                                                                          ▀ ▀   │
+                                                                                          ▀ ▀   │
+                                          ▀▀▀▀▀                                                 │
+                                       First mate                                       ▀▀▀▀▀▀▀ │
+                                         asleep                                        system   │
+                                                                                         ok     │
+                                                                                                │
+                                                                                                │
+                                                                                                │
+                                                                                                │
+                                                                                                │
+                                                                                                │
+                                                                                                │
+                                                                                                │
+                                                                                              ▀▀│
+ ▀▀▀▀▀▀▀▀                                                                                       │
+ CAPTAIN                    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                  ▀   ▀       │
+                                          ▀▀▀▀▀▀▀▀▀                                  ▀▀▀        │
+       ▀                            ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                                       │
+                  inbox 2             ▀▀▀▀         ▀▀▀▀                                         │
+          ▀▀▀▀▀▀▀                       ▀▀▀         ▀▀▀                                       ▀▀│
+─ TEAM ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   NAME       ROLE                DOING NOW                                         PATH (the project it works in)
+ z First mate first mate          standing by, 2 waiting on you                     every project
+ · interns    one job each        none right now
+
+
+
+
+   Interns stand beside their person in charge for one job, then go home. Sleeping agents cost nothing.
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down pick an agent   enter talk to it   p pause   q quit                                    updates by itself
+===== next =====
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System     Sun 10:00
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+ 2 decisions wait on you, with 1 agent   oldest since 19 Sep, 1 day ago                                   read only, answer in chat
+
+── First mate 2 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ ▸     1 day  ■ setup                 Pick the second option
+       today  ■ setup                 Decide whether the settings in a local file stay and whether option 1 is kept for the next
+                                      module and whether option 2 is kept for the next module and whether option 3 is kept for...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+┌─ THE DECISION ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│  Pick the second option                                                                                                          │
+│  asked 19 Sep, 1 day ago, sits with First mate, the ship's own setup                                                             │
+│  the audit asks                                                                                                                  │
+│                                                                                                                                  │
+│                                                                                                                                  │
+│                                                                                                                                  │
+│                                                                                                                                  │
+└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down read each decision   answers happen in chat, not here   q quit                         updates by itself
+===== next =====
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System     Sun 10:00
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+ 2 decisions wait on you, with 1 agent   oldest since 19 Sep, 1 day ago                                   read only, answer in chat
+
+── First mate 2 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+       1 day  ■ setup                 Pick the second option
+ ▸     today  ■ setup                 Decide whether the settings in a local file stay and whether option 1 is kept for the next
+                                      module and whether option 2 is kept for the next module and whether option 3 is kept for...
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+┌─ THE DECISION ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│  Decide whether the settings in a local file stay and whether option 1 is kept for the next module and whether option 2 is kept  │
+│  for the next module and whether option 3 is kept for the next module and whether option 4 is kept for the next module and w...  │
+│  asked today, sits with First mate, the ship's own setup                                                                         │
+│  See a local file for the long story.                                                                                            │
+│                                                                                                                                  │
+│                                                                                                                                  │
+│                                                                                                                                  │
+└──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down read each decision   answers happen in chat, not here   q quit                         updates by itself
