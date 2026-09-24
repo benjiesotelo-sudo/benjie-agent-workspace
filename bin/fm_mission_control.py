@@ -20,6 +20,10 @@ WHAT IT READS.
   Agents    `herdr agent list` (JSON), polled every two seconds, never faster
             than once a second. Each entry carries pane_id, agent_status, cwd
             and foreground_cwd.
+  Settings  config/mission-control.json (optional, gitignored with config/):
+            first_mate_name is the first mate's name on its desk, in the team
+            list and in the activity column; "First mate" when absent.
+            Reread on every crew update, so an edit shows without a restart.
 
 MATCHING a Herdr agent to a crew member, first rule that applies:
   a worker    the pane in its task's recorded Herdr endpoint (fleet snapshot
@@ -245,7 +249,20 @@ class _Matcher:
         return hit
 
 
-def build_crew(model, agents, home, session="default", own_pane=None):
+def first_mate_name(config_dir):
+    """config/mission-control.json first_mate_name, else "First mate"."""
+    try:
+        with open(os.path.join(config_dir, "mission-control.json"), encoding="utf-8") as fh:
+            cfg = json.load(fh)
+    except (OSError, ValueError):
+        return "First mate"
+    name = cfg.get("first_mate_name") if isinstance(cfg, dict) else None
+    if not isinstance(name, str) or not clean(name).strip():
+        return "First mate"
+    return clean(name).strip()
+
+
+def build_crew(model, agents, home, session="default", own_pane=None, fm_name="First mate"):
     """The crew in office order: first mate, mates, then interns."""
     snaps = model.get("snapshots") or {}
     mates = model.get("mates") or []
@@ -341,7 +358,7 @@ def build_crew(model, agents, home, session="default", own_pane=None):
     if n_wait:
         doing += ", %d waiting on you" % n_wait
     crew.append({
-        "key": "fm", "kind": "first", "id": "main", "name": clean(model["first_mate"]),
+        "key": "fm", "kind": "first", "id": "main", "name": fm_name,
         "role": "first mate", "color": FIRST_MATE_COLOR, "hair": FIRST_MATE_HAIR,
         "status": "work" if fm_working else "sleep", "doing": doing, "path": "every project",
         "pane": fm_agent["pane"] if fm_agent else None, "waiting": n_wait, "open": opened("main"),
@@ -460,6 +477,7 @@ class Scene:
         self.first = True
         self.prev_waiting = {}
         self.prev_done = None
+        self.prev_asks = None
         self.in_transit = 0
         self.inbox_real = 0
         self.counts = {"waiting": 0, "queued": 0, "in_flight": 0, "done": 0}
@@ -634,7 +652,7 @@ class Scene:
             recent = sorted(done, key=lambda it: it["date"] or "", reverse=True)[:8]
             for it in reversed(recent):
                 who = self._owner(it["owner"])
-                self.log(who["name"], it["title"], who["color"],
+                self.log(who["name"], "finished " + it["title"], who["color"],
                          when=bridge._day(it["date"], model["today"]) or "")
         else:
             for it in done:
@@ -642,6 +660,15 @@ class Scene:
                     who = self._owner(it["owner"])
                     self.log(who["name"], "finished " + it["title"], who["color"])
         self.prev_done = ids
+
+        # A captain item newly filed: its owner asks the captain, in words.
+        asks = {(it["owner"], it["id"]) for it in items if it["bucket"] == "waiting"}
+        if self.prev_asks is not None:
+            for it in items:
+                if it["bucket"] == "waiting" and (it["owner"], it["id"]) not in self.prev_asks:
+                    who = self._owner(it["owner"])
+                    self.log(who["name"], "asks you " + it["title"], who["color"])
+        self.prev_asks = asks
         self.first = False
 
     def _member(self, key):
@@ -692,7 +719,6 @@ class Scene:
         out, back = self.inbox_route(a)
         a.errand = True
         self.in_transit += sheets
-        self.log(a.member["name"], "needs your decision", a.member["color"])
 
         def dropped():
             self.in_transit = max(0, self.in_transit - sheets)
@@ -1215,10 +1241,14 @@ def _office_screen(cv, ui, scene, renderer, now, records_ok, notice):
             cv.put(FEED_COL, r, f["t"][:6].ljust(7), DIMMER)
             who = clip(f["who"], max(4, text_w - 8))
             cv.put(FEED_COL + 7, r, who, f["col"], None, True)
-            lines = wrap(f["text"], max(6, text_w - len(who) - 1))
-            if len(lines) > 2:
-                lines = lines[:2]
-                lines[1] = clip(lines[1] + " ...", max(6, text_w - len(who) - 1))
+            # The first line follows the name; the rest use the full width.
+            first_w = max(6, text_w - len(who) - 1)
+            text = " ".join(f["text"].split())
+            head = wrap(text, first_w)[:1]
+            rest = wrap(text[len(head[0]):].strip(), max(6, text_w)) if head else []
+            if len(rest) > 2:
+                rest = [rest[0], clip(rest[1] + " " + rest[2], max(6, text_w))]
+            lines = head + rest
             if lines:
                 cv.put(FEED_COL + 7 + len(who) + 1, r, lines[0], SOFT)
             r += 1
@@ -1701,7 +1731,7 @@ def run(home, config_dir, herdr):
                 dirty = True
             gen, model, agents, model_err, agents_err, _at = feed.snapshot()
             if gen != last_gen and model is not None:
-                crew = build_crew(model, agents, home, session, own_pane)
+                crew = build_crew(model, agents, home, session, own_pane, first_mate_name(config_dir))
                 scene.observe(model, crew, size[1])
                 last_gen = gen
                 dirty = True
@@ -1801,7 +1831,7 @@ def _handle_input(data, ui, scene, feed):
 def frame(home, config_dir, agents_text, view, cols, rows, fmt, session="default"):
     model = bridge.collect(home, config_dir, bridge._now())
     agents = parse_agents(agents_text) if agents_text else []
-    crew = build_crew(model, agents, home, session, None)
+    crew = build_crew(model, agents, home, session, None, first_mate_name(config_dir))
     scene = Scene()
     scene.observe(model, crew, rows)
     ui = UI()

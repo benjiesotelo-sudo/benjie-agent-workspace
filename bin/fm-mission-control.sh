@@ -33,6 +33,10 @@
 # its shell prompt is reused. A workspace whose panes are all busy with
 # something else is left alone and reported.
 #
+# Settings: config/mission-control.json in the home is optional; its one key,
+# first_mate_name, names the first mate on screen (default "First mate").
+# The screen rereads it, so an edit shows without a restart.
+#
 # Environment: FM_HOME selects the home whose crew and records are shown.
 # FM_MC_HERDR replaces the herdr command and is split on spaces, so a lab can
 # route every call through `bin/fm-herdr-lab.sh run <session>`; start passes it

@@ -32,7 +32,7 @@ for record in projects backlog done-archive captain learnings; do
 done
 sed "s|@MATE_HOME@|$MATE|" "$FIX/secondmates.fixture" > "$HOME_DIR/data/secondmates.md"
 cp "$FIX/mate-backlog.fixture" "$MATE/data/backlog.md"
-printf '{"first_mate": "Denver"}\n' > "$HOME_DIR/config/bridge.json"
+printf '{"first_mate_name": "Denver"}\n' > "$HOME_DIR/config/mission-control.json"
 
 meta() {  # <home> <id> <worktree> <project> [extra lines...]
   local home=$1 id=$2 wt=$3 project=$4
@@ -113,7 +113,9 @@ done
 grep -q "Alpha's intern" <<<"$T" || fail "the team list names the intern's person in charge"
 grep -q 'projects/alpha' <<<"$T" || fail "the team list shows the project path"
 grep -q 'LIVE ACTIVITY' <<<"$T" || fail "the activity column has its heading"
-grep -q 'Chapter four notes' <<<"$T" || fail "the activity column starts with this month's completions"
+grep -q 'Alpha finished Chapter' <<<"$T" \
+  || fail "the activity column starts with this month's completions, each with a verb"
+[ "$(jq -r '.team[0].name' <<<"$J")" = Denver ] || fail "config/mission-control.json names the first mate"
 grep -q "$TMP_ROOT" <<<"$T" && fail "no raw path may reach the screen"
 grep -Eq '\b(a1|q1|m2|d1)\b' <<<"$T" && fail "no task id may reach the screen"
 pass "the office text layer: inbox, labels, team list and activity in plain words"
@@ -181,6 +183,7 @@ T7=$(mc "$BIG" frame --agents "$TMP_ROOT/big.json" --size 132x60) || fail "seven
 grep -q '1 upstairs, 0 working' <<<"$T7" || fail "the second-floor sign counts who is upstairs"
 J3=$(mc "$BIG" frame --agents "$TMP_ROOT/big.json" --size 132x44 --format json)
 [ "$(jq -r '.upstairs.count' <<<"$J3")" = 4 ] || fail "a shorter pane keeps three downstairs and sends four up"
+[ "$(jq -r '.team[0].name' <<<"$J3")" = "First mate" ] || fail "without the settings file the first mate is First mate"
 pass "seven mates open a second floor with a sign, busiest downstairs"
 
 # --- the live screen in a pseudo-terminal ----------------------------------
@@ -237,10 +240,15 @@ while time.time() - t0 < 20:
             break
         raw += chunk
     while plan and plan[0][0] <= time.time() - t0:
+        # SH:<command> waits until the office has been drawn once.
+        if plan[0][1].startswith("SH:") and b"ACTIVITY" not in raw:
+            break
         _, act = plan.pop(0)
         marks.append(len(raw))
         if act == "TERM":
             os.kill(pid, signal.SIGTERM)
+        elif act.startswith("SH:"):
+            os.system(act[3:])
         else:
             os.write(fd, act.encode())
     got, status = os.waitpid(pid, os.WNOHANG)
@@ -283,8 +291,18 @@ j = data.rfind(b"\x1b[0m\x1b[?1000l")
 # Between the pause banner and the exit, at most the clock changes.
 sys.exit(0 if 0 <= i < j and j - i < 400 else 1)
 PY
-code=$(drive "$TMP_ROOT/term" "3=TERM") || fail "the pty driver failed"
+# A captain item filed while the screen runs reads "<name> asks you <title>".
+cp "$HOME_DIR/data/backlog.md" "$TMP_ROOT/backlog.saved"
+cat > "$TMP_ROOT/file-ask.sh" <<SH
+#!/usr/bin/env bash
+sed '/^## Done/i\\
+- [ ] c9 - Pick the deck colour (kind: captain) (since 2026-09-19)
+' "$TMP_ROOT/backlog.saved" > "$HOME_DIR/data/backlog.md"
+SH
+code=$(drive "$TMP_ROOT/term" "1=SH:bash $TMP_ROOT/file-ask.sh,12=TERM") || fail "the pty driver failed"
+cp "$TMP_ROOT/backlog.saved" "$HOME_DIR/data/backlog.md"
 [ "$(tail -c ${#RESTORE} "$TMP_ROOT/term.raw")" = "$RESTORE" ] || fail "SIGTERM restores the terminal"
+screen "$TMP_ROOT/term" 2 | grep -q 'Denver asks you Pick' || fail "a newly filed captain item reads as the owner asking you"
 pass "the live screen switches views, quits on q and SIGTERM, and restores the terminal"
 
 bash -n "$MC" || fail "fm-mission-control.sh has a syntax error"
