@@ -189,6 +189,19 @@ grep -q 'ABOUT ALPHA' <<<"$T96" || fail "the smallest pane still shows the picke
 grep -q 'No one has retired yet' <<<"$T96" || fail "the smallest pane still shows the alumni row"
 pass "the Team view draws the crew as an org chart in plain words"
 
+FAR="$TMP_ROOT/farship"
+mkdir -p "$FAR/data" "$FAR/state"
+cp "$FIX/projects.fixture" "$FAR/data/projects.md"
+printf '# Backlog\n\n## In flight\n## Queued\n## Done\n' > "$FAR/data/backlog.md"
+printf '# Second mates\n\n- far-mate - Mate on the other box (host: box; root: /srv/far; home: /srv/far/home; scope: the far course: its decks; projects: alpha; added 2026-09-01)\n' \
+  > "$FAR/data/secondmates.md"
+TF=$(mc "$FAR" frame --agents "$AGENTS" --view team --size 114x40) || fail "remote team frame failed"
+grep -q 'its list is on another machine' <<<"$TF" || fail "a remote mate's card says its list is on another machine"
+grep -q 'could not be read' <<<"$TF" && fail "a remote mate's records are not called unreadable"
+grep -Eq 'FAR +away' <<<"$TF" || fail "a remote mate reads away beside its full name"
+grep -q '/srv/far' <<<"$TF" && fail "no remote path may reach the Team view"
+pass "a remote mate's card says it works on another machine"
+
 L=$(mc "$HOME_DIR" frame --agents "$AGENTS" --view calendar)
 grep -q 'Calendar is coming next' <<<"$L" || fail "a later view shows its coming-next note"
 grep -q ' 9 System ' <<<"$L" || fail "the tab bar shows all nine views"

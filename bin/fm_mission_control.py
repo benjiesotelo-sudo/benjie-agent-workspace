@@ -1576,10 +1576,10 @@ def _role_card(cv, c0, r0, w, card, picked):
         cv.put(tx, r0 + 2 + j, ln, SOFT)
     cv.put(tx, r0 + 4, "owns", DIMMER)
     cv.put(tx + 5, r0 + 4, clip(card["owns"], tw - 5), INK)
-    if not card["readable"]:
-        cv.put(tx, r0 + 5, clip("its records could not be read", tw), AMBER)
-    elif card["state"] == "elsewhere":
+    if card["state"] == "elsewhere":
         cv.put(tx, r0 + 5, clip("its list is on another machine", tw), DIM)
+    elif not card["readable"]:
+        cv.put(tx, r0 + 5, clip("its records could not be read", tw), AMBER)
     else:
         n = "%d in its list" % card["open"]
         cv.put(tx, r0 + 5, clip(n, tw), QUIET)
