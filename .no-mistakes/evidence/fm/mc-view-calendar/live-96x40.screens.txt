@@ -1,0 +1,209 @@
+### before action '5'
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar         Thu 10:00 
+────────────────────────────────────────────────────────────────────────────────────────────────
+   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀    ▀▀▀▀▀▀▀▀▀   ▀▀▀▀▀▀▀▀▀▀▀▀▀           
+                                ▀▀       ▀▀▀▀▀▀▀ ▀▀▀▀▀▀  ▀   ▀ ▀ ▀ ▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀           
+     ▀▀   ▀▀   ▀▀                        ▀▀▀▀▀▀▀ ▀▀▀▀▀▀      ▀ ▀ ▀ ▀     ▀▀▀▀▀▀▀▀▀▀▀            
+▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+   ▀alumni             tasks        ▀▀▀▀▀▀▀  ▀▀▀▀▀▀         plan         memory         ▀▀▀▀▀▀▀ 
+  ▀   ▀                             ▀▀▀▀▀▀▀  ▀▀▀▀▀▀▀                                      ▀ ▀   
+                           ▀▀▀▀▀  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                                   ▀ ▀   
+   ▀▀▀                       ▀    ▀▀▀▀▀▀▀▀▀▀▀▀22;38;2;59;66;80;4                          ▀ ▀   
+                                          ▀   ▀                                           ▀ ▀   
+                                          ▀▀▀▀▀                                           ▀ ▀   
+                                         ▀     ▀                                          ▀ ▀   
+                                         ▀▀▀▀▀▀▀                                                
+                                       First mate                                       ▀▀▀▀▀▀▀ 
+   ▀▀▀▀▀▀▀▀▀                    ▀▀▀▀▀▀▀▀▀working             ▀▀▀▀▀▀▀▀▀                 system   
+    ▀▀▀▀                                                                                 ok     
+    ▀▀▀▀▀▀▀                      ▀▀▀▀▀▀▀                      ▀▀▀▀▀▀▀                           
+ ▀▀▀▀▀▀▀▀▀▀▀▀▀                ▀▀▀▀▀▀▀▀▀▀z▀▀                ▀▀▀▀▀▀▀▀▀▀z▀▀                        
+ ▀▀▀▀▀▀▀▀▀▀▀▀▀                ▀▀▀▀▀▀▀▀▀z▀▀▀                ▀▀▀▀▀▀▀▀▀z▀▀▀                        
+     ▀   ▀                        ▀▀▀▀▀                        ▀▀▀▀▀                            
+     ▀▀▀▀▀                                                                                      
+    ▀     ▀                                                                                     
+    ▀▀▀▀▀▀▀                       ▀▀▀▀▀                        ▀▀▀▀▀                            
+     Alpha                        BETA                          FAR                             
+    working                      asleep                       asleep                          ▀▀
+ ▀▀▀▀▀▀▀▀                                                                                       
+ CAPTAIN                    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                  ▀   ▀       
+                                          ▀▀▀▀▀▀▀▀▀                                  ▀▀▀        
+       ▀                            ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                                       
+                  inbox 0             ▀▀▀▀         ▀▀▀▀                                         
+          ▀▀▀▀▀▀▀                       ▀▀▀         ▀▀▀                                       ▀▀
+─ TEAM ─────────────────────────────────────────────────────────────────────────────────────────
+   NAME       ROLE                DOING NOW                 PATH (the project it works in)      
+ ● First mate first mate          working                   every project                       
+ ● Alpha      second mate         working, 1 job in its...  projects/alpha                      
+   Interns stand beside their person in charge for one job, then go home. Sleeping agents co... 
+                                                                                                
+────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down pick an agent   enter talk to it   p pause   q...  updates by itself 
+
+### before action '\\x1b[C'
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar         Thu 10:00 
+────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                
+ 24 to 28 September   this week   1 done, 7 due           left/right another week   t this week 
+                                                                                                
+┌─ ALWAYS RUNNING ─────────────────────────────────────────────────────────────────────────────┐
+│ ● Bridge running    ● Mission Control running    ● Alpha working    ● BETA closed    +1 more │
+└──────────────────────────────────────────────────────────────────────────────────────────────┘
+                                                                                                
+ Thu 24 Sep today │ Fri 25           │ Sat 26           │ Sun 27           │ Mon 28             
+──────────────────┼──────────────────┼──────────────────┼──────────────────┼──────────────────  
+ ┌ alpha ── due ┐ │ ┌ setup ── due ┐ │ ┌ beta ─── due ┐ │ ┌ alpha ── due ┐ │ nothing due        
+ │ Wrap up the  │ │ │ Prep the     │ │ │ Book the     │ │ │ Send the     │ │                    
+ │ notes 24...  │ │ │ Friday 25... │ │ │ lecture room │ │ │ grades by... │ │                    
+ └──────────────┘ │ └──────────────┘ │ └──────────────┘ │ └──────────────┘ │                    
+ ┌ setup ─ done ┐ │ ┌ alpha ── due ┐ │                  │                  │                    
+ │ Tidy the     │ │ │ Call the     │ │                  │                  │                    
+ │ ship's sc... │ │ │ dean Sept... │ │                  │                  │                    
+ └──────────────┘ │ └──────────────┘ │                  │                  │                    
+                  │ ┌ alpha ── due ┐ │                  │                  │                    
+                  │ │ Hand in the  │ │                  │                  │                    
+                  │ │ report on... │ │                  │                  │                    
+                  │ └──────────────┘ │                  │                  │                    
+                  │ ┌ beta ─── due ┐ │                  │                  │                    
+                  │ │ Draft the    │ │                  │                  │                    
+                  │ │ quiz for...  │ │                  │                  │                    
+                  │ └──────────────┘ │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down pick an agent   enter talk to it   p pause   q...  updates by itself 
+
+### before action '\\x1b[D\\x1b[D'
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar         Thu 10:00 
+────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                
+ 1 to 5 October   next week   0 done, 0 due               left/right another week   t this week 
+                                                                                                
+┌─ ALWAYS RUNNING ─────────────────────────────────────────────────────────────────────────────┐
+│ ● Bridge running    ● Mission Control running    ● Alpha working    ● BETA closed    +1 more │
+└──────────────────────────────────────────────────────────────────────────────────────────────┘
+                                                                                                
+ Thu 1 Oct        │ Fri 2            │ Sat 3            │ Sun 4            │ Mon 5              
+──────────────────┼──────────────────┼──────────────────┼──────────────────┼──────────────────  
+ nothing due      │ nothing due      │ nothing due      │ nothing due      │ nothing due        
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down pick an agent   enter talk to it   p pause   q...  updates by itself 
+
+### before action 't'
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar         Thu 10:00 
+────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                
+ 17 to 21 September   last week   1 done, 0 due           left/right another week   t this week 
+                                                                                                
+┌─ ALWAYS RUNNING ─────────────────────────────────────────────────────────────────────────────┐
+│ ● Bridge running    ● Mission Control running    ● Alpha working    ● BETA closed    +1 more │
+└──────────────────────────────────────────────────────────────────────────────────────────────┘
+                                                                                                
+ Thu 17 Sep       │ Fri 18           │ Sat 19           │ Sun 20           │ Mon 21             
+──────────────────┼──────────────────┼──────────────────┼──────────────────┼──────────────────  
+ nothing finished │ nothing finished │ nothing finished │ nothing finished │ ┌ alpha ─ done ┐   
+                  │                  │                  │                  │ │ Chapter five │   
+                  │                  │                  │                  │ │ slides       │   
+                  │                  │                  │                  │ └──────────────┘   
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down pick an agent   enter talk to it   p pause   q...  updates by itself 
+
+### before action 'q'
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar         Thu 10:00 
+────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                
+ 24 to 28 September   this week   1 done, 7 due           left/right another week   t this week 
+                                                                                                
+┌─ ALWAYS RUNNING ─────────────────────────────────────────────────────────────────────────────┐
+│ ● Bridge running    ● Mission Control running    ● Alpha working    ● BETA closed    +1 more │
+└──────────────────────────────────────────────────────────────────────────────────────────────┘
+                                                                                                
+ Thu 24 Sep today │ Fri 25           │ Sat 26           │ Sun 27           │ Mon 28             
+──────────────────┼──────────────────┼──────────────────┼──────────────────┼──────────────────  
+ ┌ alpha ── due ┐ │ ┌ setup ── due ┐ │ ┌ beta ─── due ┐ │ ┌ alpha ── due ┐ │ nothing due        
+ │ Wrap up the  │ │ │ Prep the     │ │ │ Book the     │ │ │ Send the     │ │                    
+ │ notes 24...  │ │ │ Friday 25... │ │ │ lecture room │ │ │ grades by... │ │                    
+ └──────────────┘ │ └──────────────┘ │ └──────────────┘ │ └──────────────┘ │                    
+ ┌ setup ─ done ┐ │ ┌ alpha ── due ┐ │                  │                  │                    
+ │ Tidy the     │ │ │ Call the     │ │                  │                  │                    
+ │ ship's sc... │ │ │ dean Sept... │ │                  │                  │                    
+ └──────────────┘ │ └──────────────┘ │                  │                  │                    
+                  │ ┌ alpha ── due ┐ │                  │                  │                    
+                  │ │ Hand in the  │ │                  │                  │                    
+                  │ │ report on... │ │                  │                  │                    
+                  │ └──────────────┘ │                  │                  │                    
+                  │ ┌ beta ─── due ┐ │                  │                  │                    
+                  │ │ Draft the    │ │                  │                  │                    
+                  │ │ quiz for...  │ │                  │                  │                    
+                  │ └──────────────┘ │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+                  │                  │                  │                  │                    
+────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down pick an agent   enter talk to it   p pause   q...  updates by itself 

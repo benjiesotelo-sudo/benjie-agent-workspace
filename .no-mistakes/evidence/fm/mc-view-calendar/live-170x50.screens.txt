@@ -1,0 +1,467 @@
+### before action '5'
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System                                           Thu 10:00 
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀    ▀▀▀▀▀▀▀▀▀   ▀▀▀▀▀▀▀▀▀▀▀▀▀           │ LIVE ACTIVITY real                                                      
+                                ▀▀       ▀▀▀▀▀▀▀ ▀▀▀▀▀▀  ▀   ▀ ▀ ▀ ▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀           │                                                                         
+     ▀▀   ▀▀   ▀▀                        ▀▀▀▀▀▀▀ ▀▀▀▀▀▀      ▀ ▀ ▀ ▀     ▀▀▀▀▀▀▀▀▀▀▀            │ today  First mate finished Tidy the ship's scripts                      
+▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀│                                                                         
+   ▀alumni             tasks        ▀▀▀▀▀▀▀  ▀▀▀▀▀▀         plan         memory         ▀▀▀▀▀▀▀ │ 23 Sep BETA finished Module two handout                                 
+  ▀   ▀                             ▀▀▀▀▀▀▀  ▀▀▀▀▀▀▀                                      ▀ ▀   │                                                                         
+                           ▀▀▀▀▀  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                                   ▀ ▀   │ 22 Sep Alpha finished Chapter four notes                                
+   ▀▀▀                       ▀    ▀▀▀▀▀▀▀▀▀▀▀▀22;38;2;59;66;80;4                          ▀ ▀   │                                                                         
+                                          ▀   ▀                                           ▀ ▀   │ 21 Sep First mate finished Chapter five slides                          
+                                          ▀▀▀▀▀                                           ▀ ▀   │                                                                         
+                                         ▀     ▀                                          ▀ ▀   │                                                                         
+                                         ▀▀▀▀▀▀▀                                                │                                                                         
+                                       First mate                                       ▀▀▀▀▀▀▀ │                                                                         
+   ▀▀▀▀▀▀▀▀▀                    ▀▀▀▀▀▀▀▀▀working             ▀▀▀▀▀▀▀▀▀                 system   │                                                                         
+    ▀▀▀▀                                                                                 ok     │                                                                         
+    ▀▀▀▀▀▀▀                      ▀▀▀▀▀▀▀                      ▀▀▀▀▀▀▀                           │                                                                         
+ ▀▀▀▀▀▀▀▀▀▀▀▀▀                ▀▀▀▀▀▀▀▀▀▀z▀▀                ▀▀▀▀▀▀▀▀▀▀z▀▀                        │                                                                         
+ ▀▀▀▀▀▀▀▀▀▀▀▀▀                ▀▀▀▀▀▀▀▀▀z▀▀▀                ▀▀▀▀▀▀▀▀▀z▀▀▀                        │                                                                         
+     ▀   ▀                        ▀▀▀▀▀                        ▀▀▀▀▀                            │                                                                         
+     ▀▀▀▀▀                                                                                      │                                                                         
+    ▀     ▀                                                                                     │                                                                         
+    ▀▀▀▀▀▀▀                       ▀▀▀▀▀                        ▀▀▀▀▀                            │                                                                         
+     Alpha                        BETA                          FAR                             │                                                                         
+    working                      asleep                       asleep                          ▀▀│                                                                         
+ ▀▀▀▀▀▀▀▀                                                                                       │                                                                         
+ CAPTAIN                    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                  ▀   ▀       │                                                                         
+                                          ▀▀▀▀▀▀▀▀▀                                  ▀▀▀        │                                                                         
+       ▀                            ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                                       │                                                                         
+                  inbox 0             ▀▀▀▀         ▀▀▀▀                                         │                                                                         
+          ▀▀▀▀▀▀▀                       ▀▀▀         ▀▀▀                                       ▀▀│                                                                         
+─ TEAM ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   NAME       ROLE                DOING NOW                                                                               PATH (the project it works in)                  
+ ● First mate first mate          working                                                                                 every project                                   
+ ● Alpha      second mate         working, 1 job in its list                                                              projects/alpha                                  
+ z BETA       second mate         asleep, its window is closed                                                            projects/beta                                   
+ z FAR        second mate         works on another machine                                                                projects/homeship                               
+ · interns    one job each        none right now                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+   Interns stand beside their person in charge for one job, then go home. Sleeping agents cost nothing.                                                                   
+                                                                                                                                                                          
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down pick an agent   enter talk to it   p pause   q quit                                                                          updates by itself 
+
+### before action "SH:PATH='/tmp/mc-cal.8S75/fakebin':$PATH FM_HOME='/tmp/mc-cal.8S75/My Ship' FM_BRIDGE_NOW=2026-09-24T10:00:00 '/Users/benjie/.no-mistakes/worktrees/40995176e50b/01M38Z8V5YS087F08GW4VBFPPP/bin/fm-mission-control.sh' frame --agents '/tmp/mc-cal.8S75/agents.json' --view calendar --size 170x50 > '/Users/benjie/.no-mistakes/evidence/01M38Z8V5YS087F08GW4VBFPPP/frame-while-live.txt' 2>&1; ps -A -o command= | grep 'fm_mission_control.py run' | grep -v grep > '/tmp/mc-cal.8S75/ps.txt'"
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System                                           Thu 10:00 
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                                                                                          
+ 20 to 26 September   this week   4 done, 6 due                                                                                     left/right another week   t this week 
+                                                                                                                                                                          
+┌─ ALWAYS RUNNING ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│ ● Bridge running    ● Mission Control running    ● Alpha working    ● BETA closed    ● FAR remote                                                                      │
+└────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+                                                                                                                                                                          
+ Sun 20 Sep            │ Mon 21                │ Tue 22                │ Wed 23                │ Thu 24          today │ Fri 25                │ Sat 26                   
+───────────────────────┼───────────────────────┼───────────────────────┼───────────────────────┼───────────────────────┼───────────────────────┼───────────────────────   
+ nothing finished      │ ┌ alpha ────── done ┐ │ ┌ alpha ────── done ┐ │ ┌ beta ─────── done ┐ │ ┌ alpha ─────── due ┐ │ ┌ setup ─────── due ┐ │ ┌ beta ──────── due ┐    
+                       │ │ Chapter five      │ │ │ Chapter four      │ │ │ Module two        │ │ │ Wrap up the notes │ │ │ Prep the Friday   │ │ │ Book the lecture  │    
+                       │ │ slides            │ │ │ notes             │ │ │ handout           │ │ │ 24 September      │ │ │ 25 September s... │ │ │ room              │    
+                       │ └───────────────────┘ │ └───────────────────┘ │ └───────────────────┘ │ └───────────────────┘ │ └───────────────────┘ │ └───────────────────┘    
+                       │                       │                       │                       │ ┌ setup ────── done ┐ │ ┌ alpha ─────── due ┐ │                          
+                       │                       │                       │                       │ │ Tidy the ship's   │ │ │ Call the dean     │ │                          
+                       │                       │                       │                       │ │ scripts           │ │ │ September 25      │ │                          
+                       │                       │                       │                       │ └───────────────────┘ │ └───────────────────┘ │                          
+                       │                       │                       │                       │                       │ ┌ alpha ─────── due ┐ │                          
+                       │                       │                       │                       │                       │ │ Hand in the       │ │                          
+                       │                       │                       │                       │                       │ │ report on 2026... │ │                          
+                       │                       │                       │                       │                       │ └───────────────────┘ │                          
+                       │                       │                       │                       │                       │ ┌ beta ──────── due ┐ │                          
+                       │                       │                       │                       │                       │ │ Draft the quiz    │ │                          
+                       │                       │                       │                       │                       │ │ for 2026-09-25    │ │                          
+                       │                       │                       │                       │                       │ └───────────────────┘ │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down pick an agent   enter talk to it   p pause   q quit                                                                          updates by itself 
+
+### before action '\\x1b[C'
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System                                           Thu 10:00 
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                                                                                          
+ 20 to 26 September   this week   4 done, 6 due                                                                                     left/right another week   t this week 
+                                                                                                                                                                          
+┌─ ALWAYS RUNNING ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│ ● Bridge running    ● Mission Control running    ● Alpha working    ● BETA closed    ● FAR remote                                                                      │
+└────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+                                                                                                                                                                          
+ Sun 20 Sep            │ Mon 21                │ Tue 22                │ Wed 23                │ Thu 24          today │ Fri 25                │ Sat 26                   
+───────────────────────┼───────────────────────┼───────────────────────┼───────────────────────┼───────────────────────┼───────────────────────┼───────────────────────   
+ nothing finished      │ ┌ alpha ────── done ┐ │ ┌ alpha ────── done ┐ │ ┌ beta ─────── done ┐ │ ┌ alpha ─────── due ┐ │ ┌ setup ─────── due ┐ │ ┌ beta ──────── due ┐    
+                       │ │ Chapter five      │ │ │ Chapter four      │ │ │ Module two        │ │ │ Wrap up the notes │ │ │ Prep the Friday   │ │ │ Book the lecture  │    
+                       │ │ slides            │ │ │ notes             │ │ │ handout           │ │ │ 24 September      │ │ │ 25 September s... │ │ │ room              │    
+                       │ └───────────────────┘ │ └───────────────────┘ │ └───────────────────┘ │ └───────────────────┘ │ └───────────────────┘ │ └───────────────────┘    
+                       │                       │                       │                       │ ┌ setup ────── done ┐ │ ┌ alpha ─────── due ┐ │                          
+                       │                       │                       │                       │ │ Tidy the ship's   │ │ │ Call the dean     │ │                          
+                       │                       │                       │                       │ │ scripts           │ │ │ September 25      │ │                          
+                       │                       │                       │                       │ └───────────────────┘ │ └───────────────────┘ │                          
+                       │                       │                       │                       │                       │ ┌ alpha ─────── due ┐ │                          
+                       │                       │                       │                       │                       │ │ Hand in the       │ │                          
+                       │                       │                       │                       │                       │ │ report on 2026... │ │                          
+                       │                       │                       │                       │                       │ └───────────────────┘ │                          
+                       │                       │                       │                       │                       │ ┌ beta ──────── due ┐ │                          
+                       │                       │                       │                       │                       │ │ Draft the quiz    │ │                          
+                       │                       │                       │                       │                       │ │ for 2026-09-25    │ │                          
+                       │                       │                       │                       │                       │ └───────────────────┘ │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down pick an agent   enter talk to it   p pause   q quit                                                                          updates by itself 
+
+### before action '\\x1b[D'
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System                                           Thu 10:00 
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                                                                                          
+ 27 September to 3 October   next week   0 done, 2 due                                                                              left/right another week   t this week 
+                                                                                                                                                                          
+┌─ ALWAYS RUNNING ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│ ● Bridge running    ● Mission Control running    ● Alpha working    ● BETA closed    ● FAR remote                                                                      │
+└────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+                                                                                                                                                                          
+ Sun 27 Sep            │ Mon 28                │ Tue 29                │ Wed 30                │ Thu 1 Oct             │ Fri 2                 │ Sat 3                    
+───────────────────────┼───────────────────────┼───────────────────────┼───────────────────────┼───────────────────────┼───────────────────────┼───────────────────────   
+ ┌ alpha ─────── due ┐ │ nothing due           │ nothing due           │ ┌ alpha ─────── due ┐ │ nothing due           │ nothing due           │ nothing due              
+ │ Send the grades   │ │                       │                       │ │ Draft chapter six │ │                       │                       │                          
+ │ by Sunday 27 S... │ │                       │                       │ │ quiz              │ │                       │                       │                          
+ └───────────────────┘ │                       │                       │ └───────────────────┘ │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down pick an agent   enter talk to it   p pause   q quit                                                                          updates by itself 
+
+### before action '\\x1b[D'
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System                                           Thu 10:00 
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                                                                                          
+ 20 to 26 September   this week   4 done, 6 due                                                                                     left/right another week   t this week 
+                                                                                                                                                                          
+┌─ ALWAYS RUNNING ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│ ● Bridge running    ● Mission Control running    ● Alpha working    ● BETA closed    ● FAR remote                                                                      │
+└────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+                                                                                                                                                                          
+ Sun 20 Sep            │ Mon 21                │ Tue 22                │ Wed 23                │ Thu 24          today │ Fri 25                │ Sat 26                   
+───────────────────────┼───────────────────────┼───────────────────────┼───────────────────────┼───────────────────────┼───────────────────────┼───────────────────────   
+ nothing finished      │ ┌ alpha ────── done ┐ │ ┌ alpha ────── done ┐ │ ┌ beta ─────── done ┐ │ ┌ alpha ─────── due ┐ │ ┌ setup ─────── due ┐ │ ┌ beta ──────── due ┐    
+                       │ │ Chapter five      │ │ │ Chapter four      │ │ │ Module two        │ │ │ Wrap up the notes │ │ │ Prep the Friday   │ │ │ Book the lecture  │    
+                       │ │ slides            │ │ │ notes             │ │ │ handout           │ │ │ 24 September      │ │ │ 25 September s... │ │ │ room              │    
+                       │ └───────────────────┘ │ └───────────────────┘ │ └───────────────────┘ │ └───────────────────┘ │ └───────────────────┘ │ └───────────────────┘    
+                       │                       │                       │                       │ ┌ setup ────── done ┐ │ ┌ alpha ─────── due ┐ │                          
+                       │                       │                       │                       │ │ Tidy the ship's   │ │ │ Call the dean     │ │                          
+                       │                       │                       │                       │ │ scripts           │ │ │ September 25      │ │                          
+                       │                       │                       │                       │ └───────────────────┘ │ └───────────────────┘ │                          
+                       │                       │                       │                       │                       │ ┌ alpha ─────── due ┐ │                          
+                       │                       │                       │                       │                       │ │ Hand in the       │ │                          
+                       │                       │                       │                       │                       │ │ report on 2026... │ │                          
+                       │                       │                       │                       │                       │ └───────────────────┘ │                          
+                       │                       │                       │                       │                       │ ┌ beta ──────── due ┐ │                          
+                       │                       │                       │                       │                       │ │ Draft the quiz    │ │                          
+                       │                       │                       │                       │                       │ │ for 2026-09-25    │ │                          
+                       │                       │                       │                       │                       │ └───────────────────┘ │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down pick an agent   enter talk to it   p pause   q quit                                                                          updates by itself 
+
+### before action '\\x1b[D'
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System                                           Thu 10:00 
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                                                                                          
+ 13 to 19 September   last week   0 done, 0 due                                                                                     left/right another week   t this week 
+                                                                                                                                                                          
+┌─ ALWAYS RUNNING ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│ ● Bridge running    ● Mission Control running    ● Alpha working    ● BETA closed    ● FAR remote                                                                      │
+└────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+                                                                                                                                                                          
+ Sun 13 Sep            │ Mon 14                │ Tue 15                │ Wed 16                │ Thu 17                │ Fri 18                │ Sat 19                   
+───────────────────────┼───────────────────────┼───────────────────────┼───────────────────────┼───────────────────────┼───────────────────────┼───────────────────────   
+ nothing finished      │ nothing finished      │ nothing finished      │ nothing finished      │ nothing finished      │ nothing finished      │ nothing finished         
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down pick an agent   enter talk to it   p pause   q quit                                                                          updates by itself 
+
+### before action '\\x1b[D'
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System                                           Thu 10:00 
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                                                                                          
+ 6 to 12 September   2 weeks ago   0 done, 0 due                                                                                    left/right another week   t this week 
+                                                                                                                                                                          
+┌─ ALWAYS RUNNING ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│ ● Bridge running    ● Mission Control running    ● Alpha working    ● BETA closed    ● FAR remote                                                                      │
+└────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+                                                                                                                                                                          
+ Sun 6 Sep             │ Mon 7                 │ Tue 8                 │ Wed 9                 │ Thu 10                │ Fri 11                │ Sat 12                   
+───────────────────────┼───────────────────────┼───────────────────────┼───────────────────────┼───────────────────────┼───────────────────────┼───────────────────────   
+ nothing finished      │ nothing finished      │ nothing finished      │ nothing finished      │ nothing finished      │ nothing finished      │ nothing finished         
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down pick an agent   enter talk to it   p pause   q quit                                                                          updates by itself 
+
+### before action 't'
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System                                           Thu 10:00 
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                                                                                          
+ 30 August to 5 September   3 weeks ago   1 done, 0 due                                                                             left/right another week   t this week 
+                                                                                                                                                                          
+┌─ ALWAYS RUNNING ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│ ● Bridge running    ● Mission Control running    ● Alpha working    ● BETA closed    ● FAR remote                                                                      │
+└────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+                                                                                                                                                                          
+ Sun 30 Aug            │ Mon 31                │ Tue 1 Sep             │ Wed 2                 │ Thu 3                 │ Fri 4                 │ Sat 5                    
+───────────────────────┼───────────────────────┼───────────────────────┼───────────────────────┼───────────────────────┼───────────────────────┼───────────────────────   
+ nothing finished      │ ┌ beta ─────── done ┐ │ nothing finished      │ nothing finished      │ nothing finished      │ nothing finished      │ nothing finished         
+                       │ │ Close out the     │ │                       │                       │                       │                       │                          
+                       │ │ August module     │ │                       │                       │                       │                       │                          
+                       │ └───────────────────┘ │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down pick an agent   enter talk to it   p pause   q quit                                                                          updates by itself 
+
+### before action 'q'
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System                                           Thu 10:00 
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                                                                                          
+ 20 to 26 September   this week   4 done, 6 due                                                                                     left/right another week   t this week 
+                                                                                                                                                                          
+┌─ ALWAYS RUNNING ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│ ● Bridge running    ● Mission Control running    ● Alpha working    ● BETA closed    ● FAR remote                                                                      │
+└────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+                                                                                                                                                                          
+ Sun 20 Sep            │ Mon 21                │ Tue 22                │ Wed 23                │ Thu 24          today │ Fri 25                │ Sat 26                   
+───────────────────────┼───────────────────────┼───────────────────────┼───────────────────────┼───────────────────────┼───────────────────────┼───────────────────────   
+ nothing finished      │ ┌ alpha ────── done ┐ │ ┌ alpha ────── done ┐ │ ┌ beta ─────── done ┐ │ ┌ alpha ─────── due ┐ │ ┌ setup ─────── due ┐ │ ┌ beta ──────── due ┐    
+                       │ │ Chapter five      │ │ │ Chapter four      │ │ │ Module two        │ │ │ Wrap up the notes │ │ │ Prep the Friday   │ │ │ Book the lecture  │    
+                       │ │ slides            │ │ │ notes             │ │ │ handout           │ │ │ 24 September      │ │ │ 25 September s... │ │ │ room              │    
+                       │ └───────────────────┘ │ └───────────────────┘ │ └───────────────────┘ │ └───────────────────┘ │ └───────────────────┘ │ └───────────────────┘    
+                       │                       │                       │                       │ ┌ setup ────── done ┐ │ ┌ alpha ─────── due ┐ │                          
+                       │                       │                       │                       │ │ Tidy the ship's   │ │ │ Call the dean     │ │                          
+                       │                       │                       │                       │ │ scripts           │ │ │ September 25      │ │                          
+                       │                       │                       │                       │ └───────────────────┘ │ └───────────────────┘ │                          
+                       │                       │                       │                       │                       │ ┌ alpha ─────── due ┐ │                          
+                       │                       │                       │                       │                       │ │ Hand in the       │ │                          
+                       │                       │                       │                       │                       │ │ report on 2026... │ │                          
+                       │                       │                       │                       │                       │ └───────────────────┘ │                          
+                       │                       │                       │                       │                       │ ┌ beta ──────── due ┐ │                          
+                       │                       │                       │                       │                       │ │ Draft the quiz    │ │                          
+                       │                       │                       │                       │                       │ │ for 2026-09-25    │ │                          
+                       │                       │                       │                       │                       │ └───────────────────┘ │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+                       │                       │                       │                       │                       │                       │                          
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down pick an agent   enter talk to it   p pause   q quit                                                                          updates by itself 

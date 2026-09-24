@@ -1,0 +1,6 @@
+Bridge render at base a4e7a70 vs head 9f3d217 on the same fixture home (records include Done items dated 2026-08-30 and 2026-08-31):
+diff: identical
+data-count="done">2</b><span>done this month
+data-count="done">1</b><span>done this month
+data-count="done">0</b><span>done this month
+data-count="done">1</b><span>done this month
