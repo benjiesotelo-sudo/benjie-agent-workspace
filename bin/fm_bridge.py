@@ -4,6 +4,8 @@
 bin/fm-bridge.sh is the operator entry point and owns the command surface,
 address selection, and the LaunchAgent; this module owns what the page reads,
 how it is counted, how it is drawn, and the tiny HTTP server that draws it.
+Mission Control (bin/fm_mission_control.py) imports collect() and the helpers
+below rather than reading the same records a second way.
 
 WHERE THE NUMBERS COME FROM. Backlog items, live workers and their current
 state come from bin/fm-fleet-snapshot.sh --json, the canonical read-only fleet
@@ -473,6 +475,8 @@ def collect(home, config_dir, now):
         "memory": memory, "decisions": decisions, "reports": reports,
         "links": links, "errors": errors, "config_error": cfg.get("_error"),
         "first_mate": str(cfg.get("first_mate") or "First mate"),
+        # Raw per-home inputs for other read-only views (bin/fm_mission_control.py).
+        "mates": mates, "snapshots": snaps,
     }
 
 
