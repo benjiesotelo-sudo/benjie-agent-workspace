@@ -2,8 +2,9 @@
 # fm-mission-control.sh - Mission Control, the crew as a live read-only office.
 #
 # Mission Control draws the whole crew as an animated pixel-art office, plus a
-# task board, in one terminal pane; bin/fm_mission_control.py owns what it
-# reads, how the crew maps onto the office, and how frames are drawn. It is
+# task board and the crew as an org chart, in one terminal pane;
+# bin/fm_mission_control.py owns what it reads, how the crew maps onto the
+# office, and how frames are drawn. It is
 # read-only: it never writes a record, never sends keys or prompts to an
 # agent, and never starts or stops one.
 #
@@ -18,11 +19,12 @@
 #   frame [--view <v>] [--size <cols>x<rows>] [--agents <file>] [--format text|json|ansi]
 #                           print one frame from the records and a saved
 #                           `herdr agent list` file (tests, a quick look);
-#                           <v> is office, tasks, or a later view's name
+#                           <v> is office, tasks, team, or a later view's name
 #
 # Keys while running: 1-9 switch view, p pauses the animation, q quits,
 # up/down pick an agent in the team list and Enter moves your Herdr view to
-# its pane (`herdr agent focus`, navigation only). Tapping a tab switches view
+# its pane (`herdr agent focus`, navigation only); on the Team view up/down
+# pick a second mate's card instead. Tapping a tab switches view
 # when the terminal reports mouse clicks.
 #
 # start creates the workspace with `herdr workspace create --label
