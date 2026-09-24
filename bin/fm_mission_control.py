@@ -48,6 +48,16 @@ else the first mate. The alumni wall shows mates this screen watched leave the
 registry; retirement leaves no durable record (fm-teardown.sh removes the
 route and the home), so the wall starts empty on every run.
 
+PROJECTS. One card per registered project except this home's own repository,
+in registry order, then "The setup itself" for items with no project, as on
+the Bridge. A card is Active when a working intern's project is it, its person
+in charge (the second mate whose registered projects include it, else the
+first mate, who never counts as working on one project) is working, or it has
+work in flight; else Parked when its registry note says the captain parked it;
+else Quiet. Its counts are the Bridge's buckets and its bar is done this month
+against done plus everything still open. The picked card lists its first
+three items waiting on the captain under the grid.
+
 DRAWING. Each character cell is two pixels: an upper half block with the top
 pixel as foreground and the bottom pixel as background, 24-bit colour when the
 terminal advertises it (COLORTERM truecolor or 24bit, a TERM containing
@@ -129,6 +139,7 @@ FEED_MIN_WIDTH = 24
 
 TABS = ["Office", "Tasks", "Approvals", "Projects", "Calendar", "Team", "Memory", "Docs", "System"]
 VIEWS = ["office", "tasks"] + [t.lower() for t in TABS[2:]]
+READY = ("office", "tasks", "projects")
 COLUMNS = (("waiting", "WAITING ON YOU", AMBER), ("queued", "QUEUED", INK),
            ("in_flight", "IN FLIGHT", GREEN), ("done", "DONE THIS MONTH", DIM))
 SHIP_TAG = "setup"
@@ -339,7 +350,7 @@ def build_crew(model, agents, home, session="default", own_pane=None, fm_name="F
             interns.append({
                 "key": "intern:%s:%s" % (hid, t["id"]), "kind": "intern", "lead": lead, "home": hid,
                 "status": "work" if working else "idle", "doing": clean(doing),
-                "path": "projects/%s" % proj if proj else "no project",
+                "path": "projects/%s" % proj if proj else "no project", "project": proj,
                 "pane": agent["pane"] if agent else None, "title": clean(title),
             })
 
@@ -1220,6 +1231,7 @@ class UI:
         self.view = "office"
         self.paused = False
         self.selected = None
+        self.project = None     # the picked card on the Projects view, by its key
         self.toast = ""
         self.toast_until = 0.0
         self.tab_hits = []
@@ -1237,7 +1249,7 @@ def _chrome(cv, ui, now):
         if c + len(s) > limit:
             break
         on = VIEWS[i] == ui.view
-        cv.put(c, 0, s, BG if on else (INK if i < 2 else LABEL), INK if on else None, on)
+        cv.put(c, 0, s, BG if on else (INK if VIEWS[i] in READY else LABEL), INK if on else None, on)
         ui.tab_hits.append((c, c + len(s), i))
         c += len(s) + 1
     cv.put(C - len(clk), 0, clk, DIM)
@@ -1248,6 +1260,8 @@ def _chrome(cv, ui, now):
         keys = " " + ui.toast
     else:
         keys = " 1-9 switch view   up/down pick an agent   enter talk to it   p pause   q quit "
+        if ui.view == "projects":
+            keys = " 1-9 switch view   up/down pick a project   p pause   q quit "
     cv.put(0, R - 1, clip(keys, C - len(tag) - 1), DIM)
     cv.put(C - len(tag), R - 1, tag, BG if ui.paused else GREEN, AMBER if ui.paused else None, True)
 
@@ -1432,6 +1446,159 @@ def _tasks_screen(cv, model):
             cv.put(c0 + 2, r0 + h - 2, "+%d more" % more, DIM)
 
 
+PROJECT_PILLS = {"active": ("Active", GREEN), "parked": ("Parked", AMBER), "quiet": ("Quiet", H("#3a4250"))}
+CARD_MIN_W = 42
+CARD_H = 9          # a card's rows, borders included; one blank row between grid rows
+DECISIONS_H = 6     # the picked card's decisions under the grid, heading included
+
+
+def project_cards(model, crew):
+    """One card per registered project, then the setup itself, in registry order."""
+    items = model["items"]
+    ship = model["ship"]
+    registered = {p["name"].lower(): p["name"] for p in model["projects"] if p["name"] != ship}
+    colors = project_colors(model)
+    by_key = {c["key"]: c for c in crew}
+    fm = by_key.get("fm") or {"name": "First mate", "color": FIRST_MATE_COLOR, "status": "sleep"}
+    working = set()
+    for c in crew:
+        if c["kind"] == "intern" and c["status"] == "work":
+            working.add(registered.get((c.get("project") or "").lower()))
+    cards = []
+    for p in [p for p in model["projects"] if p["name"] != ship] + [None]:
+        pname = p["name"] if p else None
+        pitems = [it for it in items if it["project"] == pname]
+        counts = bridge._counts(pitems)
+        if p:
+            mate = next((m for m in model.get("mates") or []
+                         if pname.lower() in [x.lower() for x in m["projects"]]), None)
+            lead = by_key.get("mate:" + mate["id"]) if mate else None
+            if mate and lead is None:
+                lead = {"name": mate_name(model, mate["id"]), "color": DIM, "status": "sleep"}
+            lead = lead or fm
+            entry = model["names"].get(pname)
+            desc = entry.get("description") if isinstance(entry, dict) and entry.get("description") \
+                else bridge._summary(p["description"])
+            name = bridge._title(model, pname)
+        else:
+            lead = fm
+            desc = "Housekeeping that belongs to no project, and work on the first mate itself."
+            name = "The setup itself"
+        agent_on = pname in working or (lead is not fm and lead["status"] == "work")
+        if agent_on or counts["in_flight"]:
+            status = "active"
+        elif p and p.get("parked"):
+            status = "parked"
+        else:
+            status = "quiet"
+        cards.append({
+            "key": pname or "", "name": clean(name), "desc": clean(desc), "status": status,
+            "color": colors.get(pname.lower() if pname else None, FIRST_MATE_COLOR),
+            "lead": {"name": lead["name"], "color": lead["color"]}, "counts": counts,
+            "decisions": [it for it in pitems if it["bucket"] == "waiting"],
+        })
+    return cards
+
+
+def _picked(ui, cards):
+    keys = [c["key"] for c in cards]
+    return keys.index(ui.project) if ui.project in keys else 0
+
+
+def _pick_project(ui, scene, down):
+    if scene.model is None:
+        return False
+    cards = project_cards(scene.model, scene.crew)
+    if not cards:
+        return False
+    i = (_picked(ui, cards) + (1 if down else -1)) % len(cards)
+    ui.project = cards[i]["key"]
+    return True
+
+
+def _project_card(cv, c0, r0, w, card, picked):
+    inner = w - 4
+    _box(cv, c0, r0, w, CARD_H, INK if picked else H("#262d38"))
+    label, pill_bg = PROJECT_PILLS[card["status"]]
+    pill = " %s " % label
+    cv.put(c0 + w - 2 - len(pill), r0 + 1, pill, BG if card["status"] != "quiet" else SOFT, pill_bg, True)
+    cv.put(c0 + 2, r0 + 1, clip(card["name"], inner - len(pill) - 1), H(card["color"]), None, True)
+    lines = wrap(" ".join(card["desc"].split()), inner)
+    if len(lines) > 2:
+        lines = [lines[0], clip(lines[1] + " " + lines[2], inner)]
+    for j, ln in enumerate(lines):
+        cv.put(c0 + 2, r0 + 2 + j, ln, H("#c3cbd5"))
+    half = c0 + 2 + max(20, inner // 2)
+    n = card["counts"]
+    for (key, label_, color), (cc, rr) in zip(COLUMNS, ((c0 + 2, 4), (half, 4), (c0 + 2, 5), (half, 5))):
+        s = str(n[key])
+        cv.put(cc, r0 + rr, s, color if key != "done" else INK, None, True)
+        cv.put(cc + len(s) + 1, r0 + rr, label_.lower(), SOFT)
+    done = n["done"]
+    total = done + n["waiting"] + n["queued"] + n["in_flight"]
+    tail = " %d%%  %d/%d" % (round(100.0 * done / total) if total else 0, done, total)
+    bar_w = max(4, inner - len(tail))
+    fill = int(round(bar_w * done / total)) if total else 0
+    cv.put(c0 + 2, r0 + 6, "━" * fill, GREEN)
+    cv.put(c0 + 2 + fill, r0 + 6, "━" * (bar_w - fill), H("#262d38"))
+    cv.put(c0 + 2 + bar_w, r0 + 6, tail, DIM)
+    lead = card["lead"]
+    cv.put(c0 + 2, r0 + 7, "■", H(lead["color"]), None, True)
+    cv.put(c0 + 4, r0 + 7, clip(lead["name"], inner - 16), H(lead["color"]), None, True)
+    cv.put(c0 + 5 + len(clip(lead["name"], inner - 16)), r0 + 7, "in charge", DIM)
+
+
+def _projects_screen(cv, ui, scene):
+    C, R = cv.C, cv.R
+    model = scene.model
+    cards = project_cards(model, scene.crew)
+    real = cards[:-1]
+    c = 1
+    for n, label, color in ((len(real), "projects" if len(real) != 1 else "project", INK),
+                            (sum(1 for p in real if p["status"] == "active"), "active", GREEN),
+                            (sum(1 for p in real if p["status"] == "parked"), "parked", AMBER),
+                            (sum(1 for p in real if p["status"] == "quiet"), "quiet", QUIET)):
+        cv.put(c, 3, str(n), color, None, True)
+        cv.put(c + len(str(n)) + 1, 3, label, SOFT)
+        c += len(str(n)) + len(label) + 5
+    for pill in ("real list, same one the Bridge reads", "real list"):
+        if C - len(pill) - 1 > c:
+            cv.put(C - len(pill) - 1, 3, pill, BG, GREEN, True)
+            break
+    per_row = max(1, (C - 1) // (CARD_MIN_W + 1))
+    w = (C - 1 - (per_row - 1)) // per_row
+    rows = (len(cards) + per_row - 1) // per_row
+    fits = max(1, (R - 2 - 5 - DECISIONS_H + 1) // (CARD_H + 1))
+    pick = _picked(ui, cards)
+    first = max(0, min(pick // per_row - fits + 1, rows - fits))
+    shown = min(fits, rows - first)
+    for i, card in enumerate(cards[first * per_row:(first + shown) * per_row]):
+        row, col = divmod(i, per_row)
+        _project_card(cv, col * (w + 1), 5 + row * (CARD_H + 1), w, card, first * per_row + i == pick)
+    if first:
+        cv.put(C - 16, 4, "more above", DIM)
+    if first + shown < rows:
+        cv.put(C - 16, 5 + shown * (CARD_H + 1) - 1, "more below", DIM)
+    # The picked card's first three decisions, underneath the grid.
+    card = cards[pick]
+    r = 5 + shown * (CARD_H + 1)
+    head = "WAITING ON YOU FOR %s" % card["name"].upper()
+    cv.put(0, r, "─" * C, LINE)
+    cv.put(1, r, " %s " % clip(head, C - 4), H(card["color"]), None, True)
+    if not card["decisions"]:
+        cv.put(3, r + 1, "Nothing waits on you here.", DIMMER)
+    for j, it in enumerate(card["decisions"][:3]):
+        day = bridge._day(it.get("since"), model["today"])
+        kind = "decide" if it["hold"] else "do"
+        cv.put(3, r + 1 + j, kind, AMBER, None, True)
+        cv.put(11, r + 1 + j, clip(clean(it["title"]), C - 14 - len(day)), H("#c3cbd5"))
+        if day:
+            cv.put(C - 1 - len(day), r + 1 + j, day, DIMMER)
+    more = len(card["decisions"]) - 3
+    if more > 0:
+        cv.put(3, r + 4, "+%d more on the task board" % more, DIM)
+
+
 def _later_screen(cv, name):
     cv.put(2, 4, "%s is coming next. Press 1 for the office or 2 for the task board." % name, SOFT)
 
@@ -1453,6 +1620,8 @@ def compose(scene, renderer, ui, cols, rows, now, records_ok=True, notice=None):
         _office_screen(cv, ui, scene, renderer, now, records_ok, notice)
     elif ui.view == "tasks":
         _tasks_screen(cv, scene.model)
+    elif ui.view == "projects":
+        _projects_screen(cv, ui, scene)
     else:
         _later_screen(cv, TABS[VIEWS.index(ui.view)])
     return cv, False
@@ -1841,6 +2010,8 @@ def _handle_input(data, ui, scene, feed):
         elif tok in (b"p", b"P"):
             ui.paused = not ui.paused
             changed = True
+        elif tok in (b"\x1b[A", b"\x1bOA", b"\x1b[B", b"\x1bOB") and ui.view == "projects":
+            changed = _pick_project(ui, scene, tok in (b"\x1b[B", b"\x1bOB")) or changed
         elif tok in (b"\x1b[A", b"\x1bOA", b"\x1b[B", b"\x1bOB"):
             keys = [m_["key"] for m_ in scene.crew]
             if keys:
@@ -1901,6 +2072,9 @@ def frame(home, config_dir, agents_text, view, cols, rows, fmt, session="default
                      "names": [m["name"] for m in L.upstairs]},
         "inbox": scene.inbox_real,
         "columns": {k: len(v) for k, v in cols_.items()},
+        "projects": [{"name": p["name"], "status": p["status"], "lead": p["lead"]["name"],
+                      "counts": p["counts"], "decisions": [it["title"] for it in p["decisions"]]}
+                     for p in project_cards(model, crew)],
         "team": [{"name": m["name"], "role": m["role"], "doing": m["doing"], "path": m["path"],
                   "status": m["status"]} for m in crew],
     }, indent=1)
