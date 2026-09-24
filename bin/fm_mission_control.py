@@ -61,9 +61,9 @@ Bridge's history of other months) and, from today on, open items due on it: a
 hold-until date first, else the one date a title clearly names (a day and a
 full month name with an optional full weekday name and year, or YYYY-MM-DD).
 Abbreviations such as Sep or Sat and ordinals such as 27th are not read. A
-title with two different dates, a weekday that does not match, numbers only,
-or a yearless date with no reading within half a year of today is skipped
-rather than guessed.
+title with two different dates, a weekday that does not match, a short weekday
+such as Fri right before the date, numbers only, or a yearless date with no
+reading within half a year of today is skipped rather than guessed.
 
 DRAWING. Each character cell is two pixels: an upper half block with the top
 pixel as foreground and the bottom pixel as background, 24-bit colour when the
@@ -1472,6 +1472,7 @@ _TITLE_DATES = [
     ("mdy", re.compile(r"\b%s%s\s+(\d{1,2})\b(?:,?\s+(\d{4})\b)?" % (_WEEKDAY_WORD, _MONTH_WORD))),
     ("iso", re.compile(r"\b(\d{4})-(\d{2})-(\d{2})\b")),
 ]
+_SHORT_WEEKDAY_BEFORE = re.compile(r"\b(?:Mon|Tues?|Wed|Thu(?:rs?)?|Fri|Sat|Sun),?\s+$")
 
 
 def _resolve_day(day, month, year, weekday, today):
@@ -1508,6 +1509,8 @@ def title_date(title, today):
                 d = _resolve_day(int(m.group(3)), int(m.group(2)), int(m.group(1)), None, today)
             else:
                 wd, a, b, y = m.groups()
+                if not wd and _SHORT_WEEKDAY_BEFORE.search(title, 0, m.start()):
+                    return None
                 day, mon = (a, b) if kind == "dmy" else (b, a)
                 month = _MONTHS.index(mon.lower()) + 1
                 weekday = _WEEKDAYS.index(wd.lower()) if wd else None

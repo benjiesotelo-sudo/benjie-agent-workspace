@@ -179,6 +179,8 @@ cat > "$CAL/data/backlog.md" <<'MD'
 - [ ] t7 - Due Sat 26 Sep the seminar notes (repo: beta) (kind: task) (since 2026-09-11)
 - [ ] t8 - Print the 25th September handouts (repo: beta) (kind: task) (since 2026-09-11)
 - [ ] t9 - Ask Jan 3 questions (repo: beta) (kind: task) (since 2026-09-11)
+- [ ] t10 - Rota for Fri 24 September (repo: beta) (kind: task) (since 2026-09-11)
+- [ ] t11 - Lab check Mon September 25 (repo: beta) (kind: task) (since 2026-09-11)
 ## Done
 - [x] w1 - Chapter five slides (repo: alpha) (kind: ship) (merged 2026-09-21)
 - [x] w2 - Tidy the ship's scripts (kind: task) (done 2026-09-23)
@@ -222,7 +224,7 @@ grep -q '─ done ┐' <<<"$K" || fail "completions are marked done"
 grep -q '┌ alpha ' <<<"$K" || fail "blocks carry their project tag"
 grep -q '┌ setup ' <<<"$K" || fail "the ship's own items carry the setup tag"
 for skip in 'Review the syllabus' 'Compare the' 'staff meeting' 'Recap of' 'Due Sat' 'Print the' 'Ask Jan' \
-    'An older handout' 'Wrap the'; do
+    'Rota for' 'Lab check' 'An older handout' 'Wrap the'; do
   grep -q "$skip" <<<"$K" && fail "a guessed, past or other-week date stays off the grid: $skip"
 done
 grep -q '2 done, 2 due' <<<"$K" || fail "the heading counts the week's blocks"
@@ -230,7 +232,7 @@ grep -q 'ALWAYS RUNNING' <<<"$K" || fail "the always-running strip has its headi
 for chip in '● Bridge running' '● Mission Control off' '● Alpha asleep'; do
   grep -q "$chip" <<<"$K" || fail "the always-running strip reads the real state: $chip"
 done
-grep -Eq '\b(h1|t[1-9]|w[1-4])\b' <<<"$K" && fail "no task id may reach the calendar"
+grep -Eq '\b(h1|t[1-9]|t1[01]|w[1-4])\b' <<<"$K" && fail "no task id may reach the calendar"
 grep -q "$TMP_ROOT" <<<"$K" && fail "no raw path may reach the calendar"
 rm -f "$TMP_ROOT/bridge-up"
 K=$(cal 2026-10-01T10:00:00 170x50) || fail "calendar frame failed: $K"
