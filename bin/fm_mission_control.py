@@ -59,7 +59,8 @@ seven day columns of DAY_MIN_WIDTH fit; left and right move a week, t comes
 back. A day shows the Done records completed on it (this month's items plus the
 Bridge's history of other months) and, from today on, open items due on it: a
 hold-until date first, else the one date a title clearly names (a day and a
-full month name with an optional full weekday name and year, or YYYY-MM-DD).
+full month name in either order, with an optional full weekday name and year,
+or YYYY-MM-DD).
 Abbreviations such as Sep or Sat and ordinals such as 27th are not read. A
 title with two different dates, a weekday that does not match, a short weekday
 such as Fri right before the date, numbers only, or a yearless date with no
