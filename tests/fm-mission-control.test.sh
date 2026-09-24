@@ -304,6 +304,15 @@ grep -Eq '^┌─ THE DECISION ─+ 3 more below ─┐$' <<<"$AM" \
   || fail "the decisions past the fold are counted on the panel's top border, got: $(grep 'THE DECISION' <<<"$AM")"
 [ "$(grep -c 'Settle question number' <<<"$AM")" = 28 ] || fail "27 list rows and the panel title show in full"
 [ "$(grep -c 'more below' <<<"$AM")" = 1 ] || fail "no list row carries the more-below label"
+{
+  printf '# Backlog\n\n## In flight\n## Queued\n'
+  for n in $(seq 10 35); do printf -- '- [ ] q%d - Settle question number %d (kind: captain) (since 2026-08-%02d)\n' "$n" "$n" "$((n - 9))"; done
+  printf -- '- [ ] q99 - Settle the last question, which runs long enough that its words wrap onto a second line of the list (kind: captain) (since 2026-08-30)\n'
+  printf '## Done\n'
+} > "$MANY/data/backlog.md"
+AM=$(mc "$MANY" frame --view approvals) || fail "cut-decision approvals frame failed"
+grep -q 'Settle the last question' <<<"$AM" || fail "the last decision starts on the bottom list row"
+grep -q 'more below' <<<"$AM" && fail "a decision whose first line shows is not counted below the fold"
 
 pass "the Approvals view groups what waits on the captain by agent, oldest first, in plain words"
 

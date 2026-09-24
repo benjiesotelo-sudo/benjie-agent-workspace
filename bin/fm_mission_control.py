@@ -1730,8 +1730,8 @@ def _approvals_screen(cv, ui, scene):
             tc = H(colors.get(pname.lower() if pname else None, FIRST_MATE_COLOR))
             cv.put(14, r, clip("■ " + tag, qc - 16), tc, None, True)
         cv.put(qc, r, ln, INK if on else H("#c3cbd5"), None, on and j == 0)
-    above = len({p[0]["key"] for k, p, _ in lines[:off] if k == "item"})
-    below = len({p[0]["key"] for k, p, _ in lines[off + room:] if k == "item"})
+    above = sum(1 for k, _, j in lines[:off] if k == "item" and j == 0)
+    below = sum(1 for k, _, j in lines[off + room:] if k == "item" and j == 0)
 
     # The picked decision in full: title, who holds it, and its note.
     it = next(x for x in rows if x["key"] == pick)
