@@ -239,6 +239,60 @@ two() {  # <name> <jq path>
 [ "$(two extra1 .status)" = active ] || fail "a working mate with one project makes that project active"
 pass "the Projects view shows one card per project with status, person in charge, counts and decisions"
 
+# --- approvals -------------------------------------------------------------
+
+A=$(mc "$HOME_DIR" frame --agents "$AGENTS" --view approvals) || fail "approvals frame failed"
+[ "$(jq -c '[.approvals[].count] | add' <<<"$J")" = "$(jq -r .inbox <<<"$J")" ] \
+  || fail "the approvals total equals the office inbox, got $(jq -c .approvals <<<"$J")"
+[ "$(jq -c .approvals <<<"$J")" = '[{"name":"Denver","count":3},{"name":"Alpha","count":1}]' ] \
+  || fail "one group per agent holding decisions, first mate first, got $(jq -c .approvals <<<"$J")"
+grep -q '4 decisions wait on you, with 2 agents' <<<"$A" || fail "the header counts decisions and agents"
+grep -q 'oldest since 29 Aug, 22 days ago' <<<"$A" || fail "the header dates the oldest decision"
+grep -q '─ Denver 3 ─' <<<"$A" || fail "the first mate's group is named from the settings file, with its count"
+grep -q '─ Alpha 1 ─' <<<"$A" || fail "the second mate's group carries its count"
+rows=$(grep -E '^ .* days +■ ' <<<"$A")
+[ "$(sed -E 's/.*■ ([a-z]+) +(.*)/\1: \2/' <<<"$rows")" = "setup: Tick a profile setting only the captain can reach
+alpha: Choose the quiz format
+beta: Approve the module outline
+alpha: Decide the chapter five review point" ] || fail "rows run oldest first within each agent, with tags, got: $rows"
+grep -Eq '^ ▸ +22 days +■ setup +Tick a profile' <<<"$A" || fail "the oldest decision starts highlighted, with its age"
+grep -q ' THE DECISION ' <<<"$A" || fail "the detail panel has its heading"
+grep -q "asked 29 Aug, 22 days ago, sits with Denver, the ship's own setup" <<<"$A" \
+  || fail "the panel says when it was asked and who holds it"
+grep -q 'A body line that the Bridge never shows.' <<<"$A" || fail "the panel shows the decision's note"
+grep -Eq 'Revisit the venue|Build the quiz once' <<<"$A" && fail "deferred and blocked items are not waiting"
+grep -Eq '\b(c1|c2|s1|m1)\b' <<<"$A" && fail "no task id may reach the approvals screen"
+grep -q 'answers happen in chat' <<<"$A" || fail "the key line says the view is read only"
+
+LONG="$TMP_ROOT/longship"
+mkdir -p "$LONG/data" "$LONG/state" "$LONG/config"
+cp "$FIX/projects.fixture" "$LONG/data/projects.md"
+{
+  printf '# Backlog\n\n## In flight\n## Queued\n'
+  printf -- '- [ ] l1 - Decide whether the settings in ~/.config/tool/secret.yml stay'
+  for n in 1 2 3 4 5 6 7 8 9; do printf ' and whether option %d is kept for the next module' "$n"; done
+  printf ' (kind: captain) (since 2026-09-20)\n'
+  printf '  See %s/notes.md for the long story.\n' "$TMP_ROOT"
+  printf -- '- [ ] l2 - Pick the second option (kind: task) (since 2026-09-19) (hold: the audit asks) (hold-kind: captain)\n'
+  printf '  Origin: l2-audit-origin\n  Decision key: l2-decision-key\n  State: awaiting captain decision.\n## Done\n'
+} > "$LONG/data/backlog.md"
+AL=$(mc "$LONG" frame --view approvals --size 120x40) || fail "long-title approvals frame failed"
+grep -q '2 decisions wait on you, with 1 agent' <<<"$AL" || fail "one agent reads in the singular"
+grep -q 'oldest since 19 Sep, 1 day ago' <<<"$AL" || fail "a one-day-old decision is dated"
+grep -Eq ' today +■ setup +Decide whether' <<<"$AL" || fail "a decision asked today reads today"
+grep -q 'the audit asks' <<<"$AL" || fail "a note of only bookkeeping lines falls back to the hold reason"
+grep -Eq 'l2-audit-origin|l2-decision-key|awaiting captain decision' <<<"$AL" \
+  && fail "bookkeeping lines never reach the panel"
+long=$(grep -A2 ' today  *■ setup  *Decide whether' <<<"$AL")
+[ "$(sed -n 2p <<<"$long" | grep -Ec '^ {30,}for the next module .*\.\.\.$')" = 1 ] \
+  || fail "a long question wraps to a second line that ends in an ellipsis, got: $long"
+[ -z "$(sed -n 3p <<<"$long")" ] || fail "a long question takes at most two lines, got: $long"
+grep -q 'a local file' <<<"$AL" || fail "a path in a title or note reads as a local file"
+grep -Eq '\.config|secret\.yml|notes\.md' <<<"$AL" && fail "no raw path may reach the approvals screen"
+grep -q "$TMP_ROOT" <<<"$AL" && fail "no temporary path may reach the approvals screen"
+
+pass "the Approvals view groups what waits on the captain by agent, oldest first, in plain words"
+
 L=$(mc "$HOME_DIR" frame --agents "$AGENTS" --view calendar)
 grep -q 'Calendar is coming next' <<<"$L" || fail "a later view shows its coming-next note"
 grep -q ' 9 System ' <<<"$L" || fail "the tab bar shows all nine views"
@@ -275,6 +329,11 @@ J3=$(mc "$BIG" frame --agents "$TMP_ROOT/big.json" --size 132x44 --format json)
 [ "$(jq -r '.upstairs.count' <<<"$J3")" = 4 ] || fail "a shorter pane keeps three downstairs and sends four up"
 [ "$(jq -r '.team[0].name' <<<"$J3")" = "First mate" ] || fail "without the settings file the first mate is First mate"
 pass "seven mates open a second floor with a sign, busiest downstairs"
+
+AE=$(mc "$BIG" frame --agents "$TMP_ROOT/big.json" --view approvals) || fail "empty approvals frame failed"
+grep -q 'Nothing waits on you.' <<<"$AE" || fail "with nothing waiting the view is a calm empty state"
+grep -q 'THE DECISION' <<<"$AE" && fail "an empty approvals view has no detail panel"
+pass "the Approvals view is calm when nothing waits on the captain"
 
 # --- the live screen in a pseudo-terminal ----------------------------------
 
@@ -388,6 +447,23 @@ j = data.rfind(b"\x1b[0m\x1b[?1000l")
 # Between the pause banner and the exit, at most the clock changes.
 sys.exit(0 if 0 <= i < j and j - i < 400 else 1)
 PY
+# Up and down move the Approvals highlight; Enter answers nothing.
+# The live screen dates things by the real clock, so ages are not pinned here.
+UP=$'\e[A'
+DOWN=$'\e[B'
+ENTER=$'\r'
+code=$(drive "$TMP_ROOT/ap" "4=3,5=$DOWN,6=$DOWN$DOWN$DOWN,7=$UP,8=$ENTER,9=q") || fail "the pty driver failed"
+[ "$code" = 0 ] || fail "the approvals run quits cleanly, got exit $code"
+screen "$TMP_ROOT/ap" 2 | grep -q 'sits with Denver, the ship' || fail "key 3 opens Approvals on the oldest decision"
+screen "$TMP_ROOT/ap" 3 | grep -Eq '^ ▸ .*Choose the quiz format' || fail "down highlights the next decision"
+screen "$TMP_ROOT/ap" 3 | grep -Eq 'asked 2 Sep, [0-9]+ days ago, sits with Denver, project alpha' \
+  || fail "the panel follows the highlight"
+screen "$TMP_ROOT/ap" 4 | grep -q 'sits with Alpha, project alpha' || fail "down crosses into the next agent and stops at the end"
+screen "$TMP_ROOT/ap" 5 | grep -Eq '^ ▸ .*Approve the module outline' || fail "up moves back"
+screen "$TMP_ROOT/ap" 6 | grep -Eq '^ ▸ .*Approve the module outline' || fail "enter leaves the view and the pick alone"
+screen "$TMP_ROOT/ap" 6 | grep -q 'moving your view' && fail "enter on Approvals moves no pane"
+pass "up and down read each decision on the live Approvals view, and no key acts on one"
+
 # A captain item filed while the screen runs reads "<name> asks you <title>".
 cp "$HOME_DIR/data/backlog.md" "$TMP_ROOT/backlog.saved"
 cat > "$TMP_ROOT/file-ask.sh" <<SH

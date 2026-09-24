@@ -59,6 +59,13 @@ working on any one of them by themselves. Its counts are the Bridge's buckets
 and its bar is done this month against done plus everything still open. The
 picked card lists its first three items waiting on the captain under the grid.
 
+APPROVALS. The decisions waiting on the captain are exactly the office
+inbox's items, the Bridge's waiting bucket, grouped by the agent whose home
+holds them (the first mate, then the second mates in registry order) and
+oldest first. The panel shows the highlighted one's title and note: its
+record's body lines without bookkeeping lines, else its hold reason, with
+paths replaced by the Bridge's plain_note().
+
 DRAWING. Each character cell is two pixels: an upper half block with the top
 pixel as foreground and the bottom pixel as background, 24-bit colour when the
 terminal advertises it (COLORTERM truecolor or 24bit, a TERM containing
@@ -140,7 +147,7 @@ FEED_MIN_WIDTH = 24
 
 TABS = ["Office", "Tasks", "Approvals", "Projects", "Calendar", "Team", "Memory", "Docs", "System"]
 VIEWS = ["office", "tasks"] + [t.lower() for t in TABS[2:]]
-READY = ("office", "tasks", "projects")
+READY = ("office", "tasks", "approvals", "projects")
 COLUMNS = (("waiting", "WAITING ON YOU", AMBER), ("queued", "QUEUED", INK),
            ("in_flight", "IN FLIGHT", GREEN), ("done", "DONE THIS MONTH", DIM))
 SHIP_TAG = "setup"
@@ -1233,6 +1240,7 @@ class UI:
         self.paused = False
         self.selected = None
         self.project = None     # the picked card on the Projects view, by its key
+        self.decision = None    # the highlighted row on the Approvals view
         self.toast = ""
         self.toast_until = 0.0
         self.tab_hits = []
@@ -1259,6 +1267,8 @@ def _chrome(cv, ui, now):
     tag = " PAUSED " if ui.paused else " updates by itself "
     if ui.toast and time.monotonic() < ui.toast_until:
         keys = " " + ui.toast
+    elif ui.view == "approvals":
+        keys = " 1-9 switch view   up/down read each decision   answers happen in chat, not here   q quit "
     else:
         keys = " 1-9 switch view   up/down pick an agent   enter talk to it   p pause   q quit "
         if ui.view == "projects":
@@ -1600,6 +1610,166 @@ def _projects_screen(cv, ui, scene):
         cv.put(3, r + 4, "+%d more on the task board" % more, DIM)
 
 
+def _age(since, today):
+    d, t = bridge._parse_day(since), bridge._parse_day(today)
+    if d is None or t is None:
+        return "", 0
+    n = max(0, (t - d).days)
+    return ("today" if n == 0 else bridge._plural(n, "day")), n
+
+
+def _plain(text):
+    return clean(bridge.plain_note(text))
+
+
+# Bookkeeping body lines (bin/fm-captain-hold.sh's Origin, Task and Decision key,
+# the hold stamp, the old decision records' State) name ids, not the question.
+_BOOKKEEPING = re.compile(r"^\s*(Origin|Task|Decision key|State|Captain hold set):")
+
+
+def _decision_note(model, it):
+    """The record's own note, without paths: its body lines, else its hold reason."""
+    recs = ((model["snapshots"].get(it["owner"]) or {}).get("backlog") or {}).get("records") or []
+    rec = next((x for x in recs if x.get("id") == it["id"]), {})
+    parts = [x for x in rec.get("body_lines") or [] if isinstance(x, str) and not _BOOKKEEPING.match(x)]
+    parts = parts or [rec.get("hold_reason") or ""]
+    return _plain(" ".join(x for x in parts if x.strip()))
+
+
+def approvals(model, crew):
+    """What waits on the captain, one group per agent holding it, oldest first.
+
+    The same items as the office inbox: the Bridge's waiting bucket."""
+    people = {c["id"]: c for c in crew if c["kind"] in ("first", "mate")}
+    order = ["main"] + [m["id"] for m in model.get("mates") or []]
+    groups = []
+    for owner in order:
+        items = [it for it in model["items"] if it["bucket"] == "waiting" and it["owner"] == owner]
+        if not items:
+            continue
+        items.sort(key=lambda it: (bridge._parse_day(it["since"]) is None, it["since"] or ""))
+        who = people.get(owner) or {"name": mate_name(model, owner), "color": FIRST_MATE_COLOR}
+        groups.append({"owner": owner, "name": who["name"], "color": who["color"],
+                       "items": [dict(it, key="%s:%s" % (owner, it["id"])) for it in items]})
+    return groups
+
+
+def _approvals_screen(cv, ui, scene):
+    C, R = cv.C, cv.R
+    model = scene.model
+    today = model["today"]
+    groups = approvals(model, scene.crew)
+    rows = [it for g in groups for it in g["items"]]
+    if not rows:
+        cv.put(3, 4, "Nothing waits on you.", GREEN, None, True)
+        cv.put(3, 6, "Every decision has been made; the crew carries on by itself.", SOFT)
+        cv.put(3, 7, "When an agent needs your word, it shows up here and in the office inbox.", DIMMER)
+        return
+    keys = [it["key"] for it in rows]
+    pick = ui.decision if ui.decision in keys else keys[0]
+    oldest = min((it["since"] for it in rows if bridge._parse_day(it["since"])), default=None)
+    n = str(len(rows))
+    cv.put(1, 3, n, AMBER, None, True)
+    head = "%s on you, with %s" % ("decision waits" if len(rows) == 1 else "decisions wait",
+                                   bridge._plural(len(groups), "agent"))
+    cv.put(len(n) + 2, 3, head, SOFT)
+    c = len(n) + 2 + len(head) + 3
+    if oldest:
+        age = _age(oldest, today)[0]
+        s = "oldest asked today" if age == "today" else "oldest since %s, %s ago" % (bridge._day(oldest, today), age)
+        cv.put(c, 3, s, DIMMER)
+        c += len(s) + 3
+    for pill in ("read only, answer in chat", "read only"):
+        if C - len(pill) - 1 > c:
+            cv.put(C - len(pill) - 1, 3, pill, BG, GREEN, True)
+            break
+
+    # The list: a rule per agent, then its decisions, scrolled to keep the pick in view.
+    colors = project_colors(model)
+    qc = 38
+    qw = max(12, C - qc - 2)
+    lines = []     # (kind, payload, row offset within a decision)
+    for g in groups:
+        if lines:
+            lines.append(("gap", None, 0))
+        lines.append(("group", g, 0))
+        for it in g["items"]:
+            q = wrap(_plain(it["title"]), qw)
+            if len(q) > 2:
+                q = [q[0], clip(q[1] + " " + q[2], qw)]
+            for j, ln in enumerate(q or [""]):
+                lines.append(("item", (it, ln), j))
+    panel_h = 9
+    top, bottom = 5, R - 3 - panel_h
+    room = bottom - top + 1
+    at = [i for i, (k, p, _) in enumerate(lines) if k == "item" and p[0]["key"] == pick]
+    off = 0
+    if at and at[-1] >= room:
+        off = at[-1] - room + 1
+        if at[0] - off > 0 and lines[at[0] - 1][0] == "group":
+            off = min(off, at[0] - 1)
+    for i, (kind, p, j) in enumerate(lines[off:off + room]):
+        r = top + i
+        if kind == "group":
+            cv.put(0, r, "─" * C, LINE)
+            cv.put(2, r, " %s %d " % (p["name"], len(p["items"])), H(p["color"]), None, True)
+            continue
+        if kind != "item":
+            continue
+        it, ln = p
+        on = it["key"] == pick
+        if on:
+            for cc in range(C):
+                k = r * C + cc
+                cv.top[k] = cv.bot[k] = H("#18202b")
+        if j == 0:
+            if on:
+                cv.put(1, r, "▸", AMBER, None, True)
+            age, days = _age(it["since"], today)
+            cv.put(12 - len(age), r, age, AMBER if days >= 7 else QUIET)
+            pname = it["project"]
+            tag = SHIP_TAG if pname is None else clean(bridge._short(model, pname))
+            tc = H(colors.get(pname.lower() if pname else None, FIRST_MATE_COLOR))
+            cv.put(14, r, clip("■ " + tag, qc - 16), tc, None, True)
+        cv.put(qc, r, ln, INK if on else H("#c3cbd5"), None, on and j == 0)
+    if off > 0:
+        cv.put(C - 12, top, " more above ", DIM)
+    if off + room < len(lines):
+        cv.put(C - 12, bottom, " more below ", DIM)
+
+    # The picked decision in full: title, who holds it, and its note.
+    it = next(x for x in rows if x["key"] == pick)
+    g = next(x for x in groups if x["owner"] == it["owner"])
+    r0 = R - 2 - panel_h
+    _box(cv, 0, r0, C, panel_h, H("#262d38"))
+    cv.put(2, r0, " THE DECISION ", AMBER, None, True)
+    w = C - 6
+    title = wrap(_plain(it["title"]), w)
+    if len(title) > 2:
+        title = [title[0], clip(title[1] + " " + " ".join(title[2:]), w)]
+    r = r0 + 1
+    for ln in title:
+        cv.put(3, r, ln, INK, None, True)
+        r += 1
+    since = bridge._day(it["since"], today)
+    age = _age(it["since"], today)[0]
+    asked = ("asked %s" % ("today" if age == "today" else "%s, %s ago" % (since, age))) if since else ""
+    project = "project %s" % bridge._title(model, it["project"]) if it["project"] else "the ship's own setup"
+    facts = ", ".join(x for x in (asked, "sits with %s" % g["name"], project) if x)
+    cv.put(3, r, clip(facts, w), H(g["color"]))
+    r += 1
+    last = r0 + panel_h - 2
+    note = wrap(_decision_note(model, it), w)
+    if not note:
+        cv.put(3, r, "No further notes on this one.", DIMMER)
+    room = last - r + 1
+    if len(note) > room:
+        note = note[:room - 1] + [clip(note[room - 1] + " " + " ".join(note[room:]), w)]
+    for ln in note:
+        cv.put(3, r, ln, SOFT)
+        r += 1
+
+
 def _later_screen(cv, name):
     cv.put(2, 4, "%s is coming next. Press 1 for the office or 2 for the task board." % name, SOFT)
 
@@ -1623,6 +1793,8 @@ def compose(scene, renderer, ui, cols, rows, now, records_ok=True, notice=None):
         _tasks_screen(cv, scene.model)
     elif ui.view == "projects":
         _projects_screen(cv, ui, scene)
+    elif ui.view == "approvals":
+        _approvals_screen(cv, ui, scene)
     else:
         _later_screen(cv, TABS[VIEWS.index(ui.view)])
     return cv, False
@@ -1989,6 +2161,19 @@ def run(home, config_dir, herdr):
     return 0
 
 
+def _pick_decision(ui, scene, down):
+    """Move the Approvals highlight; it only changes what the panel shows."""
+    if scene.model is None:
+        return False
+    keys = [it["key"] for g in approvals(scene.model, scene.crew) for it in g["items"]]
+    if not keys:
+        return False
+    # With no pick yet the screen highlights the first row, so moving starts there.
+    i = keys.index(ui.decision) if ui.decision in keys else 0
+    ui.decision = keys[max(0, min(len(keys) - 1, i + (1 if down else -1)))]
+    return True
+
+
 def _handle_input(data, ui, scene, feed):
     changed = False
     for m in _KEYS.finditer(data):
@@ -2013,6 +2198,8 @@ def _handle_input(data, ui, scene, feed):
             changed = True
         elif tok in (b"\x1b[A", b"\x1bOA", b"\x1b[B", b"\x1bOB") and ui.view == "projects":
             changed = _pick_project(ui, scene, tok in (b"\x1b[B", b"\x1bOB")) or changed
+        elif ui.view == "approvals" and tok in (b"\x1b[A", b"\x1bOA", b"\x1b[B", b"\x1bOB"):
+            changed = _pick_decision(ui, scene, tok in (b"\x1b[B", b"\x1bOB")) or changed
         elif tok in (b"\x1b[A", b"\x1bOA", b"\x1b[B", b"\x1bOB"):
             keys = [m_["key"] for m_ in scene.crew]
             if keys:
@@ -2024,7 +2211,7 @@ def _handle_input(data, ui, scene, feed):
                 ui.selected = keys[i]
                 ui.view = "office"
                 changed = True
-        elif tok in (b"\r", b"\n"):
+        elif tok in (b"\r", b"\n") and ui.view != "approvals":
             m_ = next((c for c in scene.crew if c["key"] == ui.selected), None)
             if m_ is None:
                 continue
@@ -2076,6 +2263,7 @@ def frame(home, config_dir, agents_text, view, cols, rows, fmt, session="default
         "projects": [{"name": p["name"], "status": p["status"], "lead": p["lead"]["name"],
                       "counts": p["counts"], "decisions": [it["title"] for it in p["decisions"]]}
                      for p in project_cards(model, crew)],
+        "approvals": [{"name": g["name"], "count": len(g["items"])} for g in approvals(model, crew)],
         "team": [{"name": m["name"], "role": m["role"], "doing": m["doing"], "path": m["path"],
                   "status": m["status"]} for m in crew],
     }, indent=1)
