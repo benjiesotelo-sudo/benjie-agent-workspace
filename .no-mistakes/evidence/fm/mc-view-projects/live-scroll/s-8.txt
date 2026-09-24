@@ -1,0 +1,36 @@
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar         Sun 10:00
+────────────────────────────────────────────────────────────────────────────────────────────────
+
+ 10 projects    1 active    1 parked    8 quiet            real list, same one the Bridge reads
+                                                                                more above
+┌─────────────────────────────────────────────┐ ┌─────────────────────────────────────────────┐
+│ extra4                               Quiet  │ │ extra5                               Quiet  │
+│ Extra project number 4                      │ │ Extra project number 5                      │
+│                                             │ │                                             │
+│ 0 waiting on you     0 queued               │ │ 0 waiting on you     0 queued               │
+│ 0 in flight          0 done this month      │ │ 0 in flight          0 done this month      │
+│ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0%  0/0 │ │ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0%  0/0 │
+│ ■ First mate in charge                      │ │ ■ First mate in charge                      │
+└─────────────────────────────────────────────┘ └─────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────┐ ┌─────────────────────────────────────────────┐
+│ extra6                               Quiet  │ │ longdesc                             Quiet  │
+│ Extra project number 6                      │ │ A deliberately very long description that   │
+│                                             │ │ goes on and on about teaching materials,... │
+│ 0 waiting on you     0 queued               │ │ 0 waiting on you     0 queued               │
+│ 0 in flight          0 done this month      │ │ 0 in flight          0 done this month      │
+│ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0%  0/0 │ │ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0%  0/0 │
+│ ■ First mate in charge                      │ │ ■ First mate in charge                      │
+└─────────────────────────────────────────────┘ └─────────────────────────────────────────────┘
+                                                                                more below
+─ WAITING ON YOU FOR EXTRA6 ────────────────────────────────────────────────────────────────────
+   Nothing waits on you here.
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down pick a project   p pause   q quit                  updates by itself

@@ -1,0 +1,16 @@
+{
+  "result": {
+    "agents": [
+      {
+        "pane_id": "w1:p1",
+        "agent_status": "working",
+        "cwd": "/Users/benjie/.no-mistakes/evidence/01M38XT85072NVJPSTV0JCRFP9/lab/pair"
+      },
+      {
+        "pane_id": "w2:p1",
+        "agent_status": "working",
+        "cwd": "/Users/benjie/.no-mistakes/evidence/01M38XT85072NVJPSTV0JCRFP9/lab/solo"
+      }
+    ]
+  }
+}

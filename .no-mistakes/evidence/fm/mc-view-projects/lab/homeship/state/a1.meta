@@ -1,0 +1,8 @@
+window=fx:a1
+endpoint_task_id=a1
+worktree=/Users/benjie/.no-mistakes/evidence/01M38XT85072NVJPSTV0JCRFP9/lab/wt-alpha
+project=/Users/benjie/.no-mistakes/evidence/01M38XT85072NVJPSTV0JCRFP9/lab/homeship/projects/alpha
+harness=claude
+kind=ship
+mode=direct-PR
+yolo=off

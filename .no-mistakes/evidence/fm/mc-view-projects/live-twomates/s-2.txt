@@ -1,0 +1,50 @@
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System                                           Sun 10:00
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+ 10 projects    1 active    1 parked    8 quiet                                                                                      real list, same one the Bridge reads
+
+┌─────────────────────────────────────────────────────┐ ┌─────────────────────────────────────────────────────┐ ┌─────────────────────────────────────────────────────┐
+│ alpha                                       Parked  │ │ beta                                         Quiet  │ │ homeship                                     Quiet  │
+│ Alpha course materials for a class; decks and notes │ │ Beta outreach programme, delivered in modules       │ │ This firstmate home's own repository                │
+│                                                     │ │                                                     │ │                                                     │
+│ 0 waiting on you         0 queued                   │ │ 0 waiting on you         0 queued                   │ │ 0 waiting on you         0 queued                   │
+│ 0 in flight              0 done this month          │ │ 0 in flight              0 done this month          │ │ 0 in flight              0 done this month          │
+│ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0%  0/0 │ │ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0%  0/0 │ │ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0%  0/0 │
+│ ■ PAIR in charge                                    │ │ ■ PAIR in charge                                    │ │ ■ First mate in charge                              │
+└─────────────────────────────────────────────────────┘ └─────────────────────────────────────────────────────┘ └─────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────┐ ┌─────────────────────────────────────────────────────┐ ┌─────────────────────────────────────────────────────┐
+│ extra1                                      Active  │ │ extra2                                       Quiet  │ │ extra3                                       Quiet  │
+│ Extra project number 1                              │ │ Extra project number 2                              │ │ Extra project number 3                              │
+│                                                     │ │                                                     │ │                                                     │
+│ 0 waiting on you         0 queued                   │ │ 0 waiting on you         0 queued                   │ │ 0 waiting on you         0 queued                   │
+│ 0 in flight              0 done this month          │ │ 0 in flight              0 done this month          │ │ 0 in flight              0 done this month          │
+│ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0%  0/0 │ │ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0%  0/0 │ │ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0%  0/0 │
+│ ■ SOLO in charge                                    │ │ ■ First mate in charge                              │ │ ■ First mate in charge                              │
+└─────────────────────────────────────────────────────┘ └─────────────────────────────────────────────────────┘ └─────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────┐ ┌─────────────────────────────────────────────────────┐ ┌─────────────────────────────────────────────────────┐
+│ extra4                                       Quiet  │ │ extra5                                       Quiet  │ │ extra6                                       Quiet  │
+│ Extra project number 4                              │ │ Extra project number 5                              │ │ Extra project number 6                              │
+│                                                     │ │                                                     │ │                                                     │
+│ 0 waiting on you         0 queued                   │ │ 0 waiting on you         0 queued                   │ │ 0 waiting on you         0 queued                   │
+│ 0 in flight              0 done this month          │ │ 0 in flight              0 done this month          │ │ 0 in flight              0 done this month          │
+│ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0%  0/0 │ │ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0%  0/0 │ │ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0%  0/0 │
+│ ■ First mate in charge                              │ │ ■ First mate in charge                              │ │ ■ First mate in charge                              │
+└─────────────────────────────────────────────────────┘ └─────────────────────────────────────────────────────┘ └─────────────────────────────────────────────────────┘
+                                                                                                                                                          more below
+─ WAITING ON YOU FOR ALPHA ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   Nothing waits on you here.
+
+
+
+
+
+
+
+
+
+
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down pick a project   p pause   q quit                                                                                            updates by itself

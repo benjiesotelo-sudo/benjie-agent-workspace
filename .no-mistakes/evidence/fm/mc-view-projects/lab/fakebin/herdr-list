@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+[ "$1 $2" = "agent list" ] && exec cat "/Users/benjie/.no-mistakes/evidence/01M38XT85072NVJPSTV0JCRFP9/lab/agents.json"
+exit 0

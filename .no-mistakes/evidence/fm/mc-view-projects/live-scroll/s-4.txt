@@ -1,0 +1,36 @@
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar         Sun 10:00
+────────────────────────────────────────────────────────────────────────────────────────────────
+
+ 10 projects    1 active    1 parked    8 quiet            real list, same one the Bridge reads
+
+┌─────────────────────────────────────────────┐ ┌─────────────────────────────────────────────┐
+│ alpha                               Parked  │ │ beta                                 Quiet  │
+│ Alpha course materials for a class; decks   │ │ Beta outreach programme, delivered in       │
+│ and notes                                   │ │ modules                                     │
+│ 0 waiting on you     0 queued               │ │ 0 waiting on you     0 queued               │
+│ 0 in flight          0 done this month      │ │ 0 in flight          0 done this month      │
+│ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0%  0/0 │ │ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0%  0/0 │
+│ ■ First mate in charge                      │ │ ■ First mate in charge                      │
+└─────────────────────────────────────────────┘ └─────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────┐ ┌─────────────────────────────────────────────┐
+│ homeship                             Quiet  │ │ extra1                               Quiet  │
+│ This firstmate home's own repository        │ │ Extra project number 1                      │
+│                                             │ │                                             │
+│ 0 waiting on you     0 queued               │ │ 5 waiting on you     0 queued               │
+│ 0 in flight          0 done this month      │ │ 0 in flight          0 done this month      │
+│ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0%  0/0 │ │ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0%  0/5 │
+│ ■ First mate in charge                      │ │ ■ First mate in charge                      │
+└─────────────────────────────────────────────┘ └─────────────────────────────────────────────┘
+                                                                                more below
+─ WAITING ON YOU FOR ALPHA ─────────────────────────────────────────────────────────────────────
+   Nothing waits on you here.
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down pick a project   p pause   q quit                  updates by itself

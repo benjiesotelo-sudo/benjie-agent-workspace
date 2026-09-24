@@ -1,0 +1,8 @@
+window=fx:m2
+endpoint_task_id=m2
+worktree=/Users/benjie/.no-mistakes/evidence/01M38XT85072NVJPSTV0JCRFP9/lab/wt-mate
+project=/Users/benjie/.no-mistakes/evidence/01M38XT85072NVJPSTV0JCRFP9/lab/alpha-mate-home/projects/elsewhere
+harness=claude
+kind=ship
+mode=direct-PR
+yolo=off

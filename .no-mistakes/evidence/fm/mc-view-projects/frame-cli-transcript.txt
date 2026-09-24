@@ -1,0 +1,59 @@
+$ fm-mission-control.sh frame --view projects --format json   (many home, no agents)
+{"name":"alpha","status":"parked","lead":"First mate","counts":{"waiting":0,"queued":0,"in_flight":0,"done":0}}
+{"name":"beta","status":"quiet","lead":"First mate","counts":{"waiting":0,"queued":0,"in_flight":0,"done":0}}
+{"name":"homeship","status":"quiet","lead":"First mate","counts":{"waiting":0,"queued":0,"in_flight":0,"done":0}}
+{"name":"extra1","status":"quiet","lead":"First mate","counts":{"waiting":5,"queued":0,"in_flight":0,"done":0}}
+{"name":"extra2","status":"active","lead":"First mate","counts":{"waiting":0,"queued":0,"in_flight":1,"done":0}}
+{"name":"extra3","status":"quiet","lead":"First mate","counts":{"waiting":0,"queued":0,"in_flight":0,"done":0}}
+{"name":"extra4","status":"quiet","lead":"First mate","counts":{"waiting":0,"queued":0,"in_flight":0,"done":0}}
+{"name":"extra5","status":"quiet","lead":"First mate","counts":{"waiting":0,"queued":0,"in_flight":0,"done":0}}
+{"name":"extra6","status":"quiet","lead":"First mate","counts":{"waiting":0,"queued":0,"in_flight":0,"done":0}}
+{"name":"longdesc","status":"quiet","lead":"First mate","counts":{"waiting":0,"queued":0,"in_flight":0,"done":0}}
+{"name":"The setup itself","status":"quiet","lead":"First mate","counts":{"waiting":0,"queued":0,"in_flight":0,"done":0}}
+
+$ fm-mission-control.sh frame --view projects --size 60x40  (homeship; card rows only)
+
+$ fm-mission-control.sh frame --view projects --size 110x40  (homeship; card rows only)
+ 2 projects    1 active    0 parked    1 quiet                           real list, same one the Bridge reads
+
+┌────────────────────────────────────────────────────┐ ┌────────────────────────────────────────────────────┐
+│ alpha                                      Active  │ │ beta                                        Quiet  │
+│ Alpha course materials for a class; decks and      │ │ Beta outreach programme, delivered in modules      │
+│ notes                                              │ │                                                    │
+│ 2 waiting on you         2 queued                  │ │ 1 waiting on you         2 queued                  │
+│ 1 in flight              2 done this month         │ │ 0 in flight              1 done this month         │
+│ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 29%  2/7 │ │ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 25%  1/4 │
+│ ■ Alpha in charge                                  │ │ ■ Denver in charge                                 │
+└────────────────────────────────────────────────────┘ └────────────────────────────────────────────────────┘
+
+┌────────────────────────────────────────────────────┐
+
+$ fm-mission-control.sh frame --view projects --size 170x40  (homeship; card rows only)
+ 2 projects    1 active    0 parked    1 quiet                                                                                       real list, same one the Bridge reads
+
+┌─────────────────────────────────────────────────────┐ ┌─────────────────────────────────────────────────────┐ ┌─────────────────────────────────────────────────────┐
+│ alpha                                       Active  │ │ beta                                         Quiet  │ │ The setup itself                             Quiet  │
+│ Alpha course materials for a class; decks and notes │ │ Beta outreach programme, delivered in modules       │ │ Housekeeping that belongs to no project, and work   │
+│                                                     │ │                                                     │ │ on the first mate itself.                           │
+│ 2 waiting on you         2 queued                   │ │ 1 waiting on you         2 queued                   │ │ 1 waiting on you         1 queued                   │
+│ 1 in flight              2 done this month          │ │ 0 in flight              1 done this month          │ │ 0 in flight              0 done this month          │
+│ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 29%  2/7 │ │ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 25%  1/4 │ │ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0%  0/2 │
+│ ■ Alpha in charge                                   │ │ ■ Denver in charge                                  │ │ ■ Denver in charge                                  │
+└─────────────────────────────────────────────────────┘ └─────────────────────────────────────────────────────┘ └─────────────────────────────────────────────────────┘
+
+─ WAITING ON YOU FOR ALPHA ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+$ fm-mission-control.sh frame --view projects --size 230x40  (homeship; card rows only)
+ 2 projects    1 active    0 parked    1 quiet                                                                                                                                                   real list, same one the Bridge reads
+
+┌───────────────────────────────────────────┐ ┌───────────────────────────────────────────┐ ┌───────────────────────────────────────────┐
+│ alpha                             Active  │ │ beta                               Quiet  │ │ The setup itself                   Quiet  │
+│ Alpha course materials for a class; decks │ │ Beta outreach programme, delivered in     │ │ Housekeeping that belongs to no project,  │
+│ and notes                                 │ │ modules                                   │ │ and work on the first mate itself.        │
+│ 2 waiting on you    2 queued              │ │ 1 waiting on you    2 queued              │ │ 1 waiting on you    1 queued              │
+│ 1 in flight         2 done this month     │ │ 0 in flight         1 done this month     │ │ 0 in flight         0 done this month     │
+│ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 29%  2/7 │ │ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 25%  1/4 │ │ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0%  0/2 │
+│ ■ Alpha in charge                         │ │ ■ Denver in charge                        │ │ ■ Denver in charge                        │
+└───────────────────────────────────────────┘ └───────────────────────────────────────────┘ └───────────────────────────────────────────┘
+
+─ WAITING ON YOU FOR ALPHA ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────

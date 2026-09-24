@@ -1,0 +1,24 @@
+{
+  "result": {
+    "type": "agent_list",
+    "agents": [
+      {
+        "pane_id": "w1:p1",
+        "agent_status": "working",
+        "cwd": "/Users/benjie/.no-mistakes/evidence/01M38XT85072NVJPSTV0JCRFP9/lab/homeship",
+        "foreground_cwd": "/Users/benjie/.no-mistakes/evidence/01M38XT85072NVJPSTV0JCRFP9/lab/homeship"
+      },
+      {
+        "pane_id": "w2:p1",
+        "agent_status": "idle",
+        "cwd": "/Users/benjie/.no-mistakes/evidence/01M38XT85072NVJPSTV0JCRFP9/lab/alpha-mate-home"
+      },
+      {
+        "pane_id": "w3:p1",
+        "agent_status": "working",
+        "cwd": "/somewhere",
+        "foreground_cwd": "/Users/benjie/.no-mistakes/evidence/01M38XT85072NVJPSTV0JCRFP9/lab/wt-alpha"
+      }
+    ]
+  }
+}
