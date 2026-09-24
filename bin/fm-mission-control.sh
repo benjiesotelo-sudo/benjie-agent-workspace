@@ -25,10 +25,10 @@
 # Keys while running: 1-9 switch view, p pauses the animation, q quits,
 # up/down pick an agent in the team list and Enter moves your Herdr view to
 # its pane (`herdr agent focus`, navigation only); on the Projects view
-# up/down pick a project card instead. On the approvals view up/down move
+# up/down pick a project card instead. On the Approvals view up/down move
 # the highlight through the decisions instead, and Enter does nothing: no key
-# answers or changes a decision. Tapping a tab switches view
-# when the terminal reports mouse clicks.
+# answers or changes a decision. Tapping a tab switches view when the
+# terminal reports mouse clicks.
 #
 # start creates the workspace with `herdr workspace create --label
 # mission-control --no-focus` in this home and types the run command into its
