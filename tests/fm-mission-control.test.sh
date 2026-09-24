@@ -331,6 +331,18 @@ for n in 2 3; do
 done
 pass "a second mate home that cannot be read keeps its last good read"
 
+# A mate home unreadable from the start reads as history once it can be read.
+chmod 000 "$BACKLOG_M"
+code=$(drive "$TMP_ROOT/late" "4=SH:chmod 644 $BACKLOG_M && touch $BACKLOG_M,12=q") || fail "the pty driver failed"
+chmod 644 "$BACKLOG_M"
+[ "$code" = 0 ] || fail "the late-read run quits cleanly, got exit $code"
+screen "$TMP_ROOT/late" 1 | grep -q 'its records could not be read' || fail "the mate home starts unreadable"
+screen "$TMP_ROOT/late" 2 | grep -q 'its records could not be read' && fail "the mate home becomes readable"
+[ "$(screen "$TMP_ROOT/late" 2 | grep -c "Alpha's intern")" = 2 ] || fail "the mate's interns are placed on its first read"
+screen "$TMP_ROOT/late" 2 | grep -Eq 'Alpha (finished|asks you|calls in an intern|left a question)' \
+  && fail "a mate's first readable records are history, not news"
+pass "a second mate home first read late adds no invented events"
+
 # Herdr stops answering after one good read: the notice says what is shown.
 code=$(drive "$TMP_ROOT/down" "1=SH:touch $TMP_ROOT/herdr-down,6=q") || fail "the pty driver failed"
 rm -f "$TMP_ROOT/herdr-down"

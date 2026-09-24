@@ -336,7 +336,7 @@ def build_crew(model, agents, home, session="default", own_pane=None, fm_name="F
                     word = "between steps"
                 doing = "%s: %s" % (word, title) if title else word
             interns.append({
-                "key": "intern:%s:%s" % (hid, t["id"]), "kind": "intern", "lead": lead,
+                "key": "intern:%s:%s" % (hid, t["id"]), "kind": "intern", "lead": lead, "home": hid,
                 "status": "work" if working else "idle", "doing": clean(doing),
                 "path": "projects/%s" % proj if proj else "no project",
                 "pane": agent["pane"] if agent else None, "title": clean(title),
@@ -509,6 +509,7 @@ class Scene:
         self.counts = {"waiting": 0, "queued": 0, "in_flight": 0, "done": 0}
         self.overflow = {}
         self.known = set()
+        self.read = set()
 
     # -- events --------------------------------------------------------------
     def log(self, who, text, color, when=None):
@@ -565,6 +566,7 @@ class Scene:
         self.crew = crew
         first = self.first
         items = model["items"]
+        fresh = set(model["snapshots"]) - self.read
         self.counts = bridge._counts(items)
         self.inbox_real = self.counts["waiting"]
 
@@ -655,7 +657,7 @@ class Scene:
                 a = Actor(i)
                 a.slot, a.rest = slot, want
                 self.actors[i["key"]] = a
-                if first or i["key"] in self.known:
+                if first or i["key"] in self.known or i["home"] in fresh:
                     self.place(a)
                 else:
                     a.x, a.feet = self.door()
@@ -673,9 +675,12 @@ class Scene:
         # Someone newly needs the captain: a walk to the inbox with a sheet.
         waiting_now = {m["key"]: m.get("waiting", 0) for m in desk_members}
         if not first:
-            for key, n in waiting_now.items():
+            for m in desk_members:
+                if m["id"] in fresh:
+                    continue
+                key, n = m["key"], waiting_now[m["key"]]
                 a = self.actors.get(key)
-                if n > self.prev_waiting.get(key, n) and a is not None and a.state in ("work", "sleep"):
+                if n >self.prev_waiting.get(key, n) and a is not None and a.state in ("work", "sleep"):
                     self.send_to_inbox(a, n - self.prev_waiting.get(key, 0))
         self.prev_waiting = waiting_now
         self.known |= {c["key"] for c in crew}
@@ -691,7 +696,7 @@ class Scene:
                          when=bridge._day(it["date"], model["today"]) or "")
         else:
             for it in done:
-                if (it["owner"], it["id"]) not in self.prev_done:
+                if it["owner"] not in fresh and (it["owner"], it["id"]) not in self.prev_done:
                     who = self._owner(it["owner"])
                     self.log(who["name"], "finished " + it["title"], who["color"])
         self.prev_done = ids
@@ -700,10 +705,12 @@ class Scene:
         asks = {(it["owner"], it["id"]) for it in items if it["bucket"] == "waiting"}
         if self.prev_asks is not None:
             for it in items:
-                if it["bucket"] == "waiting" and (it["owner"], it["id"]) not in self.prev_asks:
+                if it["bucket"] == "waiting" and it["owner"] not in fresh \
+                        and (it["owner"], it["id"]) not in self.prev_asks:
                     who = self._owner(it["owner"])
                     self.log(who["name"], "asks you " + it["title"], who["color"])
         self.prev_asks = asks
+        self.read |= fresh
         self.first = False
 
     def _member(self, key):
