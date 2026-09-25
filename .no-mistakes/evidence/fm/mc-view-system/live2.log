@@ -1,0 +1,10 @@
+8.0s SNAP:01-office-healthy
+9.1s SH:chmod 000 /tmp/nm-sys-live/homeship/data/backlog.md && touch /tmp/nm-sys-live/homeship/data/backlog.md
+16.1s SNAP:02-office-records-unreadable
+17.0s 9
+18.2s SNAP:03-system-records-unreadable
+19.0s SH:chmod 644 /tmp/nm-sys-live/homeship/data/backlog.md && touch /tmp/nm-sys-live/homeship/data/backlog.md
+26.0s 1
+27.1s SNAP:04-office-records-readable-again
+28.1s q
+exit 0

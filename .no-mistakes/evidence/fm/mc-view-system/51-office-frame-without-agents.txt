@@ -1,0 +1,8 @@
+# frame --view office, no --agents, no --readings (fixture home with one local second mate)
+## base 5ef3a24 rack:
+ ok  
+## branch bc3f09c rack and system json:
+check
+{"overall":"1 thing needs a look: second mate Alpha","rack":"check"}
+## branch with --agents (saved herdr agent list):
+{"overall":"Nothing needs a look so far; still checking","rack":"ok"}

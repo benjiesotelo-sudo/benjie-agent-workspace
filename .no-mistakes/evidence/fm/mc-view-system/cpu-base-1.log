@@ -1,0 +1,7 @@
+6.2s CPU:office:30
+CPU office: 4.16% over 30s (pid 59441, cpu 0.27s -> 1.52s)
+37.2s 9
+38.0s CPU:system:30
+CPU system: 3.10% over 30s (pid 59441, cpu 1.59s -> 2.52s)
+69.1s q
+exit 0

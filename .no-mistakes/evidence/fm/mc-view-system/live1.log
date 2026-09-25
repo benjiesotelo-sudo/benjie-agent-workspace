@@ -1,0 +1,28 @@
+0.1s 9
+0.6s SNAP:01-system-first-frame
+12.2s SNAP:02-system-healthy
+12.6s 1
+14.0s SNAP:03-office-healthy
+14.6s CPU:office:20
+CPU office: 4.49% over 20s (pid 4797, cpu 0.68s -> 1.58s)
+35.0s 9
+35.6s CPU:system:20
+CPU system: 4.34% over 20s (pid 4797, cpu 1.62s -> 2.49s)
+56.2s SH:touch -t 202609260300 /tmp/nm-sys-live/homeship/state/.last-watcher-beat
+63.0s SNAP:04-system-stale-beat
+63.6s 1
+65.0s SNAP:05-office-stale-beat
+66.1s SH:cp /tmp/nm-sys-live/agents-fm-working.json /tmp/nm-sys-live/agents.json
+67.0s 9
+73.0s SNAP:06-system-stale-fm-working
+74.1s SH:touch /tmp/nm-sys-live/homeship/state/.last-watcher-beat; cp /tmp/nm-sys-live/agents-idle.json /tmp/nm-sys-live/agents.json
+80.0s SNAP:07-system-healthy-again
+80.6s 1
+82.1s SNAP:08-office-healthy-again
+83.2s SH:chmod 000 /tmp/nm-sys-live/homeship/data/backlog.md
+92.0s SNAP:09-office-records-unreadable
+93.2s 9
+94.2s SNAP:10-system-records-unreadable
+95.2s SH:chmod 644 /tmp/nm-sys-live/homeship/data/backlog.md
+96.0s q
+exit 0

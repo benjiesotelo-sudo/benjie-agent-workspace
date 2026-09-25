@@ -1,0 +1,50 @@
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System                                           Sat 04:09
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀    ▀▀▀▀▀▀▀▀▀   ▀▀▀▀▀▀▀▀▀▀▀▀▀           │ LIVE ACTIVITY real
+                       ▀▀ ▀▀ ▀▀ ▀▀                       ▀   ▀ ▀ ▀ ▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀           │
+     ▀▀   ▀▀   ▀▀                        ▀▀▀▀▀▀▀ ▀▀▀▀▀▀      ▀ ▀ ▀ ▀     ▀▀▀▀▀▀▀▀▀▀▀            │ 04:09  Denver wakes up
+▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀│
+   ▀alumni             tasks        ▀▀▀▀▀▀▀  ▀▀▀▀▀▀         plan         memory         ▀▀▀▀▀▀▀ │ 12 Sep Alpha finished Chapter four notes
+  ▀   ▀                             ▀▀▀▀▀▀▀  ▀▀▀▀▀▀▀                                      ▀ ▀   │
+                           ▀▀▀▀▀  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                                   ▀ ▀   │ 5 Sep  Denver finished Chapter three decks
+   ▀▀▀                       ▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                                   ▀ ▀   │
+                                          ▀   ▀                                           ▀ ▀   │ 2 Sep  Denver finished Module one handout
+                                          ▀▀▀▀▀                                           ▀ ▀   │
+                                         ▀     ▀                                          ▀ ▀   │
+                                         ▀▀▀▀▀▀▀                                                │
+                                         Denver                                         ▀▀▀▀▀▀▀ │
+   ▀▀▀▀▀▀▀▀▀                             working                                       system   │
+                                                                                         ok     │
+    ▀▀▀▀▀▀▀ Z                                                                                   │
+ ▀▀▀▀▀▀▀▀▀▀▀▀▀                                                                                  │
+ ▀▀▀▀▀▀▀▀▀▀z▀▀   ▀▀▀    ▀▀▀                                                                     │
+     ▀▀▀▀▀       ▀▀▀    ▀▀▀                                                                     │
+               ▀▀▀▀▀▀▀▀▀▀▀▀▀▀                                                                   │
+                ▀▀▀▀▀  ▀▀▀▀▀                                                                    │
+     ▀▀▀▀▀     ▀ ▀▀▀ ▀▀ ▀▀▀ ▀                                                                   │
+     Alpha       ▀ ▀    ▀ ▀                                                                     │
+    asleep                                                                                    ▀▀│
+ ▀▀▀▀▀▀▀▀                                                                                       │
+ CAPTAIN                    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                  ▀   ▀       │
+                                          ▀▀▀▀▀▀▀▀▀                                  ▀▀▀        │
+       ▀                            ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                                       │
+                  inbox 4             ▀▀▀▀         ▀▀▀▀                                         │
+          ▀▀▀▀▀▀▀                       ▀▀▀         ▀▀▀                                       ▀▀│
+─ TEAM ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   NAME       ROLE                DOING NOW                                                                               PATH (the project it works in)
+ ● Denver     first mate          working, 3 waiting on you                                                               every project
+ z Alpha      second mate         asleep, 2 jobs listed, 1 waiting on you                                                 projects/alpha
+ ● intern     Alpha's intern      Build chapter four                                                                      projects/alpha
+ ○ intern     Alpha's intern      state not readable: Print the handouts                                                  projects/alpha
+
+
+
+
+
+
+
+
+   Interns stand beside their person in charge for one job, then go home. Sleeping agents cost nothing.
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down pick an agent   enter talk to it   p pause   q quit                                                                          updates by itself

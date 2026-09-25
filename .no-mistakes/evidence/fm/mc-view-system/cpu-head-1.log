@@ -1,0 +1,7 @@
+6.0s CPU:office:30
+CPU office: 4.61% over 30s (pid 79340, cpu 0.30s -> 1.69s)
+37.2s 9
+38.1s CPU:system:30
+CPU system: 4.28% over 30s (pid 79340, cpu 1.78s -> 3.07s)
+69.2s q
+exit 0

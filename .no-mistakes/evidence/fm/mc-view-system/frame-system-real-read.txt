@@ -1,0 +1,53 @@
+$ FM_HOME=<isolated fixture home> FM_MC_HERDR=<lab herdr> fm-mission-control.sh frame --view system   # reads this Mac once, no --readings
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System                                           Sat 04:16
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+ ● All systems normal                                                                                                                        read only, nothing here acts
+
+┌─ ● THIS MAC ─────────────────────────────────────────────────────────────────────┐ ┌─ ● CREW MONITORING ──────────────────────────────────────────────────────────────┐
+│ This Mac: healthy                                                                │ │ Monitoring the crew: healthy, last check just now                                │
+│ ● Up since Sun 20 Sep 16:23, 5 days                                              │ │ ● Away mode is off                                                               │
+│ ● Processor load 2.3 on 10 cores                                                 │ │ ● 2 notifications waiting for the first mate                                     │
+│ ● Memory: 8.9 GB of 16 GB in use                                                 │ │                                                                                  │
+│ ● Disk: 36 GB free of 228 GB                                                     │ │                                                                                  │
+│ ● On the tailnet                                                                 │ │                                                                                  │
+└──────────────────────────────────────────────────────────────────────────────────┘ └──────────────────────────────────────────────────────────────────────────────────┘
+
+┌─ ● CREW ─────────────────────────────────────────────────────────────────────────┐ ┌─ ● SECOND MATES ─────────────────────────────────────────────────────────────────┐
+│ Crew: 0 working, 2 asleep, 2 interns out                                         │ │ Second mates: all 1 window open                                                  │
+│                                                                                  │ │ ● Alpha: window open, home changed 8 minutes ago                                 │
+└──────────────────────────────────────────────────────────────────────────────────┘ └──────────────────────────────────────────────────────────────────────────────────┘
+
+┌─ ● THE BRIDGE PAGE ──────────────────────────────────────────────────────────────┐ ┌─ ● MISSION CONTROL ──────────────────────────────────────────────────────────────┐
+│ The Bridge page: running                                                         │ │ Mission Control: running in its Herdr space                                      │
+│ ● Open it at                                                                     │ │                                                                                  │
+│ http://127.0.0.1:17373/                                                          │ │                                                                                  │
+└──────────────────────────────────────────────────────────────────────────────────┘ └──────────────────────────────────────────────────────────────────────────────────┘
+
+┌─ ● GITHUB ───────────────────────────────────────────────────────────────────────┐ ┌─ ● TOOLS ────────────────────────────────────────────────────────────────────────┐
+│ GitHub: signed in, checked just now                                              │ │ Tools: all installed                                                             │
+│                                                                                  │ │ ● no-mistakes 1.79.0                                                             │
+│                                                                                  │ │ ● herdr 0.8.0                                                                    │
+│                                                                                  │ │ ● claude 2.1.282                                                                 │
+└──────────────────────────────────────────────────────────────────────────────────┘ └──────────────────────────────────────────────────────────────────────────────────┘
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   files recheck every 5 s, commands every 5 min   q quit                                                                               updates by itself
+FM_HOME=$T/homeship FM_MC_HERDR=$T/bin/herdr-fake $MC frame --view system    0.41s user 0.39s system 51% cpu 1.570 total
+exit 0

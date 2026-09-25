@@ -1,0 +1,11 @@
+width 132: 2 cards in the first row
+width 150: 2 cards in the first row
+width 183: 2 cards in the first row
+width 184: 3 cards in the first row
+width 200: 3 cards in the first row
+width 245: 3 cards in the first row
+width 250: 3 cards in the first row
+width 320: 3 cards in the first row
+
+--- 96x36 short pane
+Make this pane bigger: Mission Control needs 96 x 36, this pane is 132 x 30.

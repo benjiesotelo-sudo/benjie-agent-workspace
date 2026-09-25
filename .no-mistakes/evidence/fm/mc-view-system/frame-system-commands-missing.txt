@@ -1,0 +1,53 @@
+$ PATH=<jq and python3 only>:/usr/bin:/bin FM_BRIDGE_TAILSCALE=<a failing tailscale> FM_MC_HERDR=<herdr that is down> fm-mission-control.sh frame --view system
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System                                           Sat 04:16
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+ ● 10 things need a look: this Mac's up time, memory in use, the tailnet, Herdr's agent list, second mate Alpha, Mission Control, the GitH...
+
+┌─ ● THIS MAC ─────────────────────────────────────────────────────────────────────┐ ┌─ ● CREW MONITORING ──────────────────────────────────────────────────────────────┐
+│ This Mac: something needs a look                                                 │ │ Monitoring the crew: healthy, last check 2 minutes ago                           │
+│ ● Up time could not be checked                                                   │ │ ● Away mode is off                                                               │
+│ ● Processor load 2.2 on 10 cores                                                 │ │ ● 2 notifications waiting for the first mate                                     │
+│ ● Memory in use could not be checked                                             │ │                                                                                  │
+│ ● Disk: 36 GB free of 228 GB                                                     │ │                                                                                  │
+│ ● Tailnet could not be checked                                                   │ │                                                                                  │
+└──────────────────────────────────────────────────────────────────────────────────┘ └──────────────────────────────────────────────────────────────────────────────────┘
+
+┌─ ● CREW ─────────────────────────────────────────────────────────────────────────┐ ┌─ ● SECOND MATES ─────────────────────────────────────────────────────────────────┐
+│ Crew: 0 working, 2 asleep, 2 interns out                                         │ │ Second mates: 1 of 1 windows closed                                              │
+│ ● Herdr's agent list could not be read, so some may look asleep                  │ │ ● Alpha: window closed, home changed 8 minutes ago                               │
+└──────────────────────────────────────────────────────────────────────────────────┘ └──────────────────────────────────────────────────────────────────────────────────┘
+
+┌─ ● THE BRIDGE PAGE ──────────────────────────────────────────────────────────────┐ ┌─ ● MISSION CONTROL ──────────────────────────────────────────────────────────────┐
+│ The Bridge page: running                                                         │ │ Mission Control could not be checked                                             │
+│ ● Open it at                                                                     │ │                                                                                  │
+│ http://127.0.0.1:17373/                                                          │ │                                                                                  │
+└──────────────────────────────────────────────────────────────────────────────────┘ └──────────────────────────────────────────────────────────────────────────────────┘
+
+┌─ ● GITHUB ───────────────────────────────────────────────────────────────────────┐ ┌─ ● TOOLS ────────────────────────────────────────────────────────────────────────┐
+│ GitHub: the sign-in could not be checked                                         │ │ Tools: 3 of 3 could not be checked                                               │
+│                                                                                  │ │ ● no-mistakes: could not be checked                                              │
+│                                                                                  │ │ ● herdr: could not be checked                                                    │
+│                                                                                  │ │ ● claude: could not be checked                                                   │
+└──────────────────────────────────────────────────────────────────────────────────┘ └──────────────────────────────────────────────────────────────────────────────────┘
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   files recheck every 5 s, commands every 5 min   q quit                                                                               updates by itself
+PATH="$T/minbin:/usr/bin:/bin" FM_HOME=$T/homeship FM_MC_HERDR= = $MC frame    0.31s user 0.29s system 84% cpu 0.703 total
+exit 0

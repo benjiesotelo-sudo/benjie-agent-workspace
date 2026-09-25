@@ -1,0 +1,7 @@
+$ # Adversarial: other views with no --readings and no --agents leave the system unchecked (rack stays ok), and run no Herdr command
+frame --view office --format json -> system.rack=ok overall=Nothing needs a look so far; still checking
+frame --view tasks --format json -> system.rack=ok overall=Nothing needs a look so far; still checking
+frame --view approvals --format json -> system.rack=ok overall=Nothing needs a look so far; still checking
+frame --view projects --format json -> system.rack=ok overall=Nothing needs a look so far; still checking
+office text rack: [ ok  ]
+herdr calls made by those frames: 0
