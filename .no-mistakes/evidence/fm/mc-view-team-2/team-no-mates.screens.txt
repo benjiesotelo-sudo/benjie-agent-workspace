@@ -1,0 +1,225 @@
+===== screen 1, just before sending '6'
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System     Sun 10:00
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀    ▀▀▀▀▀▀▀▀▀   ▀▀▀▀▀▀▀▀▀▀▀▀▀           │ LIVE ACTIVITY real
+                       ▀▀ ▀▀ ▀▀ ▀▀       ▀▀▀▀▀▀▀ ▀▀▀▀▀▀  ▀   ▀ ▀ ▀ ▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀           │
+     ▀▀   ▀▀   ▀▀                        ▀▀▀▀▀▀▀ ▀▀▀▀▀▀      ▀ ▀ ▀ ▀     ▀▀▀▀▀▀▀▀▀▀▀            │ 5 Sep  Denver finished Chapter
+▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀│        three decks
+   ▀alumni             tasks                                plan         memory         ▀▀▀▀▀▀▀ │
+  ▀   ▀                             ▀▀▀▀▀▀▀  ▀▀▀z▀▀▀                                      ▀ ▀   │ 2 Sep  Denver finished Module one
+                           ▀▀▀▀▀  ▀▀▀▀▀▀▀▀▀▀▀▀▀z▀▀▀▀▀▀▀                                   ▀ ▀   │        handout
+   ▀▀▀                       ▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                                   ▀ ▀   │
+                                          ▀▀▀▀▀                                           ▀ ▀   │
+                                                                                          ▀ ▀   │
+                                                                                          ▀ ▀   │
+                                          ▀▀▀▀▀                                                 │
+                                         Denver                                         ▀▀▀▀▀▀▀ │
+                                         asleep                                        system   │
+                                                                                         ok     │
+                                                                                                │
+                                                                                                │
+                                                                                                │
+                                                                                                │
+                                                                                                │
+                                                                                                │
+                                                                                                │
+                                                                                                │
+                                                                                              ▀▀│
+ ▀▀▀▀▀▀▀▀                                                                                       │
+ CAPTAIN                    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                  ▀   ▀       │
+                                          ▀▀▀▀▀▀▀▀▀                                  ▀▀▀        │
+       ▀                            ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                                       │
+                  inbox 3             ▀▀▀▀         ▀▀▀▀                                         │
+          ▀▀▀▀▀▀▀                       ▀▀▀         ▀▀▀                                       ▀▀│
+─ TEAM ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   NAME       ROLE                DOING NOW                                         PATH (the project it works in)
+ z Denver     first mate          standing by, 3 waiting on you                     every project
+ · interns    one job each        none right now
+
+
+
+
+   Interns stand beside their person in charge for one job, then go home. Sleeping agents cost nothing.
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down pick an agent   enter talk to it   p pause   q quit                                    updates by itself
+===== screen 2, just before sending '\x1b[B'
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System     Sun 10:00
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+ 0 second mates    0 working    1 asleep or away    0 interns on jobs                      real crew, from the second mate registry
+
+                                            ┌──────────────────────────────────────────┐
+                                            │ You, the captain: decisions and merges   │
+                                            │ 3 things wait on you                     │
+                                            └─────────────────────┬────────────────────┘
+                                                                  │
+                                    ┌─────────────────────────────┴────────────────────────────┐
+                                    │  ▀   ▀   Denver                                 z asleep │
+                                    │  ▀▀ ▀▀   Chief of staff: routes the work and supervises  │
+                                    │          the crew                                        │
+                                    │ ▀▀▀▀▀▀▀  owns every project                              │
+                                    │          8 listed, 3 for you                             │
+                                    └─────────────────────────────┬────────────────────────────┘
+
+   No second mates are registered yet, so the first mate runs every project itself.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+─ ALUMNI ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   No one has retired yet.
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down pick a second mate   enter talk to it   p pause   q quit                               updates by itself
+===== screen 3, just before sending '\r'
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System     Sun 10:00
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+ 0 second mates    0 working    1 asleep or away    0 interns on jobs                      real crew, from the second mate registry
+
+                                            ┌──────────────────────────────────────────┐
+                                            │ You, the captain: decisions and merges   │
+                                            │ 3 things wait on you                     │
+                                            └─────────────────────┬────────────────────┘
+                                                                  │
+                                    ┌─────────────────────────────┴────────────────────────────┐
+                                    │  ▀   ▀   Denver                                 z asleep │
+                                    │  ▀▀ ▀▀   Chief of staff: routes the work and supervises  │
+                                    │          the crew                                        │
+                                    │ ▀▀▀▀▀▀▀  owns every project                              │
+                                    │          8 listed, 3 for you                             │
+                                    └─────────────────────────────┬────────────────────────────┘
+
+   No second mates are registered yet, so the first mate runs every project itself.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+─ ALUMNI ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   No one has retired yet.
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down pick a second mate   enter talk to it   p pause   q quit                               updates by itself
+===== screen 4, just before sending '\r'
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System     Sun 10:00
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+ 0 second mates    0 working    1 asleep or away    0 interns on jobs                      real crew, from the second mate registry
+
+                                            ┌──────────────────────────────────────────┐
+                                            │ You, the captain: decisions and merges   │
+                                            │ 3 things wait on you                     │
+                                            └─────────────────────┬────────────────────┘
+                                                                  │
+                                    ┌─────────────────────────────┴────────────────────────────┐
+                                    │  ▀   ▀   Denver                                 z asleep │
+                                    │  ▀▀ ▀▀   Chief of staff: routes the work and supervises  │
+                                    │          the crew                                        │
+                                    │ ▀▀▀▀▀▀▀  owns every project                              │
+                                    │          8 listed, 3 for you                             │
+                                    └─────────────────────────────┬────────────────────────────┘
+
+   No second mates are registered yet, so the first mate runs every project itself.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+─ ALUMNI ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   No one has retired yet.
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down pick a second mate   enter talk to it   p pause   q quit                               updates by itself
+===== screen 5, just before sending 'q'
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System     Sun 10:00
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+ 0 second mates    0 working    1 asleep or away    0 interns on jobs                      real crew, from the second mate registry
+
+                                            ┌──────────────────────────────────────────┐
+                                            │ You, the captain: decisions and merges   │
+                                            │ 3 things wait on you                     │
+                                            └─────────────────────┬────────────────────┘
+                                                                  │
+                                    ┌─────────────────────────────┴────────────────────────────┐
+                                    │  ▀   ▀   Denver                                 z asleep │
+                                    │  ▀▀ ▀▀   Chief of staff: routes the work and supervises  │
+                                    │          the crew                                        │
+                                    │ ▀▀▀▀▀▀▀  owns every project                              │
+                                    │          8 listed, 3 for you                             │
+                                    └─────────────────────────────┬────────────────────────────┘
+
+   No second mates are registered yet, so the first mate runs every project itself.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+─ ALUMNI ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   No one has retired yet.
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down pick a second mate   enter talk to it   p pause   q quit                               updates by itself

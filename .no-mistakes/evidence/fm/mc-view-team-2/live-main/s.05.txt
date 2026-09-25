@@ -1,0 +1,50 @@
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System                                           Sat 03:07 
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                                                                                          
+ 1 second mate    1 working    1 asleep or away    3 interns on jobs                                                             real crew, from the second mate registry 
+                                                                                                                                                                          
+                                                               ┌──────────────────────────────────────────┐                                                               
+                                                               │ You, the captain: decisions and merges   │                                                               
+                                                               │ 4 things wait on you                     │                                                               
+                                                               └─────────────────────┬────────────────────┘                                                               
+                                                                                     │                                                                                    
+                                                       ┌─────────────────────────────┴────────────────────────────┐                                                       
+                                                       │  ▀   ▀   Denver                                ● working │                                                       
+                                                       │  ▀▀ ▀▀   Chief of staff: routes the work and supervises  │                                                       
+                                                       │          the crew                                        │                                                       
+                                                       │ ▀▀▀▀▀▀▀  owns every project                              │                                                       
+                                                       │          8 in its list, 3 wait on you                    │                                                       
+                                                       └─────────────────────────────┬────────────────────────────┘                                                       
+                                                                                     ├─ ○ state not readable: Print the handouts                                          
+                                                                                     │                                                                                    
+                                                        ┌────────────────────────────┴───────────────────────────┐                                                        
+                                                        │  ▀   ▀   Alpha                                z asleep │                                                        
+                                                        │  ▀▀ ▀▀   Alpha course, its decks and its quizzes       │                                                        
+                                                        │                                                        │                                                        
+                                                        │ ▀▀▀▀▀▀▀  owns alpha                                    │                                                        
+                                                        │          2 in its list, 1 waits on you                 │                                                        
+                                                        └────────────────────────────────────────────────────────┘                                                        
+                                                          ● Build chapter four                                                                                            
+                                                          ○ state not readable: Add a text layer to the chapte...                                                         
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+─ ABOUT ALPHA ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   Persistent second mate for the alpha course                                                                                                                            
+   Scope: the alpha course, its decks and its quizzes                                                                                                                     
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+─ ALUMNI ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   No one has retired yet.                                                                                                                                                
+                                                                                                                                                                          
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ moving your view to Alpha's pane                                                                                                                       updates by itself 

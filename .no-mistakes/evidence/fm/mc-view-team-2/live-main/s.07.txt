@@ -1,0 +1,50 @@
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System                                           Sat 03:07 
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                                                                                          
+ 4 decisions wait on you, with 2 agents   oldest since 29 Aug, 28 days ago                                                                      read only, answer in chat 
+                                                                                                                                                                          
+── Denver 3 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ ▸   28 days  ■ setup                 Tick a profile setting only the captain can reach                                                                                   
+     24 days  ■ alpha                 Choose the quiz format                                                                                                              
+     23 days  ■ beta                  Approve the module outline                                                                                                          
+                                                                                                                                                                          
+── Alpha 1 ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+     18 days  ■ alpha                 Decide the chapter five review point                                                                                                
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+┌─ THE DECISION ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│  Tick a profile setting only the captain can reach                                                                                                                     │
+│  asked 29 Aug, 28 days ago, sits with Denver, the ship's own setup                                                                                                     │
+│  A body line that the Bridge never shows.                                                                                                                              │
+│                                                                                                                                                                        │
+│                                                                                                                                                                        │
+│                                                                                                                                                                        │
+│                                                                                                                                                                        │
+└────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down read each decision   answers happen in chat, not here   q quit                                                               updates by itself 

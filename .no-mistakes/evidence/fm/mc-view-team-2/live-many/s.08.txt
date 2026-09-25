@@ -1,0 +1,44 @@
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System     Sat 03:08 
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                                                    
+ 7 second mates    2 working    6 asleep or away    0 interns on jobs                      real crew, from the second mate registry 
+                                                                                                                                    
+                                            ┌──────────────────────────────────────────┐                                            
+                                            │ You, the captain: decisions and merges   │                                            
+                                            │ 6 things wait on you                     │                                            
+                                            └─────────────────────┬────────────────────┘                                            
+                                                                  │                                                                 
+                                    ┌─────────────────────────────┴────────────────────────────┐                                    
+                                    │  ▀   ▀   Denver                                ● working │                                    
+                                    │  ▀▀ ▀▀   Chief of staff: routes the work and supervises  │                                    
+                                    │          the crew                                        │                                    
+                                    │ ▀▀▀▀▀▀▀  owns every project                              │                                    
+                                    │          0 in its list                                   │                                    
+                                    └─────────────────────────────┬────────────────────────────┘                                    
+ ◂ 4 more             ┌───────────────────────────────────────────┼───────────────────────────────────────────┐                     
+ ┌────────────────────┴───────────────────┐  ┌────────────────────┴───────────────────┐  ┌────────────────────┴───────────────────┐ 
+ │  ▀   ▀   Juniper              z asleep │  │  ▀   ▀   Marlow               z asleep │  │  ▀   ▀   FAR                      away │ 
+ │  ▀▀ ▀▀   Course 5 lessons              │  │  ▀▀ ▀▀   Course 6 lessons              │  │  ▀▀ ▀▀   Far course                    │ 
+ │                                        │  │                                        │  │                                        │ 
+ │ ▀▀▀▀▀▀▀  owns alpha                    │  │ ▀▀▀▀▀▀▀  owns alpha                    │  │ ▀▀▀▀▀▀▀  owns beta                     │ 
+ │          2 in its list, 1 waits on you │  │          2 in its list, 1 waits on you │  │          its list is on another mac... │ 
+ └────────────────────────────────────────┘  └────────────────────────────────────────┘  └────────────────────────────────────────┘ 
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+─ ABOUT FAR ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   Mate on the other box                                                                                                            
+   Scope: the far course: its decks                                                                                                 
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+─ ALUMNI ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   No one has retired yet.                                                                                                          
+                                                                                                                                    
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down pick a second mate   enter talk to it   p pause   q quit                               updates by itself 

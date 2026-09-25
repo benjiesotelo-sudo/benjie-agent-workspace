@@ -1,0 +1,44 @@
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System     Sat 03:10 
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀    ▀▀▀▀▀▀▀▀▀   ▀▀▀▀▀▀▀▀▀▀▀▀▀           │ LIVE ACTIVITY real                
+                       ▀▀    ▀▀                          ▀   ▀ ▀ ▀ ▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀           │                                   
+     ▀▀   ▀▀   ▀▀                        ▀▀▀▀▀▀▀ ▀▀▀▀▀▀      ▀ ▀ ▀ ▀     ▀▀▀▀▀▀▀▀▀▀▀            │                                   
+▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀│                                   
+   ▀alumni             tasks        ▀▀▀▀     ▀▀▀            plan         memory         ▀▀▀▀▀▀▀ │                                   
+  ▀   ▀                             ▀▀▀▀▀▀▀  ▀▀▀▀▀▀▀                                      ▀ ▀   │                                   
+                           ▀▀▀▀▀  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                                   ▀ ▀   │                                   
+   ▀▀▀                       ▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                                   ▀ ▀   │                                   
+                                          ▀   ▀                                           ▀ ▀   │                                   
+                                          ▀▀▀▀▀                                           ▀ ▀   │                                   
+                                         ▀     ▀                                          ▀ ▀   │                                   
+                                         ▀▀▀▀▀▀▀                                                │                                   
+                                         Denver                                         ▀▀▀▀▀▀▀ │                                   
+   ▀▀▀▀▀▀▀▀▀                    ▀▀▀▀▀▀▀▀▀working             ▀▀▀▀▀▀▀▀▀                 system   │                                   
+    ▀▀▀▀▀▀▀                                                                              ok     │                                   
+    ▀▀▀▀▀▀▀                      ▀▀▀▀▀▀▀z                     ▀▀▀▀▀▀▀z    4 upstairs, 0 working │                                   
+ ▀▀▀▀▀▀▀▀▀▀▀▀▀                ▀▀▀▀▀▀▀▀▀z▀▀▀                ▀▀▀▀▀▀▀▀▀z▀▀▀                        │                                   
+ ▀▀▀▀▀▀▀▀▀▀▀▀▀                ▀▀▀▀▀▀▀▀▀▀▀▀▀                ▀▀▀▀▀▀▀▀▀▀▀▀▀                        │                                   
+     ▀   ▀                        ▀▀▀▀▀                        ▀▀▀▀▀                            │                                   
+     ▀▀▀▀▀                                                                                      │                                   
+    ▀     ▀                                                                                     │                                   
+    ▀▀▀▀▀▀▀                       ▀▀▀▀▀                        ▀▀▀▀▀                            │                                   
+       X                          Quill                       Harbor                            │                                   
+    working                      asleep                       asleep                          ▀▀│                                   
+ ▀▀▀▀▀▀▀▀                                                                                       │                                   
+ CAPTAIN                    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                  ▀   ▀       │                                   
+                                          ▀▀▀▀▀▀▀▀▀                                  ▀▀▀        │                                   
+       ▀                            ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                                       │                                   
+                  inbox 6             ▀▀▀▀         ▀▀▀▀                                         │                                   
+          ▀▀▀▀▀▀▀                       ▀▀▀         ▀▀▀                                       ▀▀│                                   
+─ TEAM ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   NAME       ROLE                DOING NOW                                         PATH (the project it works in)                  
+ ● Denver     first mate          working                                           every project                                   
+ ● X          second mate         working, 2 jobs in its list, 1 waiting on you     projects/alpha                                  
+ z Quill      second mate         asleep, 2 jobs listed, 1 waiting on you           projects/alpha                                  
+ z Harbor     second mate         asleep, its window is closed, 1 waiting on you    projects/alpha                                  
+ z Lantern    second mate, ups... asleep, its window is closed, 1 waiting on you    projects/alpha                                  
+ z Juniper    second mate, ups... asleep, its window is closed, 1 waiting on you    projects/alpha                                  
+   Interns stand beside their person in charge for one job, then go home. Sleeping agents cost nothing.                             
+                                                                                                                                    
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down pick an agent   enter talk to it   p pause   q quit                                    updates by itself 

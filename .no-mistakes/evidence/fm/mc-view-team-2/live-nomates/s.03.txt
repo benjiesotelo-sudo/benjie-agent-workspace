@@ -1,0 +1,50 @@
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System                                           Sat 03:08 
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                                                                                          
+ 0 second mates    1 working    0 asleep or away    2 interns on jobs                                                            real crew, from the second mate registry 
+                                                                                                                                                                          
+                                                               ┌──────────────────────────────────────────┐                                                               
+                                                               │ You, the captain: decisions and merges   │                                                               
+                                                               │ 3 things wait on you                     │                                                               
+                                                               └─────────────────────┬────────────────────┘                                                               
+                                                                                     │                                                                                    
+                                                       ┌─────────────────────────────┴────────────────────────────┐                                                       
+                                                       │  ▀   ▀   Denver                                ● working │                                                       
+                                                       │  ▀▀ ▀▀   Chief of staff: routes the work and supervises  │                                                       
+                                                       │          the crew                                        │                                                       
+                                                       │ ▀▀▀▀▀▀▀  owns every project                              │                                                       
+                                                       │          8 in its list, 3 wait on you                    │                                                       
+                                                       └─────────────────────────────┬────────────────────────────┘                                                       
+                                                                                     ├─ ○ state not readable: Build chapter four                                          
+                                                                                     └─ ○ state not readable: Print the handouts                                          
+                                                                                                                                                                          
+   No second mates are registered yet, so the first mate runs every project itself.                                                                                       
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+─ ALUMNI ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   No one has retired yet.                                                                                                                                                
+                                                                                                                                                                          
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down pick a second mate   enter talk to it   p pause   q quit                                                                     updates by itself 
