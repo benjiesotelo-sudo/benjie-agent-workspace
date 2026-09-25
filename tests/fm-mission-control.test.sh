@@ -350,7 +350,7 @@ ST=$(sys_frame "$TMP_ROOT/ok.json") || fail "system text failed"
   = "This Mac,Crew monitoring,Crew,Second mates,The Bridge page,Mission Control,GitHub,Tools" ] \
   || fail "the cards come in order"
 grep -q '● All systems normal' <<<"$ST" || fail "the overall line says all systems normal"
-for want in 'Up since Tue 15 Sep 10:00, 5 days' 'Processor load 1.2 on 8 cores' 'Memory: 8.0 GB of 16 GB in use' \
+for want in 'Up since Tue 15 Sep 10:00, 5 days' 'Processor load 1.1 on 8 cores' 'Memory: 8.0 GB of 16 GB in use' \
   'Disk: 100 GB free of 233 GB' 'On the tailnet' 'Monitoring the crew: healthy, last check 12 seconds ago' \
   '2 notifications waiting for the first mate' 'Crew: 1 working, 1 asleep, 3 interns out' \
   'Second mates: all 1 window open' 'Alpha: window open, home changed 3 minutes ago' \
@@ -364,6 +364,34 @@ grep -q "$TMP_ROOT" <<<"$ST" && fail "no raw path may reach the System view"
 [ "$(jq -r .system.rack <<<"$SJ")" = ok ] || fail "healthy readings leave the rack sign at ok"
 [ "$(rack "$(sys_frame "$TMP_ROOT/ok.json" "" text office)")" = ok ] || fail "the office rack reads ok when healthy"
 pass "healthy readings: green cards, all systems normal, sizes in GB, the rack says ok"
+
+readings "$TMP_ROOT/busy.json" '.load = [3.0, 9.0, 5.0]'
+[ "$(dot "$(sys_frame "$TMP_ROOT/busy.json" "" json)" "This Mac")" = amber ] || fail "a busy processor is amber"
+sys_frame "$TMP_ROOT/busy.json" | grep -q 'Processor load 9.0 on 8 cores, busier than it has cores' \
+  || fail "the load shown is the one the dot is based on"
+readings "$TMP_ROOT/spike.json" '.load = [9.0, 3.0, 5.0]'
+sys_frame "$TMP_ROOT/spike.json" | grep -q 'Processor load 3.0 on 8 cores *│' \
+  || fail "a brief spike beside a green dot shows the calmer load the dot is based on"
+WIDE=$(mc "$HOME_DIR" frame --readings "$TMP_ROOT/ok.json" --agents "$AGENTS" --view system --size 250x50)
+TOP=$(grep 'THIS MAC' <<<"$WIDE")
+grep -q 'CREW MONITORING' <<<"$TOP" && grep -q ' CREW ' <<<"$TOP" || fail "a wide pane lays three cards a row"
+grep -q 'SECOND MATES' <<<"$TOP" && fail "no pane lays more than three cards a row"
+PYTHONPATH="$ROOT/bin" python3 - <<'PY' || fail "the Bridge card shows the address the Bridge answers on"
+import fm_mission_control as mc
+def status(*lines):
+    return mc._screen_status(["printf", "%s\\n"] + list(lines), None)
+ts = "tailscale: running, http://ship.example.ts.net:7373/ (100.64.0.1)"
+got = status("running: yes, answering on http://100.64.0.1:7373/ (LaunchAgent x)",
+             "address: bound to the Tailscale address only", ts)
+assert got == {"running": True, "address": "http://ship.example.ts.net:7373/", "local_only": False}, got
+got = status("running: yes, answering on http://192.168.1.20:7373/ (LaunchAgent x)",
+             "address: bound to the configured address 192.168.1.20", ts)
+assert got["address"] == "http://192.168.1.20:7373/", got
+got = status("running: yes, answering on http://127.0.0.1:7373/ (LaunchAgent x)",
+             "address: Tailscale was not running at start; bound to 127.0.0.1 only, so the iPad cannot reach it", ts)
+assert got["address"] == "http://127.0.0.1:7373/" and got["local_only"], got
+PY
+pass "the load, three cards a row at most and the Bridge address each match what the card says"
 
 readings "$TMP_ROOT/stale.json" '.beat_age = 1200'
 jq '.result.agents |= map(select(.pane_id != "w1:p1"))' "$AGENTS" > "$TMP_ROOT/fm-asleep.json"
@@ -407,6 +435,23 @@ LT=$(PATH="$FAKEBIN:/usr/bin:/bin" FM_HOME="$HOME_DIR" FM_BRIDGE_NOW=2026-09-20T
 for want in 'GitHub: the sign-in could not be checked' 'claude: could not be checked' 'herdr: could not be checked' \
   'Tailnet could not be checked' 'Mission Control could not be checked'; do
   grep -q "$want" <<<"$LT" || fail "a missing command on the real read path reads: $want"
+done
+cat > "$FAKEBIN/herdr-lab" <<SH
+#!/usr/bin/env bash
+[ "\$1 \$2" = "run lab1" ] || exit 1
+shift 2
+case "\$1" in
+  --version) echo "herdr 9.9.9" ;;
+  agent) cat "$AGENTS" ;;
+  *) exit 1 ;;
+esac
+SH
+chmod +x "$FAKEBIN/herdr-lab"
+LT=$(PATH="$FAKEBIN:/usr/bin:/bin" FM_HOME="$HOME_DIR" FM_BRIDGE_NOW=2026-09-20T10:00:00 \
+  FM_BRIDGE_TAILSCALE="$FAKEBIN/tailscale-down" FM_MC_HERDR="$FAKEBIN/herdr-lab run lab1" \
+  "$MC" frame --view system --size 170x50) || fail "the System view through a lab Herdr failed: $LT"
+for want in 'herdr 9.9.9' 'Crew: 1 working, 1 asleep'; do
+  grep -q "$want" <<<"$LT" || fail "the live System view reads Herdr through FM_MC_HERDR: $want"
 done
 pass "a missing or failing command shows could not be checked, never a crash"
 
@@ -466,6 +511,13 @@ J3=$(mc "$BIG" frame --agents "$TMP_ROOT/big.json" --size 132x44 --format json)
 [ "$(jq -r '.upstairs.count' <<<"$J3")" = 4 ] || fail "a shorter pane keeps three downstairs and sends four up"
 [ "$(jq -r '.team[0].name' <<<"$J3")" = "First mate" ] || fail "without the settings file the first mate is First mate"
 pass "seven mates open a second floor with a sign, busiest downstairs"
+
+readings "$TMP_ROOT/big-ok.json" '.mates = ([range(1; 8) | {key: "m\(.)-mate", value: 180}] | from_entries)'
+BS=$(mc "$BIG" frame --readings "$TMP_ROOT/big-ok.json" --agents "$TMP_ROOT/big.json" --view system --size 96x37) \
+  || fail "seven-mate system frame failed"
+NOTE=$(grep 'more below' <<<"$BS") || fail "cards past the pane's height are announced"
+grep -q '[└─]' <<<"$NOTE" && fail "the more-below note gets its own row, not a card's border: $NOTE"
+pass "the System view announces the cards below on a row of its own"
 
 AE=$(mc "$BIG" frame --agents "$TMP_ROOT/big.json" --view approvals) || fail "empty approvals frame failed"
 grep -q 'Nothing waits on you.' <<<"$AE" || fail "with nothing waiting the view is a calm empty state"

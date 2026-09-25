@@ -126,7 +126,7 @@ cmd_run() {
 }
 
 cmd_frame() {
-  exec python3 "$PY" frame --home "$FM_HOME" --config-dir "$CONFIG" "$@"
+  exec python3 "$PY" frame --home "$FM_HOME" --config-dir "$CONFIG" --herdr "$HERDR_CMD" "$@"
 }
 
 cmd_start() {

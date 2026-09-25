@@ -1824,6 +1824,18 @@ def _mtime(path):
         return None
 
 
+_MEMSIZE = []
+
+
+def _memsize():
+    """This Mac's total memory in bytes, read once."""
+    if not _MEMSIZE:
+        got = _run(["sysctl", "-n", "hw.memsize"])
+        if got and not got[0] and got[1].strip().isdigit():
+            _MEMSIZE.append(int(got[1]))
+    return _MEMSIZE[0] if _MEMSIZE else None
+
+
 def _memory():
     """{"used", "total"} in bytes: app, wired and compressed pages, as Activity Monitor counts."""
     try:
@@ -1832,15 +1844,16 @@ def _memory():
         return {"used": info["MemTotal"] - info["MemAvailable"], "total": info["MemTotal"]}
     except (OSError, KeyError, ValueError, IndexError):
         pass
-    total, vm = _run(["sysctl", "-n", "hw.memsize"]), _run(["vm_stat"])
-    if not total or not vm or total[0] or vm[0]:
+    total = _memsize()
+    vm = _run(["vm_stat"]) if total else None
+    if not vm or vm[0]:
         return None
     try:
         page = int(re.search(r"page size of (\d+)", vm[1]).group(1))
         pages = {k.strip(): int(v.strip().rstrip(".")) for k, v in
                  (ln.split(":", 1) for ln in vm[1].splitlines()[1:] if ":" in ln)}
         used = pages["Pages active"] + pages["Pages wired down"] + pages.get("Pages occupied by compressor", 0)
-        return {"used": used * page, "total": int(total[1].strip())}
+        return {"used": used * page, "total": total}
     except (AttributeError, KeyError, ValueError):
         return None
 
@@ -1925,11 +1938,13 @@ def _screen_status(argv, env):
     out = _run(argv, env)
     if not out or out[0] or not out[1].startswith("running: "):
         return None
-    lines = out[1].splitlines()
-    found = [re.match(r"(?:tailscale: running|running: yes, answering on),? (http://\S+)", ln) for ln in lines]
-    urls = [m.group(1) for m in found if m]
-    return {"running": lines[0].startswith("running: yes"), "address": urls[-1] if urls else None,
-            "local_only": any("bound to 127.0.0.1 only" in ln for ln in lines)}
+    text = out[1]
+    answers = re.search(r"^running: yes, answering on (http://\S+)", text, re.M)
+    tailnet = re.search(r"^tailscale: running, (http://\S+)", text, re.M)
+    if tailnet and re.search(r"^address: bound to the Tailscale address only$", text, re.M):
+        answers = tailnet
+    return {"running": text.startswith("running: yes"), "address": answers.group(1) if answers else None,
+            "local_only": "bound to 127.0.0.1 only" in text}
 
 
 def read_slow(home, herdr):
@@ -2049,7 +2064,7 @@ def system_cards(r, crew, model, now, records_ok=True, agents_ok=True):
         else:
             busy = load[1] > cores
             lines.append(("amber" if busy else "green",
-                          "Processor load %.1f on %s%s" % (load[0], bridge._plural(cores, "core"),
+                          "Processor load %.1f on %s%s" % (load[1], bridge._plural(cores, "core"),
                                                           ", busier than it has cores" if busy else ""),
                           "busy processor"))
         mem = r.get("memory")
@@ -2223,7 +2238,7 @@ def _system_screen(cv, health):
     pill = "read only, nothing here acts"
     if C - len(pill) - 1 > len(health["overall"]) + 6:
         cv.put(C - len(pill) - 1, 3, pill, BG, GREEN, True)
-    per_row = max(2, (C - 1) // (SYS_CARD_W + 1))
+    per_row = min(3, max(2, (C - 1) // (SYS_CARD_W + 1)))
     w = (C - 1 - (per_row - 1)) // per_row
     tw = w - 6
     laid = []
@@ -2243,7 +2258,7 @@ def _system_screen(cv, health):
     for i in range(0, len(laid), per_row):
         row = laid[i:i + per_row]
         h = heights[i // per_row]
-        if r0 + h - 1 > last:
+        if r0 + h - 1 > (last if i + per_row >= len(laid) else last - 1):
             cv.put(1, last, "%s more below; make this pane taller to see them" %
                    bridge._plural(len(laid) - i, "card"), DIM)
             return
