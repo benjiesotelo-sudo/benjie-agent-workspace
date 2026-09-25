@@ -228,6 +228,18 @@ def _clean_title(title):
     return re.sub(r"\s{2,}", " ", title).strip(" -")
 
 
+def project_of(rec, mate, by_key, ship_name):
+    """The registered project a backlog record belongs to, or None for the ship.
+
+    by_key maps each lowercased registered project name to its entry; mate is
+    the second mate whose home holds the record, or None for this home."""
+    key = _norm_repo(rec.get("repo"))
+    if key is None and mate and len(mate["projects"]) == 1:
+        key = mate["projects"][0].lower()
+    project = by_key.get(key) if key else None
+    return project["name"] if project and project["name"] != ship_name else None
+
+
 def _is_captain(rec):
     return rec.get("kind") == "captain" or rec.get("hold_kind") == "captain"
 
@@ -376,11 +388,7 @@ def collect(home, config_dir, now):
                 return
         else:
             date = None
-        key = _norm_repo(rec.get("repo"))
-        if key is None and mate and len(mate["projects"]) == 1:
-            key = mate["projects"][0].lower()
-        project = by_key.get(key) if key else None
-        pname = project["name"] if project and project["name"] != ship_name else None
+        pname = project_of(rec, mate, by_key, ship_name)
         items.append({
             "id": rec.get("id"), "title": _clean_title(rec.get("title")),
             "bucket": bucket, "project": pname, "owner": owner, "date": date,
@@ -509,7 +517,7 @@ def _decision_files(dirs):
                 title = hs[0][1] if hs else fn[:-3].replace("-", " ")
                 title = re.sub(r"^Decision:\s*", "", title)
                 title = title[:1].upper() + title[1:]
-                found.append({"title": title, "mtime": os.stat(path).st_mtime})
+                found.append({"title": title, "mtime": os.stat(path).st_mtime, "path": path})
     found.sort(key=lambda x: -x["mtime"])
     return found
 
