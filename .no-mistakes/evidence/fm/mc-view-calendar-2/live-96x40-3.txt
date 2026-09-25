@@ -1,0 +1,40 @@
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar         Wed 10:00
+────────────────────────────────────────────────────────────────────────────────────────────────
+
+ 30 September to 4 October   next week   1 done, 2 due    left/right another week   t this week
+
+┌─ ALWAYS RUNNING ─────────────────────────────────────────────────────────────────────────────┐
+│ ● Bridge running    ● Mission Control running    ● Alpha closed                              │
+└──────────────────────────────────────────────────────────────────────────────────────────────┘
+
+ Wed 30 Sep       │ Thu 1 Oct        │ Fri 2            │ Sat 3            │ Sun 4
+──────────────────┼──────────────────┼──────────────────┼──────────────────┼──────────────────
+ ┌ beta ── done ┐ │ ┌ beta ─── due ┐ │ ┌ alpha ── due ┐ │ nothing due      │ nothing due
+ │ Wrap the     │ │ │ Plan October │ │ │ Grade the    │ │                  │
+ │ September... │ │ │ 1 kickoff    │ │ │ essays 20... │ │                  │
+ └──────────────┘ │ └──────────────┘ │ └──────────────┘ │                  │
+                  │                  │                  │                  │
+                  │                  │                  │                  │
+                  │                  │                  │                  │
+                  │                  │                  │                  │
+                  │                  │                  │                  │
+                  │                  │                  │                  │
+                  │                  │                  │                  │
+                  │                  │                  │                  │
+                  │                  │                  │                  │
+                  │                  │                  │                  │
+                  │                  │                  │                  │
+                  │                  │                  │                  │
+                  │                  │                  │                  │
+                  │                  │                  │                  │
+                  │                  │                  │                  │
+                  │                  │                  │                  │
+                  │                  │                  │                  │
+                  │                  │                  │                  │
+                  │                  │                  │                  │
+                  │                  │                  │                  │
+                  │                  │                  │                  │
+                  │                  │                  │                  │
+                  │                  │                  │                  │
+────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down pick an agent   enter talk to it   p pause   q...  updates by itself

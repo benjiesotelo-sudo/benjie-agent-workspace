@@ -1,0 +1,4 @@
+# launchctl: loaded, state = not running
+● Bridge stopped
+# launchctl: no LaunchAgent (exit 113)
+● Bridge off
