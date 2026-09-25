@@ -428,9 +428,16 @@ for want in 'GitHub: the sign-in could not be checked' 'herdr: could not be chec
   grep -q "$want" <<<"$ST" || fail "a missing command reads: $want"
 done
 # The real read path with no gh, claude, no-mistakes or Tailscale and a Herdr that fails.
+# The system dirs are linked in without those tools, since a CI runner ships gh in /usr/bin.
+BAREBIN="$TMP_ROOT/barebin"
+mkdir -p "$BAREBIN"
+for f in /usr/bin/* /bin/*; do
+  case ${f##*/} in gh|claude|no-mistakes|tailscale|herdr) continue ;; esac
+  [ -e "$BAREBIN/${f##*/}" ] || ln -s "$f" "$BAREBIN/${f##*/}"
+done
 printf '#!/usr/bin/env bash\nexit 1\n' > "$FAKEBIN/tailscale-down"
 chmod +x "$FAKEBIN/tailscale-down"
-LT=$(PATH="$FAKEBIN:/usr/bin:/bin" FM_HOME="$HOME_DIR" FM_BRIDGE_NOW=2026-09-20T10:00:00 \
+LT=$(PATH="$FAKEBIN:$BAREBIN" FM_HOME="$HOME_DIR" FM_BRIDGE_NOW=2026-09-20T10:00:00 \
   FM_BRIDGE_TAILSCALE="$FAKEBIN/tailscale-down" "$MC" frame --view system --size 170x50) \
   || fail "the System view read this machine with commands missing and crashed: $LT"
 for want in 'GitHub: the sign-in could not be checked' 'claude: could not be checked' 'herdr: could not be checked' \
