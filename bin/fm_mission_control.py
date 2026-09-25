@@ -166,7 +166,7 @@ FEED_MIN_WIDTH = 24
 
 TABS = ["Office", "Tasks", "Approvals", "Projects", "Calendar", "Team", "Memory", "Docs", "System"]
 VIEWS = ["office", "tasks"] + [t.lower() for t in TABS[2:]]
-READY = ("office", "tasks", "approvals", "projects")
+READY = ("office", "tasks", "approvals", "projects", "calendar")
 COLUMNS = (("waiting", "WAITING ON YOU", AMBER), ("queued", "QUEUED", INK),
            ("in_flight", "IN FLIGHT", GREEN), ("done", "DONE THIS MONTH", DIM))
 SHIP_TAG = "setup"
