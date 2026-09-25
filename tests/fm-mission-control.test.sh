@@ -3,9 +3,11 @@
 # bin/fm_mission_control.py): one-frame snapshots from fixture records and a
 # saved `herdr agent list`, asserting desks, working and asleep states, interns
 # beside the right person in charge, the second-floor sign at seven mates, the
-# inbox count, the task columns and the project cards; then the live screen in
-# a pseudo-terminal, which must redraw only what changed, pick project cards
-# with up/down, and restore the terminal on q and on SIGTERM. The record parsers themselves are covered by fm-bridge.test.sh.
+# inbox count, the task columns, the project cards and the calendar week
+# (completions, due dates, what always runs); then the live screen in a
+# pseudo-terminal, which must redraw only what changed, pick project cards
+# with up/down, and restore the terminal on q and on SIGTERM. The record
+# parsers themselves are covered by fm-bridge.test.sh.
 # Fixtures are the Bridge's, in tests/assets/bridge/.
 set -u
 
@@ -316,13 +318,99 @@ grep -q 'more below' <<<"$AM" && fail "a decision whose first line shows is not 
 
 pass "the Approvals view groups what waits on the captain by agent, oldest first, in plain words"
 
-L=$(mc "$HOME_DIR" frame --agents "$AGENTS" --view calendar)
-grep -q 'Calendar is coming next' <<<"$L" || fail "a later view shows its coming-next note"
+L=$(mc "$HOME_DIR" frame --agents "$AGENTS" --view system)
+grep -q 'System is coming next' <<<"$L" || fail "a later view shows its coming-next note"
 grep -q ' 9 System ' <<<"$L" || fail "the tab bar shows all nine views"
 S=$(mc "$HOME_DIR" frame --agents "$AGENTS" --size 80x24)
 [ "$(printf '%s\n' "$S" | grep -c .)" = 1 ] || fail "a too-small pane gets exactly one line"
 grep -q 'Make this pane bigger' <<<"$S" || fail "a too-small pane asks for more room"
 pass "later views and a too-small pane each get one line"
+
+# --- the calendar ----------------------------------------------------------
+
+# A week from Sunday 20 to Saturday 26 September, seen on Wednesday 23.
+CAL="$TMP_ROOT/calship"
+mkdir -p "$CAL/data" "$CAL/state" "$CAL/config"
+cp "$HOME_DIR/data/projects.md" "$HOME_DIR/data/secondmates.md" "$CAL/data/"
+cat > "$CAL/data/backlog.md" <<'MD'
+# Backlog
+
+## In flight
+## Queued
+- [ ] h1 - Book the lecture room (repo: beta) (kind: task) (since 2026-09-10) (hold: after the dean replies) (hold-kind: future) (hold-until: 2026-09-25)
+- [ ] t1 - Send the grades by Saturday 26 September (repo: alpha) (kind: task) (since 2026-09-11)
+- [ ] t2 - Hand in the marks on Sunday 27 September (repo: beta) (kind: task) (since 2026-09-11)
+- [ ] t3 - Review the syllabus Friday 27 September (repo: beta) (kind: task) (since 2026-09-11)
+- [ ] t4 - Compare the 24 September and 25 September drafts (repo: beta) (kind: task) (since 2026-09-11)
+- [ ] t5 - Plan the 25/09 staff meeting (repo: beta) (kind: task) (since 2026-09-11)
+- [ ] t6 - Recap of the 21 September session (repo: beta) (kind: task) (since 2026-09-11)
+- [ ] t7 - Due Sat 26 Sep the seminar notes (repo: beta) (kind: task) (since 2026-09-11)
+- [ ] t8 - Print the 25th September handouts (repo: beta) (kind: task) (since 2026-09-11)
+- [ ] t9 - Ask Jan 3 questions (repo: beta) (kind: task) (since 2026-09-11)
+- [ ] t10 - Rota for Fri 24 September (repo: beta) (kind: task) (since 2026-09-11)
+- [ ] t11 - Lab check Mon September 25 (repo: beta) (kind: task) (since 2026-09-11)
+## Done
+- [x] w1 - Chapter five slides (repo: alpha) (kind: ship) (merged 2026-09-21)
+- [x] w2 - Tidy the ship's scripts (kind: task) (done 2026-09-23)
+- [x] w3 - Wrap the September module (repo: beta) (kind: ship) (done 2026-09-30)
+- [x] w4 - An older handout (repo: beta) (kind: ship) (done 2026-09-12)
+MD
+cat > "$FAKEBIN/launchctl" <<SH
+#!/usr/bin/env bash
+[ -e "$TMP_ROOT/bridge-up" ] || exit 113
+printf 'gui/501/com.firstmate.bridge = {\n\tstate = running\n}\n'
+SH
+chmod +x "$FAKEBIN/launchctl"
+touch "$TMP_ROOT/bridge-up"
+cal() {  # <now> <size>
+  PATH="$FAKEBIN:$PATH" FM_HOME="$CAL" FM_BRIDGE_NOW="$1" "$MC" frame --agents "$AGENTS" --view calendar --size "$2"
+}
+day_of() {  # <frame text> <needle> - prints the day heading above the column holding <needle>
+  python3 - "$1" "$2" <<'PY'
+import re, sys
+lines = sys.argv[1].split("\n")
+day = r"\b(?:Sun|Mon|Tue|Wed|Thu|Fri|Sat) \d{1,2}(?![\d:])"
+head = next(ln for ln in lines if re.search(day, ln))
+starts = [(m.start(), m.group(0)) for m in re.finditer(day, head)]
+hit = next((ln.index(sys.argv[2]) for ln in lines if sys.argv[2] in ln), None)
+print("" if hit is None else [name for c, name in starts if c <= hit][-1])
+PY
+}
+K=$(cal 2026-09-23T10:00:00 170x50) || fail "calendar frame failed: $K"
+grep -q '20 to 26 September' <<<"$K" || fail "the calendar heads its week"
+grep -q ' this week ' <<<"$K" || fail "the calendar says it shows this week"
+for d in 'Sun 20' 'Mon 21' 'Tue 22' 'Wed 23' 'Thu 24' 'Fri 25' 'Sat 26'; do
+  grep -q "$d" <<<"$K" || fail "a wide pane shows the whole week: $d"
+done
+[ "$(day_of "$K" ' today ')" = 'Wed 23' ] || fail "today's column is marked today"
+[ "$(day_of "$K" 'Chapter five')" = 'Mon 21' ] || fail "a past completion sits on its day"
+[ "$(day_of "$K" 'Tidy the ship')" = 'Wed 23' ] || fail "today's completion sits on today"
+[ "$(day_of "$K" 'Book the lecture')" = 'Fri 25' ] || fail "a hold-until date makes an item due that day"
+[ "$(day_of "$K" 'Send the grades')" = 'Sat 26' ] || fail "a date written in a title makes it due that day"
+grep -q '─ due ┐' <<<"$K" || fail "scheduled items are marked due"
+grep -q '─ done ┐' <<<"$K" || fail "completions are marked done"
+grep -q '┌ alpha ' <<<"$K" || fail "blocks carry their project tag"
+grep -q '┌ setup ' <<<"$K" || fail "the ship's own items carry the setup tag"
+for skip in 'Review the syllabus' 'Compare the' 'staff meeting' 'Recap of' 'Due Sat' 'Print the' 'Ask Jan' \
+    'Rota for' 'Lab check' 'An older handout' 'Wrap the'; do
+  grep -q "$skip" <<<"$K" && fail "a guessed, past or other-week date stays off the grid: $skip"
+done
+grep -q '2 done, 2 due' <<<"$K" || fail "the heading counts the week's blocks"
+grep -q 'ALWAYS RUNNING' <<<"$K" || fail "the always-running strip has its heading"
+for chip in '● Bridge running' '● Mission Control off' '● Alpha asleep'; do
+  grep -q "$chip" <<<"$K" || fail "the always-running strip reads the real state: $chip"
+done
+grep -Eq '\b(h1|t[1-9]|t1[01]|w[1-4])\b' <<<"$K" && fail "no task id may reach the calendar"
+grep -q "$TMP_ROOT" <<<"$K" && fail "no raw path may reach the calendar"
+rm -f "$TMP_ROOT/bridge-up"
+K=$(cal 2026-10-01T10:00:00 170x50) || fail "calendar frame failed: $K"
+grep -q '27 September to 3 October' <<<"$K" || fail "a week across two months names both"
+[ "$(day_of "$K" 'Wrap the')" = 'Wed 30' ] || fail "last month's completions still show"
+grep -q '● Bridge off' <<<"$K" || fail "a Bridge with no LaunchAgent is off"
+K=$(cal 2026-09-23T10:00:00 96x40) || fail "narrow calendar frame failed: $K"
+grep -q 'Tue 22' <<<"$K" && fail "a narrow pane starts at today"
+[ "$(day_of "$K" 'Hand in the')" = 'Sun 27' ] || fail "a narrow pane shows today and the next few days"
+pass "the Calendar shows the week's completions, due dates and what always runs"
 
 # --- seven mates: a second floor ------------------------------------------
 
@@ -550,6 +638,19 @@ screen "$TMP_ROOT/down" 2 | grep -q 'showing what it' || fail "the Herdr notice 
 screen "$TMP_ROOT/down" 2 | grep -q 'everyone looks asleep' && fail "the Herdr notice must not claim everyone is asleep"
 screen "$TMP_ROOT/down" 2 | grep -q 'working' || fail "the last known working state stays on screen"
 pass "a Herdr outage keeps the last states and says so"
+
+# The calendar moves a week at a time and t brings it back.
+RIGHT=$'\e[C'
+LEFT=$'\e[D'
+code=$(DRIVE_HOME="$CAL" FM_BRIDGE_NOW=2026-09-23T10:00:00 \
+  drive "$TMP_ROOT/cal" "1=SH:true,4=5,6=$RIGHT,8=$LEFT$LEFT,10=t,12=q") || fail "the pty driver failed"
+[ "$code" = 0 ] || fail "the calendar run quits cleanly, got exit $code"
+screen "$TMP_ROOT/cal" 3 | grep -Eq '20 to 26 September +this week' || fail "key 5 opens this week's calendar"
+screen "$TMP_ROOT/cal" 3 | grep -q '● Mission Control running' || fail "the running screen counts itself as running"
+screen "$TMP_ROOT/cal" 4 | grep -Eq '27 September to 3 October +next week' || fail "right shows the next week"
+screen "$TMP_ROOT/cal" 5 | grep -Eq '13 to 19 September +last week' || fail "left goes back a week at a time"
+screen "$TMP_ROOT/cal" 6 | grep -Eq '20 to 26 September +this week' || fail "t returns to this week"
+pass "the live Calendar moves a week at a time and t returns to this week"
 
 # A mate seated upstairs that leaves the registry still retires.
 cp "$BIG/data/secondmates.md" "$TMP_ROOT/big-mates.saved"
