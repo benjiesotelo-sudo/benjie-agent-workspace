@@ -473,6 +473,9 @@ SJ=$(sys_frame "$TMP_ROOT/none.json" "" json) || fail "unread json failed"
 [ "$(jq -r .system.overall <<<"$SJ")" = "Nothing needs a look so far; still checking" ] \
   || fail "before the first reads the overall line says it is still checking"
 [ "$(jq -r .system.rack <<<"$SJ")" = ok ] || fail "unread readings do not raise the rack sign"
+[ "$(dot "$SJ" "Second mates")" = grey ] || fail "a second mate's window is grey before the first reads"
+[ "$(rack "$(mc "$HOME_DIR" frame --view office --size 170x50)")" = ok ] \
+  || fail "the office without an agent list or readings leaves the system unchecked and the rack at ok"
 pass "before the first reads the view is grey and calm"
 
 L=$(mc "$HOME_DIR" frame --agents "$AGENTS" --view calendar)

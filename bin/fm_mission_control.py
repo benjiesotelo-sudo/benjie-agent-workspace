@@ -2147,6 +2147,9 @@ def system_cards(r, crew, model, now, records_ok=True, agents_ok=True):
         if m.get("remote"):
             lines.append(("grey", "%s works on another machine, not checked from here" % c["name"]))
             continue
+        if "mates" not in r:
+            lines.append(("grey", "%s: %s" % (c["name"], unread)))
+            continue
         if c["id"] in (r.get("mates") or {}):
             ch = age(c["id"], "at", r["mates"])
             changed = ", home changed %s" % _ago(ch) if ch is not None else ", home not readable"
@@ -2163,13 +2166,15 @@ def system_cards(r, crew, model, now, records_ok=True, agents_ok=True):
     down = sum(1 for ln in local if ln[0] == "red")
     if not mates:
         head = "Second mates: none registered"
+    elif "mates" not in r and any(not rows.get(c["id"], {}).get("remote") for c in mates):
+        head = "Second mates: %s" % unread
     elif down:
         head = "Second mates: %d of %d windows closed" % (down, len(local))
     elif local:
         head = "Second mates: all %s open" % bridge._plural(len(local), "window")
     else:
         head = "Second mates: all on other machines"
-    card("Second mates", "green", head, lines)
+    card("Second mates", "grey" if head.endswith(unread) else "green", head, lines)
 
     # The Bridge page and Mission Control.
     if "bridge" not in r:
