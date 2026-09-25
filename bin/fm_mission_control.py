@@ -2025,7 +2025,7 @@ def _decision_title(text, rec, keys):
     hs = bridge.headings(text)
     t = _md_plain(clean(hs[0][1])) if hs else ""
     t = re.sub(r"^(?:captain'?s\s+)?decisions?\b[^:]*:\s*", "", t, flags=re.I)
-    m = re.match(r"(%s)(?:\s*[-:]\s*|$)" % _SLUG, t)
+    m = re.match(r"(%s)(?:\s*:\s*|\s+-\s*|$)" % _SLUG, t)
     if m and m.group(1).lower() in keys:
         t = t[m.end():]
     base = _md_plain(bridge._clean_title(rec.get("title"))) if rec else ""
