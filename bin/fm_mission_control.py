@@ -78,9 +78,11 @@ the fleet snapshot's scout_reports of each home, the Bridge's decision pages,
 newest first, then the captain's links from config/bridge.json. A report's or
 decision's project is its backlog item's (the report's task id, the decision
 page's folder), through the Bridge's project_of(); with no item there is no
-project tag. Titles come from each page's first heading with Markdown marks,
-raw keys and paths removed. Pages are rebuilt at most every SHELF_TTL seconds
-and a file is reread only when its size or modification time changes.
+project tag. Titles come from each page's first heading with Markdown marks
+and paths removed; a decision title also drops a leading key only when it is
+the page's folder name or a backlog record id. Pages are rebuilt at most
+every SHELF_TTL seconds and a file is reread only when its size or
+modification time changes.
 
 DRAWING. Each character cell is two pixels: an upper half block with the top
 pixel as foreground and the bottom pixel as background, 24-bit colour when the

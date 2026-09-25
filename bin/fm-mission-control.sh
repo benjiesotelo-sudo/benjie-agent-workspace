@@ -3,8 +3,9 @@
 #
 # Mission Control draws the whole crew as an animated pixel-art office, plus a
 # task board, a card per project, the decisions waiting on the captain, and a
-# reader for the crew's memory and documents, in one terminal pane; bin/fm_mission_control.py owns what it reads, how the
-# crew maps onto the office, and how frames are drawn. It is read-only: it
+# reader for the crew's memory and documents, in one terminal pane;
+# bin/fm_mission_control.py owns what it reads, how the crew maps onto the
+# office, and how frames are drawn. It is read-only: it
 # never writes a record, never sends keys or prompts to an agent, and never
 # starts or stops one.
 #
