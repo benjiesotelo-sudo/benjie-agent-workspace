@@ -374,7 +374,8 @@ sys_frame "$TMP_ROOT/spike.json" | grep -q 'Processor load 3.0 on 8 cores *│' 
   || fail "a brief spike beside a green dot shows the calmer load the dot is based on"
 WIDE=$(mc "$HOME_DIR" frame --readings "$TMP_ROOT/ok.json" --agents "$AGENTS" --view system --size 250x50)
 TOP=$(grep 'THIS MAC' <<<"$WIDE")
-grep -q 'CREW MONITORING' <<<"$TOP" && grep -q ' CREW ' <<<"$TOP" || fail "a wide pane lays three cards a row"
+grep -q 'CREW MONITORING' <<<"$TOP" || fail "a wide pane lays three cards a row"
+grep -q ' CREW ' <<<"$TOP" || fail "a wide pane lays three cards a row"
 grep -q 'SECOND MATES' <<<"$TOP" && fail "no pane lays more than three cards a row"
 PYTHONPATH="$ROOT/bin" python3 - <<'PY' || fail "the Bridge card shows the address the Bridge answers on"
 import fm_mission_control as mc
