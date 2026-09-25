@@ -30,8 +30,8 @@
 # answers or changes a decision. On Memory and Docs up/down pick a page
 # and the reader shows it, Page Up/Page Down scroll the reader, and on Docs
 # left/right pick a kind of document. Tapping a tab switches view when the
-# terminal reports mouse clicks; on Memory and Docs tapping a row picks it,
-# tapping a kind on Docs picks it, and the wheel over the reader scrolls it.
+# terminal reports mouse clicks; on Memory and Docs tapping a row picks it
+# and the wheel over the reader scrolls it.
 #
 # start creates the workspace with `herdr workspace create --label
 # mission-control --no-focus` in this home and types the run command into its

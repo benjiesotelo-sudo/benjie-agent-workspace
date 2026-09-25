@@ -1263,7 +1263,6 @@ class UI:
         self.scroll_key = None
         self.page_keys = []     # Memory and Docs: the rows as last drawn, for up/down
         self.list_hits = {}     # screen row -> row key, for taps on the list
-        self.tag_hits = []
         self.reader_box = None
         self.reader_page = 10
         self.shelf = Shelf()
@@ -1815,7 +1814,7 @@ PANEL = H("#262d38")
 DOC_KINDS = (("Report", "#7b93ff"), ("Decision", "#ffb454"), ("Link", "#3fb6c9"))
 DOC_TAGS = ["All"] + [k for k, _c in DOC_KINDS]
 SHELF_TTL = 5.0     # seconds a built list is reused before its files are looked at again
-_SLUG = r"[A-Za-z0-9]+(?:-[A-Za-z0-9]+)+"
+_SLUG = r"[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*"
 
 _TEXTS = {}         # path -> ((mtime, size), text)
 
@@ -2001,12 +2000,13 @@ def memory_pages(model, fm_name, now):
     return pages
 
 
-def _decision_title(text, rec):
+def _decision_title(text, rec, keys):
     hs = bridge.headings(text)
     t = _md_plain(clean(hs[0][1])) if hs else ""
     t = re.sub(r"^(?:captain'?s\s+)?decisions?\b[^:]*:\s*", "", t, flags=re.I)
-    t = re.sub(r"^%s\s*[-:]\s*" % _SLUG, "", t)
-    t = re.sub(r"^%s$" % _SLUG, "", t)
+    m = re.match(r"(%s)(?:\s*[-:]\s*|$)" % _SLUG, t)
+    if m and m.group(1).lower() in keys:
+        t = t[m.end():]
     base = _md_plain(bridge._clean_title(rec.get("title"))) if rec else ""
     if not t:
         t = "Decision on %s" % base if base else "A decision"
@@ -2045,6 +2045,7 @@ def docs_pages(model):
                           "title": _report_title(text, rec), "has_project": rec is not None,
                           "project": bridge.project_of(rec, mate, by_key, model["ship"]) if rec else None})
     by_data = {os.path.realpath(data): (hid, mate) for hid, data, mate, _s in homes}
+    known = {k.lower() for recs in records.values() for k in recs}
     for d in bridge._decision_files([data for _h, data, _m, _s in homes]):
         path = d.get("path")
         got = _text(path)
@@ -2055,7 +2056,7 @@ def docs_pages(model):
         hid, mate = by_data.get(os.path.realpath(os.path.dirname(os.path.dirname(path))), ("main", None))
         rec = records.get(hid, {}).get(task)
         pages.append({"key": "decision:%s:%s/%s" % (hid, task, os.path.basename(path)), "kind": "Decision",
-                      "text": text, "stamp": mtime, "title": _decision_title(text, rec),
+                      "text": text, "stamp": mtime, "title": _decision_title(text, rec, known | {task.lower()}),
                       "has_project": rec is not None,
                       "project": bridge.project_of(rec, mate, by_key, model["ship"]) if rec else None})
     pages.sort(key=lambda p: -p["stamp"])
@@ -2252,7 +2253,7 @@ def render_markdown(text, width, heads=None):
             mark = "• " if not marker[0].isdigit() else marker.rstrip(")").rstrip(".") + ". "
             out.extend(_wrap_runs(_inline(" ".join(parts)), width, (("  " + pad, BODY), (mark, DIM)),
                                   "  " + pad + " " * len(mark)))
-        elif kind == "table":
+        elif kind == "table" and block[1]:
             out.extend(_table(block[1], width))
         block = None
 
@@ -2516,13 +2517,11 @@ def _docs_screen(cv, ui, scene, now):
     counts = {t: sum(1 for p in pages if t == "All" or p["kind"] == t) for t in DOC_TAGS}
     ui.doc_tag = max(0, min(ui.doc_tag, len(DOC_TAGS) - 1))
     c = 1
-    ui.tag_hits = []
     for i, t in enumerate(DOC_TAGS):
         s = " %s %d " % (t, counts[t])
         on = i == ui.doc_tag
         color = INK if t == "All" else H(dict(DOC_KINDS)[t])
         cv.put(c, 3, s, BG if on else color, color if on else None, True)
-        ui.tag_hits.append((c, c + len(s), i))
         c += len(s) + 1
     _read_only_pill(cv, c + 2)
     tag = DOC_TAGS[ui.doc_tag]
@@ -2994,21 +2993,16 @@ def _scroll(ui, lines):
 
 
 def _shelf_mouse(ui, x, y, btn):
-    """A wheel turn over the reader scrolls it; a tap on a row or a kind picks it."""
+    """A wheel turn over the reader scrolls it; a tap on a row picks it."""
     if ui.view not in ("memory", "docs"):
         return False
     if btn & 64:
         box = ui.reader_box
-        if box and box[0] <= x < box[2] and box[1] <= y < box[3]:
+        if btn & ~(4 | 8 | 16) in (64, 65) and box and box[0] <= x < box[2] and box[1] <= y < box[3]:
             return _scroll(ui, 3 if btn & 1 else -3)
         return False
     if y in ui.list_hits and ui.reader_box and x < ui.reader_box[0]:
         return _pick_row(ui, ui.list_hits[y])
-    if ui.view == "docs" and y == 3:
-        for c0, c1, i in ui.tag_hits:
-            if c0 <= x < c1 and i != ui.doc_tag:
-                ui.doc_tag = i
-                return True
     return False
 
 
