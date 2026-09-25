@@ -429,8 +429,10 @@ PYTHONPATH="$ROOT/bin" FM_BRIDGE_NOW=2026-09-20T10:00:00 PATH="$FAKEBIN:$PATH" p
 import os
 import sys
 import fm_mission_control as mc
-keys = {"loose-key", "q2"}
+keys = {"loose-key", "q2", "follow"}
 for heading, want in [("# Decision: sign-in - which provider we use", "Sign-in - which provider we use"),
+                      ("# Decision: follow-up plan", "Follow-up plan"), ("# q2-rollout plan", "Q2-rollout plan"),
+                      ("# Decision: q2: keep it short", "Keep it short"),
                       ("# Follow-up", "Follow-up"), ("# Decision: q2 - keep it private", "Keep it private"),
                       ("# loose-key", "A decision")]:
     got = mc._decision_title(heading + "\n", None, keys)
