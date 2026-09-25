@@ -323,14 +323,14 @@ pass "the Approvals view groups what waits on the captain by agent, oldest first
 # A report on an archived item (alpha), a report with no backlog item, a
 # decision page on a queued alpha item, a decision page with no item, worker
 # instructions that must never be listed, a mate's lessons and two links.
-mkdir -p "$HOME_DIR/data/d4" "$HOME_DIR/data/lone-study" "$HOME_DIR/data/q2" "$HOME_DIR/data/loose" "$HOME_DIR/data/q1"
+mkdir -p "$HOME_DIR/data/d4" "$HOME_DIR/data/lone-study" "$HOME_DIR/data/q2" "$HOME_DIR/data/loose-key" "$HOME_DIR/data/q1"
 {
   cat "$FIX/report.fixture"
   for n in $(seq 1 80); do echo "- Detail line $n"; done
 } > "$HOME_DIR/data/d4/report.md"
 printf '# A study with no task\n\nShort.\n' > "$HOME_DIR/data/lone-study/report.md"
 cp "$FIX/decision.fixture" "$HOME_DIR/data/q2/decision-quiz.md"
-printf '# Decision: loose-key - ACTION: FIX, option (b)\n\nDone.\n' > "$HOME_DIR/data/loose/decision-extra.md"
+printf '# Decision: loose-key - ACTION: FIX, option (b)\n\nDone.\n' > "$HOME_DIR/data/loose-key/decision-extra.md"
 printf '# Brief: secret instructions\n\nNever listed.\n' > "$HOME_DIR/data/q1/brief.md"
 printf '# Lessons\n\n## Decks\nKeep them short.\n' > "$MATE/data/learnings.md"
 jq -n '{links: [{project: "alpha", label: "class Drive folder", url: "https://drive.example.org/folders/abc"},
@@ -339,7 +339,7 @@ touch -t 202609200700 "$HOME_DIR/data/captain.md"
 touch -t 202609191200 "$HOME_DIR/data/d4/report.md"
 touch -t 202609181200 "$HOME_DIR/data/q2/decision-quiz.md"
 touch -t 202609171200 "$HOME_DIR/data/lone-study/report.md"
-touch -t 202609161200 "$HOME_DIR/data/loose/decision-extra.md"
+touch -t 202609161200 "$HOME_DIR/data/loose-key/decision-extra.md"
 
 MJ=$(mc "$HOME_DIR" frame --agents "$AGENTS" --format json) || fail "memory json failed"
 M=$(mc "$HOME_DIR" frame --agents "$AGENTS" --view memory --size 170x50) || fail "memory frame failed"
@@ -425,6 +425,30 @@ for V in "$M" "$D" "$O" "$ON"; do
   grep -q '—' <<<"$V" && fail "the Memory and Docs views never show an em dash"
 done
 pass "the Docs view lists reports, decisions and links with kinds, counts, project tags and a Markdown reader"
+
+PYTHONPATH="$ROOT/bin" FM_BRIDGE_NOW=2026-09-20T10:00:00 PATH="$FAKEBIN:$PATH" python3 - "$HOME_DIR" <<'PY' \
+  || fail "decision titles, an empty table or a sideways wheel went wrong"
+import os
+import sys
+import fm_mission_control as mc
+keys = {"loose-key", "q2"}
+for heading, want in [("# Decision: sign-in - which provider we use", "Sign-in - which provider we use"),
+                      ("# Follow-up", "Follow-up"), ("# Decision: q2 - keep it private", "Keep it private"),
+                      ("# loose-key", "A decision")]:
+    got = mc._decision_title(heading + "\n", None, keys)
+    assert got == want, (heading, got)
+assert mc.render_markdown("|---|---|\n\nAfter.", 40)
+home = os.path.realpath(sys.argv[1])
+model = mc.bridge.collect(home, home + "/config", mc.bridge._now())
+scene, ui = mc.Scene(), mc.UI()
+scene.observe(model, mc.build_crew(model, [], home, fm_name="Denver"), 50)
+ui.view = "docs"
+mc.compose(scene, mc.Renderer(), ui, 170, 50, mc.bridge._now())
+assert not mc._handle_input(b"\x1b[<66;80;20M\x1b[<67;80;20M\x1b[<67;5;8M", ui, scene, None), (ui.scroll, ui.pages)
+assert mc._handle_input(b"\x1b[<65;80;20M", ui, scene, None) and ui.scroll == 3, ui.scroll
+assert not mc._handle_input(b"\x1b[<0;13;4M", ui, scene, None) and ui.doc_tag == 0, ui.doc_tag
+PY
+pass "decision titles keep real words, an empty table renders, and only the vertical wheel scrolls"
 
 L=$(mc "$HOME_DIR" frame --agents "$AGENTS" --view system)
 grep -q 'System is coming next' <<<"$L" || fail "a later view shows its coming-next note"
