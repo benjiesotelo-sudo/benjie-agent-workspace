@@ -1918,14 +1918,14 @@ def _role_card(cv, c0, r0, w, card, picked):
     cv.put(tx, r0 + 4, "owns", DIMMER)
     cv.put(tx + 5, r0 + 4, clip(card["owns"], tw - 5), INK)
     if card["state"] == "elsewhere":
-        cv.put(tx, r0 + 5, clip("its list is on another machine", tw), DIM)
+        cv.put(tx, r0 + 5, clip("list on another machine", tw), DIM)
     elif not card["readable"]:
-        cv.put(tx, r0 + 5, clip("its records could not be read", tw), AMBER)
+        cv.put(tx, r0 + 5, clip("list could not be read", tw), AMBER)
     else:
-        n = "%d in its list" % card["open"]
+        n = "%d listed" % card["open"]
         cv.put(tx, r0 + 5, clip(n, tw), QUIET)
         if card["waiting"]:
-            ask = ", %d %s on you" % (card["waiting"], "waits" if card["waiting"] == 1 else "wait")
+            ask = ", %d for you" % card["waiting"]
             cv.put(tx + len(n), r0 + 5, clip(ask, tw - len(n)), AMBER, None, True)
 
 

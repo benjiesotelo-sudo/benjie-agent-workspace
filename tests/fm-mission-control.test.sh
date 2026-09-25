@@ -325,7 +325,7 @@ line_of() {  # <text> - the first screen row holding it
   grep -n -m1 -F "$1" <<<"$TM" | cut -d: -f1
 }
 for text in 'You, the captain' '4 things wait on you' 'Denver' 'Chief of staff' 'Alpha' \
-  'Alpha course, its decks and its quizzes' 'owns alpha' '2 in its list, 1 waits on you'; do
+  'Alpha course, its decks and its quizzes' 'owns alpha' '2 listed, 1 for you'; do
   grep -qF "$text" <<<"$TM" || fail "the org chart shows: $text"
 done
 [ "$(line_of 'You, the captain')" -lt "$(line_of 'Chief of staff')" ] \
@@ -365,11 +365,45 @@ printf '# Backlog\n\n## In flight\n## Queued\n## Done\n' > "$FAR/data/backlog.md
 printf '# Second mates\n\n- far-mate - Mate on the other box (host: box; root: /srv/far; home: /srv/far/home; scope: the far course: its decks; projects: alpha; added 2026-09-01)\n' \
   > "$FAR/data/secondmates.md"
 TF=$(mc "$FAR" frame --agents "$AGENTS" --view team --size 114x40) || fail "remote team frame failed"
-grep -q 'its list is on another machine' <<<"$TF" || fail "a remote mate's card says its list is on another machine"
+grep -q 'list on another machine' <<<"$TF" || fail "a remote mate's card says its list is on another machine"
 grep -q 'could not be read' <<<"$TF" && fail "a remote mate's records are not called unreadable"
 grep -Eq 'FAR +away' <<<"$TF" || fail "a remote mate reads away beside its full name"
 grep -q '/srv/far' <<<"$TF" && fail "no remote path may reach the Team view"
 pass "a remote mate's card says it works on another machine"
+
+# Three to five cards side by side keep every card line whole, the counts and
+# the remote note included.
+ROW="$TMP_ROOT/rowship"
+mkdir -p "$ROW/data" "$ROW/state"
+cp "$FIX/projects.fixture" "$ROW/data/projects.md"
+printf '# Backlog\n\n## In flight\n## Queued\n## Done\n' > "$ROW/data/backlog.md"
+{
+  echo "# Second mates"
+  for n in 1 2 3 4 5; do
+    if [ "$n" = 2 ]; then
+      echo "- r2-mate - Mate number 2 (host: box; root: /srv/r2; home: /srv/r2/home; scope: area 2; projects: alpha; added 2026-09-01)"
+      continue
+    fi
+    mkdir -p "$TMP_ROOT/r$n/data" "$TMP_ROOT/r$n/state"
+    cp "$FIX/mate-backlog.fixture" "$TMP_ROOT/r$n/data/backlog.md"
+    echo "- r$n-mate - Mate number $n (home: $TMP_ROOT/r$n; scope: area $n; projects: alpha; added 2026-09-01)"
+  done
+} > "$ROW/data/secondmates.md"
+{
+  printf '# Backlog\n\n## In flight\n## Queued\n'
+  for n in $(seq 10 19); do printf -- '- [ ] w%d - Wait %d (kind: task) (since 2026-09-08) (hold: the call) (hold-kind: captain)\n' "$n" "$n"; done
+  for n in 20 21; do printf -- '- [ ] w%d - Task %d (kind: task) (since 2026-09-09)\n' "$n" "$n"; done
+  printf '## Done\n'
+} > "$TMP_ROOT/r3/data/backlog.md"
+for size in 132x44 170x50 200x50; do
+  TR=$(mc "$ROW" frame --agents "$AGENTS" --view team --size "$size") || fail "a $size team frame failed"
+  grep -q 'owns alpha.*owns alpha.*owns alpha' <<<"$TR" || fail "at $size three or more cards sit side by side"
+  grep -q '\.\.\.' <<<"$TR" && fail "at $size no card line is clipped: $(grep -F '...' <<<"$TR")"
+  for text in 'list on another machine' '12 listed, 10 for you' '2 listed, 1 for you'; do
+    grep -qF "$text" <<<"$TR" || fail "at $size a card reads: $text"
+  done
+done
+pass "a row of three or more cards clips no card line"
 
 L=$(mc "$HOME_DIR" frame --agents "$AGENTS" --view calendar)
 grep -q 'Calendar is coming next' <<<"$L" || fail "a later view shows its coming-next note"
