@@ -1,0 +1,50 @@
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System                                           Sun 10:00 
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                                                                                          
+  All 8   Report 3   Decision 3   Link 2                                                                                                read only, changes happen in chat 
+                                                                                                                                                                          
+  Scout report: the quiz format in...  19 Sep  ┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+   Report   ■ alpha  326 words                 │  Decision  Follow-up plan                                                                                               │
+  The quiz stays private               18 Sep  │ Tuesday 15 September 2026, 5 words                                                                                      │
+   Decision   ■ alpha  16 words                ├─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+  A study with no task                 17 Sep  │ Decision: follow-up plan                                                                                                │
+   Report   6 words                            │                                                                                                                         │
+  A decision: fix, option (b)          16 Sep  │ Keep going.                                                                                                             │
+   Decision   7 words                          │                                                                                                                         │
+▸ Follow-up plan                       15 Sep  │                                                                                                                         │
+   Decision   5 words                          │                                                                                                                         │
+  Empty table report                   14 Sep  │                                                                                                                         │
+   Report   6 words                            │                                                                                                                         │
+  Class Drive folder                           │                                                                                                                         │
+   Link   ■ alpha  drive.example.org           │                                                                                                                         │
+  Status page                                  │                                                                                                                         │
+   Link   ■ setup  status.example.org          │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               └─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   left/right pick a kind   up/down pick a page   page up/down or the wheel scroll it   q quit                                          updates by itself 
