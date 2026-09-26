@@ -334,7 +334,7 @@ def parse_agents(text):
         if not isinstance(a, dict) or not a.get("pane_id"):
             continue
         cwds = {c for c in (_real(a.get("cwd")), _real(a.get("foreground_cwd"))) if c}
-        title = a.get("terminal_title_stripped") or a.get("terminal_title") or ""
+        title = a.get("terminal_title_stripped") or ""
         title = " ".join(bridge.plain_note(clean(title)).split()).strip("?* ")
         out.append({"pane": str(a["pane_id"]), "status": str(a.get("agent_status") or ""), "cwds": cwds,
                     "title": title})
@@ -538,7 +538,10 @@ def _interns_words(interns):
     """ "3 interns", or "3 interns and 1 helper" when some have no record."""
     n = sum(1 for i in interns if not i.get("helper"))
     helpers = len(interns) - n
-    return bridge._plural(n, "intern") + (" and %s" % bridge._plural(helpers, "helper") if helpers else "")
+    words = [bridge._plural(n, "intern")] if n or not helpers else []
+    if helpers:
+        words.append(bridge._plural(helpers, "helper"))
+    return " and ".join(words)
 
 
 HELPER_WORDS = {"done": "finished its turn", "blocked": "waiting for an answer"}
@@ -1456,9 +1459,10 @@ def _chrome(cv, ui, now):
         if ui.view == "docs":
             keys = " 1-9 switch view   left/right pick a kind" + keys[16:]
     else:
-        keys = (" 1-9 switch view   tap an agent to open its chat   up/down pick one   enter talk to it   p pause"
-                "   q quit ")
-        if ui.view == "projects":
+        keys = " 1-9 switch view   up/down pick an agent   enter talk to it   p pause   q quit "
+        if ui.view == "office":
+            keys = " 1-9 switch view   tap an agent to open its chat   up/down pick one   p pause   q quit "
+        elif ui.view == "projects":
             keys = " 1-9 switch view   up/down pick a project   p pause   q quit "
         elif ui.view == "calendar":
             keys = " left/right earlier or later   t today   v week, month or year   1-9 switch view   p pause   q quit "
@@ -4328,8 +4332,8 @@ class Feed:
             agents = read_agents(self.herdr)
             with self.lock:
                 if agents is not None:
-                    changed = [(a["pane"], a["status"], tuple(sorted(a["cwds"]))) for a in agents] != \
-                        [(a["pane"], a["status"], tuple(sorted(a["cwds"]))) for a in self.agents]
+                    changed = [(a["pane"], a["status"], tuple(sorted(a["cwds"])), a["title"]) for a in agents] != \
+                        [(a["pane"], a["status"], tuple(sorted(a["cwds"])), a["title"]) for a in self.agents]
                     self.agents, self.agents_read, err = agents, True, None
                 else:
                     err = "Herdr's agent list could not be read just now; showing what it last said." \
@@ -4655,7 +4659,8 @@ def _tap_agent(ui, scene, feed, x, y):
     m = next((c for c in scene.crew if c["key"] == key), None) if key else None
     if m is None:
         return False
-    ui.selected = key
+    if ui.view != "team" or m["kind"] == "mate":
+        ui.selected = key
     _open_chat(ui, m, feed)
     return True
 

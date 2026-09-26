@@ -1543,6 +1543,11 @@ for want in 2:M1 3:M2 4:M3 5:M2; do
   screen "$TMP_ROOT/pick" "$n" | grep -q "Mate number ${who#M}" || fail "screen $n shows $who's charter"
 done
 screen "$TMP_ROOT/pick" 2 | grep -q '4 more ▸' || fail "cards beyond the pane's width are counted"
+# Tapping the first mate's card opens its chat and leaves the picked mate picked.
+TB=$(mc "$BIG" frame --agents "$TMP_ROOT/big.json" --size 132x44 --view team) || fail "big team frame failed"
+TB=$(mct "$BIG" frame --agents "$TMP_ROOT/big.json" --size 132x44 --view team \
+  --keys "$DOWN$DOWN$(tap_on "$TB" "Chief of staff")") || fail "big team tap failed"
+grep -q 'ABOUT M3' <<<"$TB" || fail "a tap on the first mate's card keeps M3 picked"
 pass "up and down pick a second mate on the Team view"
 
 # On the live screen a tap on the first mate's desk moves the captain's view
