@@ -3,11 +3,11 @@
 #
 # Mission Control draws the whole crew as an animated pixel-art office, plus a
 # task board, a card per project, the decisions waiting on the captain, a
-# week, month and year calendar and the crew as an org chart, in one terminal
-# pane; bin/fm_mission_control.py owns what it reads, how the crew maps onto
-# the office, and how frames are drawn. It is read-only: it never writes a
-# record, never sends keys or prompts to an agent, and never starts or stops
-# one.
+# week, month and year calendar, the crew as an org chart and the health of
+# the machine and the crew's plumbing, in one terminal pane;
+# bin/fm_mission_control.py owns what it reads, how the crew maps onto the
+# office, and how frames are drawn. It is read-only: it never writes a record,
+# never sends keys or prompts to an agent, and never starts or stops one.
 #
 # Commands:
 #   run                     draw the screen in this terminal until q
@@ -17,14 +17,20 @@
 #   stop                    close that workspace
 #   status                  report whether the workspace exists and whether the
 #                           screen is running in it
-#   frame [--view <v>] [--size <cols>x<rows>] [--agents <file>] [--format text|json|ansi] [--keys <keys>]
+#   frame [--view <v>] [--size <cols>x<rows>] [--agents <file>] [--readings <file>]
+#         [--format text|json|ansi] [--keys <keys>]
 #                           print one frame from the records and a saved
 #                           `herdr agent list` file (tests, a quick look),
 #                           or without --agents from asking Herdr once;
 #                           <v> is office, tasks, approvals, projects,
-#                           calendar, team, or a later view's name; <keys>
-#                           are keys and mouse taps applied first, as the
-#                           terminal sends them (Enter and q are ignored)
+#                           calendar, team, system, or a later view's
+#                           name.
+#                           --readings is a saved set of System readings;
+#                           without it the system view reads this machine and
+#                           Herdr once, and the other views leave the system
+#                           unchecked. <keys> are keys and mouse taps applied
+#                           first, as the terminal sends them (Enter and q
+#                           are ignored)
 #
 # Keys while running: 1-9 switch view, p pauses the animation, q quits,
 # up/down pick an agent in the team list and Enter moves your Herdr view to
