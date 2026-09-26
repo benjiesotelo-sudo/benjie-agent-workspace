@@ -2032,11 +2032,13 @@ def _decision_title(text, rec, keys):
     if m and m.group(1).lower() in keys:
         t = t[m.end():]
     base = _md_plain(bridge._clean_title(rec.get("title"))) if rec else ""
+    action = re.match(r"ACTION\b:?\s*", t)
+    if action:
+        t = t[action.end():]
     if not t:
         t = "Decision on %s" % base if base else "A decision"
-    elif re.match(r"(?i)action\b", t):
-        action = re.sub(r"^%s\b" % _SHOUTED, lambda m: m.group(0).lower(), re.sub(r"(?i)^action:?\s*", "", t))
-        t = "%s: %s" % (base or "A decision", action)
+    elif action:
+        t = "%s: %s" % (base or "A decision", re.sub(r"^%s\b" % _SHOUTED, lambda m: m.group(0).lower(), t))
     return t[:1].upper() + t[1:]
 
 
