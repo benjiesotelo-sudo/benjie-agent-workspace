@@ -1838,6 +1838,7 @@ DOC_KINDS = (("Report", "#7b93ff"), ("Decision", "#ffb454"), ("Link", "#3fb6c9")
 DOC_TAGS = ["All"] + [k for k, _c in DOC_KINDS]
 SHELF_TTL = 5.0     # seconds a built list is reused before its files are looked at again
 _SLUG = r"[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*"
+_SHOUTED = r"(?:FIX|KEEP|DROP|APPROVE|REJECT|MERGE|SHIP|CLOSE|DEFER|HOLD|PICK|USE|ADD|REMOVE|CANCEL|WAIT|SKIP|STOP)"
 
 _TEXTS = {}         # path -> ((mtime, size), text)
 
@@ -2026,7 +2027,7 @@ def memory_pages(model, fm_name, now):
 def _decision_title(text, rec, keys):
     hs = bridge.headings(text)
     t = _md_plain(clean(hs[0][1])) if hs else ""
-    t = re.sub(r"^(?:captain'?s\s+)?decisions?\b[^:]*:\s*", "", t, flags=re.I)
+    t = re.sub(r"^(?:captain'?s\s+)?decisions?\s*:\s*", "", t, flags=re.I)
     m = re.match(r"(%s)(?:\s*:\s*|\s+-\s*|$)" % _SLUG, t)
     if m and m.group(1).lower() in keys:
         t = t[m.end():]
@@ -2034,9 +2035,8 @@ def _decision_title(text, rec, keys):
     if not t:
         t = "Decision on %s" % base if base else "A decision"
     elif re.match(r"(?i)action\b", t):
-        action = re.sub(r"^[A-Z]{2,}\b", lambda m: m.group(0).lower(), re.sub(r"(?i)^action:?\s*", "", t))
+        action = re.sub(r"^%s\b" % _SHOUTED, lambda m: m.group(0).lower(), re.sub(r"(?i)^action:?\s*", "", t))
         t = "%s: %s" % (base or "A decision", action)
-    t = re.sub(r"^[A-Z]{2,}\b", lambda m: m.group(0).capitalize(), t)
     return t[:1].upper() + t[1:]
 
 

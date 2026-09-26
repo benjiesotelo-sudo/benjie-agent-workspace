@@ -436,7 +436,13 @@ for heading, want in [("# Decision: sign-in - which provider we use", "Sign-in -
                       ("# Decision: follow-up plan", "Follow-up plan"), ("# q2-rollout plan", "Q2-rollout plan"),
                       ("# Decision: q2: keep it short", "Keep it short"),
                       ("# Follow-up", "Follow-up"), ("# Decision: q2 - keep it private", "Keep it private"),
-                      ("# loose-key", "A decision")]:
+                      ("# loose-key", "A decision"),
+                      ("# Decision needed on pricing: option A", "Decision needed on pricing: option A"),
+                      ("# Decision on the quiz - keep it: yes", "Decision on the quiz - keep it: yes"),
+                      ("# Captain's decisions: use the new deck", "Use the new deck"),
+                      ("# Decision: API keys for the class site", "API keys for the class site"),
+                      ("# AI tutor pilot", "AI tutor pilot"), ("# ACTION: API change", "A decision: API change"),
+                      ("# Decision: q2 - ACTION: KEEP the old deck", "A decision: keep the old deck")]:
     got = mc._decision_title(heading + "\n", None, keys)
     assert got == want, (heading, got)
 assert mc.render_markdown("|---|---|\n\nAfter.", 40)
