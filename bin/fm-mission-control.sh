@@ -3,10 +3,11 @@
 #
 # Mission Control draws the whole crew as an animated pixel-art office, plus a
 # task board, a card per project, the decisions waiting on the captain, a
-# week calendar and the crew as an org chart, in one terminal pane;
-# bin/fm_mission_control.py owns what it reads, how the crew maps onto the
-# office, and how frames are drawn. It is read-only: it never writes a record,
-# never sends keys or prompts to an agent, and never starts or stops one.
+# week calendar, the crew as an org chart, and a reader for the crew's memory
+# and documents, in one terminal pane; bin/fm_mission_control.py owns what it
+# reads, how the crew maps onto the office, and how frames are drawn. It is
+# read-only: it never writes a record, never sends keys or prompts to an
+# agent, and never starts or stops one.
 #
 # Commands:
 #   run                     draw the screen in this terminal until q
@@ -20,7 +21,8 @@
 #                           print one frame from the records and a saved
 #                           `herdr agent list` file (tests, a quick look);
 #                           <v> is office, tasks, approvals, projects,
-#                           calendar, team, or a later view's name
+#                           calendar, team, memory, docs, or a later view's
+#                           name
 #
 # Keys while running: 1-9 switch view, p pauses the animation, q quits,
 # up/down pick an agent in the team list and Enter moves your Herdr view to
@@ -29,8 +31,12 @@
 # the highlight through the decisions instead, and Enter does nothing: no key
 # answers or changes a decision. On the calendar, left and right move a week
 # and t returns to this week. On the Team view up/down pick a second mate's
-# card instead and Enter moves to that mate's pane. Tapping a tab switches
-# view when the terminal reports mouse clicks.
+# card instead and Enter moves to that mate's pane. On Memory and Docs
+# up/down pick a page and the reader shows it, Page Up/Page Down scroll the
+# reader, on Docs left/right pick a kind of document, and Enter does nothing.
+# Tapping a tab switches view when the terminal reports mouse clicks; on
+# Memory and Docs tapping a row picks it and the wheel over the reader
+# scrolls it.
 #
 # start creates the workspace with `herdr workspace create --label
 # mission-control --no-focus` in this home and types the run command into its

@@ -1,0 +1,17 @@
+# Scout report: the **quiz** format in `data/c1/notes.md`
+
+A long opening paragraph that runs well past the reader's width, so that it has to wrap onto more than one line when the pane is narrow,
+and it carries on over a second source line that joins the same paragraph and ends with the words longer still.
+
+## What we found
+
+- First finding with **bold words** and `a code span`
+- Second finding, see [the course page](https://example.org/course)
+  1. A nested numbered step
+
+| Option | Cost |
+|---|---|
+| Keep | none |
+| Rebuild | two days |
+
+## Details
