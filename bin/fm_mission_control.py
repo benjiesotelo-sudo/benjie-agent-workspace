@@ -50,13 +50,15 @@ MATCHING a Herdr agent to a crew member, first rule that applies:
   a helper    every other agent: a pane no record claims, such as a worker
               whose task record is gone. It stands beside the mate whose home
               its cwd is in, else the first mate, as "<lead>'s helper", doing
-              its window title in plain words; its project is the registered
-              project its cwd is named after (a projects/<name> folder or the
-              folder itself). It is never dropped.
+              its window title in plain words (else "a job with no record");
+              its project is the registered project its cwd is named after (a
+              projects/<name> folder or the folder itself). It is never
+              dropped.
 This screen's own pane (HERDR_PANE_ID) is never matched, and panes already
-claimed by a worker or mate never match the first mate. agent_status "working" is working; every
-other status is asleep, and a working agent falls asleep only after it has been
-idle for SLEEP_AFTER seconds, so the gaps between turns do not flicker.
+claimed by a worker or mate never match the first mate. agent_status "working"
+is working; every other status is asleep, and a working agent falls asleep
+only after it has been idle for SLEEP_AFTER seconds, so the gaps between turns
+do not flicker.
 
 THE CREW. The first mate has the top desk. Every registered second mate gets a
 desk, three to a row; a floor holds six when the pane is tall enough for two
@@ -123,10 +125,11 @@ and how many open items its list holds and how many wait on the captain. Live
 interns and helpers branch off the first mate's line or sit under their mate's
 card, one line each; the first mate's all show when they fit beside the mates'
 own, else at least half the rows between, and the rows that do not fit are
-counted instead. Tapping a card or an intern's line opens that agent's chat. Up and down pick a
-mate's card, whose registry description (first sentence) and scope show
-underneath, with raw paths removed. The alumni row reads the same retirements
-as the office's alumni wall, so it too starts empty on every run.
+counted instead. Tapping a card or an intern's line opens that agent's chat.
+Up and down pick a mate's card, whose registry description (first sentence)
+and scope show underneath, with raw paths removed. The alumni row reads the
+same retirements as the office's alumni wall, so it too starts empty on every
+run.
 
 MEMORY AND DOCS. Both are a list on the left and one reader on the right; the
 reader renders Markdown to terminal lines (render_markdown) and never runs or
