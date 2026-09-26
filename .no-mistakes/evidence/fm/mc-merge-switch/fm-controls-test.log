@@ -1,0 +1,13 @@
+ok - a missing settings file reads OFF and frame and OFF write nothing
+ok - ON on a missing file creates it with the two rules, kept out of git
+ok - ON adds exactly the two rules, OFF removes exactly them, and repeats change nothing
+ok - one rule of two reads partly on, and OFF clears every copy
+ok - the frame reads the real state, including an edit made elsewhere
+ok - a settings file removed elsewhere after a change here reads as changed outside this screen
+ok - a null permissions or allow reads OFF and turns on and off
+ok - a malformed settings file is left untouched with a plain error on screen
+ok - Enter and a tap turn the switch over at once, and an outside edit shows by itself
+ok - a malformed file stays untouched on the live screen, and SIGTERM restores the terminal
+ok - start keeps exactly one controls workspace running the screen; status and stop agree
+ok - Mission Control's System view shows the switch's state, read only
+ok - fm-controls.sh parses

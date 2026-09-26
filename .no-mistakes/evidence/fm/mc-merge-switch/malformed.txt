@@ -1,0 +1,95 @@
+----- screen before action 1 ('\\r') -----
+ CONTROLS                                                                                 Sat 18:18
+────────────────────────────────────────────────────────────────────────────────────────────────────
+
+  Let Denver merge green pull requests on the workspace: CANNOT BE READ
+
+  ┌──────────────────────────────────────────────────────────────┐
+  │                     the switch is                            │
+  │          ?          CANNOT BE READ                           │
+  │                     a tap changes nothing                    │
+  └──────────────────────────────────────────────────────────────┘
+
+  WHAT ON ALLOWS
+  Denver may merge pull requests on the workspace once every check passes and there are no
+  conflicts; other projects still wait for you.
+
+  LAST CHANGED
+  Not known while the settings file cannot be read.
+
+  RIGHT NOW
+  The settings file is not valid JSON (line 2, column 1). Nothing was changed; fix or remove
+  .claude/settings.local.json in the home and this screen reads it again by itself.
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────────
+ tap the switch or Enter: change nothing   q quit
+
+----- screen before action 2 ('\\x1b[<0;10;8M\\x1b[<0;10;8m') -----
+ CONTROLS                                                                                 Sat 18:18
+────────────────────────────────────────────────────────────────────────────────────────────────────
+
+  Let Denver merge green pull requests on the workspace: CANNOT BE READ
+
+  ┌──────────────────────────────────────────────────────────────┐
+  │                     the switch is                            │
+  │          ?          CANNOT BE READ                           │
+  │                     a tap changes nothing                    │
+  └──────────────────────────────────────────────────────────────┘
+
+  WHAT ON ALLOWS
+  Denver may merge pull requests on the workspace once every check passes and there are no
+  conflicts; other projects still wait for you.
+
+  LAST CHANGED
+  Not known while the settings file cannot be read.
+
+  RIGHT NOW
+  The settings file is not valid JSON (line 2, column 1). Nothing was changed; fix or remove
+  .claude/settings.local.json in the home and this screen reads it again by itself.
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────────
+ Nothing changed: the settings file is not valid JSON (line 2, column 1).
+
+----- screen before action 3 ('TERM') -----
+ CONTROLS                                                                                 Sat 18:18
+────────────────────────────────────────────────────────────────────────────────────────────────────
+
+  Let Denver merge green pull requests on the workspace: CANNOT BE READ
+
+  ┌──────────────────────────────────────────────────────────────┐
+  │                     the switch is                            │
+  │          ?          CANNOT BE READ                           │
+  │                     a tap changes nothing                    │
+  └──────────────────────────────────────────────────────────────┘
+
+  WHAT ON ALLOWS
+  Denver may merge pull requests on the workspace once every check passes and there are no
+  conflicts; other projects still wait for you.
+
+  LAST CHANGED
+  Not known while the settings file cannot be read.
+
+  RIGHT NOW
+  The settings file is not valid JSON (line 2, column 1). Nothing was changed; fix or remove
+  .claude/settings.local.json in the home and this screen reads it again by itself.
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────────
+ Nothing changed: the settings file is not valid JSON (line 2, column 1).

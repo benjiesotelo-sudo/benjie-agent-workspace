@@ -1,0 +1,44 @@
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System     Sat 18:19
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+ ● Nothing needs a look so far; still checking                                                         read only, nothing here acts
+
+┌─ ● THIS MAC ──────────────────────────────────────────────────┐ ┌─ ● CREW MONITORING ───────────────────────────────────────────┐
+│ This Mac: healthy                                             │ │ Monitoring the crew: resting, no work under way, no check yet │
+│ ● Up time: not checked yet                                    │ │ ● Away mode is off                                            │
+│ ● Processor load 3.5 on 10 cores                              │ │ ● No notifications waiting for the first mate                 │
+│ ● Memory: 9.2 GB of 16 GB in use                              │ │                                                               │
+│ ● Disk: 36 GB free of 228 GB                                  │ │                                                               │
+│ ● Tailnet: not checked yet                                    │ │                                                               │
+└───────────────────────────────────────────────────────────────┘ └───────────────────────────────────────────────────────────────┘
+
+┌─ ● CREW ──────────────────────────────────────────────────────┐ ┌─ ● SECOND MATES ──────────────────────────────────────────────┐
+│ Crew: 0 working, 1 asleep, 0 interns out                      │ │ Second mates: none registered                                 │
+│ ● Merge switch OFF: every merge waits for you                 │ │                                                               │
+└───────────────────────────────────────────────────────────────┘ └───────────────────────────────────────────────────────────────┘
+
+┌─ ● THE BRIDGE PAGE ───────────────────────────────────────────┐ ┌─ ● MISSION CONTROL ───────────────────────────────────────────┐
+│ The Bridge page: not checked yet                              │ │ Mission Control: not checked yet                              │
+└───────────────────────────────────────────────────────────────┘ └───────────────────────────────────────────────────────────────┘
+
+┌─ ● GITHUB ────────────────────────────────────────────────────┐ ┌─ ● TOOLS ─────────────────────────────────────────────────────┐
+│ GitHub: not checked yet                                       │ │ Tools: not checked yet                                        │
+└───────────────────────────────────────────────────────────────┘ └───────────────────────────────────────────────────────────────┘
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   files recheck every 5 s, commands every 5 min   q quit                                         updates by itself

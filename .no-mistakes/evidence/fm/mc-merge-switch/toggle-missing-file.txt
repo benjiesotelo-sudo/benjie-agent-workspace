@@ -1,0 +1,159 @@
+----- screen before action 1 ('\\r') -----
+ CONTROLS                                                                                 Sat 18:17
+────────────────────────────────────────────────────────────────────────────────────────────────────
+
+  Let Denver merge green pull requests on the workspace: OFF
+
+  ┌──────────────────────────────────────────────────────────────┐
+  │                     the switch is                            │
+  │                     OFF                                      │
+  │                     tap to turn it on                        │
+  └──────────────────────────────────────────────────────────────┘
+
+  WHAT ON ALLOWS
+  Denver may merge pull requests on the workspace once every check passes and there are no
+  conflicts; other projects still wait for you.
+
+  LAST CHANGED
+  Never changed yet; it starts OFF.
+
+  RIGHT NOW
+  Denver waits for your word before merging any pull request.
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────────
+ tap the switch or Enter: turn it on   q quit
+
+----- screen before action 2 ('\\x1b[<0;10;8M\\x1b[<0;10;8m') -----
+ CONTROLS                                                                                 Sat 18:17
+────────────────────────────────────────────────────────────────────────────────────────────────────
+
+  Let Denver merge green pull requests on the workspace: ON
+
+  ┌──────────────────────────────────────────────────────────────┐
+  │                     the switch is                            │
+  │                     ON                                       │
+  │                     tap to turn it off                       │
+  └──────────────────────────────────────────────────────────────┘
+
+  WHAT ON ALLOWS
+  Denver may merge pull requests on the workspace once every check passes and there are no
+  conflicts; other projects still wait for you.
+
+  LAST CHANGED
+  Turned ON here Sat 26 Sep at 18:17 (just now).
+
+  RIGHT NOW
+  Denver may merge green pull requests on the workspace without asking you.
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────────
+ Turned ON: Denver may now merge green pull requests on the workspace.
+
+----- screen before action 3 ('\\r') -----
+ CONTROLS                                                                                 Sat 18:17
+────────────────────────────────────────────────────────────────────────────────────────────────────
+
+  Let Denver merge green pull requests on the workspace: OFF
+
+  ┌──────────────────────────────────────────────────────────────┐
+  │                     the switch is                            │
+  │                     OFF                                      │
+  │                     tap to turn it on                        │
+  └──────────────────────────────────────────────────────────────┘
+
+  WHAT ON ALLOWS
+  Denver may merge pull requests on the workspace once every check passes and there are no
+  conflicts; other projects still wait for you.
+
+  LAST CHANGED
+  Turned OFF here Sat 26 Sep at 18:17 (just now).
+
+  RIGHT NOW
+  Denver waits for your word before merging any pull request.
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────────
+ Turned OFF: Denver now waits for your word before any merge.
+
+----- screen before action 4 ('SNAP:final') -----
+ CONTROLS                                                                                 Sat 18:17
+────────────────────────────────────────────────────────────────────────────────────────────────────
+
+  Let Denver merge green pull requests on the workspace: ON
+
+  ┌──────────────────────────────────────────────────────────────┐
+  │                     the switch is                            │
+  │                     ON                                       │
+  │                     tap to turn it off                       │
+  └──────────────────────────────────────────────────────────────┘
+
+  WHAT ON ALLOWS
+  Denver may merge pull requests on the workspace once every check passes and there are no
+  conflicts; other projects still wait for you.
+
+  LAST CHANGED
+  Turned ON here Sat 26 Sep at 18:17 (just now).
+
+  RIGHT NOW
+  Denver may merge green pull requests on the workspace without asking you.
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────────
+ Turned ON: Denver may now merge green pull requests on the workspace.
+
+----- screen before action 5 ('q') -----
+ CONTROLS                                                                                 Sat 18:17
+────────────────────────────────────────────────────────────────────────────────────────────────────
+
+  Let Denver merge green pull requests on the workspace: ON
+
+  ┌──────────────────────────────────────────────────────────────┐
+  │                     the switch is                            │
+  │                     ON                                       │
+  │                     tap to turn it off                       │
+  └──────────────────────────────────────────────────────────────┘
+
+  WHAT ON ALLOWS
+  Denver may merge pull requests on the workspace once every check passes and there are no
+  conflicts; other projects still wait for you.
+
+  LAST CHANGED
+  Turned ON here Sat 26 Sep at 18:17 (just now).
+
+  RIGHT NOW
+  Denver may merge green pull requests on the workspace without asking you.
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────────
+ Turned ON: Denver may now merge green pull requests on the workspace.

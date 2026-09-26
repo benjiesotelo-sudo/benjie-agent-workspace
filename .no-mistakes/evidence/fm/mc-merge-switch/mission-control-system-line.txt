@@ -1,0 +1,10 @@
+# settings ON (both rules):
+17:│ ● Merge switch ON: Denver may merge green pull requests on    │ │                                                               │
+# one rule only:
+17:│ ● Merge switch partly on: open Controls to turn it fully off  │ │                                                               │
+# malformed:
+17:│ ● Merge switch could not be read: the settings file is not    │ │                                                               │
+(malformed file untouched by Mission Control)
+# file missing:
+17:│ ● Merge switch OFF: every merge waits for you                 │ │                                                               │
+(Mission Control created no file)

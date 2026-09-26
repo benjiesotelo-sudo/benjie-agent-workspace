@@ -1,0 +1,42 @@
+$ herdr pane read w1:p1 --source visible   (before Enter)
+ CONTROLS                                  Sat 18:19
+─────────────────────────────────────────────────────
+  Let Denver merge green pull requests on the
+  workspace: OFF
+  ┌───────────────────────────────────────────────┐
+  │                     the switch is             │
+  │                     OFF                       │
+  │                     tap to turn it on         │
+  └───────────────────────────────────────────────┘
+  WHAT ON ALLOWS
+  Denver may merge pull requests on the workspace
+  once every check passes and there are no
+  conflicts; other projects still wait for you.
+  LAST CHANGED
+  Turned OFF here Sat 26 Sep at 18:18 (37 seconds
+  ago).
+─────────────────────────────────────────────────────
+ tap the switch or Enter: turn it on   q quit
+
+$ herdr pane send-keys w1:p1 enter; herdr pane read w1:p1 --source visible
+ CONTROLS                                  Sat 18:19
+─────────────────────────────────────────────────────
+  Let Denver merge green pull requests on the
+  workspace: ON
+  ┌───────────────────────────────────────────────┐
+  │                     the switch is             │
+  │                     ON                        │
+  │                     tap to turn it off        │
+  └───────────────────────────────────────────────┘
+  WHAT ON ALLOWS
+  Denver may merge pull requests on the workspace
+  once every check passes and there are no
+  conflicts; other projects still wait for you.
+  LAST CHANGED
+  Turned ON here Sat 26 Sep at 18:19 (just now).
+  RIGHT NOW
+─────────────────────────────────────────────────────
+ Turned ON: Denver may now merge green pull reques...
+
+$ jq -c .permissions.allow settings.local.json
+["Bash(ls *)","Bash(bin/fm-pr-merge.sh *)","Bash(/private/tmp/fmct-drive/home/bin/fm-pr-merge.sh *)"]

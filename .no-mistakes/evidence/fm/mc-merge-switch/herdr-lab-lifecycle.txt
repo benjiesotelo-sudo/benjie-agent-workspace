@@ -1,0 +1,40 @@
+$ fm-controls.sh status
+running: no (controls workspace not found)
+rc=0
+$ fm-controls.sh start
+fm-controls: running in workspace w1 (pane w1:p1)
+rc=0
+$ fm-controls.sh start   # again
+fm-controls: already running in workspace w1 (pane w1:p1)
+rc=0
+$ fm-controls.sh status
+running: yes, workspace w1, pane w1:p1
+rc=0
+$ herdr workspace list (lab)
+[{"workspace_id":"w1","label":"controls"}]
+$ fm-controls.sh stop
+fm-controls: closed workspace w1
+rc=0
+$ fm-controls.sh stop   # again
+fm-controls: not running (no controls workspace)
+rc=0
+$ fm-controls.sh status
+running: no (controls workspace not found)
+rc=0
+$ fm-mission-control.sh status
+running: no (mission-control workspace not found)
+rc=0
+$ fm-mission-control.sh start
+fm-mission-control: running in workspace w2 (pane w2:p1)
+rc=0
+$ fm-mission-control.sh start   # again
+fm-mission-control: already running in workspace w2 (pane w2:p1)
+rc=0
+$ fm-mission-control.sh status
+running: yes, workspace w2, pane w2:p1
+rc=0
+$ fm-mission-control.sh stop
+fm-mission-control: closed workspace w2
+rc=0
+$ herdr workspace list (lab)
+[]

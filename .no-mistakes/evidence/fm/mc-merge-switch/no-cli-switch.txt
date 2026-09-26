@@ -1,0 +1,21 @@
+$ fm-controls.sh on
+colours, as for Mission Control, and start passes it into the pane.
+rc=2
+$ fm-controls.sh off
+colours, as for Mission Control, and start passes it into the pane.
+rc=2
+$ fm-controls.sh toggle
+colours, as for Mission Control, and start passes it into the pane.
+rc=2
+$ fm-controls.sh set on
+colours, as for Mission Control, and start passes it into the pane.
+rc=2
+$ fm-controls.sh frame --on
+fm_controls.py: error: unrecognized arguments: --on
+rc=2
+$ fm-controls.sh run </dev/null
+fm_controls.py: run needs a terminal
+rc=2
+$ python3 bin/fm_controls.py on --home ...
+fm_controls.py: error: argument command: invalid choice: 'on' (choose from 'run', 'frame')
+settings file unchanged: {"permissions":{"allow":[]}}
