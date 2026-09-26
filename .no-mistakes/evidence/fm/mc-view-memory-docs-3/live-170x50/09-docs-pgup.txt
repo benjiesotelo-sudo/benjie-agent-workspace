@@ -1,0 +1,50 @@
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System                                           Sun 10:00
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+  All 6   Report 2   Decision 2   Link 2                                                                                                read only, changes happen in chat
+
+▸ Scout report: the quiz format in...  19 Sep  ┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+   Report   ■ alpha  326 words                 │  Report  Scout report: the quiz format in a local file                                                                  │
+  The quiz stays private               18 Sep  │ Saturday 19 September 2026, 326 words, project alpha                                                                    │
+   Decision   ■ alpha  16 words                ├─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+  A study with no task                 17 Sep  │ the pane is narrow, and it carries on over a second source line that joins the same paragraph and ends with the words   │
+   Report   6 words                            │ longer still.                                                                                                           │
+  A decision: fix, option (b)          16 Sep  │                                                                                                                         │
+   Decision   7 words                          │ What we found                                                                                                           │
+  Class Drive folder                           │                                                                                                                         │
+   Link   ■ alpha  drive.example.org           │   • First finding with bold words and a code span                                                                       │
+  Status page                                  │   • Second finding, see the course page (https://example.org/course)                                                    │
+   Link   ■ setup  status.example.org          │     1. A nested numbered step                                                                                           │
+                                               │                                                                                                                         │
+                                               │ Option  │ Cost                                                                                                          │
+                                               │ ────────┼─────────                                                                                                      │
+                                               │ Keep    │ none                                                                                                          │
+                                               │ Rebuild │ two days                                                                                                      │
+                                               │                                                                                                                         │
+                                               │ Details                                                                                                                 │
+                                               │   • Detail line 1                                                                                                       │
+                                               │   • Detail line 2                                                                                                       │
+                                               │   • Detail line 3                                                                                                       │
+                                               │   • Detail line 4                                                                                                       │
+                                               │   • Detail line 5                                                                                                       │
+                                               │   • Detail line 6                                                                                                       │
+                                               │   • Detail line 7                                                                                                       │
+                                               │   • Detail line 8                                                                                                       │
+                                               │   • Detail line 9                                                                                                       │
+                                               │   • Detail line 10                                                                                                      │
+                                               │   • Detail line 11                                                                                                      │
+                                               │   • Detail line 12                                                                                                      │
+                                               │   • Detail line 13                                                                                                      │
+                                               │   • Detail line 14                                                                                                      │
+                                               │   • Detail line 15                                                                                                      │
+                                               │   • Detail line 16                                                                                                      │
+                                               │   • Detail line 17                                                                                                      │
+                                               │   • Detail line 18                                                                                                      │
+                                               │   • Detail line 19                                                                                                      │
+                                               │   • Detail line 20                                                                                                      │
+                                               │   • Detail line 21                                                                                                      │
+                                               │   • Detail line 22                                                                                                      │
+                                               │   • Detail line 23                                                                                                      │
+                                               └─────────────────────────────────────────────────────────────────────────────────────────────────── lines 4 to 41 of 98 ─┘
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   left/right pick a kind   up/down pick a page   page up/down or the wheel scroll it   q quit                                          updates by itself

@@ -1,0 +1,36 @@
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar         Sun 10:00
+────────────────────────────────────────────────────────────────────────────────────────────────
+
+  All 6   Report 2   Decision 2   Link 2                      read only, changes happen in chat
+
+▸ Scout report: the quiz...  19 Sep  ┌─────────────────────────────────────────────────────────┐
+   Report   ■ alpha  326 words       │  Report  Scout report: the quiz format in a local file  │
+  The quiz stays private     18 Sep  │ Saturday 19 September 2026, 326 words, project alpha    │
+   Decision   ■ alpha  16 words      ├─────────────────────────────────────────────────────────┤
+  A study with no task       17 Sep  │   • Detail line 2                                       │
+   Report   6 words                  │   • Detail line 3                                       │
+  A decision: fix, option... 16 Sep  │   • Detail line 4                                       │
+   Decision   7 words                │   • Detail line 5                                       │
+  Class Drive folder                 │   • Detail line 6                                       │
+   Link   ■ alpha  drive.example.or  │   • Detail line 7                                       │
+  Status page                        │   • Detail line 8                                       │
+   Link   ■ setup  status.example.o  │   • Detail line 9                                       │
+                                     │   • Detail line 10                                      │
+                                     │   • Detail line 11                                      │
+                                     │   • Detail line 12                                      │
+                                     │   • Detail line 13                                      │
+                                     │   • Detail line 14                                      │
+                                     │   • Detail line 15                                      │
+                                     │   • Detail line 16                                      │
+                                     │   • Detail line 17                                      │
+                                     │   • Detail line 18                                      │
+                                     │   • Detail line 19                                      │
+                                     │   • Detail line 20                                      │
+                                     │   • Detail line 21                                      │
+                                     │   • Detail line 22                                      │
+                                     │   • Detail line 23                                      │
+                                     │   • Detail line 24                                      │
+                                     │   • Detail line 25                                      │
+                                     └───────────────────────────────── lines 23 to 46 of 101 ─┘
+────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   left/right pick a kind   up/down pick a page   page up...  updates by itself
