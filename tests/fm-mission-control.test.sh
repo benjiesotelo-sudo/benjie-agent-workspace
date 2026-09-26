@@ -4,11 +4,12 @@
 # saved `herdr agent list`, asserting desks, working and asleep states, interns
 # beside the right person in charge, the second-floor sign at seven mates, the
 # inbox count, the task columns, the project cards, the Approvals groups, the
-# calendar week (completions, due dates, what always runs), the Team org chart
-# and the System view's dots, overall line and office rack sign from saved
-# readings; then the live screen in a pseudo-terminal, which must redraw only
-# what changed, pick project cards with up/down, and restore the terminal on q
-# and on SIGTERM. The record parsers themselves are covered by fm-bridge.test.sh.
+# calendar's week, month and year (completions, due dates, what always runs,
+# the tappable control bar), the Team org chart and the System view's dots,
+# overall line and office rack sign from saved readings; then the live screen
+# in a pseudo-terminal, which must redraw only what changed, pick project cards
+# with up/down, and restore the terminal on q and on SIGTERM. The record
+# parsers themselves are covered by fm-bridge.test.sh.
 # Fixtures are the Bridge's, in tests/assets/bridge/.
 set -u
 
@@ -66,7 +67,7 @@ jq -n --arg home "$HOME_DIR" --arg mate "$MATE" --arg wa "$TMP_ROOT/wt-alpha" '
 mc() {  # <home> <args...>
   local home=$1
   shift
-  PATH="$FAKEBIN:$PATH" FM_HOME="$home" FM_BRIDGE_NOW=2026-09-20T10:00:00 "$MC" "$@"
+  PATH="$FAKEBIN:$PATH" FM_HOME="$home" FM_BRIDGE_NOW=2026-09-20T10:00:00 FM_MC_HERDR="$FAKEBIN/herdr" "$MC" "$@"
 }
 
 # --- the office ------------------------------------------------------------
@@ -664,6 +665,14 @@ cat > "$CAL/data/backlog.md" <<'MD'
 - [x] w2 - Tidy the ship's scripts (kind: task) (done 2026-09-23)
 - [x] w3 - Wrap the September module (repo: beta) (kind: ship) (done 2026-09-30)
 - [x] w4 - An older handout (repo: beta) (kind: ship) (done 2026-09-12)
+- [x] b1 - Busy day beta one (repo: beta) (kind: ship) (done 2026-09-15)
+- [x] b2 - Busy day beta two (repo: beta) (kind: ship) (done 2026-09-15)
+- [x] b3 - Busy day beta three (repo: beta) (kind: ship) (done 2026-09-15)
+- [x] b4 - Busy day beta four (repo: beta) (kind: ship) (done 2026-09-15)
+- [x] b5 - Busy day beta five (repo: beta) (kind: ship) (done 2026-09-15)
+- [x] b6 - Busy day alpha one (repo: alpha) (kind: ship) (done 2026-09-15)
+- [x] b7 - Busy day alpha two (repo: alpha) (kind: ship) (done 2026-09-15)
+- [x] b8 - Busy day alpha three (repo: alpha) (kind: ship) (done 2026-09-15)
 MD
 cat > "$FAKEBIN/launchctl" <<SH
 #!/usr/bin/env bash
@@ -672,8 +681,9 @@ printf 'gui/501/com.firstmate.bridge = {\n\tstate = running\n}\n'
 SH
 chmod +x "$FAKEBIN/launchctl"
 touch "$TMP_ROOT/bridge-up"
-cal() {  # <now> <size>
-  PATH="$FAKEBIN:$PATH" FM_HOME="$CAL" FM_BRIDGE_NOW="$1" "$MC" frame --agents "$AGENTS" --view calendar --size "$2"
+cal() {  # <now> <size> [keys] [format]
+  PATH="$FAKEBIN:$PATH" FM_HOME="$CAL" FM_BRIDGE_NOW="$1" "$MC" frame --agents "$AGENTS" --view calendar \
+    --size "$2" --keys "${3:-}" --format "${4:-text}"
 }
 day_of() {  # <frame text> <needle> - prints the day heading above the column holding <needle>
   python3 - "$1" "$2" <<'PY'
@@ -686,8 +696,9 @@ hit = next((ln.index(sys.argv[2]) for ln in lines if sys.argv[2] in ln), None)
 print("" if hit is None else [name for c, name in starts if c <= hit][-1])
 PY
 }
-K=$(cal 2026-09-23T10:00:00 170x50) || fail "calendar frame failed: $K"
-grep -q '20 to 26 September' <<<"$K" || fail "the calendar heads its week"
+# Week is the third mode: v goes Month, Year, Week.
+K=$(cal 2026-09-23T10:00:00 170x50 vv) || fail "calendar frame failed: $K"
+grep -Eq '◂ +20 to 26 September +▸' <<<"$K" || fail "the calendar heads its week between the arrows"
 grep -q ' this week ' <<<"$K" || fail "the calendar says it shows this week"
 for d in 'Sun 20' 'Mon 21' 'Tue 22' 'Wed 23' 'Thu 24' 'Fri 25' 'Sat 26'; do
   grep -q "$d" <<<"$K" || fail "a wide pane shows the whole week: $d"
@@ -705,22 +716,240 @@ for skip in 'Review the syllabus' 'Compare the' 'staff meeting' 'Recap of' 'Due 
     'Rota for' 'Lab check' 'An older handout' 'Wrap the'; do
   grep -q "$skip" <<<"$K" && fail "a guessed, past or other-week date stays off the grid: $skip"
 done
-grep -q '2 done, 2 due' <<<"$K" || fail "the heading counts the week's blocks"
+grep -q '2 done, 2 due' <<<"$K" || fail "the control bar counts the week's blocks"
+grep -q 'Busy day' <<<"$K" && fail "another week's completions stay off the week"
 grep -q 'ALWAYS RUNNING' <<<"$K" || fail "the always-running strip has its heading"
 for chip in '● Bridge running' '● Mission Control off' '● Alpha asleep'; do
   grep -q "$chip" <<<"$K" || fail "the always-running strip reads the real state: $chip"
 done
 grep -Eq '\b(h1|t[1-9]|t1[01]|w[1-4])\b' <<<"$K" && fail "no task id may reach the calendar"
 grep -q "$TMP_ROOT" <<<"$K" && fail "no raw path may reach the calendar"
+# Without a saved list, frame asks Herdr itself: a live mate window is asleep,
+# and with Herdr silent a mate is unknown rather than closed.
+cat > "$FAKEBIN/herdr-cal" <<SH
+#!/usr/bin/env bash
+[ -e "$TMP_ROOT/herdr-cal-down" ] && exit 1
+[ "\$1 \$2" = "agent list" ] && exec cat "$AGENTS"
+exit 1
+SH
+chmod +x "$FAKEBIN/herdr-cal"
+herdr_cal() {
+  PATH="$FAKEBIN:$PATH" FM_HOME="$CAL" FM_BRIDGE_NOW=2026-09-23T10:00:00 FM_MC_HERDR="$FAKEBIN/herdr-cal" \
+    "$MC" frame --view calendar --size 170x50
+}
+K=$(herdr_cal) || fail "calendar frame without a saved agent list failed: $K"
+grep -q '● Alpha asleep' <<<"$K" || fail "frame reads a live mate window from Herdr"
+touch "$TMP_ROOT/herdr-cal-down"
+K=$(herdr_cal) || fail "calendar frame with Herdr silent failed: $K"
+rm -f "$TMP_ROOT/herdr-cal-down"
+grep -q '● Alpha unknown' <<<"$K" || fail "with Herdr silent a mate's window is unknown"
+grep -q 'Alpha closed' <<<"$K" && fail "with Herdr silent no mate is called closed"
 rm -f "$TMP_ROOT/bridge-up"
-K=$(cal 2026-10-01T10:00:00 170x50) || fail "calendar frame failed: $K"
+K=$(cal 2026-10-01T10:00:00 170x50 vv) || fail "calendar frame failed: $K"
 grep -q '27 September to 3 October' <<<"$K" || fail "a week across two months names both"
 [ "$(day_of "$K" 'Wrap the')" = 'Wed 30' ] || fail "last month's completions still show"
 grep -q '● Bridge off' <<<"$K" || fail "a Bridge with no LaunchAgent is off"
-K=$(cal 2026-09-23T10:00:00 96x40) || fail "narrow calendar frame failed: $K"
+K=$(cal 2026-09-23T10:00:00 96x40 vv) || fail "narrow calendar frame failed: $K"
 grep -q 'Tue 22' <<<"$K" && fail "a narrow pane starts at today"
 [ "$(day_of "$K" 'Hand in the')" = 'Sun 27' ] || fail "a narrow pane shows today and the next few days"
 pass "the Calendar shows the week's completions, due dates and what always runs"
+
+# Month (the first mode) and Year, their control bar, and moving with keys and taps.
+PATH="$FAKEBIN:$PATH" FM_HOME="$CAL" python3 - "$MC" "$AGENTS" <<'PY' || fail "the Calendar's Month and Year read like real calendars"
+import os, re, subprocess, sys
+MC, AGENTS = sys.argv[1:]
+INK, DIM, DIMMER, GREEN = (0xd9, 0xe0, 0xe8), (0x7f, 0x89, 0x95), (0x5d, 0x67, 0x73), (0x35, 0xd0, 0x7f)
+ALPHA = (0x3f, 0xb6, 0xc9)   # the alpha mate's colour, worn by its project
+
+
+def frame(size, keys="", fmt="text", now="2026-09-23T10:00:00"):
+    env = dict(os.environ, FM_BRIDGE_NOW=now)
+    return subprocess.run([MC, "frame", "--agents", AGENTS, "--view", "calendar", "--size", size,
+                           "--keys", keys, "--format", fmt], env=env, check=True,
+                          capture_output=True, text=True).stdout
+
+
+def cells(ansi):
+    """[(char, fg, bg)] per row of an ansi frame."""
+    rows = []
+    for line in ansi.split("\n"):
+        row, fg, bg = [], INK, None
+        for m in re.finditer(r"\x1b\[([0-9;]*)m|([^\x1b])", line):
+            if m.group(2) is not None:
+                row.append((m.group(2), fg, bg))
+                continue
+            a = [int(x) for x in m.group(1).split(";") if x]
+            if len(a) == 11:
+                fg, bg = tuple(a[3:6]), tuple(a[8:11])
+        rows.append(row)
+    return rows
+
+
+def weeks(text):
+    """Each week row of the Month grid: (line index, [(day label, first col, last col)])."""
+    out = []
+    for i, ln in enumerate(text.split("\n")):
+        if i > 8 and ln.startswith(("┌", "├")):
+            seps = [j for j, ch in enumerate(ln) if ch in "┌┬┼├┐┤"]
+            row = []
+            for a, b in zip(seps, seps[1:]):
+                m = re.match(r" (\d+(?: [A-Z][a-z]{2})?) ", ln[a + 1:b])
+                row.append((m.group(1) if m else None, a, b))
+            out.append((i, row))
+    return out
+
+
+def labels(text):
+    return [lab for _, row in weeks(text) for lab, _, _ in row]
+
+
+def cells_of(text, needle):
+    """The days whose cells show needle."""
+    out = set()
+    for i, ln in enumerate(text.split("\n")):
+        for m in re.finditer(re.escape(needle), ln):
+            _, row = [w for w in weeks(text) if w[0] < i][-1]
+            out |= {lab for lab, a, b in row if a < m.start() < b}
+    return out
+
+
+def color_of(text, ansi, label, occurrence=0):
+    """fg and bg of a day number on the Month grid's border rows."""
+    hits = [(i, a) for i, row in weeks(text) for lab, a, _ in row if lab == label]
+    i, a = hits[occurrence]
+    return cells(ansi)[i][a + 2][1:]
+
+
+def tap(text, needle, nth=0, dx=1):
+    lines = text.split("\n")
+    found = [(i, m.start()) for i, ln in enumerate(lines) for m in re.finditer(re.escape(needle), ln)]
+    i, j = found[nth]
+    return "\x1b[<0;%d;%dM" % (j + 1 + dx, i + 1)
+
+
+def bar(text):
+    return text.split("\n")[3]
+
+
+for size, lines in (("170x50", 6), ("132x44", 5), ("96x36", 3)):
+    T = frame(size)
+    assert re.search(r"Week │ Month │ Year +◂ +September 2026 +▸ +this month", bar(T)), (size, bar(T))
+    want = ["30", "31"] + [str(d) for d in range(1, 31)] + ["1 Oct", "2", "3"]
+    assert labels(T) == want, (size, labels(T))
+    assert all(len(row) == 7 for _, row in weeks(T)), size
+    # A narrow pane shortens item lines to a few letters but keeps every day.
+    n = {"170x50": 14, "132x44": 10, "96x36": 4}[size]
+    for needle, day in (("Chapter five slides", "21"), ("Tidy the ship's", "23"), ("Book the lecture", "25"),
+                        ("Send the grades", "26"), ("Hand in the marks", "27"), ("Wrap the September", "30")):
+        assert day in cells_of(T, needle[:n]), (size, needle)
+    assert cells_of(T, "+%d more" % (8 - (lines - 1))) == {"15"}, (size, T)
+    assert "left/right earlier or later   t today   v week, month or year" in T, size
+    assert not re.search(r"\b(h1|t[1-9]|t1[01]|w[1-4]|b[1-8])\b", T), size
+A = frame("132x44", fmt="ansi")
+T = frame("132x44")
+assert color_of(T, A, "30") == (DIMMER, (0x0c, 0x0e, 0x12)), color_of(T, A, "30")
+assert color_of(T, A, "1 Oct")[0] == DIMMER
+assert color_of(T, A, "1")[0] == INK and color_of(T, A, "29")[0] == INK
+assert color_of(T, A, "23") == ((0x0c, 0x0e, 0x12), GREEN), color_of(T, A, "23")
+assert re.search(r"┼ 23 today ─", T), T
+row = cells(A)[3]
+seg = "".join(c for c, _, _ in row)
+k = seg.index(" Month ")
+assert row[k + 1][2] == GREEN and row[seg.index(" Week ") + 1][2] != GREEN, "the active mode is lit"
+# A done item wears its project's colour, dimmed; a due item is bright.
+i = next(i for i, ln in enumerate(T.split("\n")) if "Chapter fi" in ln)
+j = T.split("\n")[i].index("Chapter fi")
+fg = cells(A)[i][j][1]
+assert fg != INK and fg[2] > fg[0], fg
+i = next(i for i, ln in enumerate(T.split("\n")) if "Send the g" in ln)
+j = T.split("\n")[i].index("Send the g")
+assert cells(A)[i][j - 2][0] == "●" and cells(A)[i][j - 2][1] == (0xff, 0xb4, 0x54), "due items are marked"
+
+# February 2026 fills five rows; August 2026 needs six.
+T = frame("132x44", "\x1b[D" * 7)
+assert "February 2026" in bar(T) and "7 months ago" in bar(T) and "back to today" in bar(T), bar(T)
+assert labels(T) == [str(d) for d in range(1, 29)] + ["1 Mar"] + [str(d) for d in range(2, 8)], labels(T)
+T = frame("132x44", "\x1b[D")
+assert "August 2026" in bar(T) and "last month" in bar(T), bar(T)
+assert labels(T) == ["26", "27", "28", "29", "30", "31"] + [str(d) for d in range(1, 32)] + \
+    ["1 Sep", "2", "3", "4", "5"], labels(T)
+assert len(weeks(T)) == 6, "six week rows"
+
+# Year: twelve months, days with items in their project's colour, today lit.
+T, A = frame("170x50", "v"), frame("170x50", "v", "ansi")
+assert re.search(r"Week │ Month │ Year +◂ +2026 +▸ +this year", bar(T)), bar(T)
+months = ["January", "February", "March", "April", "May", "June", "July", "August", "September",
+          "October", "November", "December"]
+lines = T.split("\n")
+for mname in months:
+    assert sum(ln.count(mname) for ln in lines) == 1 + (mname in bar(T)), mname
+grid = cells(A)
+
+
+def year_day(mname, day):
+    ti, tj = next((i, ln.index(mname)) for i, ln in enumerate(lines) if mname in ln and i > 5)
+    nexts = [m.start() for m in re.finditer(r"[A-Z][a-z]+", lines[ti]) if m.start() > tj]
+    end = nexts[0] if nexts else len(lines[ti]) + 40
+    for i in range(ti + 2, ti + 8):
+        for m in re.finditer(r"(?<!\d)%d(?!\d)" % day, lines[i][:end]):
+            if m.start() >= tj - 2:
+                return grid[i][m.start()][1:]
+    raise AssertionError((mname, day))
+
+
+assert year_day("September", 21)[0] == ALPHA, year_day("September", 21)
+beta = year_day("September", 25)[0]
+assert beta not in (ALPHA, DIM, INK), beta
+assert year_day("September", 15)[0] == beta, "a day takes the colour of its busiest project"
+assert year_day("September", 23)[1] == GREEN, "today is lit"
+assert year_day("September", 22)[0] == DIM and year_day("March", 3)[0] == DIM, "a quiet day is plain"
+seg = "".join(c for c, _, _ in grid[3])
+assert grid[3][seg.index("■ beta")][1] == beta and grid[3][seg.index("■ alpha")][1] == ALPHA, "the legend names colours"
+assert re.search(r"September +13 done, 3 due", T) and "13 done, 3 due" in bar(T), T
+for size in ("132x44", "96x36"):
+    Y = frame(size, "v")
+    assert all(m in Y for m in months), (size, Y)
+
+# Keys: left and right move one period in each mode, t comes back, v cycles.
+assert "October 2026" in bar(frame("132x44", "\x1b[C")) and "next month" in bar(frame("132x44", "\x1b[C"))
+assert "this month" in bar(frame("132x44", "\x1b[C\x1b[Ct"))
+assert "2027" in bar(frame("132x44", "v\x1b[C")) and "next year" in bar(frame("132x44", "v\x1b[C"))
+assert re.search(r"13 to 19 September +▸ +last week", bar(frame("132x44", "vv\x1b[D")))
+assert re.search(r"◂ +September 2026 +▸ +this month", bar(frame("132x44", "vvv")))
+assert re.search(r"◂ +September 2027 +▸", bar(frame("132x44", "v\x1b[Cvv"))), "Year to Week to Month keeps the period"
+N = bar(frame("96x36", "\x1b[Cvv", now="2026-09-26T10:00:00"))
+assert "next week" in N and "back to today" in N, "a narrow week starting after today's week is next week"
+N = bar(frame("96x36", "\x1b[Cvv\x1b[D", now="2026-09-26T10:00:00"))
+assert "this week" in N and "back to today" not in N, N
+N = bar(frame("96x36", "\x1b[Cvv", now="2026-09-29T10:00:00"))
+assert re.search(r"1 to 5 October +▸ +next week", N) and "back to today" in N, N
+N = bar(frame("96x36", "\x1b[Cvv\x1b[D", now="2026-09-29T10:00:00"))
+assert re.search(r"24 to 28 September +▸ +last week", N) and "back to today" in N, N
+N = bar(frame("96x36", "\x1b[Cvv\x1b[C", now="2026-09-29T10:00:00"))
+assert re.search(r"8 to 12 October +▸ +in 2 weeks", N), N
+N = bar(frame("96x36", "vv\x1b[D", now="2026-09-29T10:00:00"))
+assert re.search(r"▸ +last week", N), N
+N = bar(frame("96x36", "vv\x1b[D\x1b[D", now="2026-09-29T10:00:00"))
+assert re.search(r"▸ +2 weeks ago", N), N
+N = bar(frame("96x36", "\x1b[Cvv\x1b[D\x1b[Dt", now="2026-09-29T10:00:00"))
+assert "this week" in N and "back to today" not in N, N
+
+# Taps: every change is on the control bar, and a month in Year opens it.
+T = frame("132x44")
+assert re.search(r"◂ +2026 +▸", bar(frame("132x44", tap(T, " Year ")))), "tapping Year"
+assert re.search(r"20 to 26 September", bar(frame("132x44", tap(T, " Week ")))), "tapping Week"
+assert "August 2026" in bar(frame("132x44", tap(T, " ◂ "))), "tapping the left arrow"
+assert "October 2026" in bar(frame("132x44", tap(T, " ▸ "))), "tapping the right arrow"
+L = frame("132x44", "\x1b[D\x1b[D")
+assert "July 2026" in bar(L)
+assert "this month" in bar(frame("132x44", "\x1b[D\x1b[D" + tap(L, " back to today "))), "tapping back to today"
+assert "July 2026" in bar(frame("132x44", "\x1b[D\x1b[D" + tap(L, " 2 months ago "))), "the relative label is not a button"
+Y = frame("132x44", "v")
+F = frame("132x44", "v" + tap(Y, "February", dx=3))
+assert re.search(r"Month │ Year +◂ +February 2026 +▸", bar(F)), bar(F)
+assert labels(F)[0] == "1", labels(F)
+PY
+pass "Month and Year show whole months, marked days and today, and every control works by key and by tap"
 
 # --- seven mates: a second floor ------------------------------------------
 
@@ -956,18 +1185,22 @@ screen "$TMP_ROOT/down" 2 | grep -q 'everyone looks asleep' && fail "the Herdr n
 screen "$TMP_ROOT/down" 2 | grep -q 'working' || fail "the last known working state stays on screen"
 pass "a Herdr outage keeps the last states and says so"
 
-# The calendar moves a week at a time and t brings it back.
+# The live calendar opens on this month, moves a month at a time, t brings it
+# back, v and a tap on the control bar change the mode.
 RIGHT=$'\e[C'
 LEFT=$'\e[D'
+WEEK_TAP=$'\e[<0;4;4M'
 code=$(DRIVE_HOME="$CAL" FM_BRIDGE_NOW=2026-09-23T10:00:00 \
-  drive "$TMP_ROOT/cal" "1=SH:true,4=5,6=$RIGHT,8=$LEFT$LEFT,10=t,12=q") || fail "the pty driver failed"
+  drive "$TMP_ROOT/cal" "1=SH:true,4=5,6=$RIGHT,8=$LEFT$LEFT,10=t,12=v,14=$WEEK_TAP,16=q") || fail "the pty driver failed"
 [ "$code" = 0 ] || fail "the calendar run quits cleanly, got exit $code"
-screen "$TMP_ROOT/cal" 3 | grep -Eq '20 to 26 September +this week' || fail "key 5 opens this week's calendar"
+screen "$TMP_ROOT/cal" 3 | grep -Eq 'September 2026 +▸ +this month' || fail "key 5 opens this month's calendar"
 screen "$TMP_ROOT/cal" 3 | grep -q '● Mission Control running' || fail "the running screen counts itself as running"
-screen "$TMP_ROOT/cal" 4 | grep -Eq '27 September to 3 October +next week' || fail "right shows the next week"
-screen "$TMP_ROOT/cal" 5 | grep -Eq '13 to 19 September +last week' || fail "left goes back a week at a time"
-screen "$TMP_ROOT/cal" 6 | grep -Eq '20 to 26 September +this week' || fail "t returns to this week"
-pass "the live Calendar moves a week at a time and t returns to this week"
+screen "$TMP_ROOT/cal" 4 | grep -Eq 'October 2026 +▸ +next month' || fail "right shows the next month"
+screen "$TMP_ROOT/cal" 5 | grep -Eq 'August 2026 +▸ +last month' || fail "left goes back a month at a time"
+screen "$TMP_ROOT/cal" 6 | grep -Eq 'September 2026 +▸ +this month' || fail "t returns to this month"
+screen "$TMP_ROOT/cal" 7 | grep -Eq '2026 +▸ +this year' || fail "v turns the month into the year"
+screen "$TMP_ROOT/cal" 8 | grep -Eq '20 to 26 September +▸ +this week' || fail "tapping Week shows this week"
+pass "the live Calendar moves by month, returns to today, and changes mode by key and by tap"
 
 # A mate seated upstairs that leaves the registry still retires.
 cp "$BIG/data/secondmates.md" "$TMP_ROOT/big-mates.saved"
