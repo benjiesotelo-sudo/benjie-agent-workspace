@@ -18,8 +18,10 @@ WHAT IT READS.
             background when any home's state/*.meta set or backlog, registry or
             done-archive file changes, and at least every two minutes.
   Agents    `herdr agent list` (JSON), polled every two seconds, never faster
-            than once a second. Each entry carries pane_id, agent_status, cwd
-            and foreground_cwd.
+            than once a second; `frame` asks once unless given a saved list.
+            Each entry carries pane_id, agent_status, cwd and foreground_cwd.
+            Until Herdr has answered, a second mate with no pane is unknown on
+            the Calendar's always-running strip, never closed.
   Settings  config/mission-control.json (optional, gitignored with config/):
             first_mate_name is the first mate's name on its desk, in the team
             list, in the activity column and on its Team view card; "First
@@ -73,13 +75,23 @@ oldest first. The panel shows the highlighted one's title and note: its
 record's body lines without bookkeeping lines, else its hold reason, with
 paths replaced by the Bridge's plain_note().
 
-THE CALENDAR. A week from Sunday to Saturday, or from today when fewer than
-seven day columns of DAY_MIN_WIDTH fit; left and right move a week, t comes
-back. A day shows the Done records completed on it (this month's items plus the
-Bridge's history of other months) and, from today on, open items due on it: a
-hold-until date first, else the one date a title clearly names (a day and a
-full month name in either order, with an optional full weekday name and year,
-or YYYY-MM-DD).
+THE CALENDAR. Three modes under one control bar whose tappable parts are
+Week | Month | Year, the arrows either side of the period, and "back to today"
+while away from today's period; the relative label ("this month") is display
+only. Month (the first shown) is the whole month in five or six Sunday to
+Saturday weeks, neighbouring months' days dimmed, each day's items as short
+lines and "+N more"; Year is twelve small months, a day with items in the
+colour of the project with most of them, and a tapped month opens in Month;
+Week is Sunday to Saturday; when fewer than seven day columns of
+DAY_MIN_WIDTH fit it is that many days from today or the day moved to, and is
+"this week" only while today is among them, else whole weeks rounded up so
+every step changes the label. Left and right move one period, t comes back to
+today and v cycles the modes; nothing is ever dropped from the month grid,
+item lines shorten instead. A day shows the Done records completed on it (this
+month's items plus the Bridge's history of other months) and, from today on,
+open items due on it: a hold-until date first, else the one date a title
+clearly names (a day and a full month name in either order, with an optional
+full weekday name and year, or YYYY-MM-DD).
 Abbreviations such as Sep or Sat and ordinals such as 27th are not read. A
 title with two different dates, a weekday that does not match, a short weekday
 such as Fri right before the date, numbers only, or a yearless date with no
@@ -303,6 +315,15 @@ def parse_agents(text):
         cwds = {c for c in (_real(a.get("cwd")), _real(a.get("foreground_cwd"))) if c}
         out.append({"pane": str(a["pane_id"]), "status": str(a.get("agent_status") or ""), "cwds": cwds})
     return out
+
+
+def read_agents(herdr):
+    """Herdr's live agent list, or None when Herdr does not answer."""
+    try:
+        proc = subprocess.run(herdr + ["agent", "list"], capture_output=True, text=True, timeout=5, check=False)
+    except (OSError, subprocess.SubprocessError):
+        return None
+    return parse_agents(proc.stdout) if proc.returncode == 0 else None
 
 
 class SleepTimer:
@@ -1318,7 +1339,9 @@ class UI:
         self.toast = ""
         self.toast_until = 0.0
         self.tab_hits = []
-        self.week = 0           # Calendar: weeks from this one
+        self.cal_mode = "month"  # Calendar: week, month or year
+        self.cal_at = None      # Calendar: a day in the period shown, None for today's
+        self.cal_hits = []      # Calendar: (row0, row1, col0, col1, action) tap targets
         self.services = []      # Calendar: read_services()
 
 
@@ -1353,6 +1376,8 @@ def _chrome(cv, ui, now):
         keys = " 1-9 switch view   up/down pick an agent   enter talk to it   p pause   q quit "
         if ui.view == "projects":
             keys = " 1-9 switch view   up/down pick a project   p pause   q quit "
+        elif ui.view == "calendar":
+            keys = " left/right earlier or later   t today   v week, month or year   1-9 switch view   p pause   q quit "
         elif ui.view == "team":
             keys = " 1-9 switch view   up/down pick a second mate   enter talk to it   p pause   q quit "
         elif ui.view == "system":
@@ -3408,7 +3433,7 @@ def _later_screen(cv, name):
 
 
 # ---------------------------------------------------------------------------
-# Calendar: a week of what got done and what is due, under what always runs
+# Calendar: a week, month or year of what got done and what is due, under what always runs
 # ---------------------------------------------------------------------------
 
 BRIDGE_AGENT = "com.firstmate.bridge"     # bin/fm-bridge.sh's LaunchAgent label
@@ -3472,14 +3497,33 @@ def title_date(title, today):
     return days.pop() if len(days) == 1 else None
 
 
-def week_days(today, offset, count):
-    """The days on screen: Sunday to Saturday, or from today when fewer fit."""
-    if count >= 7:
-        start = today - _dt.timedelta(days=(today.weekday() + 1) % 7)
-    else:
-        start = today
-    start += _dt.timedelta(days=7 * offset)
+def _month_start(d, months=0):
+    """The first day of d's month, moved by whole months."""
+    n = d.year * 12 + d.month - 1 + months
+    return _dt.date(n // 12, n % 12 + 1, 1)
+
+
+def _sunday(d):
+    return d - _dt.timedelta(days=(d.weekday() + 1) % 7)
+
+
+def week_days(anchor, count):
+    """The Week's days: Sunday to Saturday around anchor, or from anchor when fewer fit."""
+    start = _sunday(anchor) if count >= 7 else anchor
     return [start + _dt.timedelta(days=i) for i in range(min(7, count))]
+
+
+def month_days(anchor):
+    """The Month's grid: whole weeks from Sunday covering anchor's month, never fewer than five."""
+    start = _sunday(_month_start(anchor))
+    last = _month_start(anchor, 1) - _dt.timedelta(days=1)
+    weeks = max(5, (last - start).days // 7 + 1)
+    return [start + _dt.timedelta(days=i) for i in range(7 * weeks)]
+
+
+def year_days(anchor):
+    first = _dt.date(anchor.year, 1, 1)
+    return [first + _dt.timedelta(days=i) for i in range((_dt.date(anchor.year + 1, 1, 1) - first).days)]
 
 
 def calendar(model, days):
@@ -3530,59 +3574,150 @@ def read_services(home, self_running=False):
 
 
 STATE_COLORS = {"running": GREEN, "working": GREEN, "asleep": ZZZ, "stopped": AMBER,
-                "closed": QUIET, "remote": QUIET, "off": DIMMER}
+                "closed": QUIET, "remote": QUIET, "off": DIMMER, "unknown": DIM}
 
 
-def _mate_word(m):
+def _mate_word(m, agents_ok=True):
+    """agents_ok as system_cards() takes it: True once Herdr's agent list is read."""
     if m["doing"] == "works on another machine":
         return "remote"
     if m["status"] == "work":
         return "working"
-    return "asleep" if m.get("pane") else "closed"
+    if m.get("pane"):
+        return "asleep"
+    # With no answer from Herdr, a missing pane says nothing about the window.
+    return "closed" if agents_ok is True else "unknown"
 
 
-def _week_words(days, today, offset):
+CAL_MODES = ("week", "month", "year")
+CHIP = H("#262d38")
+TODAY_TINT = H("#11171f")
+
+
+def _cal_now(ui, model):
+    today = bridge._parse_day(model["today"]) if model else _dt.date.today()
+    return today, ui.cal_at or today
+
+
+def _same_period(mode, a, b):
+    if mode == "week":
+        return _sunday(a) == _sunday(b)
+    if mode == "month":
+        return (a.year, a.month) == (b.year, b.month)
+    return a.year == b.year
+
+
+def cal_action(ui, model, act):
+    """One Calendar control, from a key or a tap: ("mode", m), ("cycle",), ("move", +1 or -1),
+    ("today",) or ("month", its first day)."""
+    today, anchor = _cal_now(ui, model)
+    kind = act[0]
+    if kind == "mode":
+        ui.cal_mode = act[1]
+    elif kind == "cycle":
+        ui.cal_mode = CAL_MODES[(CAL_MODES.index(ui.cal_mode) + 1) % len(CAL_MODES)]
+    elif kind == "today":
+        ui.cal_at = None
+    elif kind in ("move", "month"):
+        if kind == "move":
+            if ui.cal_mode == "week":
+                anchor += _dt.timedelta(days=7 * act[1])
+            else:
+                anchor = _month_start(anchor, act[1] * (1 if ui.cal_mode == "month" else 12))
+        else:
+            ui.cal_mode, anchor = "month", act[1]
+        # Back on today's own period, the Calendar follows today again.
+        ui.cal_at = None if _same_period(ui.cal_mode, anchor, today) else anchor
+    return True
+
+
+def _rel_words(offset, unit):
+    if offset == 0:
+        return "this " + unit
+    if abs(offset) == 1:
+        return ("next " if offset > 0 else "last ") + unit
+    return ("in %d %ss" if offset > 0 else "%d %ss ago") % (abs(offset), unit)
+
+
+def _month_name(d):
+    return _MONTHS[d.month - 1].capitalize()
+
+
+def _week_span(days, today):
     first, last = days[0], days[-1]
     if first.month == last.month:
-        span = "%d to %d %s" % (first.day, last.day, last.strftime("%B"))
+        span = "%d to %d %s" % (first.day, last.day, _month_name(last))
     else:
-        span = "%d %s to %d %s" % (first.day, first.strftime("%B"), last.day, last.strftime("%B"))
+        span = "%d %s to %d %s" % (first.day, _month_name(first), last.day, _month_name(last))
     if last.year != today.year:
         span += " %d" % last.year
-    if offset == 0:
-        rel = "this week"
-    elif abs(offset) == 1:
-        rel = "next week" if offset > 0 else "last week"
-    else:
-        rel = ("in %d weeks" if offset > 0 else "%d weeks ago") % abs(offset)
-    return span, rel
+    return span
 
 
-def _calendar_screen(cv, ui, model, crew):
-    C, R = cv.C, cv.R
-    today = bridge._parse_day(model["today"])
-    n = max(1, min(7, (C + 1) // (DAY_MIN_WIDTH + 1)))
-    days = week_days(today, ui.week, n)
-    cal = calendar(model, days)
-    colors = project_colors(model)
+def _item_color(model, colors, it):
+    pname = it["project"]
+    tag = SHIP_TAG if pname is None else clean(bridge._short(model, pname))
+    return tag, H(colors.get(pname.lower() if pname else None, FIRST_MATE_COLOR))
 
-    span, rel = _week_words(days, today, ui.week)
-    cv.put(1, 3, span, INK, None, True)
-    c = 1 + len(span) + 2
-    cv.put(c, 3, " %s " % rel, BG if ui.week == 0 else INK, GREEN if ui.week == 0 else H("#262d38"), True)
-    c += len(rel) + 4
-    n_done = sum(1 for d in days for it in cal[d] if it["mark"] == "done")
-    n_due = sum(1 for d in days for it in cal[d] if it["mark"] == "due")
-    counts = "%d done, %d due" % (n_done, n_due)
-    cv.put(c, 3, counts, DIM)
-    hint = "left/right another week   t this week"
-    if C - len(hint) - 1 > c + len(counts) + 2:
-        cv.put(C - len(hint) - 1, 3, hint, DIMMER)
 
-    # Always running: the Bridge, this screen, and every second mate.
-    _box(cv, 0, 5, C, 3, H("#262d38"))
+def _control_bar(cv, ui, model, colors, title, rel, current, entries):
+    """Tappable Week | Month | Year, arrows either side of the period and back to today; the rest is display."""
+    C, r = cv.C, 3
+    c = 1
+    for i, m in enumerate(CAL_MODES):
+        s = " %s " % m.capitalize()
+        on = m == ui.cal_mode
+        cv.put(c, r, s, BG if on else INK, GREEN if on else CHIP, on)
+        ui.cal_hits.append((r, r + 1, c, c + len(s), ("mode", m)))
+        c += len(s)
+        if i < len(CAL_MODES) - 1:
+            cv.put(c, r, "│", DIMMER, CHIP)
+            c += 1
+    c += 3
+    for arrow, step in ((" ◂ ", -1), (None, 0), (" ▸ ", 1)):
+        if arrow is None:
+            s = "  %s  " % title
+            cv.put(c, r, s, INK, None, True)
+        else:
+            s = arrow
+            cv.put(c, r, s, INK, CHIP, True)
+            ui.cal_hits.append((r, r + 1, c, c + len(s), ("move", step)))
+        c += len(s)
+    c += 2
+    s = " %s " % rel
+    cv.put(c, r, s, BG if current else INK, GREEN if current else CHIP, True)
+    c += len(s) + 1
+    if not current:
+        s = " back to today "
+        cv.put(c, r, s, GREEN, CHIP, True)
+        ui.cal_hits.append((r, r + 1, c, c + len(s), ("today",)))
+        c += len(s) + 1
+    n_done = sum(1 for it in entries if it["mark"] == "done")
+    counts = "%d done, %d due" % (n_done, len(entries) - n_done)
+    cv.put(c + 1, r, counts, DIM)
+    c += len(counts) + 4
+    # Which colour is which project, busiest first, as many as fit.
+    seen = {}
+    for it in entries:
+        tag, pc = _item_color(model, colors, it)
+        n, _ = seen.get(tag, (0, pc))
+        seen[tag] = (n + 1, pc)
+    chips = sorted(seen.items(), key=lambda kv: (-kv[1][0], kv[0]))
+    while chips and sum(len(t) + 4 for t, _ in chips) > C - 1 - c:
+        chips.pop()
+    x = C - 1 - sum(len(t) + 4 for t, _ in chips) + 2
+    for tag, (_, pc) in chips:
+        cv.put(x, r, "■", pc)
+        cv.put(x + 2, r, tag, SOFT)
+        x += len(tag) + 4
+
+
+def _always_running(cv, ui, crew, agents_ok):
+    """The Bridge, this screen, and every second mate."""
+    C = cv.C
+    _box(cv, 0, 5, C, 3, CHIP)
     cv.put(2, 5, " ALWAYS RUNNING ", INK, None, True)
-    chips = list(ui.services) + [(m["name"], _mate_word(m)) for m in crew if m["kind"] == "mate"]
+    chips = list(ui.services) + [(m["name"], _mate_word(m, agents_ok)) for m in crew if m["kind"] == "mate"]
     c = 2
     for i, (name, word) in enumerate(chips):
         chip = "● %s %s" % (name, word)
@@ -3596,9 +3731,51 @@ def _calendar_screen(cv, ui, model, crew):
         cv.put(c + 3 + len(name), 6, word, col)
         c += len(chip) + 4
 
-    # The week grid.
-    w = (C - (n - 1)) // n
+
+def _calendar_screen(cv, ui, model, crew, agents_ok=True):
+    C, R = cv.C, cv.R
+    today, anchor = _cal_now(ui, model)
+    colors = project_colors(model)
+    mode = ui.cal_mode
+    if mode == "week":
+        n = max(1, min(7, (C + 1) // (DAY_MIN_WIDTH + 1)))
+        days = week_days(anchor, n)
+        shown = days
+        title = _week_span(days, today)
+        if n >= 7:
+            offset = (_sunday(anchor) - _sunday(today)).days // 7
+        elif today in days:
+            offset = 0
+        elif days[0] > today:
+            offset = -((today - days[0]).days // 7)
+        else:
+            offset = (days[-1] - today).days // 7
+    elif mode == "month":
+        days = month_days(anchor)
+        shown = [d for d in days if d.month == anchor.month]
+        title = "%s %d" % (_month_name(anchor), anchor.year)
+        offset = (anchor.year - today.year) * 12 + anchor.month - today.month
+    else:
+        days = shown = year_days(anchor)
+        title = str(anchor.year)
+        offset = anchor.year - today.year
+    cal = calendar(model, days)
+    ui.cal_hits = []
+    _control_bar(cv, ui, model, colors, title, _rel_words(offset, mode), offset == 0,
+                 [it for d in shown for it in cal[d]])
+    _always_running(cv, ui, crew, agents_ok)
     top, bottom = 9, R - 3
+    if mode == "week":
+        _week_grid(cv, model, colors, days, cal, today, top, bottom)
+    elif mode == "month":
+        _month_grid(cv, model, colors, days, cal, anchor, today, top, bottom)
+    else:
+        _year_grid(cv, ui, model, colors, anchor.year, cal, today, top, bottom)
+
+
+def _week_grid(cv, model, colors, days, cal, today, top, bottom):
+    C, n = cv.C, len(days)
+    w = (C - (n - 1)) // n
     for j, d in enumerate(days):
         c0 = j * (w + 1)
         is_today = d == today
@@ -3606,7 +3783,7 @@ def _calendar_screen(cv, ui, model, crew):
             for r in range(top, bottom + 1):
                 for cc in range(c0, c0 + w):
                     k = r * C + cc
-                    cv.top[k] = cv.bot[k] = H("#11171f")
+                    cv.top[k] = cv.bot[k] = TODAY_TINT
         head = "%s %d" % (d.strftime("%a"), d.day)
         if d.day == 1 or j == 0:
             head += " %s" % d.strftime("%b")
@@ -3625,9 +3802,7 @@ def _calendar_screen(cv, ui, model, crew):
         room = (bottom - r + 1) // bh
         shown = entries if len(entries) <= room else entries[:max(0, room - 1)]
         for it in shown:
-            pname = it["project"]
-            tag = SHIP_TAG if pname is None else clean(bridge._short(model, pname))
-            pc = H(colors.get(pname.lower() if pname else None, FIRST_MATE_COLOR))
+            tag, pc = _item_color(model, colors, it)
             due = it["mark"] == "due"
             edge = pc if due else mix(pc, BG, 0.45)
             _box(cv, c0 + 1, r, w - 2, bh, edge)
@@ -3647,6 +3822,125 @@ def _calendar_screen(cv, ui, model, crew):
         cc = j * (w + 1) - 1
         for r in range(top, bottom + 1):
             cv.put(cc, r, "┼" if r == top + 1 else "│", LINE)
+
+
+def _month_grid(cv, model, colors, days, cal, anchor, today, top, bottom):
+    """Every day of the month in whole weeks; each week's top border carries its day numbers."""
+    C = cv.C
+    weeks = len(days) // 7
+    base, extra = divmod(C - 8, 7)
+    widths = [base + (1 if j < extra else 0) for j in range(7)]
+    xs = [sum(widths[:j]) + j for j in range(8)]      # each cell's left border, then the right edge
+    for j in range(7):
+        name = _WEEKDAYS[(j + 6) % 7]
+        cv.put(xs[j] + 2, top, name.capitalize() if widths[j] >= 10 else name[:3].capitalize(), SOFT, None, True)
+    k = max(1, (bottom - top - 1) // weeks - 1)          # item lines in a day
+    for i in range(weeks + 1):
+        r = top + 1 + i * (k + 1)
+        ends = "┌┬┐" if i == 0 else ("└┴┘" if i == weeks else "├┼┤")
+        cv.put(0, r, ends[0] + ends[1].join("─" * w for w in widths) + ends[2], CHIP)
+        if i == weeks:
+            break
+        for rr in range(r + 1, r + k + 1):
+            for x in xs:
+                cv.put(x, rr, "│", CHIP)
+        for j in range(7):
+            d = days[i * 7 + j]
+            x, w = xs[j], widths[j]
+            inside = d.month == anchor.month
+            if d == today:
+                for rr in range(r + 1, r + k + 1):
+                    for cc in range(x + 1, x + w + 1):
+                        cv.top[rr * C + cc] = cv.bot[rr * C + cc] = TODAY_TINT
+                cv.put(x + 1, r, "─" * w, GREEN)
+                num = " %d " % d.day
+                cv.put(x + 1, r, num, BG, GREEN, True)
+                if w >= len(num) + 6:
+                    cv.put(x + 1 + len(num), r, "today ", GREEN, None, True)
+            else:
+                num = " %d " % d.day if inside or d.day != 1 else " 1 %s " % d.strftime("%b")
+                cv.put(x + 1, r, num, INK if inside else DIMMER, None, inside)
+            entries = cal[d]
+            shown = entries if len(entries) <= k else entries[:k - 1]
+            for n, it in enumerate(shown):
+                _, pc = _item_color(model, colors, it)
+                due = it["mark"] == "due"
+                col = pc if due else mix(pc, BG, 0.3)
+                if not inside:
+                    col = mix(col, BG, 0.5)
+                cv.put(x + 2, r + 1 + n, "●" if due else "✓", AMBER if due and inside else col, None, due)
+                cv.put(x + 4, r + 1 + n, clip(clean(it["title"]), w - 4), col, None, due)
+            if len(shown) < len(entries):
+                cv.put(x + 4, r + 1 + len(shown), "+%d more" % (len(entries) - len(shown)),
+                       DIM if inside else DIMMER)
+
+
+def _year_grid(cv, ui, model, colors, year, cal, today, top, bottom):
+    """Twelve small months; a day with items takes the colour of the project with most of them."""
+    C = cv.C
+    firsts = [_dt.date(year, m, 1) for m in range(1, 13)]
+    lead = [(f.weekday() + 1) % 7 for f in firsts]
+    weeks = [(lead[i] + (_month_start(f, 1) - f).days + 6) // 7 for i, f in enumerate(firsts)]
+    plan = None
+    for header in (True, False):
+        for gap in (1, 0):
+            for ncol in (4, 6, 3, 2):
+                dw = min(5, (C - 2 - 3 * (ncol - 1)) // (7 * ncol))
+                rows = [weeks[i:i + ncol] for i in range(0, 12, ncol)]
+                heights = [1 + header + max(r) for r in rows]
+                if dw >= 3 and sum(heights) + gap * (len(rows) - 1) <= bottom - top + 1:
+                    plan = (ncol, dw, heights, gap, header)
+                    break
+            if plan:
+                break
+        if plan:
+            break
+    if plan is None:
+        plan = (4, 3, [8, 8, 8], 0, False)
+    ncol, dw, heights, gap, header = plan
+    if gap and len(heights) > 1:
+        gap = min(3, (bottom - top + 1 - sum(heights)) // (len(heights) - 1))
+    mw = 7 * dw
+    hgap = min(8, (C - 2 - mw * ncol) // max(1, ncol - 1)) if ncol > 1 else 0
+    x0 = max(0, (C - (mw * ncol + hgap * (ncol - 1))) // 2)
+    y = top
+    for row, h in enumerate(heights):
+        for col in range(ncol):
+            i = row * ncol + col
+            f = firsts[i]
+            x = x0 + col * (mw + hgap)
+            ui.cal_hits.append((y, y + h, x, x + mw, ("month", f)))
+            this = (f.year, f.month) == (today.year, today.month)
+            cv.put(x + dw - 2, y, _month_name(f), GREEN if this else INK, None, True)
+            items = [it for d in cal if d.month == f.month for it in cal[d]]
+            n_done = sum(1 for it in items if it["mark"] == "done")
+            tally = ", ".join(s for s in ("%d done" % n_done if n_done else "",
+                                          "%d due" % (len(items) - n_done) if len(items) > n_done else "") if s)
+            if tally and len(_month_name(f)) + 2 + len(tally) <= mw - dw + 2:
+                cv.put(x + mw - len(tally), y, tally, DIMMER)
+            r0 = y + 1
+            if header:
+                for j in range(7):
+                    cv.put(x + j * dw + dw - 2, r0, _WEEKDAYS[(j + 6) % 7][:2].capitalize(), DIMMER)
+                r0 += 1
+            d = f
+            while d.month == f.month:
+                slot = lead[i] + d.day - 1
+                cx, cy = x + (slot % 7) * dw + dw - 2, r0 + slot // 7
+                entries = cal[d]
+                if d == today:
+                    cv.put(cx, cy, "%2d" % d.day, BG, GREEN, True)
+                elif entries:
+                    tally = {}
+                    for it in entries:
+                        _, pc = _item_color(model, colors, it)
+                        tally[pc] = tally.get(pc, 0) + 1
+                    pc = max(sorted(tally), key=lambda c: tally[c])
+                    cv.put(cx, cy, "%2d" % d.day, pc, mix(pc, BG, 0.8), True)
+                else:
+                    cv.put(cx, cy, "%2d" % d.day, DIM)
+                d += _dt.timedelta(days=1)
+        y += h + gap
 
 
 def compose(scene, renderer, ui, cols, rows, now, records_ok=True, notice=None, readings=None, agents_ok=True):
@@ -3675,7 +3969,7 @@ def compose(scene, renderer, ui, cols, rows, now, records_ok=True, notice=None, 
     elif ui.view == "approvals":
         _approvals_screen(cv, ui, scene)
     elif ui.view == "calendar":
-        _calendar_screen(cv, ui, scene.model, scene.crew)
+        _calendar_screen(cv, ui, scene.model, scene.crew, agents_ok)
     elif ui.view == "team":
         _team_screen(cv, ui, scene)
     elif ui.view == "memory":
@@ -3873,12 +4167,7 @@ class Feed:
 
     def _agents_loop(self):
         while not self.stop.is_set():
-            try:
-                proc = subprocess.run(self.herdr + ["agent", "list"], capture_output=True, text=True,
-                                      timeout=5, check=False)
-                agents = parse_agents(proc.stdout) if proc.returncode == 0 else None
-            except (OSError, subprocess.SubprocessError):
-                agents = None
+            agents = read_agents(self.herdr)
             with self.lock:
                 if agents is not None:
                     changed = [(a["pane"], a["status"], tuple(sorted(a["cwds"]))) for a in agents] != \
@@ -4121,13 +4410,20 @@ def _handle_input(data, ui, scene, feed):
             btn, x, y, kind = int(m.group(1)), int(m.group(2)), int(m.group(3)), m.group(4)
             if kind != b"M" or btn & (32 | 128) or (btn & 3 and not btn & 64):
                 continue
-            if btn & 64 or y != 1:
+            if btn & 64:
                 changed = _shelf_mouse(ui, x - 1, y - 1, btn) or changed
                 continue
-            for c0, c1, i in ui.tab_hits:
-                if c0 <= x - 1 < c1:
-                    ui.view = VIEWS[i]
-                    changed = True
+            if y == 1:
+                for c0, c1, i in ui.tab_hits:
+                    if c0 <= x - 1 < c1:
+                        ui.view = VIEWS[i]
+                        changed = True
+            elif ui.view == "calendar":
+                act = next((a for r0, r1, c0, c1, a in ui.cal_hits if r0 <= y - 1 < r1 and c0 <= x - 1 < c1), None)
+                if act is not None:
+                    changed = cal_action(ui, scene.model, act) or changed
+            else:
+                changed = _shelf_mouse(ui, x - 1, y - 1, btn) or changed
             continue
         if tok in (b"q", b"Q"):
             ui.view = "quit"
@@ -4135,9 +4431,10 @@ def _handle_input(data, ui, scene, feed):
         if len(tok) == 1 and b"1" <= tok <= b"9":
             ui.view = VIEWS[int(tok) - 1]
             changed = True
-        elif ui.view == "calendar" and tok in (b"\x1b[C", b"\x1bOC", b"\x1b[D", b"\x1bOD", b"t", b"T"):
-            ui.week = 0 if tok in (b"t", b"T") else ui.week + (1 if tok in (b"\x1b[C", b"\x1bOC") else -1)
-            changed = True
+        elif ui.view == "calendar" and tok in (b"\x1b[C", b"\x1bOC", b"\x1b[D", b"\x1bOD", b"t", b"T", b"v", b"V"):
+            act = ("today",) if tok in (b"t", b"T") else ("cycle",) if tok in (b"v", b"V") \
+                else ("move", 1 if tok in (b"\x1b[C", b"\x1bOC") else -1)
+            changed = cal_action(ui, scene.model, act) or changed
         elif tok in (b"p", b"P"):
             ui.paused = not ui.paused
             changed = True
@@ -4192,17 +4489,16 @@ def _handle_input(data, ui, scene, feed):
 # ---------------------------------------------------------------------------
 
 def frame(home, config_dir, agents_text, view, cols, rows, fmt, session="default", readings=None,
-          herdr=("herdr",)):
+          herdr=("herdr",), keys=""):
     """readings: saved SystemProbe readings; without them the System view reads
-    this machine once, and other views leave the system unchecked."""
+    this machine once, and other views leave the system unchecked. Without a
+    saved agent list, Herdr is asked once, as the running screen does."""
     model = bridge.collect(home, config_dir, bridge._now())
     live = readings is None and view == "system"
-    agents_ok = True if agents_text else None
-    if live and not agents_text:
-        got = _run(list(herdr) + ["agent", "list"])
-        agents_ok = bool(got and not got[0])
-        agents_text = got[1] if agents_ok else None
-    agents = parse_agents(agents_text) if agents_text else []
+    agents = parse_agents(agents_text) if agents_text is not None else read_agents(list(herdr))
+    # Unread is a failure only where the System view checks it; elsewhere it is unchecked.
+    agents_ok = True if agents is not None else (False if live else None)
+    agents = agents or []
     crew = build_crew(model, agents, home, session, None, first_mate_name(config_dir))
     scene = Scene()
     scene.observe(model, crew, rows)
@@ -4211,6 +4507,12 @@ def frame(home, config_dir, agents_text, view, cols, rows, fmt, session="default
     ui.services = read_services(home) if view == "calendar" else []
     if live:
         readings = dict(read_fast(home, model.get("mates") or []), **read_slow(home, list(herdr)))
+    # Keys and taps as the terminal sends them, each on the frame before it;
+    # Enter and q do nothing here.
+    for m in _KEYS.finditer(keys.encode("utf-8", "surrogateescape")):
+        if m.group(0) not in (b"\r", b"\n", b"q", b"Q"):
+            compose(scene, Renderer(), ui, cols, rows, bridge._now(), readings=readings, agents_ok=agents_ok)
+            _handle_input(m.group(0), ui, scene, None)
     cv, small = compose(scene, Renderer(), ui, cols, rows, bridge._now(), readings=readings, agents_ok=agents_ok)
     if fmt == "ansi":
         return to_ansi(cv)
@@ -4265,6 +4567,7 @@ def main(argv):
     ap.add_argument("--view", default="office", choices=VIEWS)
     ap.add_argument("--size", default="132x44")
     ap.add_argument("--format", default="text", choices=["text", "json", "ansi"])
+    ap.add_argument("--keys", default="", help="frame: keys and taps to apply first, as the terminal sends them")
     args = ap.parse_args(argv)
     home = os.path.abspath(args.home)
     if args.command == "run":
@@ -4282,7 +4585,7 @@ def main(argv):
             readings = json.load(fh)
     try:
         out = frame(home, args.config_dir, text, args.view, int(m.group(1)), int(m.group(2)), args.format,
-                    os.environ.get("HERDR_SESSION") or "default", readings, args.herdr.split())
+                    os.environ.get("HERDR_SESSION") or "default", readings, args.herdr.split(), args.keys)
     except RuntimeError as exc:
         print("fm_mission_control.py: %s" % exc, file=sys.stderr)
         return 1
