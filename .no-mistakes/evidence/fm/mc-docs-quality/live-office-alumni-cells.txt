@@ -1,0 +1,6 @@
+'a' background rgb(20,23,29) floor
+'l' background rgb(20,23,29) floor
+'u' background rgb(20,23,29) floor
+'m' background rgb(20,23,29) floor
+'n' background rgb(23,27,34) floor
+'i' background rgb(23,27,34) floor

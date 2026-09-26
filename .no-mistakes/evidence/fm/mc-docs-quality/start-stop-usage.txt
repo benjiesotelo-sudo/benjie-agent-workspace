@@ -1,0 +1,43 @@
+$ bin/fm-mission-control.sh help
+fm-mission-control.sh - Mission Control, the crew as a live read-only office.
+
+Mission Control draws the whole crew as an animated pixel-art office, plus a
+task board, a card per project, the decisions waiting on the captain, a
+week, month and year calendar, the crew as an org chart, a reader for the
+crew's memory and documents, and the health of the machine and the crew's
+plumbing, in one terminal pane; bin/fm_mission_control.py owns what it
+reads, how the crew maps onto the office, and how frames are drawn. It is
+read-only: it never writes a record, never sends keys or prompts to an
+agent, and never starts or stops one.
+
+Commands:
+  run                     draw the screen in this terminal until q
+  start                   ensure the current Herdr session has one workspace
+                          labelled mission-control whose pane runs `run`;
+                          idempotent, never a second copy
+  stop                    close that workspace
+  status                  report whether the workspace exists and whether the
+                          screen is running in it
+  frame [--view <v>] [--size <cols>x<rows>] [--agents <file>] [--readings <file>]
+
+$ bin/fm-bridge.sh help
+fm-bridge.sh - serve the Bridge, a read-only page over this home's records.
+
+The Bridge is one page with five tabs (Bridge, Board, Team & Office, Memory,
+Documents), rendered fresh from this home's records by bin/fm_bridge.py, which
+owns what is read, how it is counted, and the HTTP server. Nothing on the page
+can change anything: the server answers GET / with the page and GET /healthz
+with "ok", and every other path with 404; no request input selects a file.
+
+Commands:
+  render                  write the page to stdout (tests, a quick look)
+  start [--foreground] [--bind <addr>] [--port <n>] [--retry-fallback]
+                          serve the page; without --foreground it detaches,
+                          records its pid in state/bridge.pid, and logs to
+                          state/bridge.log
+  stop                    stop a detached server started by `start`
+  status                  report whether it answers, on which address, and
+                          whether the LaunchAgent is loaded
+  install                 write ~/Library/LaunchAgents/com.firstmate.bridge.plist
+                          with absolute paths, load it with
+                          `launchctl bootstrap gui/<uid>`, and prove it runs by

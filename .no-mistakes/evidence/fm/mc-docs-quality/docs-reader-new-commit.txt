@@ -1,0 +1,35 @@
+┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│  Report  Report: how to show the chess standings & picture: crest ties                                                  │
+│ Saturday 26 September 2026, 125 words, project alpha                                                                    │
+├─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Report: how to show the chess standings & picture: crest ties                                                           │
+│                                                                                                                         │
+│ The league wants a standings table players can read on a phone - this compares three layouts.                           │
+│                                                                                                                         │
+│ picture: The standings table on a phone                                                                                 │
+│                                                                                                                         │
+│ A line with a linked picture picture: Status board inline.                                                              │
+│                                                                                                                         │
+│ Options & picture: logo costs                                                                                           │
+│                                                                                                                         │
+│ Layout             │ Preview                  │ Notes                                                                   │
+│ ───────────────────┼──────────────────────────┼───────────────────────                                                  │
+│ Rank, name, points │ picture: Rank chart      │ fits & reads well bold                                                  │
+│ Full crosstable    │ picture: Crosstable shot │ too wide                                                                │
+│                                                                                                                         │
+│ picture: Phone screen while offline                                                                                     │
+│ Offline on a phone & still scoring.                                                                                     │
+│                                                                                                                         │
+│ picture                                                                                                                 │
+│                                                                                                                         │
+│ build.py                                                                                                                │
+│                                                                                                                         │
+│ Keep <code> spans and a < b as written, and 3 < 5 > 2 too.                                                              │
+│                                                                                                                         │
+│ Replace <a path> and <id> before running.                                                                               │
+│                                                                                                                         │
+│ picture                                                                                                                 │
+│                                                                                                                         │
+│                                                                                                                         │
+│                                                                                                                         │
+│                                                                                                                         │

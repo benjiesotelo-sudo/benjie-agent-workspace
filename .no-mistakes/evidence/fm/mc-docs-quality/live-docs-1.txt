@@ -1,0 +1,50 @@
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System                                           Sun 10:00
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+  All 2   Report 2   Decision 0   Link 0                                                                                                read only, changes happen in chat
+
+  Garden newsletter photos             26 Sep  ┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+   Report   5 words                            │  Report  Report: how to show the chess standings & picture: crest ties                                                  │
+▸ Report: how to show the chess sta... 26 Sep  │ Saturday 26 September 2026, 125 words, project alpha                                                                    │
+   Report   ■ alpha  125 words                 ├─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+                                               │ Report: how to show the chess standings & picture: crest ties                                                           │
+                                               │                                                                                                                         │
+                                               │ The league wants a standings table players can read on a phone - this compares three layouts.                           │
+                                               │                                                                                                                         │
+                                               │ picture: The standings table on a phone                                                                                 │
+                                               │                                                                                                                         │
+                                               │ A line with a linked picture picture: Status board inline.                                                              │
+                                               │                                                                                                                         │
+                                               │ Options & picture: logo costs                                                                                           │
+                                               │                                                                                                                         │
+                                               │ Layout             │ Preview                  │ Notes                                                                   │
+                                               │ ───────────────────┼──────────────────────────┼───────────────────────                                                  │
+                                               │ Rank, name, points │ picture: Rank chart      │ fits & reads well bold                                                  │
+                                               │ Full crosstable    │ picture: Crosstable shot │ too wide                                                                │
+                                               │                                                                                                                         │
+                                               │ picture: Phone screen while offline                                                                                     │
+                                               │ Offline on a phone & still scoring.                                                                                     │
+                                               │                                                                                                                         │
+                                               │ picture                                                                                                                 │
+                                               │                                                                                                                         │
+                                               │ build.py                                                                                                                │
+                                               │                                                                                                                         │
+                                               │ Keep <code> spans and a < b as written, and 3 < 5 > 2 too.                                                              │
+                                               │                                                                                                                         │
+                                               │ Replace <a path> and <id> before running.                                                                               │
+                                               │                                                                                                                         │
+                                               │ picture                                                                                                                 │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               └─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   left/right pick a kind   up/down pick a page   page up/down or the wheel scroll it   q quit                                          updates by itself

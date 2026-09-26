@@ -1,0 +1,13 @@
+view Office: Enter sent 1 'herdr agent focus' call(s): agent focus w1:p1 
+view Tasks: Enter sent 1 'herdr agent focus' call(s): agent focus w1:p1 
+view Approvals: Enter sent 0 'herdr agent focus' call(s): 
+view Projects: Enter sent 1 'herdr agent focus' call(s): agent focus w1:p1 
+view Calendar: Enter sent 1 'herdr agent focus' call(s): agent focus w1:p1 
+view Team: Enter sent 0 'herdr agent focus' call(s): 
+view Memory: Enter sent 0 'herdr agent focus' call(s): 
+view Docs: Enter sent 0 'herdr agent focus' call(s): 
+view System: Enter sent 1 'herdr agent focus' call(s): agent focus w1:p1 
+view 2: tab lit before down = '2 Tasks', after down = '1 Office'
+view 5: tab lit before down = '5 Calendar', after down = '1 Office'
+view 9: tab lit before down = '9 System', after down = '1 Office'
+view Team (with a second mate): Enter sent: agent focus w2:p1 
