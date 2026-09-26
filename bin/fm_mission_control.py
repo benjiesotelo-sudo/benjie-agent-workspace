@@ -99,7 +99,8 @@ DAY_MIN_WIDTH fit it is that many days from today or the day moved to, and is
 every step changes the label. Left and right move one period, t comes back to
 today and v cycles the modes; nothing is ever dropped from the month grid,
 item lines shorten instead. Every item in Month and Week reads "Project:
-title" in its project's colour, and the title shortens, never the project: a
+title" in its project's colour, without a leading copy of the project's name
+that the title already carries; the title shortens, never the project: a
 name wider than its line wraps onto the next, and a day's spare lines go to
 titles the name crowds out. A day shows the Done records completed on it (this
 month's items plus the Bridge's history of other months) and, from today on,
@@ -2918,10 +2919,21 @@ def _item_color(model, colors, it):
     return tag, H(colors.get(pname.lower() if pname else None, FIRST_MATE_COLOR))
 
 
+def _untagged(name, title):
+    """The title without a leading copy of its project's name, so "FIN1209: FIN1209 Activity 1"
+    reads "FIN1209: Activity 1"; a title that is only the name stays as it is."""
+    title = clean(title)
+    if title[:len(name)].lower() == name.lower() and not title[len(name):len(name) + 1].isalnum():
+        rest = title[len(name):].lstrip(" :-,")
+        if rest:
+            return rest
+    return title
+
+
 def _entry_lines(name, title, width, rows):
     """A Calendar item as "Name: title" in at most rows lines: the title shortens, the name
     only when rows cannot hold it whole."""
-    title = clean(title)
+    title = _untagged(name, title)
     lines = wrap("%s: %s" % (name, title), width) or [""]
     if len(lines) <= rows:
         return lines
@@ -2937,7 +2949,7 @@ def _entry_rows(name, title, width):
     """(lines an item needs so its name shows whole, lines it would like): one each while the
     name and a few words of title fit on a line, else the name's lines, plus one for the title."""
     head = name + ":"
-    if len(head) + 1 + min(len(clean(title)), 8) <= width:
+    if len(head) + 1 + min(len(_untagged(name, title)), 8) <= width:
         return 1, 1
     rows = len(wrap(head, width))
     return rows, rows + 1

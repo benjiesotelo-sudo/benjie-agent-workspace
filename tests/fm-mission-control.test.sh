@@ -999,6 +999,15 @@ done
 NS=$(mc "$HOME_DIR" frame --readings "$TMP_ROOT/names-ok.json" --agents "$AGENTS" --view system --size 170x50) \
   || fail "named system failed"
 grep -q 'Course A: window open' <<<"$NS" || fail "the System view names the second mate by its project"
+# A title that already starts with its project's name does not repeat it.
+cp "$CAL/data/backlog.md" "$TMP_ROOT/cal-backlog.saved"
+printf '%s\n' '- [x] n1 - Outreach flyer printed (repo: beta) (kind: ship) (done 2026-09-22)' \
+  '- [x] n2 - Outreachers lunch booked (repo: beta) (kind: ship) (done 2026-09-22)' >> "$CAL/data/backlog.md"
+NK=$(cal 2026-09-23T10:00:00 170x50) || fail "named month with self-named titles failed"
+grep -q 'Outreach: flyer' <<<"$NK" || fail "a title's own leading project name is dropped"
+grep -q 'Outreach: Outreach ' <<<"$NK" && fail "a Calendar line never repeats its project's name"
+grep -q 'Outreach: Outrea' <<<"$NK" || fail "a title that only begins with the same letters keeps them"
+mv "$TMP_ROOT/cal-backlog.saved" "$CAL/data/backlog.md"
 for size in 132x44 170x50; do
   NK=$(cal 2026-09-23T10:00:00 "$size") || fail "named month at $size failed"
   grep -q '● Course A asleep' <<<"$NK" || fail "the always-running strip names the mate by its project at $size"
