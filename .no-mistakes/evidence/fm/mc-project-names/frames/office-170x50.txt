@@ -1,0 +1,50 @@
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System                                           Wed 10:00
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                │ LIVE ACTIVITY real
+                                                                                                │
+                                                                                                │ today  Denver finished Social Media Marketing calendar for October
+                                                                                                │
+    alumni             tasks                                plan         memory                 │ today  Denver finished Tidy the ship's scripts
+                                                                                                │
+                                                                                                │ 22 Sep Denver finished FIN1209: Activity 4 rubric
+                                                                                                │
+                                                                                                │ 22 Sep Denver finished Tambiz's rounding bug fixed
+                                                                                                │
+                                                                                                │ 21 Sep Denver finished FIN1209 Activity 3 answer key
+                                                                                                │
+                                         Denver                                                 │ 15 Sep Denver finished SAP login page redesign
+                                         working                                       system   │
+            Z                                                         Z                  ok     │ 15 Sep Denver finished Invoice export
+                                                                                                │
+           z                                                         z                          │ 15 Sep Denver finished Tambiz tests
+          z                                                         z                           │
+                                                                                                │
+                                                                                                │
+                                                                                                │
+                                                                                                │
+    FIN1209                        SAP                        Tambiz                            │
+    asleep                       working                      asleep                            │
+                                                                                                │
+                                                                                                │
+            Z                                                                                   │
+                                                                                                │
+           z                                                                                    │
+          z                                                                                     │
+                                                                                                │
+                                                                                                │
+                                                                                                │
+                                                                                                │
+      OPS                                                                                       │
+    asleep                                                                                      │
+                                                                                                │
+ CAPTAIN                                                                                        │
+                                                                                                │
+                                                                                                │
+                  inbox 5                                                                       │
+                                                                                                │
+─ TEAM ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   NAME       ROLE                DOING NOW                                                                               PROJECT (the one it works in)
+ ● Denver     first mate          working, 3 waiting on you                                                               every project
+ z FIN1209    second mate         asleep, 1 job listed, 1 waiting on you                                                  FIN1209
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down pick an agent   enter talk to it   p pause   q quit                                                                          updates by itself

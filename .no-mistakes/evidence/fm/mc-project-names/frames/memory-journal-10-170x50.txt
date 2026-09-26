@@ -1,0 +1,50 @@
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System                                           Wed 10:00
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+ 3 pages of long-term memory    14 days in the journal                                                                                  read only, changes happen in chat
+
+LONG-TERM MEMORY 3                             ┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+  What I know about the captain                │ Tuesday 8 September                                                                                                     │
+  4 words, updated just now                    │ Tuesday 8 September 2026, 1 event, 11 words                                                                             │
+  Lessons learned                              ├─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+  4 words, updated just now                    │ FIN1209                                                                                                                 │
+  Lessons FIN1209 learned                      │   • FIN1209 filed a decision for you: Decide the midterm review point.                                                  │
+  5 words, updated just now                    │                                                                                                                         │
+                                               │                                                                                                                         │
+DAILY JOURNAL 14                               │                                                                                                                         │
+  Today 1                                      │                                                                                                                         │
+  Wednesday 23 September                       │                                                                                                                         │
+  2 events, 14 words                           │                                                                                                                         │
+  Yesterday 1                                  │                                                                                                                         │
+  Tuesday 22 September                         │                                                                                                                         │
+  2 events, 12 words                           │                                                                                                                         │
+  This week 2                                  │                                                                                                                         │
+  Monday 21 September                          │                                                                                                                         │
+  1 event, 7 words                             │                                                                                                                         │
+  Friday 18 September                          │                                                                                                                         │
+  1 event, 5 words                             │                                                                                                                         │
+  September 2026 9                             │                                                                                                                         │
+  Tuesday 15 September                         │                                                                                                                         │
+  5 events, 26 words                           │                                                                                                                         │
+  Saturday 12 September                        │                                                                                                                         │
+  1 event, 6 words                             │                                                                                                                         │
+  Thursday 10 September                        │                                                                                                                         │
+  1 event, 11 words                            │                                                                                                                         │
+▸ Tuesday 8 September                          │                                                                                                                         │
+  1 event, 11 words                            │                                                                                                                         │
+  Monday 7 September                           │                                                                                                                         │
+  1 event, 7 words                             │                                                                                                                         │
+  Sunday 6 September                           │                                                                                                                         │
+  1 event, 11 words                            │                                                                                                                         │
+  Saturday 5 September                         │                                                                                                                         │
+  1 event, 9 words                             │                                                                                                                         │
+  Thursday 3 September                         │                                                                                                                         │
+  1 event, 11 words                            │                                                                                                                         │
+  Wednesday 2 September                        │                                                                                                                         │
+  1 event, 10 words                            │                                                                                                                         │
+  August 2026 1                                │                                                                                                                         │
+  Saturday 29 August                           │                                                                                                                         │
+  1 event, 15 words                            │                                                                                                                         │
+                                               └─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down pick a page   page up/down or the wheel scroll it   q quit                                                                   updates by itself

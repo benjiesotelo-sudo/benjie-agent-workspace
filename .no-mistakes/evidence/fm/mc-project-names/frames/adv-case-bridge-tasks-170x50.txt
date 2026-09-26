@@ -1,0 +1,50 @@
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System                                           Wed 10:00
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+ 5 waiting on you    3 queued    1 in flight    11 done this month    oldest decision waiting: 29 Aug                                real list, same one the Bridge reads
+
+┌─ WAITING ON YOU ─5────────────────────┐ ┌─ QUEUED ─3────────────────────────────┐ ┌─ IN FLIGHT ─1─────────────────────────┐ ┌─ DONE THIS MONTH ─11──────────────────┐
+│                                       │ │                                       │ │                                       │ │                                       │
+│ ■ FIN1209                       2 Sep │ │ ■ Outreach                            │ │ ■ FIN1209                             │ │ ■ Outreach                      today │
+│   Choose the quiz format              │ │   Outreachers kickoff agenda due      │ │   Rebuild lecture notes               │ │   Social Media Marketing calendar for │
+│                                       │ │   Friday 25 September                 │ │                                       │ │   October                             │
+│                                       │ │                                       │ │                                       │ │                                       │
+│ ■ Outreach                      3 Sep │ │ ■ bsba                                │ │                                       │ │ ■ Setup                         today │
+│   Approve the outreach partner list   │ │   Draft the BSBA spec chapter two by  │ │                                       │ │   Tidy the ship's scripts             │
+│                                       │ │   24 September                        │ │                                       │ │                                       │
+│                                       │ │                                       │ │                                       │ │                                       │
+│ ■ Setup                        29 Aug │ │ ■ Setup                               │ │                                       │ │ ■ FIN1209                      22 Sep │
+│   Tick a profile setting only the     │ │   Update the ship's own tooling       │ │                                       │ │   FIN1209: Activity 4 rubric          │
+│   captain can reach                   │ │                                       │ │                                       │ │                                       │
+│                                       │ │                                       │ │                                       │ │                                       │
+│ ■ SAP                          10 Sep │ │                                       │ │                                       │ │ ■ Tambiz                       22 Sep │
+│   Pick the SAP hosting plan           │ │                                       │ │                                       │ │   Tambiz's rounding bug fixed         │
+│                                       │ │                                       │ │                                       │ │                                       │
+│                                       │ │                                       │ │                                       │ │                                       │
+│ ■ FIN1209                       8 Sep │ │                                       │ │                                       │ │ ■ FIN1209                      21 Sep │
+│   Decide the midterm review point     │ │                                       │ │                                       │ │   FIN1209 Activity 3 answer key       │
+│                                       │ │                                       │ │                                       │ │                                       │
+│                                       │ │                                       │ │                                       │ │                                       │
+│                                       │ │                                       │ │                                       │ │ ■ SAP                          15 Sep │
+│                                       │ │                                       │ │                                       │ │   SAP login page redesign             │
+│                                       │ │                                       │ │                                       │ │                                       │
+│                                       │ │                                       │ │                                       │ │                                       │
+│                                       │ │                                       │ │                                       │ │ ■ SAP                          15 Sep │
+│                                       │ │                                       │ │                                       │ │   Invoice export                      │
+│                                       │ │                                       │ │                                       │ │                                       │
+│                                       │ │                                       │ │                                       │ │                                       │
+│                                       │ │                                       │ │                                       │ │ ■ Tambiz                       15 Sep │
+│                                       │ │                                       │ │                                       │ │   Tambiz tests                        │
+│                                       │ │                                       │ │                                       │ │                                       │
+│                                       │ │                                       │ │                                       │ │                                       │
+│                                       │ │                                       │ │                                       │ │ ■ bsba                         15 Sep │
+│                                       │ │                                       │ │                                       │ │   BSBA Spec outline                   │
+│                                       │ │                                       │ │                                       │ │                                       │
+│                                       │ │                                       │ │                                       │ │                                       │
+│                                       │ │                                       │ │                                       │ │                                       │
+│                                       │ │                                       │ │                                       │ │                                       │
+│                                       │ │                                       │ │                                       │ │ +2 more                               │
+└───────────────────────────────────────┘ └───────────────────────────────────────┘ └───────────────────────────────────────┘ └───────────────────────────────────────┘
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down pick an agent   enter talk to it   p pause   q quit                                                                          updates by itself

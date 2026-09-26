@@ -1,0 +1,9 @@
+--- agents
+base:   │ ● Bridge off    ● Mission Control off    ● FIN asleep    ● SAP working    ● Tambiz asleep    ● OPS asleep                                                              │
+branch: │ ● Bridge off    ● Mission Control off    ● FIN1209 asleep    ● SAP working    ● Tambiz asleep    ● OPS asleep                                                          │
+--- empty
+base:   │ ● Bridge off    ● Mission Control off    ● FIN closed    ● SAP closed    ● Tambiz closed    ● OPS closed                                                               │
+branch: │ ● Bridge off    ● Mission Control off    ● FIN1209 closed    ● SAP closed    ● Tambiz closed    ● OPS closed                                                           │
+--- real herdr agent list (fixture home, so no mate pane matches)
+base:   │ ● Bridge off    ● Mission Control off    ● FIN closed    ● SAP closed    ● Tambiz closed    ● OPS closed                                                               │
+branch: │ ● Bridge off    ● Mission Control off    ● FIN1209 closed    ● SAP closed    ● Tambiz closed    ● OPS closed                                                           │

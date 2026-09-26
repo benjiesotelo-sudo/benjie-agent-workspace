@@ -1,0 +1,44 @@
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System     Wed 10:00
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+ 5 waiting on you    3 queued    1 in flight    11 done this month    oldest decision waiting: 29 Aug                     real list
+
+┌─ WAITING ON YOU ─5───────────┐ ┌─ QUEUED ─3───────────────────┐ ┌─ IN FLIGHT ─1────────────────┐ ┌─ DONE THIS MONTH ─11─────────┐
+│                              │ │                              │ │                              │ │                              │
+│ ■ FIN1209              2 Sep │ │ ■ Social Media Marketing     │ │ ■ FIN1209                    │ │ ■ Social Media Marke...today │
+│   Choose the quiz format     │ │   Outreachers kickoff agenda │ │   Rebuild lecture notes      │ │   Social Media Marketing     │
+│                              │ │   due Friday 25 September    │ │                              │ │   calendar for October       │
+│                              │ │                              │ │                              │ │                              │
+│ ■ Social Media Marke...3 Sep │ │ ■ BSBA Spec                  │ │                              │ │ ■ Setup                today │
+│   Approve the outreach       │ │   Draft the BSBA spec chapter│ │                              │ │   Tidy the ship's scripts    │
+│   partner list               │ │   two by 24 September        │ │                              │ │                              │
+│                              │ │                              │ │                              │ │                              │
+│ ■ Setup               29 Aug │ │ ■ Setup                      │ │                              │ │ ■ FIN1209             22 Sep │
+│   Tick a profile setting only│ │   Update the ship's own      │ │                              │ │   FIN1209: Activity 4 rubric │
+│   the captain can reach      │ │   tooling                    │ │                              │ │                              │
+│                              │ │                              │ │                              │ │                              │
+│ ■ SAP                 10 Sep │ │                              │ │                              │ │ ■ Tambiz              22 Sep │
+│   Pick the SAP hosting plan  │ │                              │ │                              │ │   Tambiz's rounding bug fixed│
+│                              │ │                              │ │                              │ │                              │
+│                              │ │                              │ │                              │ │                              │
+│ ■ FIN1209              8 Sep │ │                              │ │                              │ │ ■ FIN1209             21 Sep │
+│   Decide the midterm review  │ │                              │ │                              │ │   FIN1209 Activity 3 answer  │
+│   point                      │ │                              │ │                              │ │   key                        │
+│                              │ │                              │ │                              │ │                              │
+│                              │ │                              │ │                              │ │ ■ SAP                 15 Sep │
+│                              │ │                              │ │                              │ │   SAP login page redesign    │
+│                              │ │                              │ │                              │ │                              │
+│                              │ │                              │ │                              │ │                              │
+│                              │ │                              │ │                              │ │ ■ SAP                 15 Sep │
+│                              │ │                              │ │                              │ │   Invoice export             │
+│                              │ │                              │ │                              │ │                              │
+│                              │ │                              │ │                              │ │                              │
+│                              │ │                              │ │                              │ │ ■ Tambiz              15 Sep │
+│                              │ │                              │ │                              │ │   Tambiz tests               │
+│                              │ │                              │ │                              │ │                              │
+│                              │ │                              │ │                              │ │                              │
+│                              │ │                              │ │                              │ │ +3 more                      │
+└──────────────────────────────┘ └──────────────────────────────┘ └──────────────────────────────┘ └──────────────────────────────┘
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down pick an agent   enter talk to it   p pause   q quit                                    updates by itself
