@@ -2074,7 +2074,6 @@ def _control_bar(cv, ui, model, colors, title, rel, current, entries):
     c += 2
     s = " %s " % rel
     cv.put(c, r, s, BG if current else INK, GREEN if current else CHIP, True)
-    ui.cal_hits.append((r, r + 1, c, c + len(s), ("today",)))
     c += len(s) + 1
     if not current:
         s = " back to today "

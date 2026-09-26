@@ -617,6 +617,7 @@ assert "October 2026" in bar(frame("132x44", tap(T, " ▸ "))), "tapping the rig
 L = frame("132x44", "\x1b[D\x1b[D")
 assert "July 2026" in bar(L)
 assert "this month" in bar(frame("132x44", "\x1b[D\x1b[D" + tap(L, " back to today "))), "tapping back to today"
+assert "July 2026" in bar(frame("132x44", "\x1b[D\x1b[D" + tap(L, " 2 months ago "))), "the relative label is not a button"
 Y = frame("132x44", "v")
 F = frame("132x44", "v" + tap(Y, "February", dx=3))
 assert re.search(r"Month │ Year +◂ +February 2026 +▸", bar(F)), bar(F)
