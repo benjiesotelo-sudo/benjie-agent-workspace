@@ -80,14 +80,16 @@ today. Month (the first shown) is the whole month in five or six Sunday to
 Saturday weeks, neighbouring months' days dimmed, each day's items as short
 lines and "+N more"; Year is twelve small months, a day with items in the
 colour of the project with most of them, and a tapped month opens in Month;
-Week is Sunday to Saturday, or from today when fewer than seven day columns
-of DAY_MIN_WIDTH fit. Left and right move one period, t comes back to today
-and v cycles the modes; nothing is ever dropped from the month grid, item
-lines shorten instead. A day shows the Done records completed on it (this month's items plus the
-Bridge's history of other months) and, from today on, open items due on it: a
-hold-until date first, else the one date a title clearly names (a day and a
-full month name in either order, with an optional full weekday name and year,
-or YYYY-MM-DD).
+Week is Sunday to Saturday; when fewer than seven day columns of
+DAY_MIN_WIDTH fit it is that many days from today or the day moved to, and is
+"this week" only while today is among them, else whole weeks rounded up so
+every step changes the label. Left and right move one period, t comes back to
+today and v cycles the modes; nothing is ever dropped from the month grid,
+item lines shorten instead. A day shows the Done records completed on it (this
+month's items plus the Bridge's history of other months) and, from today on,
+open items due on it: a hold-until date first, else the one date a title
+clearly names (a day and a full month name in either order, with an optional
+full weekday name and year, or YYYY-MM-DD).
 Abbreviations such as Sep or Sat and ordinals such as 27th are not read. A
 title with two different dates, a weekday that does not match, a short weekday
 such as Fri right before the date, numbers only, or a yearless date with no
@@ -1822,7 +1824,7 @@ def _later_screen(cv, name):
 
 
 # ---------------------------------------------------------------------------
-# Calendar: a week of what got done and what is due, under what always runs
+# Calendar: a week, month or year of what got done and what is due, under what always runs
 # ---------------------------------------------------------------------------
 
 BRIDGE_AGENT = "com.firstmate.bridge"     # bin/fm-bridge.sh's LaunchAgent label
