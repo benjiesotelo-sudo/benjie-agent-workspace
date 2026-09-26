@@ -89,13 +89,13 @@ TEAM. The crew as an org chart: the captain, then the first mate as chief of
 staff, joined to one role card per registered second mate, each with the
 office's standing sprite in the agent's own shirt and hair colours. A mate's
 role is its registered scope up to the first colon; the card also names the
-projects it owns, its state (working, asleep, or away on another machine) and how
-many open items its list holds and how many wait on the captain. Live interns
-branch off the first mate's line or sit under their mate's card, one line
-each; the rows that do not fit are counted instead. Up and down pick a mate's
-card, whose registry description (first sentence) and scope show underneath,
-with raw paths removed. The alumni row reads the same retirements as the
-office's alumni wall, so it too starts empty on every run.
+projects it owns, its state (working, asleep, or away on another machine) and
+how many open items its list holds and how many wait on the captain. Live
+interns branch off the first mate's line or sit under their mate's card, one
+line each; the rows that do not fit are counted instead. Up and down pick a
+mate's card, whose registry description (first sentence) and scope show
+underneath, with raw paths removed. The alumni row reads the same retirements
+as the office's alumni wall, so it too starts empty on every run.
 
 DRAWING. Each character cell is two pixels: an upper half block with the top
 pixel as foreground and the bottom pixel as background, 24-bit colour when the
