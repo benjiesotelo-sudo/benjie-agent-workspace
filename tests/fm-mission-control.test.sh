@@ -694,7 +694,7 @@ print(mc.compose(scene, mc.Renderer(), ui, 170, 50, now)[0].text())
 PY
 D=$(cat "$TMP_ROOT/day.txt")
 grep -Eq '^▸ Saturday 12 September ' <<<"$D" || fail "down picks the journal day"
-for want in '│ Saturday 12 September 2026, 1 event, 7 words ' '│ alpha ' '│   • The Alpha mate finished Chapter four notes\. '; do
+for want in '│ Saturday 12 September 2026, 1 event, 7 words ' '│ alpha ' '│   • The alpha mate finished Chapter four notes\. '; do
   grep -Eq "$want" <<<"$D" || fail "a journal day reads as plain sentences under its project: $want"
 done
 DJ=$(PYTHONPATH="$ROOT/bin" FM_BRIDGE_NOW=2026-09-20T10:00:00 PATH="$FAKEBIN:$PATH" python3 - "$HOME_DIR" <<'PY'
