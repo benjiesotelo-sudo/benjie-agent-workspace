@@ -1,0 +1,2 @@
+t=10.2s
+99196   0:00.51 /Library/Developer/CommandLineTools/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python /Users/benjie/.no-mistakes/worktrees/40995176e50b/01M3E1ZG22CJHE4VGPS4FYVKS9/bin/fm_mission_control.py run --home /tmp/mc-lab/home --config-dir /tmp/mc-lab/home/config --herdr /tmp/mc-lab/bin/herdr
