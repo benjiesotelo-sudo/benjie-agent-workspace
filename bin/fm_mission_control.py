@@ -111,12 +111,13 @@ as the office's alumni wall, so it too starts empty on every run.
 
 MEMORY AND DOCS. Both are a list on the left and one reader on the right; the
 reader renders Markdown to terminal lines (render_markdown) and never runs or
-opens anything; a picture reads as its caption, never its file name. Memory's long-term pages are data/captain.md and
-data/learnings.md of this home and of each second mate home whose records were
-read. Its daily journal has one entry per day that has dated records, built
-only from every home's backlog and done archive: completions on their
-completion date, and open items on their since date (captain items read as a
-decision filed for the captain). A day with no record has no entry. Docs lists
+opens anything; a picture reads as its caption, never its file name.
+Memory's long-term pages are data/captain.md and data/learnings.md of this home
+and of each second mate home whose records were read. Its daily journal has
+one entry per day that has dated records, built only from every home's
+backlog and done archive: completions on their completion date, and open
+items on their since date (captain items read as a decision filed for the
+captain). A day with no record has no entry. Docs lists
 the fleet snapshot's scout_reports of each home, the Bridge's decision pages,
 newest first, then the captain's links from config/bridge.json. A report's or
 decision's project is its backlog item's (the report's task id, the decision
