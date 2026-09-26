@@ -1,0 +1,50 @@
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System                                           Sat 15:01
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+  All 7   Report 3   Decision 2   Link 2                                                                                                read only, changes happen in chat
+
+  Scout report: the quiz format in...  19 Sep  ┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+   Report   ■ alpha  326 words                 │  Link  Status page                                                                                                      │
+  The quiz stays private               18 Sep  │ A saved link for the ship's own setup                                                                                   │
+   Decision   ■ alpha  16 words                ├─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+  A study with no task                 17 Sep  │ Status page                                                                                                             │
+   Report   6 words                            │                                                                                                                         │
+  A decision: fix, option (b)          16 Sep  │ The ship's own setup                                                                                                    │
+   Decision   7 words                          │                                                                                                                         │
+  Escapes in a report                  15 Sep  │ The address, to copy or tap:                                                                                            │
+   Report   11 words                           │ https://status.example.org/                                                                                             │
+  Class Drive folder                           │                                                                                                                         │
+   Link   ■ alpha  drive.example.org           │                                                                                                                         │
+▸ Status page                                  │                                                                                                                         │
+   Link   ■ setup  status.example.org          │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               └─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   left/right pick a kind   up/down pick a page   page up/down or the wheel scroll it   q quit                                          updates by itself
