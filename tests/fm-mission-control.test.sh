@@ -611,6 +611,12 @@ N = bar(frame("96x36", "\x1b[Cvv", now="2026-09-26T10:00:00"))
 assert "next week" in N and "back to today" in N, "a narrow week starting after today's week is next week"
 N = bar(frame("96x36", "\x1b[Cvv\x1b[D", now="2026-09-26T10:00:00"))
 assert "this week" in N and "back to today" not in N, N
+N = bar(frame("96x36", "\x1b[Cvv", now="2026-09-29T10:00:00"))
+assert re.search(r"1 to 5 October +▸ +next week", N) and "back to today" in N, N
+N = bar(frame("96x36", "\x1b[Cvv\x1b[D", now="2026-09-29T10:00:00"))
+assert re.search(r"24 to 28 September +▸ +last week", N) and "back to today" in N, N
+N = bar(frame("96x36", "\x1b[Cvv\x1b[D\x1b[Dt", now="2026-09-29T10:00:00"))
+assert "this week" in N and "back to today" not in N, N
 
 # Taps: every change is on the control bar, and a month in Year opens it.
 T = frame("132x44")

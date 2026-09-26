@@ -2130,7 +2130,13 @@ def _calendar_screen(cv, ui, model, crew):
         days = week_days(anchor, n)
         shown = days
         title = _week_span(days, today)
-        offset = (_sunday(anchor) - _sunday(today)).days // 7
+        if n >= 7:
+            offset = (_sunday(anchor) - _sunday(today)).days // 7
+        elif today in days:
+            offset = 0
+        else:
+            ahead = (days[0] - today).days
+            offset = max(1, abs(ahead) // 7) * (1 if ahead > 0 else -1)
     elif mode == "month":
         days = month_days(anchor)
         shown = [d for d in days if d.month == anchor.month]
