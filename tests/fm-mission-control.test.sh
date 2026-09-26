@@ -3,12 +3,12 @@
 # bin/fm_mission_control.py): one-frame snapshots from fixture records and a
 # saved `herdr agent list`, asserting desks, working and asleep states, interns
 # beside the right person in charge, the second-floor sign at seven mates, the
-# inbox count, the task columns, the project cards, the calendar week
-# (completions, due dates, what always runs) and the System view's dots,
-# overall line and office rack sign from saved readings; then the live screen
-# in a pseudo-terminal, which must redraw only what changed, pick project cards
-# with up/down, and restore the terminal on q and on SIGTERM. The record
-# parsers themselves are covered by fm-bridge.test.sh.
+# inbox count, the task columns, the project cards, the Approvals groups, the
+# calendar week (completions, due dates, what always runs), the Team org chart
+# and the System view's dots, overall line and office rack sign from saved
+# readings; then the live screen in a pseudo-terminal, which must redraw only
+# what changed, pick project cards with up/down, and restore the terminal on q
+# and on SIGTERM. The record parsers themselves are covered by fm-bridge.test.sh.
 # Fixtures are the Bridge's, in tests/assets/bridge/.
 set -u
 
@@ -319,6 +319,98 @@ grep -q 'more below' <<<"$AM" && fail "a decision whose first line shows is not 
 
 pass "the Approvals view groups what waits on the captain by agent, oldest first, in plain words"
 
+# --- the team -------------------------------------------------------------
+
+TM=$(mc "$HOME_DIR" frame --agents "$AGENTS" --view team --size 170x50) || fail "team frame failed"
+line_of() {  # <text> - the first screen row holding it
+  grep -n -m1 -F "$1" <<<"$TM" | cut -d: -f1
+}
+for text in 'You, the captain' '4 things wait on you' 'Denver' 'Chief of staff' 'Alpha' \
+  'Alpha course, its decks and its quizzes' 'owns alpha' '2 listed, 1 for you'; do
+  grep -qF "$text" <<<"$TM" || fail "the org chart shows: $text"
+done
+[ "$(line_of 'You, the captain')" -lt "$(line_of 'Chief of staff')" ] \
+  && [ "$(line_of 'Chief of staff')" -lt "$(line_of 'owns alpha')" ] \
+  || fail "the captain sits above the first mate, who sits above the second mates"
+grep -Eq 'Denver +● working' <<<"$TM" || fail "the first mate's working pane reads working"
+grep -Eq 'Alpha +z asleep' <<<"$TM" || fail "the mate's idle pane reads asleep"
+grep -q '├─ ○ state not readable: Print the handouts' <<<"$TM" \
+  || fail "the first mate's intern branches off its line"
+[ "$(line_of 'Build chapter four')" -gt "$(line_of 'owns alpha')" ] || fail "the mate's intern is listed under its card"
+grep -q 'Add a text layer' <<<"$TM" || fail "the mate's second intern is listed too"
+grep -q 'ABOUT ALPHA' <<<"$TM" || fail "the first second mate's card is picked by default"
+grep -q '^   Persistent second mate for the alpha course$' <<<"$TM" || fail "the picked card shows its charter's first sentence"
+grep -q 'Scope: the alpha course, its decks and its quizzes' <<<"$TM" || fail "the picked card shows its scope"
+grep -q ' ALUMNI ' <<<"$TM" || fail "the Team view has an alumni row"
+grep -q 'No one has retired yet' <<<"$TM" || fail "the alumni row is empty with no retirements"
+grep -q 'up/down pick a second mate' <<<"$TM" || fail "the key line says what up/down does here"
+grep -q 'coming next' <<<"$TM" && fail "the Team view replaces its coming-next note"
+grep -q "$TMP_ROOT" <<<"$TM" && fail "no raw path may reach the Team view"
+grep -Eq '\b(a1|q1|m2|alpha-mate)\b' <<<"$TM" && fail "no id may reach the Team view"
+# Each portrait is the office sprite in its agent's shirt colour: the first
+# mate's green (#2fbf71) and the mate's teal (#3fb6c9), next to skin (#e2b48f).
+TA=$(mc "$HOME_DIR" frame --agents "$AGENTS" --view team --size 170x50 --format ansi) || fail "team ansi failed"
+for rgb in '47;191;113' '63;182;201'; do
+  sed 1d <<<"$TA" | grep -q "38;2;$rgb;48;2;$rgb" || fail "the portraits draw in the agents' own colours: $rgb"
+done
+grep -q '8;2;226;180;143' <<<"$TA" || fail "the portraits draw their faces in skin colour"
+T96=$(mc "$HOME_DIR" frame --agents "$AGENTS" --view team --size 96x36) || fail "a small team frame failed"
+grep -q 'ABOUT ALPHA' <<<"$T96" || fail "the smallest pane still shows the picked card"
+grep -q 'No one has retired yet' <<<"$T96" || fail "the smallest pane still shows the alumni row"
+pass "the Team view draws the crew as an org chart in plain words"
+
+FAR="$TMP_ROOT/farship"
+mkdir -p "$FAR/data" "$FAR/state"
+cp "$FIX/projects.fixture" "$FAR/data/projects.md"
+printf '# Backlog\n\n## In flight\n## Queued\n## Done\n' > "$FAR/data/backlog.md"
+printf '# Second mates\n\n- far-mate - Mate on the other box (host: box; root: /srv/far; home: /srv/far/home; scope: the far course: its decks; projects: alpha; added 2026-09-01)\n' \
+  > "$FAR/data/secondmates.md"
+TF=$(mc "$FAR" frame --agents "$AGENTS" --view team --size 114x40) || fail "remote team frame failed"
+grep -q 'list on another machine' <<<"$TF" || fail "a remote mate's card says its list is on another machine"
+grep -q 'could not be read' <<<"$TF" && fail "a remote mate's records are not called unreadable"
+grep -Eq 'FAR +away' <<<"$TF" || fail "a remote mate reads away beside its full name"
+grep -q '/srv/far' <<<"$TF" && fail "no remote path may reach the Team view"
+pass "a remote mate's card says it works on another machine"
+
+# Three to five cards side by side keep every card line whole, the counts and
+# the remote note included.
+ROW="$TMP_ROOT/rowship"
+mkdir -p "$ROW/data" "$ROW/state"
+cp "$FIX/projects.fixture" "$ROW/data/projects.md"
+printf '# Backlog\n\n## In flight\n## Queued\n## Done\n' > "$ROW/data/backlog.md"
+{
+  echo "# Second mates"
+  for n in 1 2 3 4 5; do
+    if [ "$n" = 2 ]; then
+      echo "- r2-mate - Mate number 2 (host: box; root: /srv/r2; home: /srv/r2/home; scope: area 2; projects: alpha; added 2026-09-01)"
+      continue
+    fi
+    mkdir -p "$TMP_ROOT/r$n/data" "$TMP_ROOT/r$n/state"
+    cp "$FIX/mate-backlog.fixture" "$TMP_ROOT/r$n/data/backlog.md"
+    echo "- r$n-mate - Mate number $n (home: $TMP_ROOT/r$n; scope: area $n; projects: alpha; added 2026-09-01)"
+  done
+} > "$ROW/data/secondmates.md"
+{
+  printf '# Backlog\n\n## In flight\n## Queued\n'
+  for n in $(seq 10 19); do printf -- '- [ ] w%d - Wait %d (kind: task) (since 2026-09-08) (hold: the call) (hold-kind: captain)\n' "$n" "$n"; done
+  for n in 20 21; do printf -- '- [ ] w%d - Task %d (kind: task) (since 2026-09-09)\n' "$n" "$n"; done
+  printf '## Done\n'
+} > "$TMP_ROOT/r3/data/backlog.md"
+for size in 112x40 113x40; do
+  TR=$(mc "$ROW" frame --agents "$AGENTS" --view team --size "$size") || fail "a $size team frame failed"
+  grep -q '\.\.\.' <<<"$TR" && fail "at $size no card line is clipped: $(grep -F '...' <<<"$TR")"
+  grep -qF 'list on another machine' <<<"$TR" || fail "at $size a card reads: list on another machine"
+done
+for size in 114x40 132x44 170x50 200x50; do
+  TR=$(mc "$ROW" frame --agents "$AGENTS" --view team --size "$size") || fail "a $size team frame failed"
+  grep -q 'owns alpha.*owns alpha.*owns alpha' <<<"$TR" || fail "at $size three or more cards sit side by side"
+  grep -q '\.\.\.' <<<"$TR" && fail "at $size no card line is clipped: $(grep -F '...' <<<"$TR")"
+  for text in 'list on another machine' '12 listed, 10 for you' '2 listed, 1 for you'; do
+    grep -qF "$text" <<<"$TR" || fail "at $size a card reads: $text"
+  done
+done
+pass "a row of three or more cards clips no card line"
+
 # --- system ----------------------------------------------------------------
 
 GB=1073741824
@@ -536,8 +628,8 @@ assert got["lines"][0] == ("amber", "Alpha: window could not be checked"), got
 PY
 pass "before the first reads the view is grey and calm"
 
-L=$(mc "$HOME_DIR" frame --agents "$AGENTS" --view team)
-grep -q 'Team is coming next' <<<"$L" || fail "a later view shows its coming-next note"
+L=$(mc "$HOME_DIR" frame --agents "$AGENTS" --view memory)
+grep -q 'Memory is coming next' <<<"$L" || fail "a later view shows its coming-next note"
 grep -q ' 9 System ' <<<"$L" || fail "the tab bar shows all nine views"
 S=$(mc "$HOME_DIR" frame --agents "$AGENTS" --size 80x24)
 [ "$(printf '%s\n' "$S" | grep -c .)" = 1 ] || fail "a too-small pane gets exactly one line"
@@ -880,13 +972,30 @@ pass "the live Calendar moves a week at a time and t returns to this week"
 # A mate seated upstairs that leaves the registry still retires.
 cp "$BIG/data/secondmates.md" "$TMP_ROOT/big-mates.saved"
 code=$(DRIVE_HOME="$BIG" DRIVE_AGENTS="$TMP_ROOT/big.json" DRIVE_ROWS=60 \
-  drive "$TMP_ROOT/up" "5=SH:sed -i.bak /m6-mate/d $BIG/data/secondmates.md,14=q") || fail "the pty driver failed"
+  drive "$TMP_ROOT/up" "5=SH:sed -i.bak /m6-mate/d $BIG/data/secondmates.md,14=6,16=q") || fail "the pty driver failed"
 cp "$TMP_ROOT/big-mates.saved" "$BIG/data/secondmates.md"
 screen "$TMP_ROOT/up" 1 | grep -q '1 upstairs, 0 working' || fail "the sixth mate starts upstairs"
 screen "$TMP_ROOT/up" 2 | grep -Eq '□ M6 +second mate +retired' || fail "the upstairs mate has a retired row"
 screen "$TMP_ROOT/up" 2 | grep -q 'M6 retires' || fail "the activity column shows the retirement"
 screen "$TMP_ROOT/up" 2 | grep -q 'upstairs,' && fail "nobody is left upstairs"
+screen "$TMP_ROOT/up" 3 | grep -A2 ' ALUMNI ' | grep -Eq 'M6 *$' || fail "the Team view's alumni row shows the retired mate"
+screen "$TMP_ROOT/up" 3 | grep -A2 ' ALUMNI ' | grep -q 'retired' || fail "the alumni row says retired"
 pass "a mate that leaves the registry from upstairs goes on the alumni wall"
+
+# Up and down pick a second mate's card on the Team view and stay there.
+DOWN=$'\e[B'
+UP=$'\e[A'
+code=$(DRIVE_HOME="$BIG" DRIVE_AGENTS="$TMP_ROOT/big.json" DRIVE_ROWS=44 \
+  drive "$TMP_ROOT/pick" "3=6,4=$DOWN,5=$DOWN,6=$UP,7=q") || fail "the pty driver failed"
+[ "$code" = 0 ] || fail "the team run quits cleanly, got exit $code"
+for want in 2:M1 3:M2 4:M3 5:M2; do
+  n=${want%%:*}
+  who=${want#*:}
+  screen "$TMP_ROOT/pick" "$n" | grep -q "ABOUT $who" || fail "screen $n shows the picked card $who"
+  screen "$TMP_ROOT/pick" "$n" | grep -q "Mate number ${who#M}" || fail "screen $n shows $who's charter"
+done
+screen "$TMP_ROOT/pick" 2 | grep -q '4 more ▸' || fail "cards beyond the pane's width are counted"
+pass "up and down pick a second mate on the Team view"
 
 # A pane that stops working keeps its desk lit for SLEEP_AFTER seconds, and
 # the team list agrees with the desk.
