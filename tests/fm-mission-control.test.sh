@@ -1007,6 +1007,15 @@ NK=$(cal 2026-09-23T10:00:00 170x50) || fail "named month with self-named titles
 grep -q 'Outreach: flyer' <<<"$NK" || fail "a title's own leading project name is dropped"
 grep -q 'Outreach: Outreach ' <<<"$NK" && fail "a Calendar line never repeats its project's name"
 grep -q 'Outreach: Outrea' <<<"$NK" || fail "a title that only begins with the same letters keeps them"
+printf '%s\n' "- [x] n3 - Outreach's poster hung (repo: beta) (kind: ship) (done 2026-09-24)" \
+  '- [x] n4 - Venue booked (repo: beta) (kind: ship) (done 2026-08-14)' \
+  '- [x] n5 - Chairs booked (repo: beta) (kind: ship) (done 2026-08-14)' >> "$CAL/data/backlog.md"
+NK=$(cal 2026-09-23T10:00:00 170x50 vv) || fail "named week with a possessive title failed"
+[ "$(day_of "$NK" "Outreach's pos")" = 'Thu 24' ] || fail "a possessive title keeps its project's name as its subject"
+# Six weeks at the smallest pane leave two lines a day: a name that needs both keeps one for "+N more".
+NK=$(cal 2026-09-23T10:00:00 96x36 $'\x1b[D') || fail "a six-week month at the smallest pane failed"
+grep -q 'August 2026' <<<"$NK" || fail "left goes back to August"
+grep -q '+1 more' <<<"$NK" || fail "a day whose first name fills its cell still counts the items it hides"
 mv "$TMP_ROOT/cal-backlog.saved" "$CAL/data/backlog.md"
 for size in 132x44 170x50; do
   NK=$(cal 2026-09-23T10:00:00 "$size") || fail "named month at $size failed"

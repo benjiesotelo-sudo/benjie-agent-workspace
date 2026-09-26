@@ -2921,9 +2921,10 @@ def _item_color(model, colors, it):
 
 def _untagged(name, title):
     """The title without a leading copy of its project's name, so "FIN1209: FIN1209 Activity 1"
-    reads "FIN1209: Activity 1"; a title that is only the name stays as it is."""
+    reads "FIN1209: Activity 1"; a title that is only the name, or starts with it as a longer
+    word like "FIN1209's", stays as it is."""
     title = clean(title)
-    if title[:len(name)].lower() == name.lower() and not title[len(name):len(name) + 1].isalnum():
+    if title[:len(name)].lower() == name.lower() and title[len(name):len(name) + 1] in ("", " ", ":", "-", ","):
         rest = title[len(name):].lstrip(" :-,")
         if rest:
             return rest
@@ -2958,11 +2959,9 @@ def _entry_rows(name, title, width):
 def _day_rows(wants, room):
     """How many of a day's items show in room lines, and the lines each takes: every name
     whole first, then spare lines to the items whose titles would otherwise hide."""
-    need = [w[0] for w in wants]
-    n = _fit_entries(need, room)
-    rows = need[:n]
-    spare = room - sum(rows) - (1 if n < len(wants) else 0)
-    for i in range(n):
+    rows = _fit_entries([w[0] for w in wants], room, 1)
+    spare = room - sum(rows) - (1 if len(rows) < len(wants) else 0)
+    for i in range(len(rows)):
         extra = min(spare, wants[i][1] - rows[i])
         if extra > 0:
             rows[i] += extra
@@ -2970,18 +2969,19 @@ def _day_rows(wants, room):
     return rows
 
 
-def _fit_entries(needs, room):
-    """How many items, each needing needs[i] lines, fit in room lines, keeping one line for
-    "+N more" when not all do; the first item always shows, shortened if it must be."""
+def _fit_entries(needs, room, least):
+    """The lines each leading item that fits in room lines takes, each needing needs[i],
+    keeping one line for "+N more" when not all do; the first item always shows, cut to what
+    is left, while that is at least least lines."""
     if sum(needs) <= room:
-        return len(needs)
-    used = n = 0
+        return list(needs)
+    shown = []
     for need in needs:
-        if used + need > room - 1:
+        if sum(shown) + need > room - 1:
             break
-        used += need
-        n += 1
-    return n or (1 if room >= 2 else 0)
+        shown.append(need)
+    first = room - (1 if len(needs) > 1 else 0)
+    return shown or ([first] if first >= least else [])
 
 
 def _name_cols(lines, name):
@@ -3141,9 +3141,8 @@ def _week_grid(cv, model, colors, days, cal, today, top, bottom):
         heights = [2 + max(2, want) for _, want in rows]
         if sum(heights) > room:
             heights = [2 + need for need, _ in rows]
-        shown = entries[:_fit_entries(heights, room)]
-        for it, (tag, pc), bh in zip(shown, tags, heights):
-            bh = max(3, min(bh, bottom - r + 1))
+        heights = _fit_entries(heights, room, 3)
+        for it, (tag, pc), bh in zip(entries, tags, heights):
             due = it["mark"] == "due"
             edge = pc if due else mix(pc, BG, 0.45)
             _box(cv, c0 + 1, r, w - 2, bh, edge)
@@ -3154,7 +3153,7 @@ def _week_grid(cv, model, colors, days, cal, today, top, bottom):
                 cv.put(c0 + 3, r + 1 + i, ln, INK if due else SOFT)
                 cv.put(c0 + 3, r + 1 + i, ln[:nc], pc, None, True)
             r += bh
-        more = len(entries) - len(shown)
+        more = len(entries) - len(heights)
         if more > 0:
             cv.put(c0 + 2, r, "+%d more" % more, DIM)
     for j in range(1, n):
@@ -3209,7 +3208,7 @@ def _month_grid(cv, model, colors, days, cal, anchor, today, top, bottom):
                 if not inside:
                     col = mix(col, BG, 0.5)
                 cv.put(x + 2, rr, "●" if due else "✓", AMBER if due and inside else col, None, due)
-                for ln in _entry_lines(tag, it["title"], w - 4, max(1, min(n, r + k + 1 - rr))):
+                for ln in _entry_lines(tag, it["title"], w - 4, n):
                     cv.put(x + 4, rr, ln, col, None, due)
                     rr += 1
             if len(rows) < len(entries):
