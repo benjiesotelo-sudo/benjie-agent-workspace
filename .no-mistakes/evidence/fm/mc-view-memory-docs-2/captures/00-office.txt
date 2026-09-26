@@ -1,0 +1,50 @@
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System                                           Sun 10:00
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀    ▀▀▀▀▀▀▀▀▀   ▀▀▀▀▀▀▀▀▀▀▀▀▀           │ LIVE ACTIVITY real
+                       ▀▀ ▀▀ ▀▀ ▀▀       ▀▀▀▀▀▀▀ ▀▀▀▀▀▀  ▀   ▀ ▀ ▀ ▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀           │
+     ▀▀   ▀▀   ▀▀                        ▀▀▀▀▀▀▀ ▀▀▀▀▀▀      ▀ ▀ ▀ ▀     ▀▀▀▀▀▀▀▀▀▀▀            │ 12 Sep Alpha finished Chapter four notes
+▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀│
+   ▀alumni             tasks                                plan         memory         ▀▀▀▀▀▀▀ │ 5 Sep  Denver finished Chapter three decks
+  ▀   ▀                             ▀▀▀▀▀▀▀  ▀▀▀z▀▀▀                                      ▀ ▀   │
+                           ▀▀▀▀▀  ▀▀▀▀▀▀▀▀▀▀▀▀▀z▀Z▀▀▀▀▀                                   ▀ ▀   │ 2 Sep  Denver finished Module one handout
+   ▀▀▀                       ▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                                   ▀ ▀   │
+                                          ▀▀▀▀▀                                           ▀ ▀   │
+                                                                                          ▀ ▀   │
+                                                                                          ▀ ▀   │
+                                          ▀▀▀▀▀                                                 │
+                                         Denver                                         ▀▀▀▀▀▀▀ │
+   ▀▀▀▀▀▀▀▀▀                             asleep                                        system   │
+                                                                                         ok     │
+    ▀▀▀▀▀▀▀z                                                                                    │
+ ▀▀▀▀▀▀▀▀▀z▀Z▀                                                                                  │
+ ▀▀▀▀▀▀▀▀▀▀▀▀▀                                                                                  │
+     ▀▀▀▀▀                                                                                      │
+                                                                                                │
+                                                                                                │
+     ▀▀▀▀▀                                                                                      │
+     Alpha                                                                                      │
+    asleep                                                                                    ▀▀│
+ ▀▀▀▀▀▀▀▀                                                                                       │
+ CAPTAIN                    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                  ▀   ▀       │
+                                          ▀▀▀▀▀▀▀▀▀                                  ▀▀▀        │
+       ▀                            ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                                       │
+                  inbox 4             ▀▀▀▀         ▀▀▀▀                                         │
+          ▀▀▀▀▀▀▀                       ▀▀▀         ▀▀▀                                       ▀▀│
+─ TEAM ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   NAME       ROLE                DOING NOW                                                                               PATH (the project it works in)
+ z Denver     first mate          standing by, 3 waiting on you                                                           every project
+ z Alpha      second mate         asleep, its window is closed, 1 waiting on you                                          projects/alpha
+ · interns    one job each        none right now
+
+
+
+
+
+
+
+
+
+   Interns stand beside their person in charge for one job, then go home. Sleeping agents cost nothing.
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down pick an agent   enter talk to it   p pause   q quit                                                                          updates by itself

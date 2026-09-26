@@ -1,0 +1,50 @@
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System                                           Sun 10:00
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+  All 9   Report 4   Decision 3   Link 2                                                                                                read only, changes happen in chat
+
+▸ Scout report: the quiz format in...  19 Sep  ┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+   Report   ■ alpha  326 words                 │  Report  Scout report: the quiz format in a local file                                                                  │
+  Mate report on text layers           19 Sep  │ Saturday 19 September 2026, 326 words, project alpha                                                                    │
+   Report   ■ alpha  11 words                  ├─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+  The quiz stays private               18 Sep  │   • Detail line 22                                                                                                      │
+   Decision   ■ alpha  16 words                │   • Detail line 23                                                                                                      │
+  A study with no task                 17 Sep  │   • Detail line 24                                                                                                      │
+   Report   6 words                            │   • Detail line 25                                                                                                      │
+  Choose the quiz format: keep the...  17 Sep  │   • Detail line 26                                                                                                      │
+   Decision   ■ alpha  9 words                 │   • Detail line 27                                                                                                      │
+  Decision needed on pricing: option A 16 Sep  │   • Detail line 28                                                                                                      │
+   Decision   7 words                          │   • Detail line 29                                                                                                      │
+  A report                             15 Sep  │   • Detail line 30                                                                                                      │
+   Report   4 words                            │   • Detail line 31                                                                                                      │
+  Class Drive folder                           │   • Detail line 32                                                                                                      │
+   Link   ■ alpha  drive.example.org           │   • Detail line 33                                                                                                      │
+  Status page                                  │   • Detail line 34                                                                                                      │
+   Link   ■ setup  status.example.org          │   • Detail line 35                                                                                                      │
+                                               │   • Detail line 36                                                                                                      │
+                                               │   • Detail line 37                                                                                                      │
+                                               │   • Detail line 38                                                                                                      │
+                                               │   • Detail line 39                                                                                                      │
+                                               │   • Detail line 40                                                                                                      │
+                                               │   • Detail line 41                                                                                                      │
+                                               │   • Detail line 42                                                                                                      │
+                                               │   • Detail line 43                                                                                                      │
+                                               │   • Detail line 44                                                                                                      │
+                                               │   • Detail line 45                                                                                                      │
+                                               │   • Detail line 46                                                                                                      │
+                                               │   • Detail line 47                                                                                                      │
+                                               │   • Detail line 48                                                                                                      │
+                                               │   • Detail line 49                                                                                                      │
+                                               │   • Detail line 50                                                                                                      │
+                                               │   • Detail line 51                                                                                                      │
+                                               │   • Detail line 52                                                                                                      │
+                                               │   • Detail line 53                                                                                                      │
+                                               │   • Detail line 54                                                                                                      │
+                                               │   • Detail line 55                                                                                                      │
+                                               │   • Detail line 56                                                                                                      │
+                                               │   • Detail line 57                                                                                                      │
+                                               │   • Detail line 58                                                                                                      │
+                                               │   • Detail line 59                                                                                                      │
+                                               └────────────────────────────────────────────────────────────────────────────────────────────────── lines 40 to 77 of 98 ─┘
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   left/right pick a kind   up/down pick a page   page up/down or the wheel scroll it   q quit                                          updates by itself
