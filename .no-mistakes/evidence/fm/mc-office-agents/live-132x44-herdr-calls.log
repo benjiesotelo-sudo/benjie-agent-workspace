@@ -1,0 +1,18 @@
+agent list
+--version
+workspace list
+workspace list
+agent list
+agent list
+agent focus w1:p1
+agent list
+agent focus w2:p1
+agent list
+agent focus w4:p1
+agent list
+agent focus w3:p1
+agent list
+agent list
+agent list
+agent focus w1:p1
+agent list

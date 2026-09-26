@@ -1,0 +1,50 @@
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System                                           Sat 19:07
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+ 58 waiting on you    14 queued    5 in flight    83 done this month    oldest decision waiting: 29 Aug                              real list, same one the Bridge reads
+
+┌─ WAITING ON YOU ─58───────────────────┐ ┌─ QUEUED ─14───────────────────────────┐ ┌─ IN FLIGHT ─5─────────────────────────┐ ┌─ DONE THIS MONTH ─83──────────────────┐
+│                                       │ │                                       │ │                                       │ │                                       │
+│ ■ setup                        29 Aug │ │ ■ setup                               │ │ ■ setup                               │ │ ■ setup                         today │
+│   Revisit GitHub token storage for    │ │   Replace rclone's shared Google      │ │   Mission Control docs clear and      │ │   Mission Control views: memory and   │
+│   benjie-agent-workspace: currently...│ │   client id before it is retired du...│ │   screenshots correct                 │ │   docs                                │
+│                                       │ │                                       │ │                                       │ │                                       │
+│ ■ FEU-SMM-Livelihood           20 Sep │ │ ■ Telos_FIN1209                       │ │ ■ setup                               │ │ ■ setup                         today │
+│   Five Module 2 slide frames still    │ │   This home has no parent binding, so │ │   Mission Control: every agent shown, │ │   Mission Control Calendar: real month│
+│   need real screenshots from a sign...│ │   scripted outcomes never reach the...│ │   and agents clickable to their chats │ │   grid and month/year switch          │
+│                                       │ │                                       │ │                                       │ │                                       │
+│ ■ Telos_FIN1209                22 Sep │ │ ■ Tambiz-Calculator                   │ │ ■ setup                               │ │ ■ setup                         today │
+│   Delete the local quiz branch now    │ │   Rotate the Neon database password   │ │   Controls screen: a tappable switch  │ │   Mission Control view: system        │
+│   that the source is safe in the pr...│ │   after the presentation; it passed...│ │   letting Denver merge green worksp...│ │                                       │
+│                                       │ │                                       │ │                                       │ │                                       │
+│ ■ SAP-Management-App            7 Sep │ │ ■ setup                               │ │ ■ setup                               │ │ ■ setup                         today │
+│   Table Editor or Students page: which│ │   Run /updatefirstmate: the primary   │ │   Mission Control: show the captain's │ │   Mission Control view: team          │
+│   is the primary surface?             │ │   checkout is 383 commits behind up...│ │   project names (FIN1209, SAP, Tamb...│ │                                       │
+│                                       │ │                                       │ │                                       │ │                                       │
+│ ■ Tambiz-Calculator            19 Sep │ │ ■ Telos_FIN1209                       │ │ ■ FEU-BSBA-Program-Spec               │ │ ■ setup                         today │
+│   The 39 judging criteria still read  │ │   Backlog tool below the new floor    │ │   Hello IABF: revision 2 of the BSBA  │ │   Mission Control view: calendar      │
+│   Criterion 1 to Criterion 39         │ │   blocks recording captain calls as...│ │   Programme Specification (clean ed...│ │                                       │
+│                                       │ │                                       │ │                                       │ │                                       │
+│ ■ setup                         1 Sep │ │ ■ Tambiz-Calculator                   │ │                                       │ │ ■ FEU-BSBA-Program-Spec        25 Sep │
+│   Decide whether to narrow link       │ │   Two small gaps the manual had to    │ │                                       │ │   Update the BSBA Programme           │
+│   sharing on the FIN1209 student Dr...│ │   work around: no way to clear a re...│ │                                       │ │   Specification from 2018 to the 20...│
+│                                       │ │                                       │ │                                       │ │                                       │
+│ ■ FEU-SMM-Livelihood           22 Sep │ │ ■ setup                               │ │                                       │ │ ■ setup                        25 Sep │
+│   Sunday 27 September: what next for  │ │   bin/fm-install-shellcheck.sh        │ │                                       │ │   GitHub Actions minutes nearly       │
+│   the Social Media Marketing for Li...│ │   downloads the Linux x86_64 build... │ │                                       │ │   exhausted (1,807 of 2,000, resets...│
+│                                       │ │                                       │ │                                       │ │                                       │
+│ ■ Telos_FIN1209                31 Aug │ │ ■ setup                               │ │                                       │ │ ■ setup                        24 Sep │
+│   Standardise the working method for  │ │   The no-mistakes policy check judges │ │                                       │ │   Privacy and secrets audit before    │
+│   FIN1209 chapters 2 to 10            │ │   the PR body frozen at event time,...│ │                                       │ │   making benjie-agent-workspace public│
+│                                       │ │                                       │ │                                       │ │                                       │
+│ ■ SAP-Management-App            7 Sep │ │ ■ setup                               │ │                                       │ │ ■ setup                        24 Sep │
+│   The sheet claims Autosaved and      │ │   CI: portable serial shard 3 runs    │ │                                       │ │   Mission Control view: approvals     │
+│   staged-for-approval at the same time│ │   about 19 to 21 minutes against a... │ │                                       │ │                                       │
+│                                       │ │                                       │ │                                       │ │                                       │
+│                                       │ │                                       │ │                                       │ │                                       │
+│                                       │ │                                       │ │                                       │ │                                       │
+│ +49 more                              │ │ +5 more                               │ │                                       │ │ +74 more                              │
+└───────────────────────────────────────┘ └───────────────────────────────────────┘ └───────────────────────────────────────┘ └───────────────────────────────────────┘
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down pick an agent   enter talk to it   p pause   q quit                                                                          updates by itself

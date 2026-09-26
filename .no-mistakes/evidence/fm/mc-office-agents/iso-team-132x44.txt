@@ -1,0 +1,44 @@
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System     Sun 10:00
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+ 1 second mate    1 working    1 asleep or away    1 intern on a job    2 helpers with no record                          real crew
+
+                                            ┌──────────────────────────────────────────┐
+                                            │ You, the captain: decisions and merges   │
+                                            │ 4 things wait on you                     │
+                                            └─────────────────────┬────────────────────┘
+                                                                  │
+                                    ┌─────────────────────────────┴────────────────────────────┐
+                                    │          Denver                                ● working │
+                                    │          Chief of staff: routes the work and supervises  │
+                                    │          the crew                                        │
+                                    │          owns beta, homeship, the setup itself           │
+                                    │          8 listed, 3 for you                             │
+                                    └─────────────────────────────┬────────────────────────────┘
+                                                                  ├─ ● Grading a local file
+                                                                  ├─ ○ idle: a job with no record
+                                                                  │
+                                     ┌────────────────────────────┴───────────────────────────┐
+                                     │          Alpha                                z asleep │
+                                     │          Alpha course, its decks and its quizzes       │
+                                     │                                                        │
+                                     │          owns alpha                                    │
+                                     │          2 listed, 1 for you                           │
+                                     └────────────────────────────────────────────────────────┘
+                                       ● Add a text layer to the chapter PDFs
+
+
+
+
+
+─ ABOUT ALPHA ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   Persistent second mate for the alpha course
+   Scope: the alpha course, its decks and its quizzes
+
+
+
+─ ALUMNI ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   No one has retired yet.
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   tap an agent to open its chat   up/down pick a second mate   q quit                            updates by itself

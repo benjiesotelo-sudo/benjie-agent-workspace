@@ -1,0 +1,50 @@
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System                                           Sat 19:06
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                │ LIVE ACTIVITY real
+                                                                                                │
+                                                                                                │ today  Denver finished Mission Control views: memory and docs
+                                                                                                │
+    alumni             tasks                     Z          plan         memory                 │ today  Denver finished Mission Control Calendar: real month grid and
+                                                                                                │        month/year switch
+                                                z                                               │
+                                               z                                                │ today  Denver finished Mission Control view: system
+                                                                                                │
+                                                                                    +2          │ today  Denver finished Mission Control view: team
+                                                                                                │
+                                                                                                │ today  Denver finished Mission Control view: calendar
+                                         Denver                                                 │
+                                         asleep                                        system   │ 25 Sep Denver finished Update the BSBA Programme Specification from
+            Z                            Z                            Z                  ok     │        2018 to the 2024-2025 curriculum
+                                                                                                │
+           z                            z                            z                          │ 25 Sep Denver finished GitHub Actions minutes nearly exhausted (1,807
+          z                            z                            z                           │        of 2,000, resets 1 Oct): budget and how to continue Mission
+                                                                                                │        Control
+                                                                                                │
+                                                                                                │ 24 Sep Denver finished Privacy and secrets audit before making
+                                                                                                │        benjie-agent-workspace public
+    FIN1209                        SAP                        Tambiz                            │
+    asleep                       asleep                       asleep                            │
+                                                                                                │
+ CAPTAIN                                                                                        │
+                                                                                                │
+                                                                                                │
+                  inbox 58                                                                      │
+                                                                                                │
+─ TEAM ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   NAME       ROLE                DOING NOW                                                                               PATH (the project it works in)
+ z Denver     first mate          standing by, 12 waiting on you                                                          every project
+ z FIN1209    second mate         asleep, 27 jobs listed, 25 waiting on you                                               projects/Telos_FIN1209
+ z SAP        second mate         asleep, 18 jobs listed, 18 waiting on you                                               projects/SAP-Management-App
+ z Tambiz     second mate         asleep, 5 jobs listed, 3 waiting on you                                                 projects/Tambiz-Calculator
+ ○ intern     Denver's intern     waiting: Hello IABF: revision 2 of the BSBA Programme Specification (clean edition,...  projects/FEU-BSBA-Program-Spec
+ ● intern     Denver's intern     Mission Control docs clear and screenshots correct                                      projects/benjie-agent-workspace
+ ○ intern     Denver's intern     waiting: Controls screen: a tappable switch letting Denver merge green workspace PRs    projects/benjie-agent-workspace
+ ● intern     Denver's intern     Mission Control: every agent shown, and agents clickable to their chats                 projects/benjie-agent-workspace
+ ● intern     Denver's intern     Mission Control: show the captain's project names (FIN1209, SAP, Tambiz, Social Med...  projects/benjie-agent-workspace
+ ○ intern     Denver's intern     finished: Mission Control view: approvals                                               projects/benjie-agent-workspace
+
+
+   Interns stand beside their person in charge for one job, then go home. Sleeping agents cost nothing.
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down pick an agent   enter talk to it   p pause   q quit                                                                          updates by itself

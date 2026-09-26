@@ -1,0 +1,449 @@
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System     Sun 10:00
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀    ▀▀▀▀▀▀▀▀▀   ▀▀▀▀▀▀▀▀▀▀▀▀▀           │ LIVE ACTIVITY real
+                       ▀▀ ▀▀ ▀▀ ▀▀       ▀▀▀▀▀▀▀ ▀▀▀▀▀▀  ▀   ▀ ▀ ▀ ▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀           │
+     ▀▀   ▀▀   ▀▀                        ▀▀▀▀▀▀▀ ▀▀▀▀▀▀      ▀ ▀ ▀ ▀     ▀▀▀▀▀▀▀▀▀▀▀            │ 12 Sep Alpha finished Chapter
+▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀│        four notes
+   ▀alumni             tasks        ▀▀▀▀     ▀▀▀            plan         memory         ▀▀▀▀▀▀▀ │
+  ▀   ▀                             ▀▀▀▀▀▀▀  ▀▀▀▀▀▀▀                                      ▀ ▀   │ 5 Sep  Denver finished Chapter
+                           ▀▀▀▀▀  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                                   ▀ ▀   │        three decks
+   ▀▀▀                       ▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀   ▀▀▀    ▀▀▀                      ▀ ▀   │
+                                          ▀   ▀           ▀▀▀    ▀▀▀                      ▀ ▀   │ 2 Sep  Denver finished Module one
+                                          ▀▀▀▀▀         ▀▀▀▀▀▀▀▀▀▀▀▀▀▀                    ▀ ▀   │        handout
+                                         ▀     ▀         ▀▀▀▀▀  ▀▀▀▀▀                     ▀ ▀   │
+                                         ▀▀▀▀▀▀▀        ▀ ▀▀▀ ▀▀ ▀▀▀ ▀                          │
+                                         Denver           ▀ ▀    ▀ ▀                    ▀▀▀▀▀▀▀ │
+   ▀▀▀▀▀▀▀▀▀                             working                                       system   │
+                                                                                        check   │
+    ▀▀▀▀▀▀▀z                                                                                    │
+ ▀▀▀▀▀▀▀▀▀z▀▀▀                                                                                  │
+ ▀▀▀▀▀▀▀▀▀▀▀▀▀   ▀▀▀                                                                            │
+     ▀▀▀▀▀       ▀▀▀                                                                            │
+               ▀▀▀▀▀▀▀                                                                          │
+                ▀▀▀▀▀                                                                           │
+     ▀▀▀▀▀     ▀ ▀▀▀ ▀                                                                          │
+     Alpha       ▀ ▀                                                                            │
+    asleep                                                                                    ▀▀│
+ ▀▀▀▀▀▀▀▀                                                                                       │
+ CAPTAIN                    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                  ▀   ▀       │
+                                          ▀▀▀▀▀▀▀▀▀                                  ▀▀▀        │
+       ▀                            ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                                       │
+                  inbox 4             ▀▀▀▀         ▀▀▀▀                                         │
+          ▀▀▀▀▀▀▀                       ▀▀▀         ▀▀▀                                       ▀▀│
+─ TEAM ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   NAME       ROLE                DOING NOW                                         PATH (the project it works in)
+ ● Denver     first mate          working, 2 helpers on jobs, 3 waiting on you      every project
+ z Alpha      second mate         asleep, 2 jobs listed, 1 waiting on you           projects/alpha
+ ● intern     Alpha's intern      Add a text layer to the chapter PDFs              projects/elsewhere
+ ● helper     Denver's helper     Grading a local file                              projects/beta
+ ○ helper     Denver's helper     idle: a job with no record                        projects/alpha
+
+   Interns stand beside their person in charge for one job, then go home. Sleeping agents cost nothing.
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   tap an agent to open its chat   up/down pick one   p pause   q quit                            updates by itself
+=====
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System     Sun 10:00
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+ 1 second mate    1 working    1 asleep or away    1 intern on a job    2 helpers with no record                          real crew
+
+                                            ┌──────────────────────────────────────────┐
+                                            │ You, the captain: decisions and merges   │
+                                            │ 4 things wait on you                     │
+                                            └─────────────────────┬────────────────────┘
+                                                                  │
+                                    ┌─────────────────────────────┴────────────────────────────┐
+                                    │  ▀   ▀   Denver                                ● working │
+                                    │  ▀▀ ▀▀   Chief of staff: routes the work and supervises  │
+                                    │          the crew                                        │
+                                    │ ▀▀▀▀▀▀▀  owns beta, homeship, the setup itself           │
+                                    │          8 listed, 3 for you                             │
+                                    └─────────────────────────────┬────────────────────────────┘
+                                                                  ├─ ● Grading a local file
+                                                                  ├─ ○ idle: a job with no record
+                                                                  │
+                                     ┌────────────────────────────┴───────────────────────────┐
+                                     │  ▀   ▀   Alpha                                z asleep │
+                                     │  ▀▀ ▀▀   Alpha course, its decks and its quizzes       │
+                                     │                                                        │
+                                     │ ▀▀▀▀▀▀▀  owns alpha                                    │
+                                     │          2 listed, 1 for you                           │
+                                     └────────────────────────────────────────────────────────┘
+                                       ● Add a text layer to the chapter PDFs
+
+
+
+
+
+─ ABOUT ALPHA ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   Persistent second mate for the alpha course
+   Scope: the alpha course, its decks and its quizzes
+
+
+
+─ ALUMNI ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   No one has retired yet.
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   tap an agent to open its chat   up/down pick a second mate   q quit                            updates by itself
+=====
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System     Sun 10:00
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+ 1 second mate    1 working    1 asleep or away    1 intern on a job    2 helpers with no record                          real crew
+
+                                            ┌──────────────────────────────────────────┐
+                                            │ You, the captain: decisions and merges   │
+                                            │ 4 things wait on you                     │
+                                            └─────────────────────┬────────────────────┘
+                                                                  │
+                                    ┌─────────────────────────────┴────────────────────────────┐
+                                    │  ▀   ▀   Denver                                ● working │
+                                    │  ▀▀ ▀▀   Chief of staff: routes the work and supervises  │
+                                    │          the crew                                        │
+                                    │ ▀▀▀▀▀▀▀  owns beta, homeship, the setup itself           │
+                                    │          8 listed, 3 for you                             │
+                                    └─────────────────────────────┬────────────────────────────┘
+                                                                  ├─ ● Grading a local file
+                                                                  ├─ ○ idle: a job with no record
+                                                                  │
+                                     ┌────────────────────────────┴───────────────────────────┐
+                                     │  ▀   ▀   Alpha                                z asleep │
+                                     │  ▀▀ ▀▀   Alpha course, its decks and its quizzes       │
+                                     │                                                        │
+                                     │ ▀▀▀▀▀▀▀  owns alpha                                    │
+                                     │          2 listed, 1 for you                           │
+                                     └────────────────────────────────────────────────────────┘
+                                       ● Add a text layer to the chapter PDFs
+
+
+
+
+
+─ ABOUT ALPHA ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   Persistent second mate for the alpha course
+   Scope: the alpha course, its decks and its quizzes
+
+
+
+─ ALUMNI ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   No one has retired yet.
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ opening Denver's chat                                                                                            updates by itself
+=====
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System     Sun 10:00
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+ 1 second mate    1 working    1 asleep or away    1 intern on a job    2 helpers with no record                          real crew
+
+                                            ┌──────────────────────────────────────────┐
+                                            │ You, the captain: decisions and merges   │
+                                            │ 4 things wait on you                     │
+                                            └─────────────────────┬────────────────────┘
+                                                                  │
+                                    ┌─────────────────────────────┴────────────────────────────┐
+                                    │  ▀   ▀   Denver                                ● working │
+                                    │  ▀▀ ▀▀   Chief of staff: routes the work and supervises  │
+                                    │          the crew                                        │
+                                    │ ▀▀▀▀▀▀▀  owns beta, homeship, the setup itself           │
+                                    │          8 listed, 3 for you                             │
+                                    └─────────────────────────────┬────────────────────────────┘
+                                                                  ├─ ● Grading a local file
+                                                                  ├─ ○ idle: a job with no record
+                                                                  │
+                                     ┌────────────────────────────┴───────────────────────────┐
+                                     │  ▀   ▀   Alpha                                z asleep │
+                                     │  ▀▀ ▀▀   Alpha course, its decks and its quizzes       │
+                                     │                                                        │
+                                     │ ▀▀▀▀▀▀▀  owns alpha                                    │
+                                     │          2 listed, 1 for you                           │
+                                     └────────────────────────────────────────────────────────┘
+                                       ● Add a text layer to the chapter PDFs
+
+
+
+
+
+─ ABOUT ALPHA ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   Persistent second mate for the alpha course
+   Scope: the alpha course, its decks and its quizzes
+
+
+
+─ ALUMNI ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   No one has retired yet.
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ opening Alpha's chat                                                                                             updates by itself
+=====
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System     Sun 10:00
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+ 1 second mate    1 working    1 asleep or away    1 intern on a job    2 helpers with no record                          real crew
+
+                                            ┌──────────────────────────────────────────┐
+                                            │ You, the captain: decisions and merges   │
+                                            │ 4 things wait on you                     │
+                                            └─────────────────────┬────────────────────┘
+                                                                  │
+                                    ┌─────────────────────────────┴────────────────────────────┐
+                                    │  ▀   ▀   Denver                                ● working │
+                                    │  ▀▀ ▀▀   Chief of staff: routes the work and supervises  │
+                                    │          the crew                                        │
+                                    │ ▀▀▀▀▀▀▀  owns beta, homeship, the setup itself           │
+                                    │          8 listed, 3 for you                             │
+                                    └─────────────────────────────┬────────────────────────────┘
+                                                                  ├─ ● Grading a local file
+                                                                  ├─ ○ idle: a job with no record
+                                                                  │
+                                     ┌────────────────────────────┴───────────────────────────┐
+                                     │  ▀   ▀   Alpha                                z asleep │
+                                     │  ▀▀ ▀▀   Alpha course, its decks and its quizzes       │
+                                     │                                                        │
+                                     │ ▀▀▀▀▀▀▀  owns alpha                                    │
+                                     │          2 listed, 1 for you                           │
+                                     └────────────────────────────────────────────────────────┘
+                                       ● Add a text layer to the chapter PDFs
+
+
+
+
+
+─ ABOUT ALPHA ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   Persistent second mate for the alpha course
+   Scope: the alpha course, its decks and its quizzes
+
+
+
+─ ALUMNI ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   No one has retired yet.
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ opening Denver's helper's chat                                                                                   updates by itself
+=====
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System     Sun 10:00
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+ 1 second mate    1 working    1 asleep or away    1 intern on a job    2 helpers with no record                          real crew
+
+                                            ┌──────────────────────────────────────────┐
+                                            │ You, the captain: decisions and merges   │
+                                            │ 4 things wait on you                     │
+                                            └─────────────────────┬────────────────────┘
+                                                                  │
+                                    ┌─────────────────────────────┴────────────────────────────┐
+                                    │  ▀   ▀   Denver                                ● working │
+                                    │  ▀▀ ▀▀   Chief of staff: routes the work and supervises  │
+                                    │          the crew                                        │
+                                    │ ▀▀▀▀▀▀▀  owns beta, homeship, the setup itself           │
+                                    │          8 listed, 3 for you                             │
+                                    └─────────────────────────────┬────────────────────────────┘
+                                                                  ├─ ● Grading a local file
+                                                                  ├─ ○ idle: a job with no record
+                                                                  │
+                                     ┌────────────────────────────┴───────────────────────────┐
+                                     │  ▀   ▀   Alpha                                z asleep │
+                                     │  ▀▀ ▀▀   Alpha course, its decks and its quizzes       │
+                                     │                                                        │
+                                     │ ▀▀▀▀▀▀▀  owns alpha                                    │
+                                     │          2 listed, 1 for you                           │
+                                     └────────────────────────────────────────────────────────┘
+                                       ● Add a text layer to the chapter PDFs
+
+
+
+
+
+─ ABOUT ALPHA ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   Persistent second mate for the alpha course
+   Scope: the alpha course, its decks and its quizzes
+
+
+
+─ ALUMNI ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   No one has retired yet.
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ opening Alpha's intern's chat                                                                                    updates by itself
+=====
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System     Sun 10:00
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+ 4 waiting on you    5 queued    1 in flight    3 done this month    oldest decision waiting: 29 Aug                      real list
+
+┌─ WAITING ON YOU ─4───────────┐ ┌─ QUEUED ─5───────────────────┐ ┌─ IN FLIGHT ─1────────────────┐ ┌─ DONE THIS MONTH ─3──────────┐
+│                              │ │                              │ │                              │ │                              │
+│ ■ alpha                2 Sep │ │ ■ beta                       │ │ ■ alpha                      │ │ ■ alpha               12 Sep │
+│   Choose the quiz format     │ │   Revisit the venue later    │ │   Build chapter four         │ │   Chapter four notes         │
+│                              │ │                              │ │                              │ │                              │
+│                              │ │                              │ │                              │ │                              │
+│ ■ beta                 3 Sep │ │ ■ alpha                      │ │                              │ │ ■ alpha                5 Sep │
+│   Approve the module outline │ │   Build the quiz once the    │ │                              │ │   Chapter three decks        │
+│                              │ │   format is chosen           │ │                              │ │                              │
+│                              │ │                              │ │                              │ │                              │
+│ ■ setup               29 Aug │ │ ■ homeship                   │ │                              │ │ ■ beta                 2 Sep │
+│   Tick a profile setting only│ │   Update the ship's own      │ │                              │ │   Module one handout         │
+│   the captain can reach      │ │   tooling                    │ │                              │ │                              │
+│                              │ │                              │ │                              │ │                              │
+│ ■ alpha                8 Sep │ │ ■ beta                       │ │                              │ │                              │
+│   Decide the chapter five    │ │   Print the handouts         │ │                              │ │                              │
+│   review point               │ │                              │ │                              │ │                              │
+│                              │ │                              │ │                              │ │                              │
+│                              │ │ ■ alpha                      │ │                              │ │                              │
+│                              │ │   Add a text layer to the    │ │                              │ │                              │
+│                              │ │   chapter PDFs               │ │                              │ │                              │
+│                              │ │                              │ │                              │ │                              │
+│                              │ │                              │ │                              │ │                              │
+│                              │ │                              │ │                              │ │                              │
+│                              │ │                              │ │                              │ │                              │
+│                              │ │                              │ │                              │ │                              │
+│                              │ │                              │ │                              │ │                              │
+│                              │ │                              │ │                              │ │                              │
+│                              │ │                              │ │                              │ │                              │
+│                              │ │                              │ │                              │ │                              │
+│                              │ │                              │ │                              │ │                              │
+│                              │ │                              │ │                              │ │                              │
+│                              │ │                              │ │                              │ │                              │
+│                              │ │                              │ │                              │ │                              │
+│                              │ │                              │ │                              │ │                              │
+└──────────────────────────────┘ └──────────────────────────────┘ └──────────────────────────────┘ └──────────────────────────────┘
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down pick an agent   enter talk to it   p pause   q quit                                    updates by itself
+=====
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System     Sun 10:00
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+ 4 waiting on you    5 queued    1 in flight    3 done this month    oldest decision waiting: 29 Aug                      real list
+
+┌─ WAITING ON YOU ─4───────────┐ ┌─ QUEUED ─5───────────────────┐ ┌─ IN FLIGHT ─1────────────────┐ ┌─ DONE THIS MONTH ─3──────────┐
+│                              │ │                              │ │                              │ │                              │
+│ ■ alpha                2 Sep │ │ ■ beta                       │ │ ■ alpha                      │ │ ■ alpha               12 Sep │
+│   Choose the quiz format     │ │   Revisit the venue later    │ │   Build chapter four         │ │   Chapter four notes         │
+│                              │ │                              │ │                              │ │                              │
+│                              │ │                              │ │                              │ │                              │
+│ ■ beta                 3 Sep │ │ ■ alpha                      │ │                              │ │ ■ alpha                5 Sep │
+│   Approve the module outline │ │   Build the quiz once the    │ │                              │ │   Chapter three decks        │
+│                              │ │   format is chosen           │ │                              │ │                              │
+│                              │ │                              │ │                              │ │                              │
+│ ■ setup               29 Aug │ │ ■ homeship                   │ │                              │ │ ■ beta                 2 Sep │
+│   Tick a profile setting only│ │   Update the ship's own      │ │                              │ │   Module one handout         │
+│   the captain can reach      │ │   tooling                    │ │                              │ │                              │
+│                              │ │                              │ │                              │ │                              │
+│ ■ alpha                8 Sep │ │ ■ beta                       │ │                              │ │                              │
+│   Decide the chapter five    │ │   Print the handouts         │ │                              │ │                              │
+│   review point               │ │                              │ │                              │ │                              │
+│                              │ │                              │ │                              │ │                              │
+│                              │ │ ■ alpha                      │ │                              │ │                              │
+│                              │ │   Add a text layer to the    │ │                              │ │                              │
+│                              │ │   chapter PDFs               │ │                              │ │                              │
+│                              │ │                              │ │                              │ │                              │
+│                              │ │                              │ │                              │ │                              │
+│                              │ │                              │ │                              │ │                              │
+│                              │ │                              │ │                              │ │                              │
+│                              │ │                              │ │                              │ │                              │
+│                              │ │                              │ │                              │ │                              │
+│                              │ │                              │ │                              │ │                              │
+│                              │ │                              │ │                              │ │                              │
+│                              │ │                              │ │                              │ │                              │
+│                              │ │                              │ │                              │ │                              │
+│                              │ │                              │ │                              │ │                              │
+│                              │ │                              │ │                              │ │                              │
+│                              │ │                              │ │                              │ │                              │
+│                              │ │                              │ │                              │ │                              │
+└──────────────────────────────┘ └──────────────────────────────┘ └──────────────────────────────┘ └──────────────────────────────┘
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down pick an agent   enter talk to it   p pause   q quit                                    updates by itself
+=====
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System     Sun 10:00
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀    ▀▀▀▀▀▀▀▀▀   ▀▀▀▀▀▀▀▀▀▀▀▀▀           │ LIVE ACTIVITY real
+                       ▀▀ ▀▀ ▀▀ ▀▀       ▀▀▀▀▀▀▀ ▀▀▀▀▀▀  ▀   ▀ ▀ ▀ ▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀           │
+     ▀▀   ▀▀   ▀▀                        ▀▀▀▀▀▀▀ ▀▀▀▀▀▀      ▀ ▀ ▀ ▀     ▀▀▀▀▀▀▀▀▀▀▀            │ 12 Sep Alpha finished Chapter
+▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀│        four notes
+   ▀alumni             tasks        ▀▀▀▀▀    ▀▀▀▀           plan         memory         ▀▀▀▀▀▀▀ │
+  ▀   ▀                             ▀▀▀▀▀▀▀  ▀▀▀▀▀▀▀                                      ▀ ▀   │ 5 Sep  Denver finished Chapter
+                           ▀▀▀▀▀  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                                   ▀ ▀   │        three decks
+   ▀▀▀                       ▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀   ▀▀▀    ▀▀▀                      ▀ ▀   │
+                                          ▀   ▀           ▀▀▀    ▀▀▀                      ▀ ▀   │ 2 Sep  Denver finished Module one
+                                          ▀▀▀▀▀         ▀▀▀▀▀▀▀▀▀▀▀▀▀▀                    ▀ ▀   │        handout
+                                         ▀     ▀         ▀▀▀▀▀  ▀▀▀▀▀                     ▀ ▀   │
+                                         ▀▀▀▀▀▀▀        ▀ ▀▀▀ ▀▀ ▀▀▀ ▀                          │
+                                         Denver           ▀ ▀    ▀ ▀                    ▀▀▀▀▀▀▀ │
+   ▀▀▀▀▀▀▀▀▀                             working                                       system   │
+                                                                                        check   │
+    ▀▀▀▀▀▀▀z                                                                                    │
+ ▀▀▀▀▀▀▀▀▀z▀Z▀                                                                                  │
+ ▀▀▀▀▀▀▀▀▀▀▀▀▀   ▀▀▀                                                                            │
+     ▀▀▀▀▀       ▀▀▀                                                                            │
+               ▀▀▀▀▀▀▀                                                                          │
+                ▀▀▀▀▀                                                                           │
+     ▀▀▀▀▀     ▀ ▀▀▀ ▀                                                                          │
+     Alpha       ▀ ▀                                                                            │
+    asleep                                                                                    ▀▀│
+ ▀▀▀▀▀▀▀▀                                                                                       │
+ CAPTAIN                    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                  ▀   ▀       │
+                                          ▀▀▀▀▀▀▀▀▀                                  ▀▀▀        │
+       ▀                            ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                                       │
+                  inbox 4             ▀▀▀▀         ▀▀▀▀                                         │
+          ▀▀▀▀▀▀▀                       ▀▀▀         ▀▀▀                                       ▀▀│
+─ TEAM ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   NAME       ROLE                DOING NOW                                         PATH (the project it works in)
+ ● Denver     first mate          working, 2 helpers on jobs, 3 waiting on you      every project
+ z Alpha      second mate         asleep, 2 jobs listed, 1 waiting on you           projects/alpha
+ ● intern     Alpha's intern      Add a text layer to the chapter PDFs              projects/elsewhere
+ ● helper     Denver's helper     Grading a local file                              projects/beta
+ ○ helper     Denver's helper     idle: a job with no record                        projects/alpha
+
+   Interns stand beside their person in charge for one job, then go home. Sleeping agents cost nothing.
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   tap an agent to open its chat   up/down pick one   p pause   q quit                            updates by itself
+=====
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System     Sun 10:00
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀    ▀▀▀▀▀▀▀▀▀   ▀▀▀▀▀▀▀▀▀▀▀▀▀           │ LIVE ACTIVITY real
+                       ▀▀ ▀▀ ▀▀ ▀▀       ▀▀▀▀▀▀▀ ▀▀▀▀▀▀  ▀   ▀ ▀ ▀ ▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀           │
+     ▀▀   ▀▀   ▀▀                        ▀▀▀▀▀▀▀ ▀▀▀▀▀▀      ▀ ▀ ▀ ▀     ▀▀▀▀▀▀▀▀▀▀▀            │ 12 Sep Alpha finished Chapter
+▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀│        four notes
+   ▀alumni             tasks        ▀▀▀▀▀▀▀  ▀▀▀▀▀▀         plan         memory         ▀▀▀▀▀▀▀ │
+  ▀   ▀                             ▀▀▀▀▀▀▀  ▀▀▀▀▀▀▀                                      ▀ ▀   │ 5 Sep  Denver finished Chapter
+                           ▀▀▀▀▀  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                                   ▀ ▀   │        three decks
+   ▀▀▀                       ▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀   ▀▀▀    ▀▀▀                      ▀ ▀   │
+                                          ▀   ▀           ▀▀▀    ▀▀▀                      ▀ ▀   │ 2 Sep  Denver finished Module one
+                                          ▀▀▀▀▀         ▀▀▀▀▀▀▀▀▀▀▀▀▀▀                    ▀ ▀   │        handout
+                                         ▀     ▀         ▀▀▀▀▀  ▀▀▀▀▀                     ▀ ▀   │
+                                         ▀▀▀▀▀▀▀        ▀ ▀▀▀ ▀▀ ▀▀▀ ▀                          │
+                                         Denver           ▀ ▀    ▀ ▀                    ▀▀▀▀▀▀▀ │
+   ▀▀▀▀▀▀▀▀▀                             working                                       system   │
+                                                                                        check   │
+    ▀▀▀▀▀▀z Z                                                                                   │
+ ▀▀▀▀▀▀▀▀▀▀▀▀▀                                                                                  │
+ ▀▀▀▀▀▀▀▀▀▀▀▀▀   ▀▀▀                                                                            │
+     ▀▀▀▀▀       ▀▀▀                                                                            │
+               ▀▀▀▀▀▀▀                                                                          │
+                ▀▀▀▀▀                                                                           │
+     ▀▀▀▀▀     ▀ ▀▀▀ ▀                                                                          │
+     Alpha       ▀ ▀                                                                            │
+    asleep                                                                                    ▀▀│
+ ▀▀▀▀▀▀▀▀                                                                                       │
+ CAPTAIN                    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                  ▀   ▀       │
+                                          ▀▀▀▀▀▀▀▀▀                                  ▀▀▀        │
+       ▀                            ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                                       │
+                  inbox 4             ▀▀▀▀         ▀▀▀▀                                         │
+          ▀▀▀▀▀▀▀                       ▀▀▀         ▀▀▀                                       ▀▀│
+─ TEAM ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   NAME       ROLE                DOING NOW                                         PATH (the project it works in)
+ ● Denver     first mate          working, 2 helpers on jobs, 3 waiting on you      every project
+ z Alpha      second mate         asleep, 2 jobs listed, 1 waiting on you           projects/alpha
+ ● intern     Alpha's intern      Add a text layer to the chapter PDFs              projects/elsewhere
+ ● helper     Denver's helper     Grading a local file                              projects/beta
+ ○ helper     Denver's helper     idle: a job with no record                        projects/alpha
+
+   Interns stand beside their person in charge for one job, then go home. Sleeping agents cost nothing.
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ opening Denver's chat                                                                                            updates by itself

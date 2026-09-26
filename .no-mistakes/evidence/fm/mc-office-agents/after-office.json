@@ -1,0 +1,934 @@
+{
+ "size": [
+  132,
+  44
+ ],
+ "too_small": false,
+ "room_height": 60,
+ "desks": [
+  {
+   "key": "fm",
+   "name": "Denver",
+   "x": 34,
+   "y": 13,
+   "w": 21
+  },
+  {
+   "key": "mate:fin1209-mate",
+   "name": "FIN1209",
+   "x": 1,
+   "y": 33,
+   "w": 13
+  },
+  {
+   "key": "mate:sap-mate",
+   "name": "SAP",
+   "x": 30,
+   "y": 33,
+   "w": 13
+  },
+  {
+   "key": "mate:tambiz-mate",
+   "name": "Tambiz",
+   "x": 59,
+   "y": 33,
+   "w": 13
+  }
+ ],
+ "actors": [
+  {
+   "key": "fm",
+   "name": "Denver",
+   "kind": "first",
+   "state": "sleep",
+   "x": 41,
+   "feet": 25,
+   "lead": null,
+   "slot": null
+  },
+  {
+   "key": "mate:fin1209-mate",
+   "name": "FIN1209",
+   "kind": "mate",
+   "state": "sleep",
+   "x": 4,
+   "feet": 45,
+   "lead": null,
+   "slot": null
+  },
+  {
+   "key": "mate:sap-mate",
+   "name": "SAP",
+   "kind": "mate",
+   "state": "sleep",
+   "x": 33,
+   "feet": 45,
+   "lead": null,
+   "slot": null
+  },
+  {
+   "key": "mate:tambiz-mate",
+   "name": "Tambiz",
+   "kind": "mate",
+   "state": "sleep",
+   "x": 62,
+   "feet": 45,
+   "lead": null,
+   "slot": null
+  },
+  {
+   "key": "intern:main:bsba-rev2",
+   "name": "intern",
+   "kind": "intern",
+   "state": "idle",
+   "x": 56,
+   "feet": 24,
+   "lead": "fm",
+   "slot": 0
+  },
+  {
+   "key": "intern:main:mc-docs-quality",
+   "name": "intern",
+   "kind": "intern",
+   "state": "work",
+   "x": 63,
+   "feet": 24,
+   "lead": "fm",
+   "slot": 1
+  },
+  {
+   "key": "intern:main:mc-merge-switch",
+   "name": "intern",
+   "kind": "intern",
+   "state": "idle",
+   "x": 70,
+   "feet": 24,
+   "lead": "fm",
+   "slot": 2
+  },
+  {
+   "key": "intern:main:mc-office-agents",
+   "name": "intern",
+   "kind": "intern",
+   "state": "work",
+   "x": 77,
+   "feet": 24,
+   "lead": "fm",
+   "slot": 3
+  },
+  {
+   "key": "intern:main:mc-project-names",
+   "name": "intern",
+   "kind": "intern",
+   "state": "work",
+   "x": 19,
+   "feet": 24,
+   "lead": "fm",
+   "slot": 4
+  },
+  {
+   "key": "intern:main:mc-view-approvals",
+   "name": "intern",
+   "kind": "intern",
+   "state": "idle",
+   "x": 12,
+   "feet": 24,
+   "lead": "fm",
+   "slot": 5
+  },
+  {
+   "key": "helper:w5:p1C",
+   "name": "helper",
+   "kind": "intern",
+   "state": "idle",
+   "x": 5,
+   "feet": 24,
+   "lead": "fm",
+   "slot": 6
+  }
+ ],
+ "upstairs": {
+  "count": 0,
+  "working": 0,
+  "names": []
+ },
+ "inbox": 58,
+ "columns": {
+  "waiting": 58,
+  "queued": 14,
+  "in_flight": 5,
+  "done": 83
+ },
+ "projects": [
+  {
+   "name": "Telos_FIN1209",
+   "status": "parked",
+   "lead": "FIN1209",
+   "counts": {
+    "waiting": 26,
+    "queued": 2,
+    "in_flight": 0,
+    "done": 19
+   },
+   "decisions": [
+    "Delete the local quiz branch now that the source is safe in the private archive",
+    "Standardise the working method for FIN1209 chapters 2 to 10",
+    "FIN1209 Week 2: build the missing charting-platform segment, and restore the book's self-test exercise?",
+    "FIN1209 Week 2 platform segment: which delivery shape",
+    "FIN1209: Bloomberg terminal or free web platforms for the charting exercises",
+    "Add a searchable text layer to the chapter PDFs given to students",
+    "FIN1209: how authored figures are numbered, credited and committed",
+    "Reconcile the Chapter 1 distributables in the home directory with the README filenames",
+    "Show all eight of Lim's review questions, or relabel the six the deck shows",
+    "Part B chart axis starts at zero, flattening the turns students must mark",
+    "Three older Activity 1 spreadsheets still sit beside the two new ones",
+    "Part B chart vertical axis starts at zero, squashing the trendline",
+    "TradingView now requires a free account to draw, so the platform step must be re-decided",
+    "Whether a charting platform screenshot may go into the shared Activity 1 files",
+    "Template has no pre-built chart, so the three series are wired by instruction rather than attached",
+    "Worksheet PDF still describes peaks, troughs and the trendline as pen on paper only",
+    "Activity 1 reveal: students can still edit a submitted Google Sheet after the deadline",
+    "Activity 1 rubric: sixteen half-mark answers make 8, but the row is worth 6",
+    "Activity 1: is the printed worksheet still handed in, or only the Google Sheet?",
+    "Activity 1: how far under the trendline may a close sit and still count as none below it?",
+    "Activity 1: nothing now tells students how to share their Sheet as Viewer",
+    "Activity 1 template file name: BLANK first, or FIN1209 first",
+    "Worked model keeps a standing writer: bcsotelo@up.edu.ph",
+    "Student template is 588 words against a 600 word build cap",
+    "Two instructor files with every check answer are public on the repository",
+    "Whether the student lecture notes join the slides in the class Drive folder"
+   ]
+  },
+  {
+   "name": "SAP-Management-App",
+   "status": "quiet",
+   "lead": "SAP",
+   "counts": {
+    "waiting": 18,
+    "queued": 0,
+    "in_flight": 0,
+    "done": 4
+   },
+   "decisions": [
+    "Table Editor or Students page: which is the primary surface?",
+    "The sheet claims Autosaved and staged-for-approval at the same time",
+    "Sorting, grouping and the As-derived layer switch cannot all win at once",
+    "Does the document paper lane fold into Documents, or earn a seventh tab?",
+    "Should the needs-attention flag become the spine of the Table Editor?",
+    "Does the student ever see their final grade in the app?",
+    "Where does the office move student paper: a grouped worklist, or a Table Editor column?",
+    "Narrow the needs-attention flag to Rule B, and what then surfaces a silently stalled student?",
+    "Extend Direction B to the remaining twenty pages, and does the partner renewal state stay in the body?",
+    "What does the PIE actually ask, and where does the student answer it?",
+    "What happens to students already interning when their company's partnership expires?",
+    "Does the internship grade ever reach the student inside this app?",
+    "MOA routing order: SVPAA-QMO-Legal-Dean or SVPAA-Legal-QMO-Dean?",
+    "Is the psychological certificate universal, or required only by some placements?",
+    "Hours totals and grade components: does a manual value apply immediately, or stage for approval?",
+    "Partner tier bands: five open-ended tiers from your photo, or six closed ones from the model?",
+    "Confirm that PE in your process notes is the PEF, not a separate instrument",
+    "Two sentences in the data model are truncated mid-word and only you know what they said"
+   ]
+  },
+  {
+   "name": "Tambiz-Calculator",
+   "status": "quiet",
+   "lead": "Tambiz",
+   "counts": {
+    "waiting": 3,
+    "queued": 2,
+    "in_flight": 0,
+    "done": 34
+   },
+   "decisions": [
+    "The 39 judging criteria still read Criterion 1 to Criterion 39",
+    "Tambiz: keep SEED_ADMIN_PASSWORD set in Vercel, or delete it so Account password changes last",
+    "One upload only he can do: the repository's social preview card"
+   ]
+  },
+  {
+   "name": "FEU-SMM-Livelihood",
+   "status": "quiet",
+   "lead": "Denver",
+   "counts": {
+    "waiting": 2,
+    "queued": 0,
+    "in_flight": 0,
+    "done": 6
+   },
+   "decisions": [
+    "Five Module 2 slide frames still need real screenshots from a signed-in Page",
+    "Sunday 27 September: what next for the Social Media Marketing for Livelihood project"
+   ]
+  },
+  {
+   "name": "FEU-BSBA-Program-Spec",
+   "status": "active",
+   "lead": "Denver",
+   "counts": {
+    "waiting": 0,
+    "queued": 0,
+    "in_flight": 1,
+    "done": 1
+   },
+   "decisions": []
+  },
+  {
+   "name": "The setup itself",
+   "status": "active",
+   "lead": "Denver",
+   "counts": {
+    "waiting": 9,
+    "queued": 10,
+    "in_flight": 4,
+    "done": 19
+   },
+   "decisions": [
+    "Revisit GitHub token storage for benjie-agent-workspace: currently plaintext in ~/.config/gh/hosts.yml via 'gh auth login --insecure-storage' (token scopes gist, read:org, repo, workflow = full control of ALL captain's repos). Preferred fix: fine-grained PAT scoped to benjiesotelo-sudo/benjie-agent-workspace only, or return to keychain storage. Captain pinned this on 2026-08-29 to revisit in 1-2 weeks (~2026-09-12). Revoke path: github.com/settings/tokens",
+    "Decide whether to narrow link sharing on the FIN1209 student Drive folder",
+    "Confirm whether bcsotelo@up.edu.ph should keep write access to the private FIN1209 archive",
+    "Delete the three superseded Chapter 1 folders in the private archive",
+    "May I install actionlint 1.7.12 on this Mac so the lint step stops stalling on the workflow files?",
+    "Ask the captain once: OK to discard the leftover pre-update local copies of merged Mission Control views (Approvals now; Team and Calendar later)",
+    "Choose how to publish benjie-agent-workspace: new clean public repo (A) or purge-and-flip with GitHub Support (B)",
+    "benjie-agent-workspace is not safe to make public: publish a cleaned new repo, purge via GitHub Support, or stay private",
+    "Flip benjiesotelo-sudo/benjie-agent-workspace back to private after the Calendar and Team views merge"
+   ]
+  }
+ ],
+ "approvals": [
+  {
+   "name": "Denver",
+   "count": 12
+  },
+  {
+   "name": "FIN1209",
+   "count": 25
+  },
+  {
+   "name": "SAP",
+   "count": 18
+  },
+  {
+   "name": "Tambiz",
+   "count": 3
+  }
+ ],
+ "team": [
+  {
+   "name": "Denver",
+   "role": "first mate",
+   "doing": "standing by, 12 waiting on you",
+   "path": "every project",
+   "status": "sleep"
+  },
+  {
+   "name": "FIN1209",
+   "role": "second mate",
+   "doing": "asleep, 27 jobs listed, 25 waiting on you",
+   "path": "projects/Telos_FIN1209",
+   "status": "sleep"
+  },
+  {
+   "name": "SAP",
+   "role": "second mate",
+   "doing": "asleep, 18 jobs listed, 18 waiting on you",
+   "path": "projects/SAP-Management-App",
+   "status": "sleep"
+  },
+  {
+   "name": "Tambiz",
+   "role": "second mate",
+   "doing": "asleep, 5 jobs listed, 3 waiting on you",
+   "path": "projects/Tambiz-Calculator",
+   "status": "sleep"
+  },
+  {
+   "name": "intern",
+   "role": "Denver's intern",
+   "doing": "waiting: Hello IABF: revision 2 of the BSBA Programme Specification (clean edition, colour-coded tappable annotated edition, changes report, draft outcome mappings)",
+   "path": "projects/FEU-BSBA-Program-Spec",
+   "status": "idle"
+  },
+  {
+   "name": "intern",
+   "role": "Denver's intern",
+   "doing": "Mission Control docs clear and screenshots correct",
+   "path": "projects/benjie-agent-workspace",
+   "status": "work"
+  },
+  {
+   "name": "intern",
+   "role": "Denver's intern",
+   "doing": "waiting: Controls screen: a tappable switch letting Denver merge green workspace PRs",
+   "path": "projects/benjie-agent-workspace",
+   "status": "idle"
+  },
+  {
+   "name": "intern",
+   "role": "Denver's intern",
+   "doing": "Mission Control: every agent shown, and agents clickable to their chats",
+   "path": "projects/benjie-agent-workspace",
+   "status": "work"
+  },
+  {
+   "name": "intern",
+   "role": "Denver's intern",
+   "doing": "Mission Control: show the captain's project names (FIN1209, SAP, Tambiz, Social Media Marketing) everywhere, repo name in small print",
+   "path": "projects/benjie-agent-workspace",
+   "status": "work"
+  },
+  {
+   "name": "intern",
+   "role": "Denver's intern",
+   "doing": "finished: Mission Control view: approvals",
+   "path": "projects/benjie-agent-workspace",
+   "status": "idle"
+  },
+  {
+   "name": "helper",
+   "role": "Denver's helper",
+   "doing": "idle: FIN1209 Quiz 1 Chapters 1 and 2",
+   "path": "projects/Telos_FIN1209",
+   "status": "idle"
+  }
+ ],
+ "memory": [
+  {
+   "group": "Long-term memory",
+   "title": "What I know about the captain",
+   "sub": "1,755 words, updated 1 hour ago"
+  },
+  {
+   "group": "Long-term memory",
+   "title": "Lessons learned",
+   "sub": "2,273 words, updated 6 minutes ago"
+  },
+  {
+   "group": "Today",
+   "title": "Saturday 26 September",
+   "sub": "13 events, 174 words"
+  },
+  {
+   "group": "Yesterday",
+   "title": "Friday 25 September",
+   "sub": "4 events, 73 words"
+  },
+  {
+   "group": "This week",
+   "title": "Thursday 24 September",
+   "sub": "12 events, 186 words"
+  },
+  {
+   "group": "This week",
+   "title": "Wednesday 23 September",
+   "sub": "8 events, 166 words"
+  },
+  {
+   "group": "This week",
+   "title": "Tuesday 22 September",
+   "sub": "11 events, 230 words"
+  },
+  {
+   "group": "This week",
+   "title": "Monday 21 September",
+   "sub": "5 events, 89 words"
+  },
+  {
+   "group": "This week",
+   "title": "Sunday 20 September",
+   "sub": "3 events, 52 words"
+  },
+  {
+   "group": "September 2026",
+   "title": "Saturday 19 September",
+   "sub": "5 events, 91 words"
+  },
+  {
+   "group": "September 2026",
+   "title": "Friday 18 September",
+   "sub": "2 events, 40 words"
+  },
+  {
+   "group": "September 2026",
+   "title": "Tuesday 15 September",
+   "sub": "13 events, 351 words"
+  },
+  {
+   "group": "September 2026",
+   "title": "Monday 14 September",
+   "sub": "20 events, 327 words"
+  },
+  {
+   "group": "September 2026",
+   "title": "Sunday 13 September",
+   "sub": "2 events, 27 words"
+  },
+  {
+   "group": "September 2026",
+   "title": "Saturday 12 September",
+   "sub": "6 events, 107 words"
+  },
+  {
+   "group": "September 2026",
+   "title": "Friday 11 September",
+   "sub": "6 events, 125 words"
+  },
+  {
+   "group": "September 2026",
+   "title": "Wednesday 9 September",
+   "sub": "9 events, 173 words"
+  },
+  {
+   "group": "September 2026",
+   "title": "Tuesday 8 September",
+   "sub": "8 events, 161 words"
+  },
+  {
+   "group": "September 2026",
+   "title": "Monday 7 September",
+   "sub": "15 events, 280 words"
+  },
+  {
+   "group": "September 2026",
+   "title": "Wednesday 2 September",
+   "sub": "5 events, 89 words"
+  },
+  {
+   "group": "September 2026",
+   "title": "Tuesday 1 September",
+   "sub": "5 events, 74 words"
+  },
+  {
+   "group": "August 2026",
+   "title": "Monday 31 August",
+   "sub": "13 events, 199 words"
+  },
+  {
+   "group": "August 2026",
+   "title": "Sunday 30 August",
+   "sub": "1 event, 12 words"
+  },
+  {
+   "group": "August 2026",
+   "title": "Saturday 29 August",
+   "sub": "5 events, 122 words"
+  }
+ ],
+ "docs": {
+  "tags": {
+   "All": 65,
+   "Report": 21,
+   "Decision": 33,
+   "Link": 11
+  },
+  "rows": [
+   {
+    "kind": "Decision",
+    "title": "Decision on Mission Control views: memory and docs",
+    "project": null
+   },
+   {
+    "kind": "Decision",
+    "title": "Decision on Mission Control view: system",
+    "project": null
+   },
+   {
+    "kind": "Decision",
+    "title": "Decision on Mission Control views: memory and docs",
+    "project": null
+   },
+   {
+    "kind": "Decision",
+    "title": "Decision on Mission Control view: system",
+    "project": null
+   },
+   {
+    "kind": "Decision",
+    "title": "Decision on Mission Control view: team",
+    "project": null
+   },
+   {
+    "kind": "Report",
+    "title": "Privacy and secrets audit: benjiesotelo-sudo/benjie-agent-workspace",
+    "project": null
+   },
+   {
+    "kind": "Decision",
+    "title": "Decision on Mission Control view: approvals",
+    "project": null
+   },
+   {
+    "kind": "Decision",
+    "title": "Decision on Mission Control view: calendar",
+    "project": null
+   },
+   {
+    "kind": "Decision",
+    "title": "Decision on Mission Control view: calendar",
+    "project": null
+   },
+   {
+    "kind": "Decision",
+    "title": "Decision on Mission Control view: projects",
+    "project": null
+   },
+   {
+    "kind": "Decision",
+    "title": "Decision on Build Mission Control in Herdr: animated office and task board (step 1 of 3)",
+    "project": null
+   },
+   {
+    "kind": "Decision",
+    "title": "Review-1 - ACTION: FIX, option (a)",
+    "project": null
+   },
+   {
+    "kind": "Decision",
+    "title": "Ship-project-override-unrequired - ACTION: FIX, option (a)",
+    "project": null
+   },
+   {
+    "kind": "Decision",
+    "title": "Ci-fix-edits-policy-workflow - REVERT the auto-fix, keep the gate unchanged",
+    "project": null
+   },
+   {
+    "kind": "Decision",
+    "title": "Bridge-fixtures-scope - ACTION: FIX, option (c2)",
+    "project": null
+   },
+   {
+    "kind": "Decision",
+    "title": "Bridge-fixtures-unclassified - ACTION: FIX, option (c)",
+    "project": null
+   },
+   {
+    "kind": "Decision",
+    "title": "The quiz never goes in the public repository",
+    "project": "Telos_FIN1209"
+   },
+   {
+    "kind": "Decision",
+    "title": "Howto-duplicates-manual - ACTION: FIX, option (b)",
+    "project": "Tambiz-Calculator"
+   },
+   {
+    "kind": "Report",
+    "title": "Tambiz: the manual rewritten, a licence, and a README worth pinning (19 September 2026)",
+    "project": "Tambiz-Calculator"
+   },
+   {
+    "kind": "Decision",
+    "title": "The cut-back review gate",
+    "project": "Tambiz-Calculator"
+   },
+   {
+    "kind": "Decision",
+    "title": "The five gaps in the cut-back brief",
+    "project": "Tambiz-Calculator"
+   },
+   {
+    "kind": "Report",
+    "title": "Tambiz Manual: chapter 2 rewritten, and a private copy (15 September 2026)",
+    "project": "Tambiz-Calculator"
+   },
+   {
+    "kind": "Report",
+    "title": "Tambiz Manual: third edition (15 September 2026)",
+    "project": "Tambiz-Calculator"
+   },
+   {
+    "kind": "Decision",
+    "title": "Adviser-bare-code-header - ACTION: FIX, but neither option as offered",
+    "project": "Tambiz-Calculator"
+   },
+   {
+    "kind": "Report",
+    "title": "Tambiz Manual: second edition (15 September 2026)",
+    "project": "Tambiz-Calculator"
+   },
+   {
+    "kind": "Decision",
+    "title": "Typed-choice-blur-down - ACTION: FIX, option (a)",
+    "project": "Tambiz-Calculator"
+   },
+   {
+    "kind": "Decision",
+    "title": "Typed-choice-fix-review - both findings ACTION: FIX, option (a)",
+    "project": "Tambiz-Calculator"
+   },
+   {
+    "kind": "Decision",
+    "title": "Typed-choice-first-suggestion - ACTION: FIX",
+    "project": "Tambiz-Calculator"
+   },
+   {
+    "kind": "Decision",
+    "title": "Captain's decisions, 2026-09-14",
+    "project": "Tambiz-Calculator"
+   },
+   {
+    "kind": "Decision",
+    "title": "Captain's decisions, 2026-09-14: three review findings",
+    "project": "Tambiz-Calculator"
+   },
+   {
+    "kind": "Decision",
+    "title": "The machine git identity is now set. Carry on.",
+    "project": "Tambiz-Calculator"
+   },
+   {
+    "kind": "Decision",
+    "title": "Use a new branch name, do not force anything",
+    "project": "Tambiz-Calculator"
+   },
+   {
+    "kind": "Decision",
+    "title": "Fix-commit-author-mechanism",
+    "project": "Tambiz-Calculator"
+   },
+   {
+    "kind": "Decision",
+    "title": "Fix-commit-author",
+    "project": "Tambiz-Calculator"
+   },
+   {
+    "kind": "Decision",
+    "title": "Blank-correction-trace",
+    "project": "Tambiz-Calculator"
+   },
+   {
+    "kind": "Report",
+    "title": "Tambiz walkthrough: proposed Judge profiles pages",
+    "project": "Tambiz-Calculator"
+   },
+   {
+    "kind": "Report",
+    "title": "Tambiz walkthrough document: report",
+    "project": "Tambiz-Calculator"
+   },
+   {
+    "kind": "Report",
+    "title": "Tambiz Calculator as a hosted web app: design research",
+    "project": "Tambiz-Calculator"
+   },
+   {
+    "kind": "Report",
+    "title": "Activity 1: the two Google Sheets, brought onto the 100 point worksheet",
+    "project": "Telos_FIN1209"
+   },
+   {
+    "kind": "Report",
+    "title": "FIN1209 Activity 1: the student template, stripped to labels and boxes",
+    "project": "Telos_FIN1209"
+   },
+   {
+    "kind": "Report",
+    "title": "FIN1209 Activity 1: the drawing half, the platform step, and a completeness pass",
+    "project": "Telos_FIN1209"
+   },
+   {
+    "kind": "Report",
+    "title": "FIN1209 Activity 1: the two Google Sheets",
+    "project": "Telos_FIN1209"
+   },
+   {
+    "kind": "Report",
+    "title": "FIN1209 Activity 1 - worked demo sheet",
+    "project": "Telos_FIN1209"
+   },
+   {
+    "kind": "Report",
+    "title": "Auditing the data model itself",
+    "project": "SAP-Management-App"
+   },
+   {
+    "kind": "Report",
+    "title": "Assembling the two SAP audits into one page",
+    "project": "SAP-Management-App"
+   },
+   {
+    "kind": "Report",
+    "title": "SAP Management App - audit of the four user types, their journeys, function coverage and navigation",
+    "project": "SAP-Management-App"
+   },
+   {
+    "kind": "Report",
+    "title": "The Table Editor - audit against the run-the-whole-programme standard",
+    "project": "SAP-Management-App"
+   },
+   {
+    "kind": "Decision",
+    "title": "Resolved by events, 2026-09-07",
+    "project": "Telos_FIN1209"
+   },
+   {
+    "kind": "Report",
+    "title": "FIN1209 Chapter 1 - audit of everything except the teaching deck",
+    "project": "Telos_FIN1209"
+   },
+   {
+    "kind": "Decision",
+    "title": "Captain's decision, 2026-09-01",
+    "project": "Telos_FIN1209"
+   },
+   {
+    "kind": "Report",
+    "title": "FIN1209 Chapter 1: where the deck is thin on visuals, and two ways to fix it",
+    "project": "Telos_FIN1209"
+   },
+   {
+    "kind": "Report",
+    "title": "FIN1209 Week 2 - the charting-platform half",
+    "project": "Telos_FIN1209"
+   },
+   {
+    "kind": "Decision",
+    "title": "Supply side and demand side, FIN1209 Chapter 1",
+    "project": "Telos_FIN1209"
+   },
+   {
+    "kind": "Report",
+    "title": "FIN1209 Chapter 1 deck - coverage and correctness audit",
+    "project": "Telos_FIN1209"
+   },
+   {
+    "kind": "Link",
+    "title": "Repository",
+    "project": null
+   },
+   {
+    "kind": "Link",
+    "title": "Repository",
+    "project": "Telos_FIN1209"
+   },
+   {
+    "kind": "Link",
+    "title": "Repository",
+    "project": "SAP-Management-App"
+   },
+   {
+    "kind": "Link",
+    "title": "Repository",
+    "project": "Tambiz-Calculator"
+   },
+   {
+    "kind": "Link",
+    "title": "Repository",
+    "project": "FEU-SMM-Livelihood"
+   },
+   {
+    "kind": "Link",
+    "title": "Class Drive folder (public link)",
+    "project": "Telos_FIN1209"
+   },
+   {
+    "kind": "Link",
+    "title": "Private course archive",
+    "project": "Telos_FIN1209"
+   },
+   {
+    "kind": "Link",
+    "title": "Working folder (temporary)",
+    "project": "Telos_FIN1209"
+   },
+   {
+    "kind": "Link",
+    "title": "Module 2 Drive folder",
+    "project": "FEU-SMM-Livelihood"
+   },
+   {
+    "kind": "Link",
+    "title": "The live app",
+    "project": "Tambiz-Calculator"
+   },
+   {
+    "kind": "Link",
+    "title": "GitHub profile settings (private contributions)",
+    "project": null
+   }
+  ]
+ },
+ "system": {
+  "overall": "Nothing needs a look so far; still checking",
+  "dot": "green",
+  "rack": "ok",
+  "cards": [
+   {
+    "title": "This Mac",
+    "dot": "grey",
+    "head": "This Mac: checking",
+    "lines": [
+     {
+      "dot": "grey",
+      "text": "Up time: not checked yet"
+     },
+     {
+      "dot": "grey",
+      "text": "Load, memory and disk: not checked yet"
+     },
+     {
+      "dot": "grey",
+      "text": "Tailnet: not checked yet"
+     }
+    ]
+   },
+   {
+    "title": "Crew monitoring",
+    "dot": "grey",
+    "head": "Monitoring the crew: not checked yet",
+    "lines": []
+   },
+   {
+    "title": "Crew",
+    "dot": "green",
+    "head": "Crew: 0 working, 4 asleep, 6 interns and 1 helper out",
+    "lines": []
+   },
+   {
+    "title": "Second mates",
+    "dot": "grey",
+    "head": "Second mates: not checked yet",
+    "lines": [
+     {
+      "dot": "grey",
+      "text": "FIN1209: not checked yet"
+     },
+     {
+      "dot": "grey",
+      "text": "SAP: not checked yet"
+     },
+     {
+      "dot": "grey",
+      "text": "Tambiz: not checked yet"
+     }
+    ]
+   },
+   {
+    "title": "The Bridge page",
+    "dot": "grey",
+    "head": "The Bridge page: not checked yet",
+    "lines": []
+   },
+   {
+    "title": "Mission Control",
+    "dot": "grey",
+    "head": "Mission Control: not checked yet",
+    "lines": []
+   },
+   {
+    "title": "GitHub",
+    "dot": "grey",
+    "head": "GitHub: not checked yet",
+    "lines": []
+   },
+   {
+    "title": "Tools",
+    "dot": "grey",
+    "head": "Tools: not checked yet",
+    "lines": []
+   }
+  ]
+ }
+}

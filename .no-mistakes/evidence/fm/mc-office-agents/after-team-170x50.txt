@@ -1,0 +1,50 @@
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System                                           Sat 19:06
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+ 3 second mates    0 working    4 asleep or away    6 interns on jobs    1 helper with no record                                 real crew, from the second mate registry
+
+                                                               ┌──────────────────────────────────────────┐
+                                                               │ You, the captain: decisions and merges   │
+                                                               │ 58 things wait on you                    │
+                                                               └─────────────────────┬────────────────────┘
+                                                                                     │
+                                               ┌─────────────────────────────────────┴─────────────────────────────────────┐
+                                               │          Denver                                                  z asleep │
+                                               │          Chief of staff: routes the work and supervises the crew          │
+                                               │                                                                           │
+                                               │          owns FEU-SMM-Livelihood, FEU-BSBA-Program-Spec, the setup itself │
+                                               │          27 listed, 12 for you                                            │
+                                               └─────────────────────────────────────┬─────────────────────────────────────┘
+                                                                                     ├─ ○ waiting: Hello IABF: revision 2 of the BSBA Programme Specification (clean...
+                                                                                     ├─ ● Mission Control docs clear and screenshots correct
+                                                                                     ├─ ○ waiting: Controls screen: a tappable switch letting Denver merge green work...
+                                                                                     ├─ ● Mission Control: every agent shown, and agents clickable to their chats
+                                                                                     ├─ ● Mission Control: show the captain's project names (FIN1209, SAP, Tambiz, So...
+                                                                                     ├─ ○ finished: Mission Control view: approvals
+                                                                                     ├─ ○ idle: FIN1209 Quiz 1 Chapters 1 and 2
+                             ┌───────────────────────────────────────────────────────┼───────────────────────────────────────────────────────┐
+  ┌──────────────────────────┴─────────────────────────┐  ┌──────────────────────────┴─────────────────────────┐  ┌──────────────────────────┴─────────────────────────┐
+  │          FIN1209                          z asleep │  │          SAP                              z asleep │  │          Tambiz                           z asleep │
+  │          FIN1209 Technical Analysis in Investment  │  │          SAP Management App for FEU IABF's Student │  │          Tambiz awarding scoring and ranking app   │
+  │          course at FEU Manila                      │  │          Apprenticeship Program                    │  │          for FEU Manila IABF                       │
+  │          owns Telos_FIN1209                        │  │          owns SAP-Management-App                   │  │          owns Tambiz-Calculator                    │
+  │          27 listed, 25 for you                     │  │          18 listed, 18 for you                     │  │          5 listed, 3 for you                       │
+  └────────────────────────────────────────────────────┘  └────────────────────────────────────────────────────┘  └────────────────────────────────────────────────────┘
+
+
+
+
+
+
+
+─ ABOUT FIN1209 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   Persistent second mate for FIN1209 Technical Analysis in Investment at FEU Manila, owning Telos_FIN1209 from Chapter 4 onward under the textbook-only,
+   slides-only-assessment, private-quizzes and no-committed-figures rules recorded in its charter
+   Scope: the FIN1209 Technical Analysis in Investment course at FEU Manila: chapter decks in both editions, lecture notes, run cards, in-class checks and their
+   audits, activities, quizzes and answer keys, and the students' materials, for Chapters 4 to 10 and any rework of Chapters 1 to 3
+
+─ ALUMNI ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   No one has retired yet.
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   tap an agent to open its chat   up/down pick a second mate   q quit                                                                  updates by itself
