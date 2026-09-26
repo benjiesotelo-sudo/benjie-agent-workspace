@@ -28,6 +28,7 @@ HOME_DIR="$TMP_ROOT/home"
 mkdir -p "$HOME_DIR/config" "$HOME_DIR/state" "$HOME_DIR/data"
 HOME_DIR=$(cd "$HOME_DIR" && pwd)
 git -C "$HOME_DIR" init -q
+git -C "$HOME_DIR" config core.excludesFile /dev/null
 printf '{"first_mate_name": "Denver"}\n' > "$HOME_DIR/config/mission-control.json"
 SETTINGS="$HOME_DIR/.claude/settings.local.json"
 R1="Bash(bin/fm-pr-merge.sh *)"
@@ -42,6 +43,9 @@ turn() {  # on|off - the switch's own write, as a tap makes it
 }
 allow() {  # the allow list, one entry a line
   jq -r '.permissions.allow[]' "$SETTINGS"
+}
+mtime() {  # <file> - its modification time in nanoseconds
+  python3 -c 'import os, sys; print(os.stat(sys.argv[1]).st_mtime_ns)' "$1"
 }
 frame_state() {
   ct frame --format json | jq -r '.state // "none"'
@@ -87,11 +91,11 @@ turn on
   || fail "ON keeps every other key"
 [ "$(jq -r 'keys_unsorted | join(",")' "$SETTINGS")" = "model,permissions,hooks" ] || fail "ON keeps the key order"
 ON_BYTES=$(cat "$SETTINGS")
-ON_MTIME=$(stat -f %m "$SETTINGS" 2>/dev/null || stat -c %Y "$SETTINGS")
+ON_MTIME=$(mtime "$SETTINGS")
 sleep 1
 turn on
 [ "$(cat "$SETTINGS")" = "$ON_BYTES" ] || fail "a second ON changes nothing"
-[ "$(stat -f %m "$SETTINGS" 2>/dev/null || stat -c %Y "$SETTINGS")" = "$ON_MTIME" ] || fail "a second ON does not even rewrite"
+[ "$(mtime "$SETTINGS")" = "$ON_MTIME" ] || fail "a second ON does not even rewrite"
 turn off
 [ "$(jq -c . "$SETTINGS")" = "$BEFORE" ] || fail "OFF removes exactly the two rules: $(jq -c . "$SETTINGS")"
 OFF_BYTES=$(cat "$SETTINGS")
@@ -117,6 +121,25 @@ grep -q 'Changed outside this screen; the settings file was last written' <<<"$F
 turn off
 ct frame --size 80x30 | grep -q 'Turned OFF here' || fail "a change made here is dated as made here"
 pass "the frame reads the real state, including an edit made elsewhere"
+
+turn on
+rm "$SETTINGS"
+F=$(ct frame --size 80x30)
+grep -q 'workspace: OFF' <<<"$F" || fail "a removed settings file reads OFF"
+grep -q 'Changed outside this screen; the settings file is gone' <<<"$F" \
+  || fail "a file removed after a change here is not called never changed: $F"
+pass "a settings file removed elsewhere after a change here reads as changed outside this screen"
+
+for empty in '{"permissions": null}' '{"permissions": {"allow": null}}'; do
+  printf '%s\n' "$empty" > "$SETTINGS"
+  [ "$(frame_state)" = off ] || fail "an empty permissions or allow reads OFF: $empty"
+  turn on || fail "ON on an empty permissions or allow works: $empty"
+  [ "$(allow)" = "$R1"$'\n'"$R2" ] || fail "ON fills an empty permissions or allow: $empty"
+  turn off
+  [ "$(jq -c .permissions.allow "$SETTINGS")" = '[]' ] || fail "OFF leaves an empty allow list: $empty"
+done
+rm "$SETTINGS"
+pass "a null permissions or allow reads OFF and turns on and off"
 
 for bad in '{"permissions": {"allow": ["Bash(ls *)",]}}' '[1, 2]' '{"permissions": {"allow": "Bash(ls *)"}}' ''; do
   printf '%s' "$bad" > "$SETTINGS"

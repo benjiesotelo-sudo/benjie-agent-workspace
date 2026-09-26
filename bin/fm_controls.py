@@ -109,7 +109,9 @@ def changed(sw, now):
         return "Not known while the settings file cannot be read."
     if sw["changed_here"] is not None:
         return "Turned %s here %s." % (LOOKS[sw["state"]][0], _when(sw["changed_here"], now))
-    if sw["changed_elsewhere"] is not None:
+    if sw["changed_outside"]:
+        if sw["changed_elsewhere"] is None:
+            return "Changed outside this screen; the settings file is gone, so it reads OFF."
         return "Changed outside this screen; the settings file was last written %s." % _when(
             sw["changed_elsewhere"], now)
     return "Never changed yet; it starts OFF."
@@ -201,6 +203,9 @@ def flip(home, sw, name, ui):
         got = ms.switch(home, on)
     except ms.SettingsError as exc:
         ui.toast = "Nothing changed: %s." % exc
+        return ms.read(home)
+    except Exception as exc:
+        ui.toast = "The switch could not be changed (%s); it shows what the file holds now." % exc
         return ms.read(home)
     ui.toast = ("Turned ON: %s may now merge green pull requests on the workspace." % name if on
                 else "Turned OFF: %s now waits for your word before any merge." % name)
@@ -315,7 +320,8 @@ def frame(home, config_dir, cols, rows, fmt):
     if fmt == "text":
         return cv.text()
     return json.dumps({"label": label(name), "state": sw["state"], "error": sw["error"],
-                       "changed_here": sw["changed_here"], "changed_elsewhere": sw["changed_elsewhere"],
+                       "changed_here": sw["changed_here"], "changed_outside": sw["changed_outside"],
+                       "changed_elsewhere": sw["changed_elsewhere"],
                        "text": cv.text()}, indent=1)
 
 

@@ -30,8 +30,10 @@ repository's info/exclude.
 WHEN IT LAST CHANGED. Each change switch() makes is recorded in
 state/merge-switch.json of the home as {"state": "on"|"off", "at": <epoch
 seconds>}. read() reports that record as changed_here when it matches the
-file's current state; when it does not (the file was edited elsewhere) or there
-is no record, it reports the file's own modification time as changed_elsewhere.
+file's current state. When it does not (the file was edited or removed
+elsewhere), or there is no record but the file exists, it reports
+changed_outside, with the file's own modification time as changed_elsewhere
+while the file is there.
 """
 
 import json
@@ -110,10 +112,10 @@ def _record(home):
 
 def read(home):
     """{"state": "on"|"off"|"partial"|None, "error": text|None, "exists": bool,
-    "changed_here": epoch|None, "changed_elsewhere": epoch|None}."""
+    "changed_here": epoch|None, "changed_outside": bool, "changed_elsewhere": epoch|None}."""
     path = settings_path(home)
     out = {"state": None, "error": None, "exists": os.path.lexists(path),
-           "changed_here": None, "changed_elsewhere": None}
+           "changed_here": None, "changed_outside": False, "changed_elsewhere": None}
     try:
         out["state"] = _state(_load(path), home)
     except SettingsError as exc:
@@ -122,7 +124,8 @@ def read(home):
     rec = _record(home)
     if rec is not None and rec["state"] == out["state"]:
         out["changed_here"] = rec["at"]
-    elif out["exists"]:
+    elif out["exists"] or rec is not None:
+        out["changed_outside"] = True
         out["changed_elsewhere"] = _mtime(path)
     return out
 
@@ -185,9 +188,8 @@ def switch(home, on, now=None):
     if data is None and not on:
         return read(home)
     data = {} if data is None else data
-    perms = data.setdefault("permissions", {})
-    allow = perms.get("allow")
-    allow = [] if allow is None else allow
+    perms = data["permissions"] = data.get("permissions") or {}
+    allow = perms.get("allow") or []
     want = rules(home)
     if on:
         new = allow + [r for r in want if r not in allow]
