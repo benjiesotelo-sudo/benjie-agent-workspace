@@ -2028,7 +2028,7 @@ def _team_screen(cv, ui, scene):
     else:
         # One role card per second mate, scrolled so the picked card shows.
         pick = _team_pick(ui, cards)
-        per = max(1, min(len(mates), (C + 2) // (TEAM_CARD_MIN_W + 2)))
+        per = max(1, min(len(mates), C // (TEAM_CARD_MIN_W + 2)))
         w = min(TEAM_CARD_MAX_W, (C - 2 - 2 * (per - 1)) // per)
         left = (C - (per * w + 2 * (per - 1))) // 2
         first = 0 if pick < per else pick - per + 1

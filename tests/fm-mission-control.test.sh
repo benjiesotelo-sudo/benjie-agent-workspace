@@ -395,7 +395,12 @@ printf '# Backlog\n\n## In flight\n## Queued\n## Done\n' > "$ROW/data/backlog.md
   for n in 20 21; do printf -- '- [ ] w%d - Task %d (kind: task) (since 2026-09-09)\n' "$n" "$n"; done
   printf '## Done\n'
 } > "$TMP_ROOT/r3/data/backlog.md"
-for size in 132x44 170x50 200x50; do
+for size in 112x40 113x40; do
+  TR=$(mc "$ROW" frame --agents "$AGENTS" --view team --size "$size") || fail "a $size team frame failed"
+  grep -q '\.\.\.' <<<"$TR" && fail "at $size no card line is clipped: $(grep -F '...' <<<"$TR")"
+  grep -qF 'list on another machine' <<<"$TR" || fail "at $size a card reads: list on another machine"
+done
+for size in 114x40 132x44 170x50 200x50; do
   TR=$(mc "$ROW" frame --agents "$AGENTS" --view team --size "$size") || fail "a $size team frame failed"
   grep -q 'owns alpha.*owns alpha.*owns alpha' <<<"$TR" || fail "at $size three or more cards sit side by side"
   grep -q '\.\.\.' <<<"$TR" && fail "at $size no card line is clipped: $(grep -F '...' <<<"$TR")"
