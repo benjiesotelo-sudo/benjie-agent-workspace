@@ -5,12 +5,14 @@
 # beside the right person in charge, the second-floor sign at seven mates, the
 # inbox count, the task columns, the project cards, the Approvals groups, the
 # calendar's week, month and year (completions, due dates, what always runs,
-# the tappable control bar), the Team org chart and the System view's dots,
-# overall line and office rack sign from saved readings, and the names map
-# renaming projects and second mates in every view; then the live screen
-# in a pseudo-terminal, which must redraw only what changed, pick project cards
-# with up/down, and restore the terminal on q and on SIGTERM. The record
-# parsers themselves are covered by fm-bridge.test.sh.
+# the tappable control bar), the Team org chart, the Memory and Docs lists
+# with their Markdown reader, the System view's dots, overall line and
+# office rack sign from saved readings, and the names map renaming projects
+# and second mates in every view; then the live screen in a
+# pseudo-terminal, which must redraw only what changed, pick project cards
+# with up/down, pick, filter and scroll Memory and Docs pages, and restore the
+# terminal on q and on SIGTERM. The record parsers themselves are covered by
+# fm-bridge.test.sh.
 # Fixtures are the Bridge's, in tests/assets/bridge/.
 set -u
 
@@ -632,13 +634,157 @@ assert got["lines"][0] == ("amber", "Alpha: window could not be checked"), got
 PY
 pass "before the first reads the view is grey and calm"
 
-L=$(mc "$HOME_DIR" frame --agents "$AGENTS" --view memory)
-grep -q 'Memory is coming next' <<<"$L" || fail "a later view shows its coming-next note"
+
+# --- memory and docs -------------------------------------------------------
+
+# A report on an archived item (alpha), a report with no backlog item, a
+# decision page on a queued alpha item, a decision page with no item, worker
+# instructions that must never be listed, a mate's lessons and two links.
+mkdir -p "$HOME_DIR/data/d4" "$HOME_DIR/data/lone-study" "$HOME_DIR/data/q2" "$HOME_DIR/data/loose-key" "$HOME_DIR/data/q1"
+{
+  cat "$FIX/report.fixture"
+  for n in $(seq 1 80); do echo "- Detail line $n"; done
+} > "$HOME_DIR/data/d4/report.md"
+printf '# A study with no task\n\nShort.\n' > "$HOME_DIR/data/lone-study/report.md"
+cp "$FIX/decision.fixture" "$HOME_DIR/data/q2/decision-quiz.md"
+printf '# Decision: loose-key - ACTION: FIX, option (b)\n\nDone.\n' > "$HOME_DIR/data/loose-key/decision-extra.md"
+printf '# Brief: secret instructions\n\nNever listed.\n' > "$HOME_DIR/data/q1/brief.md"
+printf '# Lessons\n\n## Decks\nKeep them short.\n' > "$MATE/data/learnings.md"
+jq -n '{links: [{project: "alpha", label: "class Drive folder", url: "https://drive.example.org/folders/abc"},
+  {project: null, label: "status page", url: "https://status.example.org/"}]}' > "$HOME_DIR/config/bridge.json"
+touch -t 202609200700 "$HOME_DIR/data/captain.md"
+touch -t 202609191200 "$HOME_DIR/data/d4/report.md"
+touch -t 202609181200 "$HOME_DIR/data/q2/decision-quiz.md"
+touch -t 202609171200 "$HOME_DIR/data/lone-study/report.md"
+touch -t 202609161200 "$HOME_DIR/data/loose-key/decision-extra.md"
+
+MJ=$(mc "$HOME_DIR" frame --agents "$AGENTS" --format json) || fail "memory json failed"
+M=$(mc "$HOME_DIR" frame --agents "$AGENTS" --view memory --size 170x50) || fail "memory frame failed"
+[ "$(jq -c '[.memory[] | select(.group == "Long-term memory") | .title]' <<<"$MJ")" \
+  = '["What I know about the captain","Lessons learned","Lessons Alpha learned"]' ] \
+  || fail "long-term memory is this home's two pages, then each mate's that exist, got $(jq -c .memory <<<"$MJ")"
+[ "$(jq -r '.memory[0].sub' <<<"$MJ")" = "22 words, updated 3 hours ago" ] \
+  || fail "a long-term page shows its words and when it was updated, got $(jq -r '.memory[0].sub' <<<"$MJ")"
+[ "$(jq -r '[.memory[] | select(.group != "Long-term memory") | "\(.group)|\(.title)"] | join(",")' <<<"$MJ")" \
+  = "This week|Friday 18 September,September 2026|Saturday 12 September,September 2026|Wednesday 9 September,September 2026|Tuesday 8 September,September 2026|Monday 7 September,September 2026|Sunday 6 September,September 2026|Saturday 5 September,September 2026|Friday 4 September,September 2026|Thursday 3 September,September 2026|Wednesday 2 September,August 2026|Sunday 30 August,August 2026|Saturday 29 August,July 2026|Monday 20 July" ] \
+  || fail "the journal has one entry per dated day, newest first, got $(jq -c '[.memory[] | .title]' <<<"$MJ")"
+grep -Eq 'Today|Yesterday|Saturday 19 September|Thursday 10 September' <<<"$M" \
+  && fail "a day with no records has no journal entry"
+for want in '^LONG-TERM MEMORY 3 ' '^▸ What I know about the captain ' '^  22 words, updated 3 hours ago ' \
+  '^DAILY JOURNAL 13 ' '^  This week 1 ' '^  September 2026 9 ' '^  Friday 18 September ' '^  1 event, 5 words ' \
+  '│ Sunday 20 September 2026, 22 words, updated 3 hours ago' '│ Who the captain is ' \
+  '│ A private sentence the Bridge must never print\. ' '│   • Another private sentence\. '; do
+  grep -Eq "$want" <<<"$M" || fail "the Memory view shows: $want"
+done
+
+PYTHONPATH="$ROOT/bin" FM_BRIDGE_NOW=2026-09-20T10:00:00 PATH="$FAKEBIN:$PATH" \
+  python3 - "$HOME_DIR" > "$TMP_ROOT/day.txt" <<'PY' || fail "picking a journal day failed"
+import os
+import sys
+import fm_mission_control as mc
+home = os.path.realpath(sys.argv[1])
+model = mc.bridge.collect(home, home + "/config", mc.bridge._now())
+scene, ui = mc.Scene(), mc.UI()
+scene.observe(model, mc.build_crew(model, [], home, fm_name="Denver"), 50)
+ui.view = "memory"
+now = mc.bridge._now()
+mc.compose(scene, mc.Renderer(), ui, 170, 50, now)
+assert mc._handle_input(b"\x1b[B" * 4, ui, scene, None) and ui.pages["memory"] == "day:2026-09-12", ui.pages
+print(mc.compose(scene, mc.Renderer(), ui, 170, 50, now)[0].text())
+PY
+D=$(cat "$TMP_ROOT/day.txt")
+grep -Eq '^▸ Saturday 12 September ' <<<"$D" || fail "down picks the journal day"
+for want in '│ Saturday 12 September 2026, 1 event, 7 words ' '│ alpha ' '│   • The Alpha mate finished Chapter four notes\. '; do
+  grep -Eq "$want" <<<"$D" || fail "a journal day reads as plain sentences under its project: $want"
+done
+DJ=$(PYTHONPATH="$ROOT/bin" FM_BRIDGE_NOW=2026-09-20T10:00:00 PATH="$FAKEBIN:$PATH" python3 - "$HOME_DIR" <<'PY'
+import os
+import sys
+import fm_mission_control as mc
+home = os.path.realpath(sys.argv[1])
+model = mc.bridge.collect(home, home + "/config", mc.bridge._now())
+day = next(d for d in mc.journal(model, "Denver") if d["day"] == "2026-09-05")
+print(day["text"])
+PY
+)
+[ "$DJ" = "## alpha
+- Denver shipped Chapter three decks.
+
+## beta
+- Denver queued Print the handouts." ] || fail "a journal day groups its events by project in registry order, got: $DJ"
+pass "the Memory view lists long-term pages and a journal built only from dated records"
+
+O=$(mc "$HOME_DIR" frame --agents "$AGENTS" --view docs --size 170x50) || fail "docs frame failed"
+[ "$(jq -c .docs.tags <<<"$MJ")" = '{"All":6,"Report":2,"Decision":2,"Link":2}' ] \
+  || fail "the tag row counts each kind, got $(jq -c .docs.tags <<<"$MJ")"
+[ "$(jq -r '[.docs.rows[] | "\(.kind)|\(.title)|\(.project)"] | join(",")' <<<"$MJ")" \
+  = "Report|Scout report: the quiz format in a local file|alpha,Decision|The quiz stays private|alpha,Report|A study with no task|null,Decision|A decision: fix, option (b)|null,Link|Class Drive folder|alpha,Link|Status page|null" ] \
+  || fail "documents run newest first, links last, with plain titles, got $(jq -c .docs.rows <<<"$MJ")"
+for want in '^  All 6   Report 2   Decision 2   Link 2 ' '^▸ Scout report: the quiz format in\.\.\. +19 Sep  ┌' \
+  '^   Report   ■ alpha  [0-9]+ words' '^  The quiz stays private +18 Sep  │' '^   Decision   ■ alpha  ' \
+  '^   Report   [0-9]+ words' '^  A decision: fix, option \(b\) ' '^   Decision   [0-9]+ words' \
+  '^   Link   ■ alpha  drive\.example\.org' '^   Link   ■ setup  status\.example\.org' \
+  '│  Report  Scout report: the quiz format in a local file ' \
+  '│ Saturday 19 September 2026, [0-9]+ words, project alpha ' \
+  '│ What we found ' '│   • First finding with bold words and a code span ' \
+  '│   • Second finding, see the course page \(https://example\.org/course\) ' \
+  '│     1\. A nested numbered step ' '│ Option +│ Cost ' '│ Rebuild +│ two days '; do
+  grep -Eq "$want" <<<"$O" || fail "the Docs view shows: $want"
+done
+ON=$(mc "$HOME_DIR" frame --agents "$AGENTS" --view docs --size 96x40) || fail "narrow docs frame failed"
+para=$(grep -A6 '│ A long opening paragraph' <<<"$ON")
+grep -q 'longer still' <<<"$(head -1 <<<"$para")" && fail "a long paragraph wraps to the reader's width"
+grep -q 'longer still' <<<"$para" || fail "the wrapped paragraph carries on, joining its source lines, got: $para"
+for V in "$M" "$D" "$O" "$ON"; do
+  grep -Eq 'secret instructions|brief\.md|data/|notes\.md' <<<"$V" && fail "no brief and no file path may appear"
+  grep -q "$TMP_ROOT" <<<"$V" && fail "no raw path may reach the Memory or Docs views"
+  grep -Eq '\b(d4|q2|lone-study|loose-key|loose)\b' <<<"$V" && fail "no task id may reach the Memory or Docs views"
+  grep -q '—' <<<"$V" && fail "the Memory and Docs views never show an em dash"
+done
+pass "the Docs view lists reports, decisions and links with kinds, counts, project tags and a Markdown reader"
+
+PYTHONPATH="$ROOT/bin" FM_BRIDGE_NOW=2026-09-20T10:00:00 PATH="$FAKEBIN:$PATH" python3 - "$HOME_DIR" <<'PY' \
+  || fail "decision titles, an empty table or a sideways wheel went wrong"
+import os
+import sys
+import fm_mission_control as mc
+keys = {"loose-key", "q2", "follow"}
+for heading, want in [("# Decision: sign-in - which provider we use", "Sign-in - which provider we use"),
+                      ("# Decision: follow-up plan", "Follow-up plan"), ("# q2-rollout plan", "Q2-rollout plan"),
+                      ("# Decision: q2: keep it short", "Keep it short"),
+                      ("# Follow-up", "Follow-up"), ("# Decision: q2 - keep it private", "Keep it private"),
+                      ("# loose-key", "A decision"),
+                      ("# Decision needed on pricing: option A", "Decision needed on pricing: option A"),
+                      ("# Decision on the quiz - keep it: yes", "Decision on the quiz - keep it: yes"),
+                      ("# Captain's decisions: use the new deck", "Use the new deck"),
+                      ("# Decision: API keys for the class site", "API keys for the class site"),
+                      ("# AI tutor pilot", "AI tutor pilot"), ("# ACTION: API change", "A decision: API change"),
+                      ("# Decision: q2 - ACTION: KEEP the old deck", "A decision: keep the old deck"),
+                      ("# Action plan for the rollout", "Action plan for the rollout"),
+                      ("# Decision: Action items for Monday", "Action items for Monday"),
+                      ("# ACTION:", "A decision"), ("# ACTION FIX the quiz", "A decision: fix the quiz")]:
+    got = mc._decision_title(heading + "\n", None, keys)
+    assert got == want, (heading, got)
+assert mc.render_markdown("|---|---|\n\nAfter.", 40)
+home = os.path.realpath(sys.argv[1])
+model = mc.bridge.collect(home, home + "/config", mc.bridge._now())
+scene, ui = mc.Scene(), mc.UI()
+scene.observe(model, mc.build_crew(model, [], home, fm_name="Denver"), 50)
+ui.view = "docs"
+mc.compose(scene, mc.Renderer(), ui, 170, 50, mc.bridge._now())
+assert not mc._handle_input(b"\x1b[<66;80;20M\x1b[<67;80;20M\x1b[<67;5;8M", ui, scene, None), (ui.scroll, ui.pages)
+assert mc._handle_input(b"\x1b[<65;80;20M", ui, scene, None) and ui.scroll == 3, ui.scroll
+assert not mc._handle_input(b"\x1b[<0;13;4M", ui, scene, None) and ui.doc_tag == 0, ui.doc_tag
+PY
+pass "decision titles keep real words, an empty table renders, and only the vertical wheel scrolls"
+
+
+L=$(mc "$HOME_DIR" frame --agents "$AGENTS" --view docs)
 grep -q ' 9 System ' <<<"$L" || fail "the tab bar shows all nine views"
 S=$(mc "$HOME_DIR" frame --agents "$AGENTS" --size 80x24)
 [ "$(printf '%s\n' "$S" | grep -c .)" = 1 ] || fail "a too-small pane gets exactly one line"
 grep -q 'Make this pane bigger' <<<"$S" || fail "a too-small pane asks for more room"
-pass "later views and a too-small pane each get one line"
+pass "the tab bar shows all nine views and a too-small pane gets one line"
 
 # --- the calendar ----------------------------------------------------------
 
@@ -1261,6 +1407,27 @@ screen "$TMP_ROOT/pick" 3 | grep -q 'Approve the module outline' || fail "the pi
 screen "$TMP_ROOT/pick" 4 | grep -q 'WAITING ON YOU FOR THE SETUP ITSELF' || fail "up from the first card wraps to the last"
 screen "$TMP_ROOT/pick" 4 | grep -q 'LIVE ACTIVITY' && fail "up/down on the projects stays on the projects"
 pass "up and down pick a project card on the live screen"
+
+# Memory and Docs: kinds with left/right, the reader with Page Down and the
+# wheel, a tapped row, and up/down on the memory list.
+RIGHT=$'\e[C'
+PGDN=$'\e[6~'
+WHEEL_READER=$'\e[<65;80;20M'
+TAP_ROW=$'\e[<0;5;8M'
+code=$(DRIVE_NOW=2026-09-20T10:00:00 drive "$TMP_ROOT/shelf" \
+  "4=8,5=$RIGHT,6=$PGDN,7=$WHEEL_READER,8=$TAP_ROW,9=7,10=$DOWN,11=q") || fail "the pty driver failed"
+[ "$code" = 0 ] || fail "the memory and docs run quits cleanly, got exit $code"
+screen "$TMP_ROOT/shelf" 2 | grep -Eq 'Report +Scout report: the quiz format' || fail "key 8 opens Docs on the newest document"
+screen "$TMP_ROOT/shelf" 2 | grep -q 'A decision: fix' || fail "Docs starts on every kind"
+screen "$TMP_ROOT/shelf" 3 | grep -q 'A decision: fix' && fail "right picks the Report kind, so decisions leave the list"
+screen "$TMP_ROOT/shelf" 3 | grep -Eq 'lines 1 to 32 of [0-9]+' || fail "the reader starts at the top"
+screen "$TMP_ROOT/shelf" 4 | grep -Eq 'lines 31 to [0-9]+ of [0-9]+' || fail "page down scrolls the reader by a page"
+screen "$TMP_ROOT/shelf" 5 | grep -Eq 'lines 34 to [0-9]+ of [0-9]+' || fail "the wheel over the reader scrolls it"
+screen "$TMP_ROOT/shelf" 6 | grep -Eq 'Report +A study with no task' || fail "tapping a row opens it in the reader"
+screen "$TMP_ROOT/shelf" 6 | grep -q 'lines ' && fail "a newly opened page starts at its top"
+screen "$TMP_ROOT/shelf" 7 | grep -q 'Sunday 20 September 2026, 22 words' || fail "key 7 opens Memory on the captain's page"
+screen "$TMP_ROOT/shelf" 8 | grep -Eq '^▸ Lessons learned' || fail "down picks the next memory page"
+pass "the live Memory and Docs views pick, filter, tap and scroll"
 
 # A second mate home that cannot be read for a while invents no events.
 BACKLOG_M="$MATE/data/backlog.md"
