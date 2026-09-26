@@ -1075,7 +1075,7 @@ def _static_room(L, counts, inbox, alumni, desks_info):
     o.p(57, 2, H("#1b1b1b"))
     o.rect(28, 50 + b, 38, 10, H("#191620"))
     o.rect(28, 50 + b, 38, 1, H("#241f2e"))
-    for x, y in ((2, 9), (84, 50 + b)):
+    for x, y in ((2, 11), (84, 50 + b)):
         o.rect(x + 1, y, 3, 3, P["plant"])
         o.p(x, y + 1, P["plantD"])
         o.p(x + 4, y + 1, P["plantD"])
