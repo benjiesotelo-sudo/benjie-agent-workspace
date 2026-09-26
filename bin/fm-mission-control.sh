@@ -3,7 +3,7 @@
 #
 # Mission Control draws the whole crew as an animated pixel-art office, plus a
 # task board, a card per project, the decisions waiting on the captain and a
-# week calendar, in one terminal pane; bin/fm_mission_control.py owns what it
+# week, month and year calendar, in one terminal pane; bin/fm_mission_control.py owns what it
 # reads, how the crew maps onto the office, and how frames are drawn. It is
 # read-only: it never writes a record, never sends keys or prompts to an agent,
 # and never starts or stops one.
@@ -16,20 +16,23 @@
 #   stop                    close that workspace
 #   status                  report whether the workspace exists and whether the
 #                           screen is running in it
-#   frame [--view <v>] [--size <cols>x<rows>] [--agents <file>] [--format text|json|ansi]
+#   frame [--view <v>] [--size <cols>x<rows>] [--agents <file>] [--format text|json|ansi] [--keys <keys>]
 #                           print one frame from the records and a saved
 #                           `herdr agent list` file (tests, a quick look);
 #                           <v> is office, tasks, approvals, projects,
-#                           calendar, or a later view's name
+#                           calendar, or a later view's name; <keys> are
+#                           keys and mouse taps applied first, as the
+#                           terminal sends them (Enter and q are ignored)
 #
 # Keys while running: 1-9 switch view, p pauses the animation, q quits,
 # up/down pick an agent in the team list and Enter moves your Herdr view to
 # its pane (`herdr agent focus`, navigation only); on the Projects view
 # up/down pick a project card instead. On the Approvals view up/down move
 # the highlight through the decisions instead, and Enter does nothing: no key
-# answers or changes a decision. On the calendar, left and right move a week
-# and t returns to this week. Tapping a tab switches view when the terminal
-# reports mouse clicks.
+# answers or changes a decision. On the calendar, left and right move one
+# week, month or year, t returns to today and v cycles Week, Month and Year;
+# its control bar does the same when tapped, and tapping a month in Year opens
+# it. Tapping a tab switches view when the terminal reports mouse clicks.
 #
 # start creates the workspace with `herdr workspace create --label
 # mission-control --no-focus` in this home and types the run command into its
