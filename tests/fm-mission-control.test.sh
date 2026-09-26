@@ -66,7 +66,7 @@ jq -n --arg home "$HOME_DIR" --arg mate "$MATE" --arg wa "$TMP_ROOT/wt-alpha" '
 mc() {  # <home> <args...>
   local home=$1
   shift
-  PATH="$FAKEBIN:$PATH" FM_HOME="$home" FM_BRIDGE_NOW=2026-09-20T10:00:00 "$MC" "$@"
+  PATH="$FAKEBIN:$PATH" FM_HOME="$home" FM_BRIDGE_NOW=2026-09-20T10:00:00 FM_MC_HERDR="$FAKEBIN/herdr" "$MC" "$@"
 }
 
 # --- the office ------------------------------------------------------------
@@ -607,6 +607,10 @@ assert "2027" in bar(frame("132x44", "v\x1b[C")) and "next year" in bar(frame("1
 assert re.search(r"13 to 19 September +▸ +last week", bar(frame("132x44", "vv\x1b[D")))
 assert re.search(r"◂ +September 2026 +▸ +this month", bar(frame("132x44", "vvv")))
 assert re.search(r"◂ +September 2027 +▸", bar(frame("132x44", "v\x1b[Cvv"))), "Year to Week to Month keeps the period"
+N = bar(frame("96x36", "\x1b[Cvv", now="2026-09-26T10:00:00"))
+assert "next week" in N and "back to today" in N, "a narrow week starting after today's week is next week"
+N = bar(frame("96x36", "\x1b[Cvv\x1b[D", now="2026-09-26T10:00:00"))
+assert "this week" in N and "back to today" not in N, N
 
 # Taps: every change is on the control bar, and a month in Year opens it.
 T = frame("132x44")
