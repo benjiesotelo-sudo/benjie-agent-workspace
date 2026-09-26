@@ -7,8 +7,8 @@ the crew maps onto the office, and how frames are drawn and written.
 
 READ ONLY. Nothing here writes a record, sends a key or a prompt to an agent,
 or starts or stops anything. The one outward call besides the reads is
-`herdr agent focus` when the captain presses Enter on a team row, which only
-moves the captain's own view to that agent's pane.
+`herdr agent focus` when the captain presses Enter on a team row or a picked
+Team card, which only moves the captain's own view to that agent's pane.
 
 WHAT IT READS.
   Records   bin/fm_bridge.py collect(), the Bridge's single reader: backlog
@@ -22,7 +22,8 @@ WHAT IT READS.
             and foreground_cwd.
   Settings  config/mission-control.json (optional, gitignored with config/):
             first_mate_name is the first mate's name on its desk, in the team
-            list and in the activity column; "First mate" when absent.
+            list, in the activity column and on its Team view card; "First
+            mate" when absent.
             Reread on every crew update, so an edit shows without a restart.
   Services  for the Calendar's always-running strip, every SERVICES_EVERY
             seconds: `launchctl print gui/<uid>/com.firstmate.bridge` (the
@@ -83,6 +84,18 @@ Abbreviations such as Sep or Sat and ordinals such as 27th are not read. A
 title with two different dates, a weekday that does not match, a short weekday
 such as Fri right before the date, numbers only, or a yearless date with no
 reading within half a year of today is skipped rather than guessed.
+
+TEAM. The crew as an org chart: the captain, then the first mate as chief of
+staff, joined to one role card per registered second mate, each with the
+office's standing sprite in the agent's own shirt and hair colours. A mate's
+role is its registered scope up to the first colon; the card also names the
+projects it owns, its state (working, asleep, or away on another machine) and
+how many open items its list holds and how many wait on the captain. Live
+interns branch off the first mate's line or sit under their mate's card, one
+line each; the rows that do not fit are counted instead. Up and down pick a
+mate's card, whose registry description (first sentence) and scope show
+underneath, with raw paths removed. The alumni row reads the same retirements
+as the office's alumni wall, so it too starts empty on every run.
 
 DRAWING. Each character cell is two pixels: an upper half block with the top
 pixel as foreground and the bottom pixel as background, 24-bit colour when the
@@ -166,7 +179,7 @@ FEED_MIN_WIDTH = 24
 
 TABS = ["Office", "Tasks", "Approvals", "Projects", "Calendar", "Team", "Memory", "Docs", "System"]
 VIEWS = ["office", "tasks"] + [t.lower() for t in TABS[2:]]
-READY = ("office", "tasks", "approvals", "projects", "calendar")
+READY = ("office", "tasks", "approvals", "projects", "calendar", "team")
 COLUMNS = (("waiting", "WAITING ON YOU", AMBER), ("queued", "QUEUED", INK),
            ("in_flight", "IN FLIGHT", GREEN), ("done", "DONE THIS MONTH", DIM))
 SHIP_TAG = "setup"
@@ -953,6 +966,12 @@ class Office:
         self.texts.append((x, y, clean(s), fg, force, b))
 
 
+def photo(o, x, y, who):
+    """An alumni photo, 2 x 3 pixels: hair, face, shirt."""
+    for j, col in enumerate((H(who["hair"]), P["skin"], H(who["color"]))):
+        o.rect(x, y + j, 2, 1, col)
+
+
 def _static_room(L, counts, inbox, alumni, desks_info):
     o = Office(L.height)
     b = L.band
@@ -969,14 +988,7 @@ def _static_room(L, counts, inbox, alumni, desks_info):
         o.rect(fx, 1, 4, 5, H("#8a6d2b"))
         o.rect(fx + 1, 2, 2, 3, H("#0f131b"))
         if i < len(alumni):
-            who = alumni[-1 - i]
-            hair, color = H(who["hair"]), H(who["color"])
-            o.p(fx + 1, 2, hair)
-            o.p(fx + 2, 2, hair)
-            o.p(fx + 1, 3, P["skin"])
-            o.p(fx + 2, 3, P["skin"])
-            o.p(fx + 1, 4, color)
-            o.p(fx + 2, 4, color)
+            photo(o, fx + 1, 2, alumni[-1 - i])
     o.text(4, 8, "alumni", LABEL)
     o.rect(40, 1, 16, 5, H("#10141d"))
     # Corkboard: one sticky-note column per task column, sized by its count.
@@ -1064,6 +1076,28 @@ def _monitors(d):
     return [d["x"] + d["w"] // 2 - 4]
 
 
+def figure(o, x, y, body, hair, stride=0):
+    """A standing person, 7 x 10 pixels from (x, y): the office's sprite and the Team portraits."""
+    sh = mix(body, 0, 0.3)
+    skin = P["skin"]
+    o.rect(x + 2, y, 3, 1, hair, True)
+    o.rect(x + 1, y + 1, 5, 1, hair, True)
+    o.p(x + 1, y + 2, hair, True)
+    o.p(x + 5, y + 2, hair, True)
+    o.rect(x + 2, y + 2, 3, 2, skin, True)
+    o.p(x + 2, y + 2, H("#1b1b1b"), True)
+    o.p(x + 4, y + 2, H("#1b1b1b"), True)
+    o.rect(x + 1, y + 4, 5, 3, body, True)
+    o.rect(x, y + 4, 1, 3, sh, True)
+    o.rect(x + 6, y + 4, 1, 3, sh, True)
+    o.p(x, y + 7, skin, True)
+    o.p(x + 6, y + 7, skin, True)
+    o.rect(x + 2, y + 7, 3, 1, sh, True)
+    legs = ((1, 8), (5, 8), (2, 9), (4, 9)) if stride else ((2, 8), (4, 8), (2, 9), (4, 9))
+    for px_, py_ in legs:
+        o.p(x + px_, y + py_, H("#2a2f3a"), True)
+
+
 class Renderer:
     def __init__(self):
         self._static_key = None
@@ -1142,7 +1176,6 @@ class Renderer:
         hair = H(m["hair"])
         sh = mix(body, 0, 0.3)
         skin = P["skin"]
-        leg = H("#2a2f3a")
         L = scene.layout
         if a.state in ("work", "sleep") and m["kind"] != "intern" and a.key in L.desks:
             d = L.desks[a.key]
@@ -1172,26 +1205,7 @@ class Renderer:
                             o.text(x + 6 + k, y - 1 - (ph // 3) * 2 - k, "Z" if k == 2 else "z", ZZZ, True)
             return
         x, y = a.x, a.feet - 9
-        f = (tick >> 1) % 2 if a.state == "walk" else 0
-        o.rect(x + 2, y, 3, 1, hair, True)
-        o.rect(x + 1, y + 1, 5, 1, hair, True)
-        o.p(x + 1, y + 2, hair, True)
-        o.p(x + 5, y + 2, hair, True)
-        o.rect(x + 2, y + 2, 3, 2, skin, True)
-        o.p(x + 2, y + 2, H("#1b1b1b"), True)
-        o.p(x + 4, y + 2, H("#1b1b1b"), True)
-        o.rect(x + 1, y + 4, 5, 3, body, True)
-        o.rect(x, y + 4, 1, 3, sh, True)
-        o.rect(x + 6, y + 4, 1, 3, sh, True)
-        o.p(x, y + 7, skin, True)
-        o.p(x + 6, y + 7, skin, True)
-        o.rect(x + 2, y + 7, 3, 1, sh, True)
-        if f:
-            for px_, py_ in ((1, 8), (5, 8), (2, 9), (4, 9)):
-                o.p(x + px_, y + py_, leg, True)
-        else:
-            for px_, py_ in ((2, 8), (4, 8), (2, 9), (4, 9)):
-                o.p(x + px_, y + py_, leg, True)
+        figure(o, x, y, body, hair, (tick >> 1) % 2 if a.state == "walk" else 0)
         if a.bubble:
             o.text(x - 1, y - 3, a.bubble, AMBER, True, True)
         if a.bang > 0:
@@ -1294,6 +1308,8 @@ def _chrome(cv, ui, now):
         keys = " 1-9 switch view   up/down pick an agent   enter talk to it   p pause   q quit "
         if ui.view == "projects":
             keys = " 1-9 switch view   up/down pick a project   p pause   q quit "
+        elif ui.view == "team":
+            keys = " 1-9 switch view   up/down pick a second mate   enter talk to it   p pause   q quit "
     cv.put(0, R - 1, clip(keys, C - len(tag) - 1), DIM)
     cv.put(C - len(tag), R - 1, tag, BG if ui.paused else GREEN, AMBER if ui.paused else None, True)
 
@@ -1794,6 +1810,291 @@ def _approvals_screen(cv, ui, scene):
         r += 1
 
 
+TEAM_CARD_MIN_W = 36
+TEAM_CARD_MAX_W = 58
+WIRE = H("#3a4250")  # the org chart's connecting lines
+TEAM_CARD_H = 7     # a role card's rows, borders included: the portrait is five rows tall
+TEAM_STATES = {"working": ("● working", GREEN), "asleep": ("z asleep", ZZZ),
+               "elsewhere": ("away", DIM)}
+
+
+class _Pixels:
+    """Half-block pixels on a Canvas from cell (c0, r0), so office sprites draw on any screen."""
+
+    def __init__(self, cv, c0, r0):
+        self.cv, self.c0, self.r0 = cv, c0, r0
+
+    def p(self, x, y, col, m=False):
+        c, r = self.c0 + int(x), self.r0 + int(y) // 2
+        if 0 <= c < self.cv.C and 0 <= r < self.cv.R:
+            k = r * self.cv.C + c
+            if int(y) % 2:
+                self.cv.bot[k] = col
+            else:
+                self.cv.top[k] = col
+
+    def rect(self, x, y, w, h, col, m=False):
+        for j in range(h):
+            for i in range(w):
+                self.p(x + i, y + j, col)
+
+
+def _words(text):
+    return " ".join(bridge.plain_note(clean(text)).split())
+
+
+def _first_sentence(text):
+    text = _words(text)
+    m = re.match(r"(.+?[.!?])(?:\s|$)", text)
+    text = m.group(1) if m else text
+    return text[:1].upper() + text[1:]
+
+
+def _role(scope):
+    """A mate's role in plain words: its registered scope up to the first colon."""
+    head = re.sub(r"^the\s+", "", _words(scope).split(":")[0].strip(), flags=re.I)
+    return head[:1].upper() + head[1:]
+
+
+def team_cards(model, crew):
+    """The first mate's card, then one role card per registered second mate."""
+    by_key = {c["key"]: c for c in crew}
+    interns = [c for c in crew if c["kind"] == "intern"]
+
+    def card(c, **kw):
+        base = {"key": c["key"], "name": c["name"], "color": c["color"], "hair": c["hair"],
+                "state": "working" if c["status"] == "work" else "asleep",
+                "open": c.get("open", 0), "waiting": c.get("waiting", 0), "readable": True,
+                "interns": [i for i in interns if i["lead"] == c["key"]]}
+        base.update(kw)
+        return base
+
+    fm = by_key["fm"]
+    cards = [card(fm, role="Chief of staff: routes the work and supervises the crew",
+                  owns="every project", charter="", scope="")]
+    for m in model.get("mates") or []:
+        c = by_key.get("mate:" + m["id"])
+        if c is None:
+            continue
+        team = next((e for e in model["team"] if e["id"] == m["id"]), {})
+        owns = ", ".join(clean(bridge._title(model, p)) for p in m["projects"]) or "no project"
+        extra = {"state": "elsewhere"} if m["remote"] else {}
+        cards.append(card(c, role=_role(m["scope"]), owns=owns, charter=_first_sentence(m["summary"]),
+                          scope=_words(m["scope"]), readable=team.get("readable", True), **extra))
+    return cards
+
+
+def _team_pick(ui, cards):
+    """The picked role card's index among the second mates (cards[1:]), or None."""
+    keys = [c["key"] for c in cards[1:]]
+    if not keys:
+        return None
+    return keys.index(ui.selected) if ui.selected in keys else 0
+
+
+def _pick_mate(ui, scene, down):
+    if scene.model is None:
+        return False
+    cards = team_cards(scene.model, scene.crew)
+    i = _team_pick(ui, cards)
+    if i is None:
+        return False
+    mates = cards[1:]
+    ui.selected = mates[(i + (1 if down else -1)) % len(mates)]["key"]
+    return True
+
+
+def _hline(cv, r, c0, c1, drops, up):
+    """A connector row from c0 to c1 with a line down at each drop and one up at `up`."""
+    joins = {frozenset("lr"): "─", frozenset("ud"): "│", frozenset("dr"): "┌", frozenset("dl"): "┐",
+             frozenset("ur"): "└", frozenset("ul"): "┘", frozenset("udr"): "├", frozenset("udl"): "┤",
+             frozenset("dlr"): "┬", frozenset("ulr"): "┴", frozenset("udlr"): "┼",
+             frozenset("u"): "│", frozenset("d"): "│"}
+    for c in range(c0, c1 + 1):
+        dirs = set()
+        if c > c0:
+            dirs.add("l")
+        if c < c1:
+            dirs.add("r")
+        if c in drops:
+            dirs.add("d")
+        if c == up:
+            dirs.add("u")
+        cv.put(c, r, joins.get(frozenset(dirs), "─"), WIRE)
+
+
+def _role_card(cv, c0, r0, w, card, picked):
+    col = H(card["color"])
+    _box(cv, c0, r0, w, TEAM_CARD_H, col if picked else mix(col, BG, 0.5))
+    figure(_Pixels(cv, c0 + 2, r0 + 1), 0, 0, col, H(card["hair"]))
+    tx, tw = c0 + 11, w - 13
+    state, sc = TEAM_STATES[card["state"]]
+    cv.put(c0 + w - 2 - len(state), r0 + 1, state, sc)
+    cv.put(tx, r0 + 1, clip(card["name"], tw - len(state) - 1), col, None, True)
+    lines = wrap(card["role"], tw)
+    if len(lines) > 2:
+        lines = [lines[0], clip(" ".join(lines[1:]), tw)]
+    for j, ln in enumerate(lines):
+        cv.put(tx, r0 + 2 + j, ln, SOFT)
+    cv.put(tx, r0 + 4, "owns", DIMMER)
+    cv.put(tx + 5, r0 + 4, clip(card["owns"], tw - 5), INK)
+    if card["state"] == "elsewhere":
+        cv.put(tx, r0 + 5, clip("list on another machine", tw), DIM)
+    elif not card["readable"]:
+        cv.put(tx, r0 + 5, clip("list could not be read", tw), AMBER)
+    else:
+        n = "%d listed" % card["open"]
+        cv.put(tx, r0 + 5, clip(n, tw), QUIET)
+        if card["waiting"]:
+            ask = ", %d for you" % card["waiting"]
+            cv.put(tx + len(n), r0 + 5, clip(ask, tw - len(n)), AMBER, None, True)
+
+
+def _intern_line(cv, c, r, i, width):
+    g, gc = _glyph(i, None)
+    cv.put(c, r, g, gc, None, True)
+    cv.put(c + 2, r, clip(i["doing"], width - 2), INK if i["status"] == "work" else QUIET)
+
+
+def _hidden(cv, c0, r0, w, n):
+    """How many of a card's interns found no row, on its bottom border."""
+    s = " %s " % bridge._plural(n, "more intern")
+    cv.put(c0 + w - 2 - len(s), r0 + TEAM_CARD_H - 1, s, SOFT)
+
+
+def _team_screen(cv, ui, scene):
+    C, R = cv.C, cv.R
+    model = scene.model
+    cards = team_cards(model, scene.crew)
+    fm, mates = cards[0], cards[1:]
+    n_interns = sum(len(c["interns"]) for c in cards)
+    awake = sum(1 for c in cards if c["state"] == "working")
+    c = 1
+    for n, label, color in ((len(mates), "second mate" if len(mates) == 1 else "second mates", INK),
+                            (awake, "working", GREEN),
+                            (len(cards) - awake, "asleep or away", ZZZ),
+                            (n_interns, "intern on a job" if n_interns == 1 else "interns on jobs", INK)):
+        cv.put(c, 3, str(n), color, None, True)
+        cv.put(c + len(str(n)) + 1, 3, label, SOFT)
+        c += len(str(n)) + len(label) + 5
+    for pill in ("real crew, from the second mate registry", "real crew"):
+        if C - len(pill) - 1 > c:
+            cv.put(C - len(pill) - 1, 3, pill, BG, GREEN, True)
+            break
+
+    alumni_r = R - 5            # rule, then a two-row photo line
+    detail_r = alumni_r - 6     # rule, four lines, a blank row
+    cx = C // 2
+
+    # The captain, then the first mate as chief of staff.
+    w = min(C - 4, 44)
+    c0 = cx - w // 2
+    waiting = scene.counts["waiting"]
+    _box(cv, c0, 5, w, 4, mix(AMBER, BG, 0.5))
+    cv.put(c0 + 2, 6, "You", AMBER, None, True)
+    cv.put(c0 + 5, 6, clip(", the captain: decisions and merges", w - 7), SOFT)
+    ask = "%s on you" % ("1 thing waits" if waiting == 1 else "%d things wait" % waiting) if waiting \
+        else "nothing waits on you"
+    cv.put(c0 + 2, 7, clip(ask, w - 4), AMBER if waiting else QUIET, None, bool(waiting))
+    cv.put(cx, 8, "┬", mix(AMBER, BG, 0.5))
+    cv.put(cx, 9, "│", WIRE)
+    w = min(C - 4, max(TEAM_CARD_MIN_W, 60))
+    c0 = cx - w // 2
+    _role_card(cv, c0, 10, w, fm, False)
+    cv.put(cx, 10, "┴", mix(H(fm["color"]), BG, 0.5))
+    bottom = 10 + TEAM_CARD_H - 1
+    cv.put(cx, bottom, "┬", mix(H(fm["color"]), BG, 0.5))
+
+    # The first mate's interns branch off its line down to the second mates.
+    room = min(4, detail_r - (bottom + 1) - (TEAM_CARD_H + 1) if mates else detail_r - bottom - 3)
+    lines = fm["interns"] if len(fm["interns"]) <= room else fm["interns"][:max(0, room - 1)]
+    r = bottom + 1
+    for j, i in enumerate(lines):
+        last = not mates and j == len(lines) - 1 and len(lines) == len(fm["interns"])
+        cv.put(cx, r, "└─" if last else "├─", WIRE)
+        _intern_line(cv, cx + 3, r, i, C - cx - 5)
+        r += 1
+    rest = len(fm["interns"]) - len(lines)
+    if rest and room > 0:
+        cv.put(cx, r, "├─" if mates else "└─", WIRE)
+        cv.put(cx + 3, r, bridge._plural(rest, "more intern"), SOFT)
+        r += 1
+    elif rest:
+        _hidden(cv, c0, 10, w, rest)
+
+    if not mates:
+        cv.put(3, r + 1, clip("No second mates are registered yet, so the first mate runs every project "
+                              "itself.", C - 6), QUIET)
+    else:
+        # One role card per second mate, scrolled so the picked card shows.
+        pick = _team_pick(ui, cards)
+        per = max(1, min(len(mates), C // (TEAM_CARD_MIN_W + 2)))
+        w = min(TEAM_CARD_MAX_W, (C - 2 - 2 * (per - 1)) // per)
+        left = (C - (per * w + 2 * (per - 1))) // 2
+        first = 0 if pick < per else pick - per + 1
+        shown = mates[first:first + per]
+        top = r + 1
+        drops = [left + k * (w + 2) + w // 2 for k in range(len(shown))]
+        _hline(cv, r, min(drops + [cx]), max(drops + [cx]), set(drops), cx)
+        if first:
+            cv.put(1, r, "◂ %d more" % first, DIM)
+        more = len(mates) - first - len(shown)
+        if more:
+            cv.put(C - 9 - len(str(more)), r, "%d more ▸" % more, DIM)
+        avail = detail_r - 1 - (top + TEAM_CARD_H)
+        for k, card in enumerate(shown):
+            c0 = left + k * (w + 2)
+            _role_card(cv, c0, top, w, card, first + k == pick)
+            cv.put(drops[k], top, "┴", H(card["color"]) if first + k == pick else mix(H(card["color"]), BG, 0.5))
+            ins = card["interns"]
+            lines = ins if len(ins) <= avail else ins[:max(0, avail - 1)]
+            for j, i in enumerate(lines):
+                _intern_line(cv, c0 + 2, top + TEAM_CARD_H + j, i, w - 3)
+            rest = len(ins) - len(lines)
+            if rest and avail > 0:
+                cv.put(c0 + 2, top + TEAM_CARD_H + len(lines), bridge._plural(rest, "more intern"), SOFT)
+            elif rest:
+                _hidden(cv, c0, top, w, rest)
+
+        # The picked card's charter and scope, in the registry's words.
+        card = mates[pick]
+        cv.put(0, detail_r, "─" * C, LINE)
+        cv.put(1, detail_r, " %s " % clip("ABOUT " + card["name"].upper(), C - 4), H(card["color"]), None, True)
+        text = wrap(card["charter"], C - 6)
+        if len(text) > 2:
+            text = [text[0], clip(" ".join(text[1:]), C - 6)]
+        for j, ln in enumerate(text):
+            cv.put(3, detail_r + 1 + j, ln, INK)
+        scope = wrap("Scope: " + card["scope"], C - 6)
+        keep = 4 - len(text)
+        if len(scope) > keep:
+            scope = scope[:keep - 1] + [clip(" ".join(scope[keep - 1:]), C - 6)]
+        for j, ln in enumerate(scope):
+            r = detail_r + 1 + len(text) + j
+            if ln.startswith("Scope: ") and j == 0:
+                cv.put(3, r, "Scope:", DIMMER)
+                cv.put(10, r, ln[7:], SOFT)
+            else:
+                cv.put(3, r, ln, SOFT)
+
+    # Alumni: the mates this screen watched retire, newest first, as on the office wall.
+    cv.put(0, alumni_r, "─" * C, LINE)
+    cv.put(1, alumni_r, " ALUMNI ", INK, None, True)
+    if not scene.alumni:
+        cv.put(3, alumni_r + 1, "No one has retired yet.", DIMMER)
+    c = 3
+    gone = list(reversed(scene.alumni))
+    for k, who in enumerate(gone):
+        need = 3 + max(len(who["name"]), 7)
+        if c + need + 10 > C and k < len(gone) - 1:
+            cv.put(c, alumni_r + 1, "+%d more" % (len(gone) - k), DIM)
+            break
+        photo(_Pixels(cv, c, alumni_r + 1), 0, 0, who)
+        cv.put(c + 3, alumni_r + 1, clip(who["name"], C - c - 4), H(who["color"]), None, True)
+        cv.put(c + 3, alumni_r + 2, "retired", AMBER)
+        c += need + 3
+
+
 def _later_screen(cv, name):
     cv.put(2, 4, "%s is coming next. Press 1 for the office or 2 for the task board." % name, SOFT)
 
@@ -2063,6 +2364,8 @@ def compose(scene, renderer, ui, cols, rows, now, records_ok=True, notice=None):
         _approvals_screen(cv, ui, scene)
     elif ui.view == "calendar":
         _calendar_screen(cv, ui, scene.model, scene.crew)
+    elif ui.view == "team":
+        _team_screen(cv, ui, scene)
     else:
         _later_screen(cv, TABS[VIEWS.index(ui.view)])
     return cv, False
@@ -2479,6 +2782,8 @@ def _handle_input(data, ui, scene, feed):
             changed = _pick_project(ui, scene, tok in (b"\x1b[B", b"\x1bOB")) or changed
         elif ui.view == "approvals" and tok in (b"\x1b[A", b"\x1bOA", b"\x1b[B", b"\x1bOB"):
             changed = _pick_decision(ui, scene, tok in (b"\x1b[B", b"\x1bOB")) or changed
+        elif tok in (b"\x1b[A", b"\x1bOA", b"\x1b[B", b"\x1bOB") and ui.view == "team":
+            changed = _pick_mate(ui, scene, tok in (b"\x1b[B", b"\x1bOB")) or changed
         elif tok in (b"\x1b[A", b"\x1bOA", b"\x1b[B", b"\x1bOB"):
             keys = [m_["key"] for m_ in scene.crew]
             if keys:
@@ -2491,6 +2796,12 @@ def _handle_input(data, ui, scene, feed):
                 ui.view = "office"
                 changed = True
         elif tok in (b"\r", b"\n") and ui.view != "approvals":
+            if ui.view == "team" and scene.model is not None:
+                cards = team_cards(scene.model, scene.crew)
+                i = _team_pick(ui, cards)
+                if i is None:
+                    continue
+                ui.selected = cards[1 + i]["key"]
             m_ = next((c for c in scene.crew if c["key"] == ui.selected), None)
             if m_ is None:
                 continue
