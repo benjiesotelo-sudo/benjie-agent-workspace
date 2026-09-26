@@ -1210,6 +1210,26 @@ DK=$(cal 2026-09-23T10:00:00 132x44) || fail "unnamed month failed"
 grep -q '✓ alpha: Chapter' <<<"$DK" || fail "without a names map a Calendar line starts with the repository name"
 grep -Eq 'alpha[- ]mate|Alpha mate' <<<"$DK$(mc "$CAL" frame --agents "$AGENTS" --view team --size 170x50)" \
   && fail "a second mate is never shown with a mate suffix"
+# A name wider than a Week line breaks inside itself and keeps its colour on every piece.
+printf '{"first_mate_name": "Denver", "names": {"alpha": "Telos_FIN1209"}}\n' > "$CAL/config/mission-control.json"
+cal 2026-09-23T10:00:00 132x44 vv ansi | python3 -c '
+import re, sys
+rows = []
+for line in sys.stdin.read().split("\n"):
+    row, fg = [], None
+    for m in re.finditer(r"\x1b\[([0-9;]*)m|([^\x1b])", line):
+        if m.group(2) is not None:
+            row.append((m.group(2), fg))
+        elif len(m.group(1).split(";")) == 11:
+            fg = tuple(m.group(1).split(";")[3:6])
+    rows.append(row)
+text = ["".join(c for c, _ in row) for row in rows]
+i = next(i for i, t in enumerate(text) if "│ Telos_FIN120 " in t)
+j = text[i].index("Telos_FIN120")
+name = [fg for _, fg in rows[i][j:j + 12]] + [fg for _, fg in rows[i + 1][j:j + 2]]
+assert text[i + 1][j:].startswith("9: Chapter"), text[i + 1]
+assert len(set(name)) == 1 and rows[i + 1][j + 3][1] != name[0], (name, rows[i + 1][j + 3])
+' || fail "a Week name split across lines keeps its project colour on every piece"
 rm -f "$CAL/config/mission-control.json"
 pass "without a names map projects and second mates keep the repository names"
 

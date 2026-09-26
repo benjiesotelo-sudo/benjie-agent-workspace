@@ -3777,16 +3777,16 @@ def _fit_entries(needs, room, least):
 
 
 def _name_cols(lines, name):
-    """How many leading columns of each of _entry_lines' lines are the "Name:" prefix."""
-    left = (name + ":").split()
+    """How many leading columns of each of _entry_lines' lines are the "Name:" prefix, which
+    wrap may break between words or inside a long one, dropping only spaces."""
+    left = len((name + ":").replace(" ", ""))
     out = []
     for ln in lines:
-        words = ln.split(" ")
         n = 0
-        while left and n < len(words) and words[n] == left[0]:
-            left.pop(0)
+        while left and n < len(ln):
+            left -= ln[n] != " "
             n += 1
-        out.append(len(" ".join(words[:n])))
+        out.append(n)
     return out
 
 
