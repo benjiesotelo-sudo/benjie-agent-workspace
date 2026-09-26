@@ -1,0 +1,867 @@
+----- before action 1 ('7')
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System                                           Sun 10:00 
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀    ▀▀▀▀▀▀▀▀▀   ▀▀▀▀▀▀▀▀▀▀▀▀▀           │ LIVE ACTIVITY real                                                      
+                       ▀▀ ▀▀ ▀▀ ▀▀       ▀▀▀▀▀▀▀ ▀▀▀▀▀▀  ▀   ▀ ▀ ▀ ▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀           │                                                                         
+     ▀▀   ▀▀   ▀▀                        ▀▀▀▀▀▀▀ ▀▀▀▀▀▀      ▀ ▀ ▀ ▀     ▀▀▀▀▀▀▀▀▀▀▀            │ 12 Sep Alpha finished Chapter four notes                                
+▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀│                                                                         
+   ▀alumni             tasks                                plan         memory         ▀▀▀▀▀▀▀ │ 5 Sep  Denver finished Chapter three decks                              
+  ▀   ▀                             ▀▀▀▀▀▀▀  ▀▀▀▀▀▀▀                                      ▀ ▀   │                                                                         
+                           ▀▀▀▀▀  ▀▀▀▀▀▀▀▀▀▀▀▀▀z▀Z▀▀▀▀▀                                   ▀ ▀   │ 2 Sep  Denver finished Module one handout                               
+   ▀▀▀                       ▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                                   ▀ ▀   │                                                                         
+                                          ▀▀▀▀▀                                           ▀ ▀   │                                                                         
+                                                                                          ▀ ▀   │                                                                         
+                                                                                          ▀ ▀   │                                                                         
+                                          ▀▀▀▀▀                                                 │                                                                         
+                                         Denver                                         ▀▀▀▀▀▀▀ │                                                                         
+   ▀▀▀▀▀▀▀▀▀                             asleep                                        system   │                                                                         
+                                                                                        check   │                                                                         
+    ▀▀▀▀▀▀▀                                                                                     │                                                                         
+ ▀▀▀▀▀▀▀▀▀z▀Z▀                                                                                  │                                                                         
+ ▀▀▀▀▀▀▀▀▀▀▀▀▀                                                                                  │                                                                         
+     ▀▀▀▀▀                                                                                      │                                                                         
+                                                                                                │                                                                         
+                                                                                                │                                                                         
+     ▀▀▀▀▀                                                                                      │                                                                         
+     Alpha                                                                                      │                                                                         
+    asleep                                                                                    ▀▀│                                                                         
+ ▀▀▀▀▀▀▀▀                                                                                       │                                                                         
+ CAPTAIN                    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                  ▀   ▀       │                                                                         
+                                          ▀▀▀▀▀▀▀▀▀                                  ▀▀▀        │                                                                         
+       ▀                            ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                                       │                                                                         
+                  inbox 4             ▀▀▀▀         ▀▀▀▀                                         │                                                                         
+          ▀▀▀▀▀▀▀                       ▀▀▀         ▀▀▀                                       ▀▀│                                                                         
+─ TEAM ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   NAME       ROLE                DOING NOW                                                                               PATH (the project it works in)                  
+ z Denver     first mate          standing by, 3 waiting on you                                                           every project                                   
+ z Alpha      second mate         asleep, its window is closed, 1 waiting on you                                          projects/alpha                                  
+ · interns    one job each        none right now                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+   Interns stand beside their person in charge for one job, then go home. Sleeping agents cost nothing.                                                                   
+                                                                                                                                                                          
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down pick an agent   enter talk to it   p pause   q quit                                                                          updates by itself 
+----- before action 2 ('\\x1b[B\\x1b[B\\x1b[B\\x1b[B\\x1b[B')
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System                                           Sun 10:00 
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                                                                                          
+ 4 pages of long-term memory    13 days in the journal                                                                                  read only, changes happen in chat 
+                                                                                                                                                                          
+LONG-TERM MEMORY 4                             ┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+▸ What I know about the captain                │ What I know about the captain                                                                                           │
+  22 words, updated 3 hours ago                │ Sunday 20 September 2026, 22 words, updated 3 hours ago                                                                 │
+  Lessons learned                              ├─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+  12 words, updated just now                   │ Captain preferences                                                                                                     │
+  What Alpha knows about the captain           │                                                                                                                         │
+  8 words, updated just now                    │ Who the captain is                                                                                                      │
+  Lessons Alpha learned                        │ A private sentence the Bridge must never print.                                                                         │
+  5 words, updated just now                    │                                                                                                                         │
+                                               │ Standing instructions                                                                                                   │
+DAILY JOURNAL 13                               │   • Another private sentence.                                                                                           │
+  This week 1                                  │                                                                                                                         │
+  Friday 18 September                          │ Working style                                                                                                           │
+  1 event, 5 words                             │ Short.                                                                                                                  │
+  September 2026 9                             │                                                                                                                         │
+  Saturday 12 September                        │                                                                                                                         │
+  1 event, 7 words                             │                                                                                                                         │
+  Wednesday 9 September                        │                                                                                                                         │
+  1 event, 12 words                            │                                                                                                                         │
+  Tuesday 8 September                          │                                                                                                                         │
+  1 event, 14 words                            │                                                                                                                         │
+  Monday 7 September                           │                                                                                                                         │
+  1 event, 7 words                             │                                                                                                                         │
+  Sunday 6 September                           │                                                                                                                         │
+  1 event, 14 words                            │                                                                                                                         │
+  Saturday 5 September                         │                                                                                                                         │
+  2 events, 10 words                           │                                                                                                                         │
+  Friday 4 September                           │                                                                                                                         │
+  1 event, 10 words                            │                                                                                                                         │
+  Thursday 3 September                         │                                                                                                                         │
+  1 event, 10 words                            │                                                                                                                         │
+  Wednesday 2 September                        │                                                                                                                         │
+  2 events, 15 words                           │                                                                                                                         │
+  August 2026 2                                │                                                                                                                         │
+  Sunday 30 August                             │                                                                                                                         │
+  1 event, 5 words                             │                                                                                                                         │
+  Saturday 29 August                           │                                                                                                                         │
+  1 event, 15 words                            │                                                                                                                         │
+  July 2026 1                                  │                                                                                                                         │
+  Monday 20 July                               │                                                                                                                         │
+  1 event, 5 words                             │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               └─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down pick a page   page up/down or the wheel scroll it   q quit                                                                   updates by itself 
+----- before action 3 ('\\x1b[<0;5;25M')
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System                                           Sun 10:00 
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                                                                                          
+ 4 pages of long-term memory    13 days in the journal                                                                                  read only, changes happen in chat 
+                                                                                                                                                                          
+LONG-TERM MEMORY 4                             ┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+  What I know about the captain                │ Saturday 12 September                                                                                                   │
+  22 words, updated 3 hours ago                │ Saturday 12 September 2026, 1 event, 7 words                                                                            │
+  Lessons learned                              ├─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+  12 words, updated just now                   │ alpha                                                                                                                   │
+  What Alpha knows about the captain           │   • The Alpha mate finished Chapter four notes.                                                                         │
+  8 words, updated just now                    │                                                                                                                         │
+  Lessons Alpha learned                        │                                                                                                                         │
+  5 words, updated just now                    │                                                                                                                         │
+                                               │                                                                                                                         │
+DAILY JOURNAL 13                               │                                                                                                                         │
+  This week 1                                  │                                                                                                                         │
+  Friday 18 September                          │                                                                                                                         │
+  1 event, 5 words                             │                                                                                                                         │
+  September 2026 9                             │                                                                                                                         │
+▸ Saturday 12 September                        │                                                                                                                         │
+  1 event, 7 words                             │                                                                                                                         │
+  Wednesday 9 September                        │                                                                                                                         │
+  1 event, 12 words                            │                                                                                                                         │
+  Tuesday 8 September                          │                                                                                                                         │
+  1 event, 14 words                            │                                                                                                                         │
+  Monday 7 September                           │                                                                                                                         │
+  1 event, 7 words                             │                                                                                                                         │
+  Sunday 6 September                           │                                                                                                                         │
+  1 event, 14 words                            │                                                                                                                         │
+  Saturday 5 September                         │                                                                                                                         │
+  2 events, 10 words                           │                                                                                                                         │
+  Friday 4 September                           │                                                                                                                         │
+  1 event, 10 words                            │                                                                                                                         │
+  Thursday 3 September                         │                                                                                                                         │
+  1 event, 10 words                            │                                                                                                                         │
+  Wednesday 2 September                        │                                                                                                                         │
+  2 events, 15 words                           │                                                                                                                         │
+  August 2026 2                                │                                                                                                                         │
+  Sunday 30 August                             │                                                                                                                         │
+  1 event, 5 words                             │                                                                                                                         │
+  Saturday 29 August                           │                                                                                                                         │
+  1 event, 15 words                            │                                                                                                                         │
+  July 2026 1                                  │                                                                                                                         │
+  Monday 20 July                               │                                                                                                                         │
+  1 event, 5 words                             │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               └─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down pick a page   page up/down or the wheel scroll it   q quit                                                                   updates by itself 
+----- before action 4 ('\\r')
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System                                           Sun 10:00 
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                                                                                          
+ 4 pages of long-term memory    13 days in the journal                                                                                  read only, changes happen in chat 
+                                                                                                                                                                          
+LONG-TERM MEMORY 4                             ┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+  What I know about the captain                │ Tuesday 8 September                                                                                                     │
+  22 words, updated 3 hours ago                │ Tuesday 8 September 2026, 1 event, 14 words                                                                             │
+  Lessons learned                              ├─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+  12 words, updated just now                   │ alpha                                                                                                                   │
+  What Alpha knows about the captain           │   • The Alpha mate filed a decision for you: Decide the chapter five review point.                                      │
+  8 words, updated just now                    │                                                                                                                         │
+  Lessons Alpha learned                        │                                                                                                                         │
+  5 words, updated just now                    │                                                                                                                         │
+                                               │                                                                                                                         │
+DAILY JOURNAL 13                               │                                                                                                                         │
+  This week 1                                  │                                                                                                                         │
+  Friday 18 September                          │                                                                                                                         │
+  1 event, 5 words                             │                                                                                                                         │
+  September 2026 9                             │                                                                                                                         │
+  Saturday 12 September                        │                                                                                                                         │
+  1 event, 7 words                             │                                                                                                                         │
+  Wednesday 9 September                        │                                                                                                                         │
+  1 event, 12 words                            │                                                                                                                         │
+▸ Tuesday 8 September                          │                                                                                                                         │
+  1 event, 14 words                            │                                                                                                                         │
+  Monday 7 September                           │                                                                                                                         │
+  1 event, 7 words                             │                                                                                                                         │
+  Sunday 6 September                           │                                                                                                                         │
+  1 event, 14 words                            │                                                                                                                         │
+  Saturday 5 September                         │                                                                                                                         │
+  2 events, 10 words                           │                                                                                                                         │
+  Friday 4 September                           │                                                                                                                         │
+  1 event, 10 words                            │                                                                                                                         │
+  Thursday 3 September                         │                                                                                                                         │
+  1 event, 10 words                            │                                                                                                                         │
+  Wednesday 2 September                        │                                                                                                                         │
+  2 events, 15 words                           │                                                                                                                         │
+  August 2026 2                                │                                                                                                                         │
+  Sunday 30 August                             │                                                                                                                         │
+  1 event, 5 words                             │                                                                                                                         │
+  Saturday 29 August                           │                                                                                                                         │
+  1 event, 15 words                            │                                                                                                                         │
+  July 2026 1                                  │                                                                                                                         │
+  Monday 20 July                               │                                                                                                                         │
+  1 event, 5 words                             │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               └─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down pick a page   page up/down or the wheel scroll it   q quit                                                                   updates by itself 
+----- before action 5 ('8')
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System                                           Sun 10:00 
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                                                                                          
+ 4 pages of long-term memory    13 days in the journal                                                                                  read only, changes happen in chat 
+                                                                                                                                                                          
+LONG-TERM MEMORY 4                             ┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+  What I know about the captain                │ Tuesday 8 September                                                                                                     │
+  22 words, updated 3 hours ago                │ Tuesday 8 September 2026, 1 event, 14 words                                                                             │
+  Lessons learned                              ├─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+  12 words, updated just now                   │ alpha                                                                                                                   │
+  What Alpha knows about the captain           │   • The Alpha mate filed a decision for you: Decide the chapter five review point.                                      │
+  8 words, updated just now                    │                                                                                                                         │
+  Lessons Alpha learned                        │                                                                                                                         │
+  5 words, updated just now                    │                                                                                                                         │
+                                               │                                                                                                                         │
+DAILY JOURNAL 13                               │                                                                                                                         │
+  This week 1                                  │                                                                                                                         │
+  Friday 18 September                          │                                                                                                                         │
+  1 event, 5 words                             │                                                                                                                         │
+  September 2026 9                             │                                                                                                                         │
+  Saturday 12 September                        │                                                                                                                         │
+  1 event, 7 words                             │                                                                                                                         │
+  Wednesday 9 September                        │                                                                                                                         │
+  1 event, 12 words                            │                                                                                                                         │
+▸ Tuesday 8 September                          │                                                                                                                         │
+  1 event, 14 words                            │                                                                                                                         │
+  Monday 7 September                           │                                                                                                                         │
+  1 event, 7 words                             │                                                                                                                         │
+  Sunday 6 September                           │                                                                                                                         │
+  1 event, 14 words                            │                                                                                                                         │
+  Saturday 5 September                         │                                                                                                                         │
+  2 events, 10 words                           │                                                                                                                         │
+  Friday 4 September                           │                                                                                                                         │
+  1 event, 10 words                            │                                                                                                                         │
+  Thursday 3 September                         │                                                                                                                         │
+  1 event, 10 words                            │                                                                                                                         │
+  Wednesday 2 September                        │                                                                                                                         │
+  2 events, 15 words                           │                                                                                                                         │
+  August 2026 2                                │                                                                                                                         │
+  Sunday 30 August                             │                                                                                                                         │
+  1 event, 5 words                             │                                                                                                                         │
+  Saturday 29 August                           │                                                                                                                         │
+  1 event, 15 words                            │                                                                                                                         │
+  July 2026 1                                  │                                                                                                                         │
+  Monday 20 July                               │                                                                                                                         │
+  1 event, 5 words                             │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               └─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down pick a page   page up/down or the wheel scroll it   q quit                                                                   updates by itself 
+----- before action 6 ('\\x1b[6~')
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System                                           Sun 10:00 
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                                                                                          
+  All 6   Report 3   Decision 1   Link 2                                                                                                read only, changes happen in chat 
+                                                                                                                                                                          
+▸ Report: which quiz tool the alpha... 19 Sep  ┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+   Report   ■ alpha  534 words                 │  Report  Report: which quiz tool the alpha course should use                                                            │
+  The quiz stays private               18 Sep  │ Saturday 19 September 2026, 534 words, project alpha                                                                    │
+   Decision   ■ alpha  16 words                ├─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+  A study with no task                 17 Sep  │ Report: which quiz tool the alpha course should use                                                                     │
+   Report   8 words                            │                                                                                                                         │
+  Mate report: chapter PDFs text layer 15 Sep  │ The alpha course needs a quiz tool that students can open on a phone, that keeps answers private to the class, and that │
+   Report   ■ alpha  15 words                  │ the captain can grade without exporting a spreadsheet first. This paragraph is deliberately long so the reader must     │
+  Class Drive folder                           │ wrap it.                                                                                                                │
+   Link   ■ alpha  drive.example.org           │                                                                                                                         │
+  Status page                                  │ Findings                                                                                                                │
+   Link   ■ setup  status.example.org          │                                                                                                                         │
+                                               │   • Moodle quizzes already exist in the school account                                                                  │
+                                               │   • Google Forms is quick but leaks answers into a shared sheet                                                         │
+                                               │   • See the comparison sheet (https://example.org/quiz-compare) for scores                                              │
+                                               │     • A nested point about accessibility                                                                                │
+                                               │                                                                                                                         │
+                                               │ Steps we propose                                                                                                        │
+                                               │                                                                                                                         │
+                                               │   1. Keep Moodle for graded quizzes                                                                                     │
+                                               │   2. Use Forms only for anonymous polls                                                                                 │
+                                               │   3. Revisit in January                                                                                                 │
+                                               │                                                                                                                         │
+                                               │ Tool         │ Private │ Phone                                                                                          │
+                                               │ ─────────────┼─────────┼──────                                                                                          │
+                                               │ Moodle       │ yes     │ yes                                                                                            │
+                                               │ Google Forms │ no      │ yes                                                                                            │
+                                               │                                                                                                                         │
+                                               │ Details                                                                                                                 │
+                                               │   • Detail line 1 about the quiz review                                                                                 │
+                                               │   • Detail line 2 about the quiz review                                                                                 │
+                                               │   • Detail line 3 about the quiz review                                                                                 │
+                                               │   • Detail line 4 about the quiz review                                                                                 │
+                                               │   • Detail line 5 about the quiz review                                                                                 │
+                                               │   • Detail line 6 about the quiz review                                                                                 │
+                                               │   • Detail line 7 about the quiz review                                                                                 │
+                                               │   • Detail line 8 about the quiz review                                                                                 │
+                                               │   • Detail line 9 about the quiz review                                                                                 │
+                                               │   • Detail line 10 about the quiz review                                                                                │
+                                               │   • Detail line 11 about the quiz review                                                                                │
+                                               │   • Detail line 12 about the quiz review                                                                                │
+                                               │   • Detail line 13 about the quiz review                                                                                │
+                                               └─────────────────────────────────────────────────────────────────────────────────────────────────── lines 1 to 38 of 85 ─┘
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   left/right pick a kind   up/down pick a page   page up/down or the wheel scroll it   q quit                                          updates by itself 
+----- before action 7 ('\\x1b[<65;100;25M')
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System                                           Sun 10:00 
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                                                                                          
+  All 6   Report 3   Decision 1   Link 2                                                                                                read only, changes happen in chat 
+                                                                                                                                                                          
+▸ Report: which quiz tool the alpha... 19 Sep  ┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+   Report   ■ alpha  534 words                 │  Report  Report: which quiz tool the alpha course should use                                                            │
+  The quiz stays private               18 Sep  │ Saturday 19 September 2026, 534 words, project alpha                                                                    │
+   Decision   ■ alpha  16 words                ├─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+  A study with no task                 17 Sep  │   • Detail line 12 about the quiz review                                                                                │
+   Report   8 words                            │   • Detail line 13 about the quiz review                                                                                │
+  Mate report: chapter PDFs text layer 15 Sep  │   • Detail line 14 about the quiz review                                                                                │
+   Report   ■ alpha  15 words                  │   • Detail line 15 about the quiz review                                                                                │
+  Class Drive folder                           │   • Detail line 16 about the quiz review                                                                                │
+   Link   ■ alpha  drive.example.org           │   • Detail line 17 about the quiz review                                                                                │
+  Status page                                  │   • Detail line 18 about the quiz review                                                                                │
+   Link   ■ setup  status.example.org          │   • Detail line 19 about the quiz review                                                                                │
+                                               │   • Detail line 20 about the quiz review                                                                                │
+                                               │   • Detail line 21 about the quiz review                                                                                │
+                                               │   • Detail line 22 about the quiz review                                                                                │
+                                               │   • Detail line 23 about the quiz review                                                                                │
+                                               │   • Detail line 24 about the quiz review                                                                                │
+                                               │   • Detail line 25 about the quiz review                                                                                │
+                                               │   • Detail line 26 about the quiz review                                                                                │
+                                               │   • Detail line 27 about the quiz review                                                                                │
+                                               │   • Detail line 28 about the quiz review                                                                                │
+                                               │   • Detail line 29 about the quiz review                                                                                │
+                                               │   • Detail line 30 about the quiz review                                                                                │
+                                               │   • Detail line 31 about the quiz review                                                                                │
+                                               │   • Detail line 32 about the quiz review                                                                                │
+                                               │   • Detail line 33 about the quiz review                                                                                │
+                                               │   • Detail line 34 about the quiz review                                                                                │
+                                               │   • Detail line 35 about the quiz review                                                                                │
+                                               │   • Detail line 36 about the quiz review                                                                                │
+                                               │   • Detail line 37 about the quiz review                                                                                │
+                                               │   • Detail line 38 about the quiz review                                                                                │
+                                               │   • Detail line 39 about the quiz review                                                                                │
+                                               │   • Detail line 40 about the quiz review                                                                                │
+                                               │   • Detail line 41 about the quiz review                                                                                │
+                                               │   • Detail line 42 about the quiz review                                                                                │
+                                               │   • Detail line 43 about the quiz review                                                                                │
+                                               │   • Detail line 44 about the quiz review                                                                                │
+                                               │   • Detail line 45 about the quiz review                                                                                │
+                                               │   • Detail line 46 about the quiz review                                                                                │
+                                               │   • Detail line 47 about the quiz review                                                                                │
+                                               │   • Detail line 48 about the quiz review                                                                                │
+                                               │   • Detail line 49 about the quiz review                                                                                │
+                                               └────────────────────────────────────────────────────────────────────────────────────────────────── lines 37 to 74 of 85 ─┘
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   left/right pick a kind   up/down pick a page   page up/down or the wheel scroll it   q quit                                          updates by itself 
+----- before action 8 ('\\x1b[<66;100;25M\\x1b[<67;100;25M')
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System                                           Sun 10:00 
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                                                                                          
+  All 6   Report 3   Decision 1   Link 2                                                                                                read only, changes happen in chat 
+                                                                                                                                                                          
+▸ Report: which quiz tool the alpha... 19 Sep  ┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+   Report   ■ alpha  534 words                 │  Report  Report: which quiz tool the alpha course should use                                                            │
+  The quiz stays private               18 Sep  │ Saturday 19 September 2026, 534 words, project alpha                                                                    │
+   Decision   ■ alpha  16 words                ├─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+  A study with no task                 17 Sep  │   • Detail line 15 about the quiz review                                                                                │
+   Report   8 words                            │   • Detail line 16 about the quiz review                                                                                │
+  Mate report: chapter PDFs text layer 15 Sep  │   • Detail line 17 about the quiz review                                                                                │
+   Report   ■ alpha  15 words                  │   • Detail line 18 about the quiz review                                                                                │
+  Class Drive folder                           │   • Detail line 19 about the quiz review                                                                                │
+   Link   ■ alpha  drive.example.org           │   • Detail line 20 about the quiz review                                                                                │
+  Status page                                  │   • Detail line 21 about the quiz review                                                                                │
+   Link   ■ setup  status.example.org          │   • Detail line 22 about the quiz review                                                                                │
+                                               │   • Detail line 23 about the quiz review                                                                                │
+                                               │   • Detail line 24 about the quiz review                                                                                │
+                                               │   • Detail line 25 about the quiz review                                                                                │
+                                               │   • Detail line 26 about the quiz review                                                                                │
+                                               │   • Detail line 27 about the quiz review                                                                                │
+                                               │   • Detail line 28 about the quiz review                                                                                │
+                                               │   • Detail line 29 about the quiz review                                                                                │
+                                               │   • Detail line 30 about the quiz review                                                                                │
+                                               │   • Detail line 31 about the quiz review                                                                                │
+                                               │   • Detail line 32 about the quiz review                                                                                │
+                                               │   • Detail line 33 about the quiz review                                                                                │
+                                               │   • Detail line 34 about the quiz review                                                                                │
+                                               │   • Detail line 35 about the quiz review                                                                                │
+                                               │   • Detail line 36 about the quiz review                                                                                │
+                                               │   • Detail line 37 about the quiz review                                                                                │
+                                               │   • Detail line 38 about the quiz review                                                                                │
+                                               │   • Detail line 39 about the quiz review                                                                                │
+                                               │   • Detail line 40 about the quiz review                                                                                │
+                                               │   • Detail line 41 about the quiz review                                                                                │
+                                               │   • Detail line 42 about the quiz review                                                                                │
+                                               │   • Detail line 43 about the quiz review                                                                                │
+                                               │   • Detail line 44 about the quiz review                                                                                │
+                                               │   • Detail line 45 about the quiz review                                                                                │
+                                               │   • Detail line 46 about the quiz review                                                                                │
+                                               │   • Detail line 47 about the quiz review                                                                                │
+                                               │   • Detail line 48 about the quiz review                                                                                │
+                                               │   • Detail line 49 about the quiz review                                                                                │
+                                               │   • Detail line 50 about the quiz review                                                                                │
+                                               │   • Detail line 51 about the quiz review                                                                                │
+                                               │   • Detail line 52 about the quiz review                                                                                │
+                                               └────────────────────────────────────────────────────────────────────────────────────────────────── lines 40 to 77 of 85 ─┘
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   left/right pick a kind   up/down pick a page   page up/down or the wheel scroll it   q quit                                          updates by itself 
+----- before action 9 ('\\x1b[5~')
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System                                           Sun 10:00 
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                                                                                          
+  All 6   Report 3   Decision 1   Link 2                                                                                                read only, changes happen in chat 
+                                                                                                                                                                          
+▸ Report: which quiz tool the alpha... 19 Sep  ┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+   Report   ■ alpha  534 words                 │  Report  Report: which quiz tool the alpha course should use                                                            │
+  The quiz stays private               18 Sep  │ Saturday 19 September 2026, 534 words, project alpha                                                                    │
+   Decision   ■ alpha  16 words                ├─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+  A study with no task                 17 Sep  │   • Detail line 15 about the quiz review                                                                                │
+   Report   8 words                            │   • Detail line 16 about the quiz review                                                                                │
+  Mate report: chapter PDFs text layer 15 Sep  │   • Detail line 17 about the quiz review                                                                                │
+   Report   ■ alpha  15 words                  │   • Detail line 18 about the quiz review                                                                                │
+  Class Drive folder                           │   • Detail line 19 about the quiz review                                                                                │
+   Link   ■ alpha  drive.example.org           │   • Detail line 20 about the quiz review                                                                                │
+  Status page                                  │   • Detail line 21 about the quiz review                                                                                │
+   Link   ■ setup  status.example.org          │   • Detail line 22 about the quiz review                                                                                │
+                                               │   • Detail line 23 about the quiz review                                                                                │
+                                               │   • Detail line 24 about the quiz review                                                                                │
+                                               │   • Detail line 25 about the quiz review                                                                                │
+                                               │   • Detail line 26 about the quiz review                                                                                │
+                                               │   • Detail line 27 about the quiz review                                                                                │
+                                               │   • Detail line 28 about the quiz review                                                                                │
+                                               │   • Detail line 29 about the quiz review                                                                                │
+                                               │   • Detail line 30 about the quiz review                                                                                │
+                                               │   • Detail line 31 about the quiz review                                                                                │
+                                               │   • Detail line 32 about the quiz review                                                                                │
+                                               │   • Detail line 33 about the quiz review                                                                                │
+                                               │   • Detail line 34 about the quiz review                                                                                │
+                                               │   • Detail line 35 about the quiz review                                                                                │
+                                               │   • Detail line 36 about the quiz review                                                                                │
+                                               │   • Detail line 37 about the quiz review                                                                                │
+                                               │   • Detail line 38 about the quiz review                                                                                │
+                                               │   • Detail line 39 about the quiz review                                                                                │
+                                               │   • Detail line 40 about the quiz review                                                                                │
+                                               │   • Detail line 41 about the quiz review                                                                                │
+                                               │   • Detail line 42 about the quiz review                                                                                │
+                                               │   • Detail line 43 about the quiz review                                                                                │
+                                               │   • Detail line 44 about the quiz review                                                                                │
+                                               │   • Detail line 45 about the quiz review                                                                                │
+                                               │   • Detail line 46 about the quiz review                                                                                │
+                                               │   • Detail line 47 about the quiz review                                                                                │
+                                               │   • Detail line 48 about the quiz review                                                                                │
+                                               │   • Detail line 49 about the quiz review                                                                                │
+                                               │   • Detail line 50 about the quiz review                                                                                │
+                                               │   • Detail line 51 about the quiz review                                                                                │
+                                               │   • Detail line 52 about the quiz review                                                                                │
+                                               └────────────────────────────────────────────────────────────────────────────────────────────────── lines 40 to 77 of 85 ─┘
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   left/right pick a kind   up/down pick a page   page up/down or the wheel scroll it   q quit                                          updates by itself 
+----- before action 10 ('\\x1b[C')
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System                                           Sun 10:00 
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                                                                                          
+  All 6   Report 3   Decision 1   Link 2                                                                                                read only, changes happen in chat 
+                                                                                                                                                                          
+▸ Report: which quiz tool the alpha... 19 Sep  ┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+   Report   ■ alpha  534 words                 │  Report  Report: which quiz tool the alpha course should use                                                            │
+  The quiz stays private               18 Sep  │ Saturday 19 September 2026, 534 words, project alpha                                                                    │
+   Decision   ■ alpha  16 words                ├─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+  A study with no task                 17 Sep  │ the captain can grade without exporting a spreadsheet first. This paragraph is deliberately long so the reader must     │
+   Report   8 words                            │ wrap it.                                                                                                                │
+  Mate report: chapter PDFs text layer 15 Sep  │                                                                                                                         │
+   Report   ■ alpha  15 words                  │ Findings                                                                                                                │
+  Class Drive folder                           │                                                                                                                         │
+   Link   ■ alpha  drive.example.org           │   • Moodle quizzes already exist in the school account                                                                  │
+  Status page                                  │   • Google Forms is quick but leaks answers into a shared sheet                                                         │
+   Link   ■ setup  status.example.org          │   • See the comparison sheet (https://example.org/quiz-compare) for scores                                              │
+                                               │     • A nested point about accessibility                                                                                │
+                                               │                                                                                                                         │
+                                               │ Steps we propose                                                                                                        │
+                                               │                                                                                                                         │
+                                               │   1. Keep Moodle for graded quizzes                                                                                     │
+                                               │   2. Use Forms only for anonymous polls                                                                                 │
+                                               │   3. Revisit in January                                                                                                 │
+                                               │                                                                                                                         │
+                                               │ Tool         │ Private │ Phone                                                                                          │
+                                               │ ─────────────┼─────────┼──────                                                                                          │
+                                               │ Moodle       │ yes     │ yes                                                                                            │
+                                               │ Google Forms │ no      │ yes                                                                                            │
+                                               │                                                                                                                         │
+                                               │ Details                                                                                                                 │
+                                               │   • Detail line 1 about the quiz review                                                                                 │
+                                               │   • Detail line 2 about the quiz review                                                                                 │
+                                               │   • Detail line 3 about the quiz review                                                                                 │
+                                               │   • Detail line 4 about the quiz review                                                                                 │
+                                               │   • Detail line 5 about the quiz review                                                                                 │
+                                               │   • Detail line 6 about the quiz review                                                                                 │
+                                               │   • Detail line 7 about the quiz review                                                                                 │
+                                               │   • Detail line 8 about the quiz review                                                                                 │
+                                               │   • Detail line 9 about the quiz review                                                                                 │
+                                               │   • Detail line 10 about the quiz review                                                                                │
+                                               │   • Detail line 11 about the quiz review                                                                                │
+                                               │   • Detail line 12 about the quiz review                                                                                │
+                                               │   • Detail line 13 about the quiz review                                                                                │
+                                               │   • Detail line 14 about the quiz review                                                                                │
+                                               │   • Detail line 15 about the quiz review                                                                                │
+                                               │   • Detail line 16 about the quiz review                                                                                │
+                                               └─────────────────────────────────────────────────────────────────────────────────────────────────── lines 4 to 41 of 85 ─┘
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   left/right pick a kind   up/down pick a page   page up/down or the wheel scroll it   q quit                                          updates by itself 
+----- before action 11 ('\\x1b[C\\x1b[C')
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System                                           Sun 10:00 
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                                                                                          
+  All 6   Report 3   Decision 1   Link 2                                                                                                read only, changes happen in chat 
+                                                                                                                                                                          
+▸ Report: which quiz tool the alpha... 19 Sep  ┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+   Report   ■ alpha  534 words                 │  Report  Report: which quiz tool the alpha course should use                                                            │
+  A study with no task                 17 Sep  │ Saturday 19 September 2026, 534 words, project alpha                                                                    │
+   Report   8 words                            ├─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+  Mate report: chapter PDFs text layer 15 Sep  │ the captain can grade without exporting a spreadsheet first. This paragraph is deliberately long so the reader must     │
+   Report   ■ alpha  15 words                  │ wrap it.                                                                                                                │
+                                               │                                                                                                                         │
+                                               │ Findings                                                                                                                │
+                                               │                                                                                                                         │
+                                               │   • Moodle quizzes already exist in the school account                                                                  │
+                                               │   • Google Forms is quick but leaks answers into a shared sheet                                                         │
+                                               │   • See the comparison sheet (https://example.org/quiz-compare) for scores                                              │
+                                               │     • A nested point about accessibility                                                                                │
+                                               │                                                                                                                         │
+                                               │ Steps we propose                                                                                                        │
+                                               │                                                                                                                         │
+                                               │   1. Keep Moodle for graded quizzes                                                                                     │
+                                               │   2. Use Forms only for anonymous polls                                                                                 │
+                                               │   3. Revisit in January                                                                                                 │
+                                               │                                                                                                                         │
+                                               │ Tool         │ Private │ Phone                                                                                          │
+                                               │ ─────────────┼─────────┼──────                                                                                          │
+                                               │ Moodle       │ yes     │ yes                                                                                            │
+                                               │ Google Forms │ no      │ yes                                                                                            │
+                                               │                                                                                                                         │
+                                               │ Details                                                                                                                 │
+                                               │   • Detail line 1 about the quiz review                                                                                 │
+                                               │   • Detail line 2 about the quiz review                                                                                 │
+                                               │   • Detail line 3 about the quiz review                                                                                 │
+                                               │   • Detail line 4 about the quiz review                                                                                 │
+                                               │   • Detail line 5 about the quiz review                                                                                 │
+                                               │   • Detail line 6 about the quiz review                                                                                 │
+                                               │   • Detail line 7 about the quiz review                                                                                 │
+                                               │   • Detail line 8 about the quiz review                                                                                 │
+                                               │   • Detail line 9 about the quiz review                                                                                 │
+                                               │   • Detail line 10 about the quiz review                                                                                │
+                                               │   • Detail line 11 about the quiz review                                                                                │
+                                               │   • Detail line 12 about the quiz review                                                                                │
+                                               │   • Detail line 13 about the quiz review                                                                                │
+                                               │   • Detail line 14 about the quiz review                                                                                │
+                                               │   • Detail line 15 about the quiz review                                                                                │
+                                               │   • Detail line 16 about the quiz review                                                                                │
+                                               └─────────────────────────────────────────────────────────────────────────────────────────────────── lines 4 to 41 of 85 ─┘
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   left/right pick a kind   up/down pick a page   page up/down or the wheel scroll it   q quit                                          updates by itself 
+----- before action 12 ('\\x1b[B')
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System                                           Sun 10:00 
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                                                                                          
+  All 6   Report 3   Decision 1   Link 2                                                                                                read only, changes happen in chat 
+                                                                                                                                                                          
+▸ Class Drive folder                           ┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+   Link   ■ alpha  drive.example.org           │  Link  Class Drive folder                                                                                               │
+  Status page                                  │ A saved link for project alpha                                                                                          │
+   Link   ■ setup  status.example.org          ├─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+                                               │ Class Drive folder                                                                                                      │
+                                               │                                                                                                                         │
+                                               │ Project alpha                                                                                                           │
+                                               │                                                                                                                         │
+                                               │ The address, to copy or tap:                                                                                            │
+                                               │ https://drive.example.org/folders/abc123/a-rather-long-path/that-keeps-going                                            │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               └─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   left/right pick a kind   up/down pick a page   page up/down or the wheel scroll it   q quit                                          updates by itself 
+----- before action 13 ('\\x1b[D\\x1b[D\\x1b[D')
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System                                           Sun 10:00 
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                                                                                          
+  All 6   Report 3   Decision 1   Link 2                                                                                                read only, changes happen in chat 
+                                                                                                                                                                          
+  Class Drive folder                           ┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+   Link   ■ alpha  drive.example.org           │  Link  Status page                                                                                                      │
+▸ Status page                                  │ A saved link for the ship's own setup                                                                                   │
+   Link   ■ setup  status.example.org          ├─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+                                               │ Status page                                                                                                             │
+                                               │                                                                                                                         │
+                                               │ The ship's own setup                                                                                                    │
+                                               │                                                                                                                         │
+                                               │ The address, to copy or tap:                                                                                            │
+                                               │ https://status.example.org/                                                                                             │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               └─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   left/right pick a kind   up/down pick a page   page up/down or the wheel scroll it   q quit                                          updates by itself 
+----- before action 14 ('SH:bash /tmp/mcx.aWQU/add-today.sh')
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System                                           Sun 10:00 
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                                                                                          
+  All 6   Report 3   Decision 1   Link 2                                                                                                read only, changes happen in chat 
+                                                                                                                                                                          
+  Report: which quiz tool the alpha... 19 Sep  ┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+   Report   ■ alpha  534 words                 │  Link  Status page                                                                                                      │
+  The quiz stays private               18 Sep  │ A saved link for the ship's own setup                                                                                   │
+   Decision   ■ alpha  16 words                ├─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+  A study with no task                 17 Sep  │ Status page                                                                                                             │
+   Report   8 words                            │                                                                                                                         │
+  Mate report: chapter PDFs text layer 15 Sep  │ The ship's own setup                                                                                                    │
+   Report   ■ alpha  15 words                  │                                                                                                                         │
+  Class Drive folder                           │ The address, to copy or tap:                                                                                            │
+   Link   ■ alpha  drive.example.org           │ https://status.example.org/                                                                                             │
+▸ Status page                                  │                                                                                                                         │
+   Link   ■ setup  status.example.org          │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               └─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   left/right pick a kind   up/down pick a page   page up/down or the wheel scroll it   q quit                                          updates by itself 
+----- before action 15 ('7')
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System                                           Sun 10:00 
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                                                                                          
+  All 6   Report 3   Decision 1   Link 2                                                                                                read only, changes happen in chat 
+                                                                                                                                                                          
+  Report: which quiz tool the alpha... 19 Sep  ┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+   Report   ■ alpha  534 words                 │  Link  Status page                                                                                                      │
+  The quiz stays private               18 Sep  │ A saved link for the ship's own setup                                                                                   │
+   Decision   ■ alpha  16 words                ├─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+  A study with no task                 17 Sep  │ Status page                                                                                                             │
+   Report   8 words                            │                                                                                                                         │
+  Mate report: chapter PDFs text layer 15 Sep  │ The ship's own setup                                                                                                    │
+   Report   ■ alpha  15 words                  │                                                                                                                         │
+  Class Drive folder                           │ The address, to copy or tap:                                                                                            │
+   Link   ■ alpha  drive.example.org           │ https://status.example.org/                                                                                             │
+▸ Status page                                  │                                                                                                                         │
+   Link   ■ setup  status.example.org          │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               └─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   left/right pick a kind   up/down pick a page   page up/down or the wheel scroll it   q quit                                          updates by itself 
+----- before action 16 ('\\x1b[<0;60;1M')
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System                                           Sun 10:00 
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                                                                                          
+ 4 pages of long-term memory    14 days in the journal                                                                                  read only, changes happen in chat 
+                                                                                                                                                                          
+LONG-TERM MEMORY 4                             ┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+  What I know about the captain                │ Tuesday 8 September                                                                                                     │
+  22 words, updated 3 hours ago                │ Tuesday 8 September 2026, 1 event, 14 words                                                                             │
+  Lessons learned                              ├─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+  12 words, updated just now                   │ alpha                                                                                                                   │
+  What Alpha knows about the captain           │   • The Alpha mate filed a decision for you: Decide the chapter five review point.                                      │
+  8 words, updated just now                    │                                                                                                                         │
+  Lessons Alpha learned                        │                                                                                                                         │
+  5 words, updated just now                    │                                                                                                                         │
+                                               │                                                                                                                         │
+DAILY JOURNAL 14                               │                                                                                                                         │
+  Today 1                                      │                                                                                                                         │
+  Sunday 20 September                          │                                                                                                                         │
+  1 event, 6 words                             │                                                                                                                         │
+  This week 1                                  │                                                                                                                         │
+  Friday 18 September                          │                                                                                                                         │
+  1 event, 5 words                             │                                                                                                                         │
+  September 2026 9                             │                                                                                                                         │
+  Saturday 12 September                        │                                                                                                                         │
+  1 event, 7 words                             │                                                                                                                         │
+  Wednesday 9 September                        │                                                                                                                         │
+  1 event, 12 words                            │                                                                                                                         │
+▸ Tuesday 8 September                          │                                                                                                                         │
+  1 event, 14 words                            │                                                                                                                         │
+  Monday 7 September                           │                                                                                                                         │
+  1 event, 7 words                             │                                                                                                                         │
+  Sunday 6 September                           │                                                                                                                         │
+  1 event, 14 words                            │                                                                                                                         │
+  Saturday 5 September                         │                                                                                                                         │
+  2 events, 10 words                           │                                                                                                                         │
+  Friday 4 September                           │                                                                                                                         │
+  1 event, 10 words                            │                                                                                                                         │
+  Thursday 3 September                         │                                                                                                                         │
+  1 event, 10 words                            │                                                                                                                         │
+  Wednesday 2 September                        │                                                                                                                         │
+  2 events, 15 words                           │                                                                                                                         │
+  August 2026 2                                │                                                                                                                         │
+  Sunday 30 August                             │                                                                                                                         │
+  1 event, 5 words                             │                                                                                                                         │
+  Saturday 29 August                           │                                                                                                                         │
+  1 event, 15 words                            │                                                                                                                         │
+  July 2026 1                                  │                                                                                                                         │
+                                 1 more below  └─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down pick a page   page up/down or the wheel scroll it   q quit                                                                   updates by itself 
+----- before action 17 ('q')
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System                                           Sun 10:00 
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                                                                                          
+ 2 projects    1 active    0 parked    1 quiet                                                                                       real list, same one the Bridge reads 
+                                                                                                                                                                          
+┌─────────────────────────────────────────────────────┐ ┌─────────────────────────────────────────────────────┐ ┌─────────────────────────────────────────────────────┐   
+│ alpha                                       Active  │ │ beta                                         Quiet  │ │ The setup itself                             Quiet  │   
+│ Alpha course materials for a class; decks and notes │ │ Beta outreach programme, delivered in modules       │ │ Housekeeping that belongs to no project, and work   │   
+│                                                     │ │                                                     │ │ on the first mate itself.                           │   
+│ 2 waiting on you         2 queued                   │ │ 1 waiting on you         2 queued                   │ │ 1 waiting on you         1 queued                   │   
+│ 1 in flight              2 done this month          │ │ 0 in flight              2 done this month          │ │ 0 in flight              0 done this month          │   
+│ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 29%  2/7 │ │ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 40%  2/5 │ │ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0%  0/2 │   
+│ ■ Alpha in charge                                   │ │ ■ Denver in charge                                  │ │ ■ Denver in charge                                  │   
+└─────────────────────────────────────────────────────┘ └─────────────────────────────────────────────────────┘ └─────────────────────────────────────────────────────┘   
+                                                                                                                                                                          
+─ WAITING ON YOU FOR ALPHA ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   do      Choose the quiz format                                                                                                                                   2 Sep 
+   decide  Decide the chapter five review point                                                                                                                     8 Sep 
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down pick a project   p pause   q quit                                                                                            updates by itself 

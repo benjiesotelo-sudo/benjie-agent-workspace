@@ -1,0 +1,50 @@
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System                                           Sun 10:00
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+  All 6   Report 3   Decision 1   Link 2                                                                                                read only, changes happen in chat
+
+▸ Report: which quiz tool the alpha... 19 Sep  ┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+   Report   ■ alpha  534 words                 │  Report  Report: which quiz tool the alpha course should use                                                            │
+  The quiz stays private               18 Sep  │ Saturday 19 September 2026, 534 words, project alpha                                                                    │
+   Decision   ■ alpha  16 words                ├─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+  A study with no task                 17 Sep  │ Report: which quiz tool the alpha course should use                                                                     │
+   Report   8 words                            │                                                                                                                         │
+  Mate report: chapter PDFs text layer 15 Sep  │ The alpha course needs a quiz tool that students can open on a phone, that keeps answers private to the class, and that │
+   Report   ■ alpha  15 words                  │ the captain can grade without exporting a spreadsheet first. This paragraph is deliberately long so the reader must     │
+  Class Drive folder                           │ wrap it.                                                                                                                │
+   Link   ■ alpha  drive.example.org           │                                                                                                                         │
+  Status page                                  │ Findings                                                                                                                │
+   Link   ■ setup  status.example.org          │                                                                                                                         │
+                                               │   • Moodle quizzes already exist in the school account                                                                  │
+                                               │   • Google Forms is quick but leaks answers into a shared sheet                                                         │
+                                               │   • See the comparison sheet (https://example.org/quiz-compare) for scores                                              │
+                                               │     • A nested point about accessibility                                                                                │
+                                               │                                                                                                                         │
+                                               │ Steps we propose                                                                                                        │
+                                               │                                                                                                                         │
+                                               │   1. Keep Moodle for graded quizzes                                                                                     │
+                                               │   2. Use Forms only for anonymous polls                                                                                 │
+                                               │   3. Revisit in January                                                                                                 │
+                                               │                                                                                                                         │
+                                               │ Tool         │ Private │ Phone                                                                                          │
+                                               │ ─────────────┼─────────┼──────                                                                                          │
+                                               │ Moodle       │ yes     │ yes                                                                                            │
+                                               │ Google Forms │ no      │ yes                                                                                            │
+                                               │                                                                                                                         │
+                                               │ Details                                                                                                                 │
+                                               │   • Detail line 1 about the quiz review                                                                                 │
+                                               │   • Detail line 2 about the quiz review                                                                                 │
+                                               │   • Detail line 3 about the quiz review                                                                                 │
+                                               │   • Detail line 4 about the quiz review                                                                                 │
+                                               │   • Detail line 5 about the quiz review                                                                                 │
+                                               │   • Detail line 6 about the quiz review                                                                                 │
+                                               │   • Detail line 7 about the quiz review                                                                                 │
+                                               │   • Detail line 8 about the quiz review                                                                                 │
+                                               │   • Detail line 9 about the quiz review                                                                                 │
+                                               │   • Detail line 10 about the quiz review                                                                                │
+                                               │   • Detail line 11 about the quiz review                                                                                │
+                                               │   • Detail line 12 about the quiz review                                                                                │
+                                               │   • Detail line 13 about the quiz review                                                                                │
+                                               └─────────────────────────────────────────────────────────────────────────────────────────────────── lines 1 to 38 of 85 ─┘
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   left/right pick a kind   up/down pick a page   page up/down or the wheel scroll it   q quit                                          updates by itself
