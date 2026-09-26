@@ -1,0 +1,36 @@
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar         Tue 10:00
+────────────────────────────────────────────────────────────────────────────────────────────────
+
+  Week │ Month │ Year     ◂   1 to 5 October   ▸    next week   back to today   0 done, 1 due
+
+┌─ ALWAYS RUNNING ─────────────────────────────────────────────────────────────────────────────┐
+│ ● Bridge running    ● Mission Control off    ● Alpha asleep                                  │
+└──────────────────────────────────────────────────────────────────────────────────────────────┘
+
+ Thu 1 Oct        │ Fri 2            │ Sat 3            │ Sun 4            │ Mon 5
+──────────────────┼──────────────────┼──────────────────┼──────────────────┼──────────────────
+ ┌ beta ─── due ┐ │ nothing due      │ nothing due      │ nothing due      │ nothing due
+ │ Hand in the  │ │                  │                  │                  │
+ │ marks on...  │ │                  │                  │                  │
+ └──────────────┘ │                  │                  │                  │
+                  │                  │                  │                  │
+                  │                  │                  │                  │
+                  │                  │                  │                  │
+                  │                  │                  │                  │
+                  │                  │                  │                  │
+                  │                  │                  │                  │
+                  │                  │                  │                  │
+                  │                  │                  │                  │
+                  │                  │                  │                  │
+                  │                  │                  │                  │
+                  │                  │                  │                  │
+                  │                  │                  │                  │
+                  │                  │                  │                  │
+                  │                  │                  │                  │
+                  │                  │                  │                  │
+                  │                  │                  │                  │
+                  │                  │                  │                  │
+                  │                  │                  │                  │
+                  │                  │                  │                  │
+────────────────────────────────────────────────────────────────────────────────────────────────
+ left/right earlier or later   t today   v week, month or year   1-9 swit...  updates by itself
