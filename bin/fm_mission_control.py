@@ -132,7 +132,8 @@ amber or red dot (grey until first read): this Mac (up time, load, memory,
 free disk, the tailnet), crew monitoring (the watcher's beat age, amber past
 five minutes and red past fifteen while work is under way, amber at most
 during the first mate's own turn; away mode; queued wake notifications), the
-crew's counts, each second mate's window and last home change, the Bridge and
+crew's counts with the merge switch Controls sets (bin/fm_merge_switch.py,
+only read here), each second mate's window and last home change, the Bridge and
 Mission Control (their own `status` commands), the GitHub sign-in, and tool
 versions. SystemProbe reads files every SYSTEM_FAST seconds and runs the
 commands every SYSTEM_SLOW seconds, each read-only with a timeout, in threads
@@ -165,6 +166,7 @@ import unicodedata
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import fm_bridge as bridge  # noqa: E402  - the one owner of the record readers
+import fm_merge_switch as merge_switch  # noqa: E402  - the one owner of the merge switch's file
 
 AGENT_POLL_SECONDS = 2.0
 SERVICES_EVERY = 10.0
@@ -3069,6 +3071,7 @@ def read_fast(home, mates):
         "beat_age": max(0.0, now - beat) if beat is not None else None,
         "supervision_needed": bool(sources) or "x-watch.check.sh" in names or any(n.endswith(".meta") for n in names),
         "away": ".afk" in names, "queued": queued, "mates": changed,
+        "merge_switch": {k: v for k, v in merge_switch.read(home).items() if k in ("state", "error")},
     }
 
 
@@ -3276,6 +3279,16 @@ def system_cards(r, crew, model, now, records_ok=True, agents_ok=True):
         lines.append(("amber", "Herdr's agent list could not be read, so some may look asleep", "Herdr's agent list"))
     if not records_ok:
         lines.append(("amber", "The ship's records could not be read just now", "the ship's records"))
+    sw = r.get("merge_switch")
+    if sw is not None:
+        first = next((c["name"] for c in crew if c["kind"] == "first"), "the first mate")
+        if sw.get("error"):
+            lines.append(("amber", "Merge switch could not be read: %s" % sw["error"], "the merge switch"))
+        elif sw.get("state") == "partial":
+            lines.append(("amber", "Merge switch partly on: open Controls to turn it fully off", "the merge switch"))
+        else:
+            lines.append(("green", "Merge switch ON: %s may merge green pull requests on the workspace" % first
+                          if sw.get("state") == "on" else "Merge switch OFF: every merge waits for you"))
     card("Crew", "green", head, lines)
 
     # Second mates.
