@@ -446,6 +446,10 @@ for want in 'GitHub: the sign-in could not be checked' 'claude: could not be che
   'Tailnet could not be checked' 'Mission Control could not be checked'; do
   grep -q "$want" <<<"$LT" || fail "a missing command on the real read path reads: $want"
 done
+grep -q 'Second mates: windows could not be checked' <<<"$LT" \
+  || fail "with Herdr's agent list failing the Second mates head says the windows could not be checked"
+grep -q 'Alpha: window could not be checked' <<<"$LT" || fail "with Herdr failing a mate's window could not be checked"
+grep -q 'window closed' <<<"$LT" && fail "a failed agent list never reads as a closed window"
 cat > "$FAKEBIN/herdr-lab" <<SH
 #!/usr/bin/env bash
 [ "\$1 \$2" = "run lab1" ] || exit 1
@@ -500,6 +504,36 @@ SJ=$(sys_frame "$TMP_ROOT/none.json" "" json) || fail "unread json failed"
 [ "$(dot "$SJ" "Second mates")" = grey ] || fail "a second mate's window is grey before the first reads"
 [ "$(rack "$(mc "$HOME_DIR" frame --view office --size 170x50)")" = ok ] \
   || fail "the office without an agent list or readings leaves the system unchecked and the rack at ok"
+SJ=$(mc "$HOME_DIR" frame --readings "$TMP_ROOT/ok.json" --view system --size 170x50 --format json) \
+  || fail "readings before the first agent list failed"
+[ "$(dot "$SJ" "Second mates")" = grey ] || fail "a mate's window is grey until Herdr's agent list is read"
+[ "$(jq -r '.system.cards[] | select(.title == "Second mates") | .lines[0].text' <<<"$SJ")" \
+  = "Alpha: window not checked yet, home changed 3 minutes ago" ] \
+  || fail "before the agent list is read a mate's window is not checked yet"
+[ "$(jq -r .system.rack <<<"$SJ")" = ok ] || fail "an unread agent list does not raise the rack sign"
+PYTHONPATH="$ROOT/bin" python3 - <<'PY' || fail "the Second mates head counts only the windows it checked"
+import datetime
+import fm_mission_control as mc
+crew = [{"kind": "mate", "id": "a", "name": "Alpha", "pane": "w1:p1", "status": "sleep"},
+        {"kind": "mate", "id": "b", "name": "Beta", "pane": None, "status": "sleep"}]
+model = {"mates": [{"id": "a", "remote": False}, {"id": "b", "remote": False}],
+         "team": [{"id": "b", "readable": False}]}
+now = datetime.datetime(2026, 9, 20, 10, 0)
+def card(agents_ok):
+    got = mc.system_cards({"mates": {}}, crew, model, now, agents_ok=agents_ok)
+    return next(c for c in got["cards"] if c["title"] == "Second mates"), got["looks"]
+got, looks = card(True)
+assert got["head"] == "Second mates: all 1 window open", got
+assert [d for d, _ in got["lines"]] == ["green", "amber"] and looks == ["second mate Beta"], (got, looks)
+crew[0]["pane"] = None
+got, looks = card(True)
+assert got["head"] == "Second mates: 1 of 1 windows closed", got
+got, looks = card(None)
+assert got["head"] == "Second mates: not checked yet" and got["lines"][0] == ("grey", "Alpha: window not checked yet"), got
+got, looks = card(False)
+assert got["head"] == "Second mates: windows could not be checked", got
+assert got["lines"][0] == ("amber", "Alpha: window could not be checked"), got
+PY
 pass "before the first reads the view is grey and calm"
 
 L=$(mc "$HOME_DIR" frame --agents "$AGENTS" --view team)

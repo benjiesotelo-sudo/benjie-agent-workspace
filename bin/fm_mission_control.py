@@ -2048,7 +2048,9 @@ def system_cards(r, crew, model, now, records_ok=True, agents_ok=True):
     A key missing from r has not been read yet (grey); a None value could not be
     read. Ages in r are as of r["at"] (file reads) or r["slow_at"] (commands)
     when those are present, and grow by the time since, so a five-second read
-    still counts seconds; saved readings without them are as of now."""
+    still counts seconds; saved readings without them are as of now.
+    agents_ok is None until Herdr's agent list has been read once, False while
+    it cannot be read."""
     wall = time.time()
 
     def age(key, stamp, within=None):
@@ -2152,7 +2154,7 @@ def system_cards(r, crew, model, now, records_ok=True, agents_ok=True):
     head = "Crew: %d working, %d asleep, %s out" % (working, len(people) - working,
                                                      bridge._plural(interns, "intern"))
     lines = []
-    if not agents_ok:
+    if agents_ok is False:
         lines.append(("amber", "Herdr's agent list could not be read, so some may look asleep", "Herdr's agent list"))
     if not records_ok:
         lines.append(("amber", "The ship's records could not be read just now", "the ship's records"))
@@ -2162,7 +2164,7 @@ def system_cards(r, crew, model, now, records_ok=True, agents_ok=True):
     mates = [c for c in crew if c["kind"] == "mate"]
     rows = {m["id"]: m for m in model.get("mates") or []}
     team = {e["id"]: e for e in model.get("team") or []}
-    lines = []
+    lines, seen, down = [], 0, 0
     for c in mates:
         m = rows.get(c["id"], {})
         if m.get("remote"):
@@ -2179,22 +2181,29 @@ def system_cards(r, crew, model, now, records_ok=True, agents_ok=True):
         if not team.get(c["id"], {}).get("readable", True):
             lines.append(("amber", "%s: its records could not be read%s" % (c["name"], changed),
                           "second mate %s" % c["name"]))
-        elif c.get("pane"):
-            lines.append(("green", "%s: window open%s" % (c["name"], changed)))
+        elif agents_ok is None:
+            lines.append(("grey", "%s: window %s%s" % (c["name"], unread, changed)))
+        elif agents_ok is False:
+            lines.append(("amber", "%s: window could not be checked%s" % (c["name"], changed)))
         else:
-            lines.append(("red", "%s: window closed%s" % (c["name"], changed), "second mate %s" % c["name"]))
-    local = [ln for ln in lines if ln[0] != "grey"]
-    down = sum(1 for ln in local if ln[0] == "red")
+            seen += 1
+            if c.get("pane"):
+                lines.append(("green", "%s: window open%s" % (c["name"], changed)))
+            else:
+                down += 1
+                lines.append(("red", "%s: window closed%s" % (c["name"], changed), "second mate %s" % c["name"]))
     if not mates:
         head = "Second mates: none registered"
-    elif "mates" not in r and any(not rows.get(c["id"], {}).get("remote") for c in mates):
+    elif all(rows.get(c["id"], {}).get("remote") for c in mates):
+        head = "Second mates: all on other machines"
+    elif "mates" not in r or agents_ok is None:
         head = "Second mates: %s" % unread
     elif down:
-        head = "Second mates: %d of %d windows closed" % (down, len(local))
-    elif local:
-        head = "Second mates: all %s open" % bridge._plural(len(local), "window")
+        head = "Second mates: %d of %d windows closed" % (down, seen)
+    elif seen:
+        head = "Second mates: all %s open" % bridge._plural(seen, "window")
     else:
-        head = "Second mates: all on other machines"
+        head = "Second mates: windows could not be checked"
     card("Second mates", "grey" if head.endswith(unread) else "green", head, lines)
 
     # The Bridge page and Mission Control.
@@ -2715,7 +2724,8 @@ class Feed:
 
     def snapshot(self):
         with self.lock:
-            return self.gen, self.model, self.agents, self.model_error, self.agents_error, self.model_at
+            return (self.gen, self.model, self.agents, self.model_error, self.agents_error, self.model_at,
+                    self.agents_read)
 
     def _records_loop(self):
         while not self.stop.is_set():
@@ -2909,7 +2919,7 @@ def run(home, config_dir, herdr):
                 last_gen = None
                 term.write("\x1b[0m\x1b[2J")
                 dirty = True
-            gen, model, agents, model_err, agents_err, _at = feed.snapshot()
+            gen, model, agents, model_err, agents_err, _at, agents_read = feed.snapshot()
             now_m = time.monotonic()
             due = sleeper.due()
             if model is not None and (gen != last_gen or (due is not None and now_m >= due)):
@@ -2937,7 +2947,7 @@ def run(home, config_dir, herdr):
                 notice = agents_err
             cv, _small = compose(scene, renderer, ui, size[0], size[1], bridge._now(),
                                  records_ok=model_err is None, notice=notice, readings=probe.snapshot(),
-                                 agents_ok=agents_err is None)
+                                 agents_ok=False if agents_err else True if agents_read else None)
             cells = cv.cells()
             if prev is None or len(prev) != len(cells):
                 out = enc.diff(None, cells, cv.C)
@@ -3031,7 +3041,7 @@ def frame(home, config_dir, agents_text, view, cols, rows, fmt, session="default
     this machine once, and other views leave the system unchecked."""
     model = bridge.collect(home, config_dir, bridge._now())
     live = readings is None and view == "system"
-    agents_ok = True
+    agents_ok = True if agents_text else None
     if live and not agents_text:
         got = _run(list(herdr) + ["agent", "list"])
         agents_ok = bool(got and not got[0])
