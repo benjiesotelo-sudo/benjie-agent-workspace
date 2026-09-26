@@ -803,8 +803,14 @@ cat > "$PIC/data/pics/report.md" <<'MD'
 
 A line with a linked picture [![Status board](figures/fig2.png)](https://example.org/board) inline.
 
+## Results &amp; ![logo](figures/logo.png) <b>[today](https://example.org/today)</b>
+
+| Chart | Notes |
+|---|---|
+| ![Score chart](figures/c.png) | a &amp; b<br>c <b>bold</b> |
+
 <table>
-<tr><td align="center"><img src="shots/phone.png" width="300" alt="Phone screen while offline"></td></tr>
+<tr><td align="center"><img src="shots/phone.png" title="Tap to zoom" width="300" alt="Phone screen while offline"></td></tr>
 <tr><td align="center">Offline on a phone &amp; still scoring.</td></tr>
 </table>
 
@@ -824,7 +830,8 @@ for want in '│ picture: The staff Students table +│' \
   '│ A line with a linked picture picture: Status board inline\. +│' \
   '│ picture: Phone screen while offline +│' '│ Offline on a phone & still scoring\. +│' \
   '│ build\.py +│' '│ Keep <code> spans and a < b as written\. +│' '│ picture +│' \
-  '│ Replace <a path> and <id> before running\. +│'; do
+  '│ Replace <a path> and <id> before running\. +│' '│ Results & picture: logo today +│' \
+  '│ picture: Score chart │ a & b c bold +│'; do
   grep -Eq "$want" <<<"$P" || fail "the Docs reader shows: $want"
 done
 grep -Eq '\.png|figures|shots/|<t[dr]|</|<img|<details|<summary|align=|&amp;|note for the author|spanning two' <<<"$P" \

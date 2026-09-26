@@ -33,7 +33,7 @@ When Tailscale is not running it listens only on this Mac, and `status` says so.
 |---|---|
 | `1` to `9`, or tap a tab | Switch view |
 | up and down | Pick the next or previous thing in the view: an agent, a decision, a project card, a second mate or a page; on Tasks, Calendar and System they jump to the Office and pick an agent there |
-| Enter | On the Office and Team views, move your Herdr view to the picked agent's pane so you can talk to it; on Approvals, Memory and Docs it does nothing |
+| Enter | On the Office and Team views, move your Herdr view to the picked agent's pane so you can talk to it; on Tasks, Projects, Calendar and System it does the same for the agent picked in the Office; on Approvals, Memory and Docs it does nothing |
 | `p` | Pause or restart the office animation |
 | `q` | Quit |
 

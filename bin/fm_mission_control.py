@@ -2252,10 +2252,9 @@ def _home_records(data, snap):
 
 
 def _md_plain(text):
-    """A heading or title without Markdown marks or raw paths."""
-    text = re.sub(r"!?\[([^\]]*)\]\([^)]*\)", r"\1", text or "")
-    text = re.sub(r"(\*\*|__|`)", "", text)
-    return " ".join(_plain(text).split())
+    """A heading or title without Markdown marks, HTML or raw paths; a link reads as its label."""
+    text = re.sub(r"(?<![!\]])\[([^\[\]]*)\]\([^)]*\)", r"\1", text or "")
+    return " ".join(_plain("".join(t for t, _c, _b in _inline(text))).split())
 
 
 def _sentence(text):
@@ -2512,7 +2511,7 @@ def _inline(text, fg=BODY, bold=False):
         elif m.group("limg") is not None or m.group("img") is not None:
             runs.extend(_picture(m.group("limg") if m.group("limg") is not None else m.group("img")))
         elif m.group("himg"):
-            alt = re.search(r"\b(?:alt|title)\s*=\s*(\"[^\"]*\"|'[^']*')", m.group("himg"), re.I)
+            alt = re.search(r"\salt\s*=\s*(\"[^\"]*\"|'[^']*')", m.group("himg"), re.I)
             runs.extend(_picture(alt.group(1)[1:-1] if alt else ""))
         elif m.group("note"):
             pass
