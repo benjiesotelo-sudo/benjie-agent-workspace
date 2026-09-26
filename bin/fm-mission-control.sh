@@ -2,11 +2,12 @@
 # fm-mission-control.sh - Mission Control, the crew as a live read-only office.
 #
 # Mission Control draws the whole crew as an animated pixel-art office, plus a
-# task board, a card per project, the decisions waiting on the captain and a
-# week calendar, in one terminal pane; bin/fm_mission_control.py owns what it
-# reads, how the crew maps onto the office, and how frames are drawn. It is
-# read-only: it never writes a record, never sends keys or prompts to an agent,
-# and never starts or stops one.
+# task board, a card per project, the decisions waiting on the captain, a week
+# calendar and the health of the machine and the crew's plumbing, in one
+# terminal pane; bin/fm_mission_control.py owns what it reads, how the crew
+# maps onto the office, and how frames are drawn. It is read-only: it never
+# writes a record, never sends keys or prompts to an agent, and never starts or
+# stops one.
 #
 # Commands:
 #   run                     draw the screen in this terminal until q
@@ -16,11 +17,16 @@
 #   stop                    close that workspace
 #   status                  report whether the workspace exists and whether the
 #                           screen is running in it
-#   frame [--view <v>] [--size <cols>x<rows>] [--agents <file>] [--format text|json|ansi]
+#   frame [--view <v>] [--size <cols>x<rows>] [--agents <file>] [--readings <file>]
+#         [--format text|json|ansi]
 #                           print one frame from the records and a saved
 #                           `herdr agent list` file (tests, a quick look);
 #                           <v> is office, tasks, approvals, projects,
-#                           calendar, or a later view's name
+#                           calendar, system, or a later view's name.
+#                           --readings is a saved set of System readings;
+#                           without it the system view reads this machine and
+#                           Herdr once, and the other views leave the system
+#                           unchecked
 #
 # Keys while running: 1-9 switch view, p pauses the animation, q quits,
 # up/down pick an agent in the team list and Enter moves your Herdr view to
@@ -123,7 +129,7 @@ cmd_run() {
 }
 
 cmd_frame() {
-  exec python3 "$PY" frame --home "$FM_HOME" --config-dir "$CONFIG" "$@"
+  exec python3 "$PY" frame --home "$FM_HOME" --config-dir "$CONFIG" --herdr "$HERDR_CMD" "$@"
 }
 
 cmd_start() {

@@ -84,6 +84,19 @@ title with two different dates, a weekday that does not match, a short weekday
 such as Fri right before the date, numbers only, or a yearless date with no
 reading within half a year of today is skipped rather than guessed.
 
+SYSTEM. The machine and the crew's plumbing, one card each with a green,
+amber or red dot (grey until first read): this Mac (up time, load, memory,
+free disk, the tailnet), crew monitoring (the watcher's beat age, amber past
+five minutes and red past fifteen while work is under way, amber at most
+during the first mate's own turn; away mode; queued wake notifications), the
+crew's counts, each second mate's window and last home change, the Bridge and
+Mission Control (their own `status` commands), the GitHub sign-in, and tool
+versions. SystemProbe reads files every SYSTEM_FAST seconds and runs the
+commands every SYSTEM_SLOW seconds, each read-only with a timeout, in threads
+off the render loop; a command that is missing or fails reads "could not be
+checked". The office's rack sign shows the same health: " ok ", or "check" in
+amber when anything needs a look.
+
 DRAWING. Each character cell is two pixels: an upper half block with the top
 pixel as foreground and the bottom pixel as background, 24-bit colour when the
 terminal advertises it (COLORTERM truecolor or 24bit, a TERM containing
@@ -99,6 +112,7 @@ import math
 import os
 import re
 import select
+import shutil
 import signal
 import subprocess
 import sys
@@ -166,7 +180,7 @@ FEED_MIN_WIDTH = 24
 
 TABS = ["Office", "Tasks", "Approvals", "Projects", "Calendar", "Team", "Memory", "Docs", "System"]
 VIEWS = ["office", "tasks"] + [t.lower() for t in TABS[2:]]
-READY = ("office", "tasks", "approvals", "projects", "calendar")
+READY = ("office", "tasks", "approvals", "projects", "calendar", "system")
 COLUMNS = (("waiting", "WAITING ON YOU", AMBER), ("queued", "QUEUED", INK),
            ("in_flight", "IN FLIGHT", GREEN), ("done", "DONE THIS MONTH", DIM))
 SHIP_TAG = "setup"
@@ -1069,7 +1083,7 @@ class Renderer:
         self._static_key = None
         self._static = None
 
-    def office(self, scene, now, records_ok):
+    def office(self, scene, now, healthy):
         L = scene.layout
         tick = scene.tick
         info = {k: "retired" for k in scene.retired if scene.retired[k].state == "retired"}
@@ -1093,7 +1107,7 @@ class Renderer:
             on = ((tick >> 2) + j * 3) % 7 != 0
             o.p(90, 11 + j * 2, GREEN if on else H("#1f5a3a"))
             o.p(92, 11 + j * 2, AMBER if (j == 2 and (tick >> 3) % 2) else H("#1f5a3a"))
-        o.text(88, 28, " ok " if records_ok else "late", GREEN if records_ok else AMBER)
+        o.text(88, 28, " ok " if healthy else "check", GREEN if healthy else AMBER)
         # Monitors: lit and scrolling for a seated worker, a standby light otherwise.
         for key, d in L.desks.items():
             a = scene.actors.get(key)
@@ -1294,13 +1308,15 @@ def _chrome(cv, ui, now):
         keys = " 1-9 switch view   up/down pick an agent   enter talk to it   p pause   q quit "
         if ui.view == "projects":
             keys = " 1-9 switch view   up/down pick a project   p pause   q quit "
+        elif ui.view == "system":
+            keys = " 1-9 switch view   files recheck every 5 s, commands every 5 min   q quit "
     cv.put(0, R - 1, clip(keys, C - len(tag) - 1), DIM)
     cv.put(C - len(tag), R - 1, tag, BG if ui.paused else GREEN, AMBER if ui.paused else None, True)
 
 
-def _office_screen(cv, ui, scene, renderer, now, records_ok, notice):
+def _office_screen(cv, ui, scene, renderer, now, healthy, notice):
     L = scene.layout
-    o = renderer.office(scene, now, records_ok)
+    o = renderer.office(scene, now, healthy)
     compose_office(cv, o)
     C, R = cv.C, cv.R
     rows = L.height // 2
@@ -1794,6 +1810,497 @@ def _approvals_screen(cv, ui, scene):
         r += 1
 
 
+# ---------------------------------------------------------------------------
+# System: the machine and the crew's plumbing, in plain words
+# ---------------------------------------------------------------------------
+
+SYSTEM_FAST = 5.0          # file and kernel reads
+SYSTEM_SLOW = 300.0        # commands: the tailnet, GitHub, tool versions, the two screens
+SYSTEM_TIMEOUT = 10        # seconds any one command may take
+BEAT_AMBER = 300           # the guards' own grace window for the watcher's beat
+BEAT_RED = 900
+DISK_AMBER = 20 * 1024 ** 3
+DISK_RED = 5 * 1024 ** 3
+RED = H("#f0616d")
+DOTS = {"green": GREEN, "amber": AMBER, "red": RED, "grey": DIMMER}
+TOOLS = ("no-mistakes", "herdr", "claude")
+SYS_CARD_W = 60           # two cards a row down to the narrowest pane, three from 184 columns
+_WORST = {"grey": 0, "green": 1, "amber": 2, "red": 3}
+
+
+def _run(argv, env=None):
+    """(returncode, stdout) of a short read-only command, or None when it cannot run."""
+    try:
+        proc = subprocess.run(argv, capture_output=True, text=True, timeout=SYSTEM_TIMEOUT, check=False,
+                              stdin=subprocess.DEVNULL, env=env)
+    except (OSError, subprocess.SubprocessError, ValueError):
+        return None
+    return proc.returncode, proc.stdout
+
+
+def _mtime(path):
+    try:
+        return os.stat(path).st_mtime
+    except OSError:
+        return None
+
+
+_MEMSIZE = []
+
+
+def _memsize():
+    """This Mac's total memory in bytes, read once."""
+    if not _MEMSIZE:
+        got = _run(["sysctl", "-n", "hw.memsize"])
+        if got and not got[0] and got[1].strip().isdigit():
+            _MEMSIZE.append(int(got[1]))
+    return _MEMSIZE[0] if _MEMSIZE else None
+
+
+def _memory():
+    """{"used", "total"} in bytes: app, wired and compressed pages, as Activity Monitor counts."""
+    try:
+        with open("/proc/meminfo", encoding="utf-8") as fh:
+            info = {ln.split(":")[0]: int(ln.split()[1]) * 1024 for ln in fh if ln.split()[1:2]}
+        return {"used": info["MemTotal"] - info["MemAvailable"], "total": info["MemTotal"]}
+    except (OSError, KeyError, ValueError, IndexError):
+        pass
+    total = _memsize()
+    vm = _run(["vm_stat"]) if total else None
+    if not vm or vm[0]:
+        return None
+    try:
+        page = int(re.search(r"page size of (\d+)", vm[1]).group(1))
+        pages = {k.strip(): int(v.strip().rstrip(".")) for k, v in
+                 (ln.split(":", 1) for ln in vm[1].splitlines()[1:] if ":" in ln)}
+        used = pages["Pages active"] + pages["Pages wired down"] + pages.get("Pages occupied by compressor", 0)
+        return {"used": used * page, "total": total}
+    except (AttributeError, KeyError, ValueError):
+        return None
+
+
+def _uptime():
+    try:
+        with open("/proc/uptime", encoding="utf-8") as fh:
+            return float(fh.read().split()[0])
+    except (OSError, ValueError, IndexError):
+        pass
+    out = _run(["sysctl", "-n", "kern.boottime"])
+    m = re.search(r"sec = (\d+)", out[1]) if out and not out[0] else None
+    return max(0.0, time.time() - int(m.group(1))) if m else None
+
+
+def _tailscale():
+    """The Tailscale command the Bridge itself would use, or None."""
+    for cand in (os.environ.get("FM_BRIDGE_TAILSCALE"), shutil.which("tailscale"),
+                 "/Applications/Tailscale.app/Contents/MacOS/Tailscale"):
+        if cand and os.access(cand, os.X_OK):
+            return cand
+    return None
+
+
+def _version(text):
+    m = re.search(r"\d+(\.\d+)+", text or "")
+    return m.group(0) if m else None
+
+
+def read_fast(home, mates):
+    """File and kernel reads; mates are the registry's rows, remote ones skipped."""
+    state = os.path.join(home, "state")
+    try:
+        names = os.listdir(state)
+    except OSError:
+        names = []
+    try:
+        sources = [n for n in os.listdir(os.path.join(state, "procevent")) if n.endswith(".source")]
+    except OSError:
+        sources = []
+    beat = _mtime(os.path.join(state, ".last-watcher-beat"))
+    now = time.time()
+    try:
+        with open(os.path.join(state, ".wake-queue"), encoding="utf-8", errors="replace") as fh:
+            queued = sum(1 for ln in fh if ln.strip())
+    except FileNotFoundError:
+        queued = 0
+    except OSError:
+        queued = None
+    try:
+        st = os.statvfs(home)
+        disk = {"free": st.f_bavail * st.f_frsize, "total": st.f_blocks * st.f_frsize}
+    except OSError:
+        disk = None
+    try:
+        load = list(os.getloadavg())
+    except OSError:
+        load = None
+    changed = {}
+    for m in mates:
+        if m.get("remote"):
+            continue
+        mstate = os.path.join(m["home"], "state")
+        stamps = [_mtime(os.path.join(m["home"], "data", "backlog.md")), _mtime(mstate)]
+        try:
+            stamps += [_mtime(os.path.join(mstate, n)) for n in os.listdir(mstate)
+                       if n.endswith((".status", ".meta"))]
+        except OSError:
+            pass
+        stamps = [s for s in stamps if s is not None]
+        changed[m["id"]] = max(0.0, now - max(stamps)) if stamps else None
+    return {
+        "at": now, "load": load, "cores": os.cpu_count() or 1, "memory": _memory(), "disk": disk,
+        "beat_age": max(0.0, now - beat) if beat is not None else None,
+        "supervision_needed": bool(sources) or "x-watch.check.sh" in names or any(n.endswith(".meta") for n in names),
+        "away": ".afk" in names, "queued": queued, "mates": changed,
+    }
+
+
+def _screen_status(argv, env):
+    """fm-bridge.sh status or fm-mission-control.sh status, read: running, address, bound locally."""
+    out = _run(argv, env)
+    if not out or out[0] or not out[1].startswith("running: "):
+        return None
+    text = out[1]
+    answers = re.search(r"^running: yes, answering on (http://\S+)", text, re.M)
+    tailnet = re.search(r"^tailscale: running, (http://\S+)", text, re.M)
+    if tailnet and re.search(r"^address: bound to the Tailscale address only$", text, re.M):
+        answers = tailnet
+    return {"running": text.startswith("running: yes"), "address": answers.group(1) if answers else None,
+            "local_only": "bound to 127.0.0.1 only" in text}
+
+
+def read_slow(home, herdr):
+    """Commands, each read-only with a short timeout."""
+    here = os.path.dirname(os.path.abspath(__file__))
+    env = dict(os.environ, FM_HOME=home, FM_MC_HERDR=" ".join(herdr))
+    ts, tailnet = _tailscale(), None
+    out = _run([ts, "status", "--json"]) if ts else None
+    if out and out[1].strip():
+        try:
+            tailnet = (json.loads(out[1]).get("BackendState") == "Running")
+        except (ValueError, AttributeError):
+            tailnet = None
+    gh = _run(["gh", "auth", "status"]) if shutil.which("gh") else None
+    tools = {}
+    for name in TOOLS:
+        argv = (herdr if name == "herdr" else [name]) + ["--version"]
+        got = _run(argv) if shutil.which(argv[0]) else None
+        tools[name] = _version(got[1]) if got and not got[0] else None
+    bridge_st = _screen_status([os.path.join(here, "fm-bridge.sh"), "status"], env)
+    mc_st = _screen_status([os.path.join(here, "fm-mission-control.sh"), "status"], env)
+    return {
+        "slow_at": time.time(), "uptime": _uptime(), "tailnet": tailnet,
+        "github": None if gh is None else gh[0] == 0, "tools": tools, "bridge": bridge_st,
+        "mission_control": None if mc_st is None else mc_st["running"],
+    }
+
+
+class SystemProbe:
+    """Two background loops: file reads every SYSTEM_FAST, commands every SYSTEM_SLOW."""
+
+    def __init__(self, home, herdr, mates):
+        self.home, self.herdr, self.mates = home, herdr, mates
+        self.lock = threading.Lock()
+        self.readings = {}
+        self.stop = threading.Event()
+
+    def start(self):
+        for fn, every in ((lambda: read_fast(self.home, self.mates()), SYSTEM_FAST),
+                          (lambda: read_slow(self.home, self.herdr), SYSTEM_SLOW)):
+            threading.Thread(target=self._loop, args=(fn, every), daemon=True).start()
+
+    def _loop(self, fn, every):
+        while not self.stop.is_set():
+            try:
+                got = fn()
+            except Exception:  # noqa: BLE001 - a failed read shows as could not be checked
+                got = {}
+            with self.lock:
+                self.readings = dict(self.readings, **got)
+            self.stop.wait(every)
+
+    def snapshot(self):
+        with self.lock:
+            return dict(self.readings)
+
+
+def _gb(n):
+    gb = n / 1024.0 ** 3
+    if gb < 1:
+        return "%d MB" % int(n / 1024.0 ** 2)
+    return "%.1f GB" % gb if gb < 10 else "%d GB" % int(gb + 0.5)
+
+
+def _span(seconds):
+    s = int(max(0, seconds))
+    for size, unit in ((86400, "day"), (3600, "hour"), (60, "minute")):
+        if s >= size:
+            return bridge._plural(s // size, unit)
+    return bridge._plural(s, "second")
+
+
+def _ago(seconds):
+    return "just now" if seconds < 2 else _span(seconds) + " ago"
+
+
+def system_cards(r, crew, model, now, records_ok=True, agents_ok=True):
+    """The System view's cards and what needs a look, from the readings r.
+
+    A key missing from r has not been read yet (grey); a None value could not be
+    read. Ages in r are as of r["at"] (file reads) or r["slow_at"] (commands)
+    when those are present, and grow by the time since, so a five-second read
+    still counts seconds; saved readings without them are as of now."""
+    wall = time.time()
+
+    def age(key, stamp, within=None):
+        v = (r if within is None else within).get(key)
+        return None if v is None else v + (max(0.0, wall - r[stamp]) if r.get(stamp) else 0.0)
+
+    cards = []
+
+    def card(title, dot, head, lines=(), look=None):
+        looks = ([look] if look and dot in ("amber", "red") else []) + \
+            [ln[2] for ln in lines if len(ln) > 2 and ln[2] and ln[0] in ("amber", "red")]
+        worst = max([dot] + [ln[0] for ln in lines if ln[0]], key=_WORST.get)
+        cards.append({"title": title, "dot": worst, "head": head,
+                      "lines": [(d, t) for d, t, *_ in lines], "looks": looks})
+
+    unread = "not checked yet"
+    # This Mac.
+    lines = []
+    if "uptime" not in r:
+        lines.append(("grey", "Up time: %s" % unread))
+    elif r.get("uptime") is None:
+        lines.append(("amber", "Up time could not be checked", "this Mac's up time"))
+    else:
+        up = age("uptime", "slow_at")
+        since = now - _dt.timedelta(seconds=up)
+        lines.append(("green", "Up since %s %d %s, %s" % (since.strftime("%a"), since.day,
+                                                          since.strftime("%b %H:%M"), _span(up))))
+    if "load" not in r:
+        lines.append(("grey", "Load, memory and disk: %s" % unread))
+    else:
+        load, cores = r.get("load"), r.get("cores") or 1
+        if load is None:
+            lines.append(("amber", "Processor load could not be checked", "processor load"))
+        else:
+            busy = load[1] > cores
+            lines.append(("amber" if busy else "green",
+                          "Processor load %.1f on %s%s" % (load[1], bridge._plural(cores, "core"),
+                                                          ", busier than it has cores" if busy else ""),
+                          "busy processor"))
+        mem = r.get("memory")
+        if not mem:
+            lines.append(("amber", "Memory in use could not be checked", "memory in use"))
+        else:
+            full = mem["used"] > 0.9 * mem["total"]
+            lines.append(("amber" if full else "green", "Memory: %s of %s in use" % (
+                _gb(mem["used"]), _gb(mem["total"])), "memory nearly full"))
+        disk = r.get("disk")
+        if not disk:
+            lines.append(("amber", "Free disk space could not be checked", "free disk space"))
+        else:
+            free = disk["free"]
+            dot = "red" if free < DISK_RED else "amber" if free < DISK_AMBER else "green"
+            lines.append((dot, "Disk: %s free of %s" % (_gb(free), _gb(disk["total"])), "low disk space"))
+    if "tailnet" not in r:
+        lines.append(("grey", "Tailnet: %s" % unread))
+    elif r.get("tailnet") is None:
+        lines.append(("amber", "Tailnet could not be checked", "the tailnet"))
+    elif r["tailnet"]:
+        lines.append(("green", "On the tailnet"))
+    else:
+        lines.append(("amber", "Not on the tailnet, so the iPad cannot reach it", "the tailnet"))
+    worst = max((ln[0] for ln in lines), key=_WORST.get)
+    card("This Mac", worst, {"green": "This Mac: healthy", "grey": "This Mac: checking",
+                             "amber": "This Mac: something needs a look",
+                             "red": "This Mac: something is wrong"}[worst], lines)
+
+    # Crew monitoring.
+    if "beat_age" not in r:
+        card("Crew monitoring", "grey", "Monitoring the crew: %s" % unread)
+    else:
+        beat = age("beat_age", "at")
+        needed = r.get("supervision_needed")
+        last = "last check %s" % _ago(beat) if beat is not None else "no check yet"
+        if not needed:
+            dot, head = "green", "Monitoring the crew: resting, no work under way, %s" % last
+        elif beat is None:
+            dot, head = "red", "Monitoring the crew: not running, and work is under way"
+        elif beat >= BEAT_AMBER and any(c["kind"] == "first" and c["status"] == "work" for c in crew):
+            # Between turns is when a Claude first mate's watcher runs, so a long turn ages the beat.
+            dot, head = "amber", "Monitoring the crew: paused for the first mate's turn, %s" % last
+        elif beat >= BEAT_RED:
+            dot, head = "red", "Monitoring the crew: stopped, %s" % last
+        elif beat >= BEAT_AMBER:
+            dot, head = "amber", "Monitoring the crew: slow, %s" % last
+        else:
+            dot, head = "green", "Monitoring the crew: healthy, %s" % last
+        q = r.get("queued")
+        lines = [("green", "Away mode is on: the first mate handles routine news alone" if r.get("away")
+                  else "Away mode is off")]
+        if q is None:
+            lines.append(("amber", "Queued notifications could not be checked", "queued notifications"))
+        else:
+            lines.append(("green", "No notifications waiting for the first mate" if not q else
+                          "%s waiting for the first mate" % bridge._plural(q, "notification")))
+        card("Crew monitoring", dot, head, lines, "crew monitoring")
+
+    # Crew.
+    people = [c for c in crew if c["kind"] in ("first", "mate")]
+    working = sum(1 for c in people if c["status"] == "work")
+    interns = sum(1 for c in crew if c["kind"] == "intern")
+    head = "Crew: %d working, %d asleep, %s out" % (working, len(people) - working,
+                                                     bridge._plural(interns, "intern"))
+    lines = []
+    if not agents_ok:
+        lines.append(("amber", "Herdr's agent list could not be read, so some may look asleep", "Herdr's agent list"))
+    if not records_ok:
+        lines.append(("amber", "The ship's records could not be read just now", "the ship's records"))
+    card("Crew", "green", head, lines)
+
+    # Second mates.
+    mates = [c for c in crew if c["kind"] == "mate"]
+    rows = {m["id"]: m for m in model.get("mates") or []}
+    team = {e["id"]: e for e in model.get("team") or []}
+    lines = []
+    for c in mates:
+        m = rows.get(c["id"], {})
+        if m.get("remote"):
+            lines.append(("grey", "%s works on another machine, not checked from here" % c["name"]))
+            continue
+        if "mates" not in r:
+            lines.append(("grey", "%s: %s" % (c["name"], unread)))
+            continue
+        if c["id"] in (r.get("mates") or {}):
+            ch = age(c["id"], "at", r["mates"])
+            changed = ", home changed %s" % _ago(ch) if ch is not None else ", home not readable"
+        else:
+            changed = ""
+        if not team.get(c["id"], {}).get("readable", True):
+            lines.append(("amber", "%s: its records could not be read%s" % (c["name"], changed),
+                          "second mate %s" % c["name"]))
+        elif c.get("pane"):
+            lines.append(("green", "%s: window open%s" % (c["name"], changed)))
+        else:
+            lines.append(("red", "%s: window closed%s" % (c["name"], changed), "second mate %s" % c["name"]))
+    local = [ln for ln in lines if ln[0] != "grey"]
+    down = sum(1 for ln in local if ln[0] == "red")
+    if not mates:
+        head = "Second mates: none registered"
+    elif "mates" not in r and any(not rows.get(c["id"], {}).get("remote") for c in mates):
+        head = "Second mates: %s" % unread
+    elif down:
+        head = "Second mates: %d of %d windows closed" % (down, len(local))
+    elif local:
+        head = "Second mates: all %s open" % bridge._plural(len(local), "window")
+    else:
+        head = "Second mates: all on other machines"
+    card("Second mates", "grey" if head.endswith(unread) else "green", head, lines)
+
+    # The Bridge page and Mission Control.
+    if "bridge" not in r:
+        card("The Bridge page", "grey", "The Bridge page: %s" % unread)
+        card("Mission Control", "grey", "Mission Control: %s" % unread)
+    else:
+        b = r.get("bridge")
+        if b is None:
+            card("The Bridge page", "amber", "The Bridge page could not be checked", (), "the Bridge page")
+        elif b.get("running"):
+            lines = [("green", "Open it at"), (None, b["address"])] if b.get("address") else []
+            if b.get("local_only"):
+                lines.append(("amber", "Bound to this Mac only, so the iPad cannot reach it", "the Bridge address"))
+            card("The Bridge page", "green", "The Bridge page: running", lines)
+        else:
+            card("The Bridge page", "red", "The Bridge page: not running", (), "the Bridge page")
+        mcr = r.get("mission_control")
+        if mcr is None:
+            card("Mission Control", "amber", "Mission Control could not be checked", (), "Mission Control")
+        else:
+            card("Mission Control", "green" if mcr else "amber",
+                 "Mission Control: running in its Herdr space" if mcr else
+                 "Mission Control: running in this terminal, not in its usual Herdr space",
+                 (), "Mission Control outside its Herdr space")
+
+    # GitHub and the tools.
+    if "github" not in r:
+        card("GitHub", "grey", "GitHub: %s" % unread)
+        card("Tools", "grey", "Tools: %s" % unread)
+    else:
+        gh = r.get("github")
+        checked = "checked %s" % _ago(max(0.0, wall - r["slow_at"])) if r.get("slow_at") else "checked just now"
+        if gh is None:
+            card("GitHub", "amber", "GitHub: the sign-in could not be checked", (), "the GitHub sign-in")
+        else:
+            card("GitHub", "green" if gh else "red",
+                 ("GitHub: signed in, %s" % checked) if gh else "GitHub: the sign-in does not work",
+                 (), "the GitHub sign-in")
+        tools = r.get("tools") or {}
+        lines = []
+        for name in TOOLS:
+            v = tools.get(name)
+            lines.append(("green", "%s %s" % (name, v)) if v else
+                         ("amber", "%s: could not be checked" % name, name))
+        missing = sum(1 for ln in lines if ln[0] != "green")
+        card("Tools", "green", "Tools: all installed" if not missing else
+             "Tools: %d of %d could not be checked" % (missing, len(lines)), lines)
+
+    looks = [x for c in cards for x in c["looks"]]
+    if looks:
+        n = len(looks)
+        overall = "%s: %s" % ("1 thing needs a look" if n == 1 else "%d things need a look" % n, ", ".join(looks))
+    elif any(c["dot"] == "grey" for c in cards):
+        overall = "Nothing needs a look so far; still checking"
+    else:
+        overall = "All systems normal"
+    worst = max((c["dot"] for c in cards), key=_WORST.get)
+    return {"cards": cards, "looks": looks, "overall": overall,
+            "dot": worst if looks else "green", "ok": not looks}
+
+
+def _system_screen(cv, health):
+    C, R = cv.C, cv.R
+    dot = DOTS[health["dot"]]
+    cv.put(1, 3, "●", dot, None, True)
+    cv.put(3, 3, clip(health["overall"], C - 32), INK if health["ok"] else dot, None, True)
+    pill = "read only, nothing here acts"
+    if C - len(pill) - 1 > len(health["overall"]) + 6:
+        cv.put(C - len(pill) - 1, 3, pill, BG, GREEN, True)
+    per_row = min(3, max(2, (C - 1) // (SYS_CARD_W + 1)))
+    w = (C - 1 - (per_row - 1)) // per_row
+    tw = w - 6
+    laid = []
+    for c in health["cards"]:
+        body = [(INK, None, ln, 2) for ln in wrap(clean(c["head"]), w - 4)]
+        for d, text in c["lines"]:
+            if d is None:       # an address, flush with the dots so it fits whole
+                body += [(SOFT, None, ln, 2) for ln in wrap(clean(text), w - 4)]
+                continue
+            for j, ln in enumerate(wrap(clean(text), tw)):
+                body.append((SOFT, DOTS[d] if j == 0 else None, ln, 4))
+        laid.append((c, body))
+    r0 = 5
+    last = R - 3
+    heights = [2 + max(len(b) for _, b in laid[i:i + per_row]) for i in range(0, len(laid), per_row)]
+    gap = 1 if r0 + sum(heights) + len(heights) - 2 <= last else 0
+    for i in range(0, len(laid), per_row):
+        row = laid[i:i + per_row]
+        h = heights[i // per_row]
+        if r0 + h - 1 > (last if i + per_row >= len(laid) else last - 1):
+            cv.put(1, last, "%s more below; make this pane taller to see them" %
+                   bridge._plural(len(laid) - i, "card"), DIM)
+            return
+        for j, (c, body) in enumerate(row):
+            c0 = j * (w + 1)
+            _box(cv, c0, r0, w, h, H("#262d38"))
+            cv.put(c0 + 2, r0, " ● ", DOTS[c["dot"]], None, True)
+            cv.put(c0 + 5, r0, "%s " % clip(c["title"].upper(), w - 8), INK, None, True)
+            for k, (fg, d, ln, indent) in enumerate(body):
+                if d is not None:
+                    cv.put(c0 + 2, r0 + 1 + k, "●", d)
+                cv.put(c0 + indent, r0 + 1 + k, ln, fg, None, fg == INK)
+        r0 += h + gap
+
+
 def _later_screen(cv, name):
     cv.put(2, 4, "%s is coming next. Press 1 for the office or 2 for the task board." % name, SOFT)
 
@@ -2040,8 +2547,11 @@ def _calendar_screen(cv, ui, model, crew):
             cv.put(cc, r, "┼" if r == top + 1 else "│", LINE)
 
 
-def compose(scene, renderer, ui, cols, rows, now, records_ok=True, notice=None):
-    """One frame, or the one-line too-small message."""
+def compose(scene, renderer, ui, cols, rows, now, records_ok=True, notice=None, readings=None, agents_ok=True):
+    """One frame, or the one-line too-small message.
+
+    readings are SystemProbe's; the office's rack sign and the System view share
+    the health system_cards() makes of them."""
     cv = Canvas(cols, rows)
     need_r = min_rows(60)
     if cols < MIN_COLS or rows < need_r:
@@ -2053,8 +2563,9 @@ def compose(scene, renderer, ui, cols, rows, now, records_ok=True, notice=None):
     if scene.model is None:
         cv.put(2, 4, notice or "Reading the ship's records...", SOFT)
         return cv, False
+    health = system_cards(readings or {}, scene.crew, scene.model, now, records_ok, agents_ok)
     if ui.view == "office":
-        _office_screen(cv, ui, scene, renderer, now, records_ok, notice)
+        _office_screen(cv, ui, scene, renderer, now, health["ok"], notice)
     elif ui.view == "tasks":
         _tasks_screen(cv, scene.model)
     elif ui.view == "projects":
@@ -2063,6 +2574,8 @@ def compose(scene, renderer, ui, cols, rows, now, records_ok=True, notice=None):
         _approvals_screen(cv, ui, scene)
     elif ui.view == "calendar":
         _calendar_screen(cv, ui, scene.model, scene.crew)
+    elif ui.view == "system":
+        _system_screen(cv, health)
     else:
         _later_screen(cv, TABS[VIEWS.index(ui.view)])
     return cv, False
@@ -2340,6 +2853,7 @@ def run(home, config_dir, herdr):
     own_pane = os.environ.get("HERDR_PANE_ID")
     term = Terminal()
     feed = Feed(home, config_dir, herdr)
+    probe = SystemProbe(home, herdr, lambda: (feed.snapshot()[1] or {}).get("mates") or [])
     scene, renderer, ui = Scene(), Renderer(), UI()
     sleeper = SleepTimer()
     enc = Encoder(color_mode())
@@ -2369,6 +2883,7 @@ def run(home, config_dir, herdr):
     size = term.size()
     next_frame = time.monotonic()
     feed.start()
+    probe.start()
     term.enter()
     try:
         while not flags["quit"]:
@@ -2421,7 +2936,8 @@ def run(home, config_dir, herdr):
             elif agents_err:
                 notice = agents_err
             cv, _small = compose(scene, renderer, ui, size[0], size[1], bridge._now(),
-                                 records_ok=model_err is None, notice=notice)
+                                 records_ok=model_err is None, notice=notice, readings=probe.snapshot(),
+                                 agents_ok=agents_err is None)
             cells = cv.cells()
             if prev is None or len(prev) != len(cells):
                 out = enc.diff(None, cells, cv.C)
@@ -2433,6 +2949,7 @@ def run(home, config_dir, herdr):
     finally:
         feed.stop.set()
         feed.poke.set()
+        probe.stop.set()
         term.leave()
     return 0
 
@@ -2508,8 +3025,17 @@ def _handle_input(data, ui, scene, feed):
 # One frame, for tests and a quick look
 # ---------------------------------------------------------------------------
 
-def frame(home, config_dir, agents_text, view, cols, rows, fmt, session="default"):
+def frame(home, config_dir, agents_text, view, cols, rows, fmt, session="default", readings=None,
+          herdr=("herdr",)):
+    """readings: saved SystemProbe readings; without them the System view reads
+    this machine once, and other views leave the system unchecked."""
     model = bridge.collect(home, config_dir, bridge._now())
+    live = readings is None and view == "system"
+    agents_ok = True
+    if live and not agents_text:
+        got = _run(list(herdr) + ["agent", "list"])
+        agents_ok = bool(got and not got[0])
+        agents_text = got[1] if agents_ok else None
     agents = parse_agents(agents_text) if agents_text else []
     crew = build_crew(model, agents, home, session, None, first_mate_name(config_dir))
     scene = Scene()
@@ -2517,7 +3043,9 @@ def frame(home, config_dir, agents_text, view, cols, rows, fmt, session="default
     ui = UI()
     ui.view = view
     ui.services = read_services(home) if view == "calendar" else []
-    cv, small = compose(scene, Renderer(), ui, cols, rows, bridge._now())
+    if live:
+        readings = dict(read_fast(home, model.get("mates") or []), **read_slow(home, list(herdr)))
+    cv, small = compose(scene, Renderer(), ui, cols, rows, bridge._now(), readings=readings, agents_ok=agents_ok)
     if fmt == "ansi":
         return to_ansi(cv)
     if fmt == "text":
@@ -2533,6 +3061,7 @@ def frame(home, config_dir, agents_text, view, cols, rows, fmt, session="default
         actors.append({"key": a.key, "name": m["name"], "kind": m["kind"], "state": a.state,
                        "x": a.x, "feet": a.feet, "lead": m.get("lead"), "slot": a.slot})
     cols_ = board(model)
+    health = system_cards(readings or {}, crew, model, bridge._now(), agents_ok=agents_ok)
     return json.dumps({
         "size": [cols, rows], "too_small": small, "room_height": L.height,
         "desks": desks, "actors": actors,
@@ -2546,6 +3075,9 @@ def frame(home, config_dir, agents_text, view, cols, rows, fmt, session="default
         "approvals": [{"name": g["name"], "count": len(g["items"])} for g in approvals(model, crew)],
         "team": [{"name": m["name"], "role": m["role"], "doing": m["doing"], "path": m["path"],
                   "status": m["status"]} for m in crew],
+        "system": {"overall": health["overall"], "dot": health["dot"], "rack": "ok" if health["ok"] else "check",
+                   "cards": [{"title": c["title"], "dot": c["dot"], "head": c["head"],
+                              "lines": [{"dot": d, "text": t} for d, t in c["lines"]]} for c in health["cards"]]},
     }, indent=1)
 
 
@@ -2557,6 +3089,7 @@ def main(argv):
     ap.add_argument("--config-dir", required=True)
     ap.add_argument("--herdr", default="herdr", help="the herdr command, split on spaces")
     ap.add_argument("--agents", help="frame: a saved `herdr agent list` JSON file")
+    ap.add_argument("--readings", help="frame: saved System readings (JSON), in place of reading this machine")
     ap.add_argument("--view", default="office", choices=VIEWS)
     ap.add_argument("--size", default="132x44")
     ap.add_argument("--format", default="text", choices=["text", "json", "ansi"])
@@ -2568,13 +3101,16 @@ def main(argv):
     if not m:
         print("fm_mission_control.py: --size is <cols>x<rows>", file=sys.stderr)
         return 2
-    text = None
+    text = readings = None
     if args.agents:
         with open(args.agents, encoding="utf-8") as fh:
             text = fh.read()
+    if args.readings:
+        with open(args.readings, encoding="utf-8") as fh:
+            readings = json.load(fh)
     try:
         out = frame(home, args.config_dir, text, args.view, int(m.group(1)), int(m.group(2)), args.format,
-                    os.environ.get("HERDR_SESSION") or "default")
+                    os.environ.get("HERDR_SESSION") or "default", readings, args.herdr.split())
     except RuntimeError as exc:
         print("fm_mission_control.py: %s" % exc, file=sys.stderr)
         return 1
