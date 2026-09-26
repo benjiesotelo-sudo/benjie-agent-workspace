@@ -1,0 +1,18 @@
+{
+  "result": {
+    "type": "agent_list",
+    "agents": [
+      {
+        "pane_id": "w1:p1",
+        "agent_status": "working",
+        "cwd": "/Users/benjie/.no-mistakes/evidence/01M3E9JYMKM6GBA7M5PHWXC6FH/env/calship",
+        "foreground_cwd": "/Users/benjie/.no-mistakes/evidence/01M3E9JYMKM6GBA7M5PHWXC6FH/env/calship"
+      },
+      {
+        "pane_id": "w2:p1",
+        "agent_status": "idle",
+        "cwd": "/Users/benjie/.no-mistakes/evidence/01M3E9JYMKM6GBA7M5PHWXC6FH/env/alpha-mate-home"
+      }
+    ]
+  }
+}

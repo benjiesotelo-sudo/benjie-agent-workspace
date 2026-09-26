@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+[ -e "/Users/benjie/.no-mistakes/evidence/01M3E9JYMKM6GBA7M5PHWXC6FH/env/herdr-down" ] && exit 1
+[ "$1 $2" = "agent list" ] && exec cat "/Users/benjie/.no-mistakes/evidence/01M3E9JYMKM6GBA7M5PHWXC6FH/env/agents.json"
+exit 0

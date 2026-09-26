@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+printf 'gui/501/com.firstmate.bridge = {\n\tstate = running\n}\n'
