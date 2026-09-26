@@ -47,13 +47,9 @@
 # when the terminal reports mouse clicks; on Memory and Docs tapping a row
 # picks it and the wheel over the reader scrolls it.
 #
-# start creates the workspace with `herdr workspace create --label
-# mission-control --no-focus` in this home and types the run command into its
-# root pane with `herdr pane run`. When the workspace already exists it looks
-# at each pane's foreground processes (`herdr pane process-info`): a pane
-# already running the screen means there is nothing to do, and a pane idle at
-# its shell prompt is reused. A workspace whose panes are all busy with
-# something else is left alone and reported.
+# start, stop and status keep the mission-control workspace through
+# bin/fm-herdr-screen-lib.sh, whose header owns how a workspace is created,
+# reused or left alone.
 #
 # Settings: config/mission-control.json in the home is optional; its one key,
 # first_mate_name, names the first mate on screen (default "First mate").
@@ -72,151 +68,39 @@ FM_HOME="${FM_HOME:-${FM_ROOT_OVERRIDE:-$FM_ROOT}}"
 FM_HOME="$(cd "$FM_HOME" && pwd)"
 CONFIG="$FM_HOME/config"
 PY="$SCRIPT_DIR/fm_mission_control.py"
-LABEL=mission-control
-HERDR_CMD="${FM_MC_HERDR:-herdr}"
+SCREEN_NAME=fm-mission-control
+SCREEN_LABEL=mission-control
+SCREEN_MATCH='fm_mission_control[.]py run'
+SCREEN_HERDR="${FM_MC_HERDR:-herdr}"
+# shellcheck source=bin/fm-herdr-screen-lib.sh
+. "$SCRIPT_DIR/fm-herdr-screen-lib.sh"
 
 usage() {
   sed -n '2,/^set -eu$/p' "${BASH_SOURCE[0]}" | sed -e '/^set -eu$/d' -e 's/^# \{0,1\}//'
 }
 
-die() { printf 'fm-mission-control: %s\n' "$1" >&2; exit 1; }
-
-hd() {  # herdr, through FM_MC_HERDR when set
-  local -a cmd
-  read -r -a cmd <<<"$HERDR_CMD"
-  "${cmd[@]}" "$@"
-}
-
-need_herdr() {
-  command -v jq >/dev/null 2>&1 || die "jq is required"
-  hd workspace list >/dev/null 2>&1 || die "Herdr did not answer; run this inside a Herdr session"
-}
-
-quote() {  # <text> - single-quoted for the pane's shell
-  printf "'%s'" "${1//\'/\'\\\'\'}"
-}
-
-workspace_id() {  # prints the mission-control workspace id, if any
-  hd workspace list | jq -r --arg l "$LABEL" '[.result.workspaces[]? | select(.label == $l)][0].workspace_id // empty'
-}
-
-panes() {  # <workspace>
-  hd pane list --workspace "$1" | jq -r '.result.panes[]?.pane_id'
-}
-
-pane_runs_screen() {  # <pane>
-  hd pane process-info --pane "$1" 2>/dev/null \
-    | jq -e '[.result.process_info.foreground_processes[]?.cmdline // ""] | any(test("fm_mission_control[.]py run"))' \
-      >/dev/null 2>&1
-}
-
-pane_at_prompt() {  # <pane> - the shell itself holds the foreground
-  hd pane process-info --pane "$1" 2>/dev/null \
-    | jq -e '.result.process_info | .foreground_process_group_id == .shell_pid' >/dev/null 2>&1
-}
-
-running_pane() {  # <workspace> - prints the pane running the screen
-  local p
-  for p in $(panes "$1"); do
-    if pane_runs_screen "$p"; then
-      printf '%s\n' "$p"
-      return 0
-    fi
-  done
-  return 0
-}
-
-run_command() {
+screen_run_command() {
   local cmd
-  cmd="FM_HOME=$(quote "$FM_HOME")"
-  [ -n "${FM_MC_HERDR:-}" ] && cmd="$cmd FM_MC_HERDR=$(quote "$FM_MC_HERDR")"
-  [ -n "${FM_MC_COLORS:-}" ] && cmd="$cmd FM_MC_COLORS=$(quote "$FM_MC_COLORS")"
-  printf '%s %s run' "$cmd" "$(quote "$SCRIPT_DIR/fm-mission-control.sh")"
+  cmd="FM_HOME=$(screen_quote "$FM_HOME")"
+  [ -n "${FM_MC_HERDR:-}" ] && cmd="$cmd FM_MC_HERDR=$(screen_quote "$FM_MC_HERDR")"
+  [ -n "${FM_MC_COLORS:-}" ] && cmd="$cmd FM_MC_COLORS=$(screen_quote "$FM_MC_COLORS")"
+  printf '%s %s run' "$cmd" "$(screen_quote "$SCRIPT_DIR/fm-mission-control.sh")"
 }
 
 cmd_run() {
-  exec python3 "$PY" run --home "$FM_HOME" --config-dir "$CONFIG" --herdr "$HERDR_CMD"
+  exec python3 "$PY" run --home "$FM_HOME" --config-dir "$CONFIG" --herdr "$SCREEN_HERDR"
 }
 
 cmd_frame() {
-  exec python3 "$PY" frame --home "$FM_HOME" --config-dir "$CONFIG" --herdr "$HERDR_CMD" "$@"
-}
-
-cmd_start() {
-  local ws pane p i
-  need_herdr
-  ws=$(workspace_id)
-  if [ -n "$ws" ]; then
-    pane=$(running_pane "$ws")
-    if [ -n "$pane" ]; then
-      echo "fm-mission-control: already running in workspace $ws (pane $pane)"
-      return 0
-    fi
-    pane=""
-    for p in $(panes "$ws"); do
-      if pane_at_prompt "$p"; then
-        pane=$p
-        break
-      fi
-    done
-    [ -n "$pane" ] || die "workspace $ws is labelled $LABEL but every pane is busy with something else; left alone"
-  else
-    pane=$(hd workspace create --cwd "$FM_HOME" --label "$LABEL" --no-focus | jq -r '.result.root_pane.pane_id // empty')
-    [ -n "$pane" ] || die "Herdr did not create the $LABEL workspace"
-    ws=$(workspace_id)
-    i=0
-    while [ $i -lt 20 ] && ! pane_at_prompt "$pane"; do
-      sleep 0.25
-      i=$((i + 1))
-    done
-  fi
-  hd pane run "$pane" "$(run_command)" >/dev/null || die "Herdr refused to run the screen in pane $pane"
-  i=0
-  while [ $i -lt 40 ]; do
-    if pane_runs_screen "$pane"; then
-      echo "fm-mission-control: running in workspace $ws (pane $pane)"
-      return 0
-    fi
-    sleep 0.25
-    i=$((i + 1))
-  done
-  die "the screen did not start in pane $pane; read it with: herdr pane read $pane"
-}
-
-cmd_stop() {
-  local ws
-  need_herdr
-  ws=$(workspace_id)
-  if [ -z "$ws" ]; then
-    echo "fm-mission-control: not running (no $LABEL workspace)"
-    return 0
-  fi
-  hd workspace close "$ws" >/dev/null || die "Herdr refused to close workspace $ws"
-  echo "fm-mission-control: closed workspace $ws"
-}
-
-cmd_status() {
-  local ws pane
-  need_herdr
-  ws=$(workspace_id)
-  if [ -z "$ws" ]; then
-    echo "running: no ($LABEL workspace not found)"
-    return 0
-  fi
-  pane=$(running_pane "$ws")
-  if [ -n "$pane" ]; then
-    echo "running: yes, workspace $ws, pane $pane"
-  else
-    echo "running: no, workspace $ws exists but no pane runs the screen; fix with: fm-mission-control.sh start"
-  fi
+  exec python3 "$PY" frame --home "$FM_HOME" --config-dir "$CONFIG" --herdr "$SCREEN_HERDR" "$@"
 }
 
 case "${1:-}" in
   run) shift; cmd_run ;;
   frame) shift; cmd_frame "$@" ;;
-  start) shift; cmd_start ;;
-  stop) shift; cmd_stop ;;
-  status) shift; cmd_status ;;
+  start) shift; screen_start ;;
+  stop) shift; screen_stop ;;
+  status) shift; screen_status ;;
   -h|--help|help) usage ;;
   *) usage >&2; exit 2 ;;
 esac
