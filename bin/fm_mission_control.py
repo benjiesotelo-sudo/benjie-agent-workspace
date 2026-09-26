@@ -109,6 +109,24 @@ mate's card, whose registry description (first sentence) and scope show
 underneath, with raw paths removed. The alumni row reads the same retirements
 as the office's alumni wall, so it too starts empty on every run.
 
+MEMORY AND DOCS. Both are a list on the left and one reader on the right; the
+reader renders Markdown to terminal lines (render_markdown) and never runs or
+opens anything. Memory's long-term pages are data/captain.md and
+data/learnings.md of this home and of each second mate home whose records were
+read. Its daily journal has one entry per day that has dated records, built
+only from every home's backlog and done archive: completions on their
+completion date, and open items on their since date (captain items read as a
+decision filed for the captain). A day with no record has no entry. Docs lists
+the fleet snapshot's scout_reports of each home, the Bridge's decision pages,
+newest first, then the captain's links from config/bridge.json. A report's or
+decision's project is its backlog item's (the report's task id, the decision
+page's folder), through the Bridge's project_of(); with no item there is no
+project tag. Titles come from each page's first heading with Markdown marks
+and paths removed; a decision title also drops a leading key only when it is
+the page's folder name or a backlog record id. Pages are rebuilt at most
+every SHELF_TTL seconds and a file is reread only when its size or
+modification time changes.
+
 SYSTEM. The machine and the crew's plumbing, one card each with a green,
 amber or red dot (grey until first read): this Mac (up time, load, memory,
 free disk, the tailnet), crew monitoring (the watcher's beat age, amber past
@@ -205,7 +223,7 @@ FEED_MIN_WIDTH = 24
 
 TABS = ["Office", "Tasks", "Approvals", "Projects", "Calendar", "Team", "Memory", "Docs", "System"]
 VIEWS = ["office", "tasks"] + [t.lower() for t in TABS[2:]]
-READY = ("office", "tasks", "approvals", "projects", "calendar", "team", "system")
+READY = ("office", "tasks", "approvals", "projects", "calendar", "team", "memory", "docs", "system")
 COLUMNS = (("waiting", "WAITING ON YOU", AMBER), ("queued", "QUEUED", INK),
            ("in_flight", "IN FLIGHT", GREEN), ("done", "DONE THIS MONTH", DIM))
 SHIP_TAG = "setup"
@@ -1309,6 +1327,15 @@ class UI:
         self.selected = None
         self.project = None     # the picked card on the Projects view, by its key
         self.decision = None    # the highlighted row on the Approvals view
+        self.pages = {}         # Memory and Docs: the picked row per view, by its key
+        self.doc_tag = 0        # Docs: the kind filter, an index into DOC_TAGS
+        self.scroll = 0         # Memory and Docs: the reader's first line on scroll_key's page
+        self.scroll_key = None
+        self.page_keys = []     # Memory and Docs: the rows as last drawn, for up/down
+        self.list_hits = {}     # screen row -> row key, for taps on the list
+        self.reader_box = None
+        self.reader_page = 10
+        self.shelf = Shelf()
         self.toast = ""
         self.toast_until = 0.0
         self.tab_hits = []
@@ -1341,6 +1368,10 @@ def _chrome(cv, ui, now):
         keys = " " + ui.toast
     elif ui.view == "approvals":
         keys = " 1-9 switch view   up/down read each decision   answers happen in chat, not here   q quit "
+    elif ui.view in ("memory", "docs"):
+        keys = " 1-9 switch view   up/down pick a page   page up/down or the wheel scroll it   q quit "
+        if ui.view == "docs":
+            keys = " 1-9 switch view   left/right pick a kind" + keys[16:]
     else:
         keys = " 1-9 switch view   up/down pick an agent   enter talk to it   p pause   q quit "
         if ui.view == "projects":
@@ -2134,6 +2165,767 @@ def _team_screen(cv, ui, scene):
         cv.put(c + 3, alumni_r + 1, clip(who["name"], C - c - 4), H(who["color"]), None, True)
         cv.put(c + 3, alumni_r + 2, "retired", AMBER)
         c += need + 3
+
+
+# ---------------------------------------------------------------------------
+# Memory and Docs: the shelf, and one Markdown reader for both
+# ---------------------------------------------------------------------------
+
+ACCENT = H(FIRST_MATE_COLOR)
+BODY = H("#c3cbd5")
+CODE = H("#9fc6d8")
+PICK_BG = H("#18202b")
+PANEL = H("#262d38")
+DOC_KINDS = (("Report", "#7b93ff"), ("Decision", "#ffb454"), ("Link", "#3fb6c9"))
+DOC_TAGS = ["All"] + [k for k, _c in DOC_KINDS]
+SHELF_TTL = 5.0     # seconds a built list is reused before its files are looked at again
+_SLUG = r"[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*"
+_SHOUTED = r"(?:FIX|KEEP|DROP|APPROVE|REJECT|MERGE|SHIP|CLOSE|DEFER|HOLD|PICK|USE|ADD|REMOVE|CANCEL|WAIT|SKIP|STOP)"
+
+_TEXTS = {}         # path -> ((mtime, size), text)
+
+
+def _text(path):
+    """(text, mtime) of a file, reread only when it changed, or None."""
+    try:
+        st = os.stat(path)
+    except (OSError, TypeError, ValueError):
+        _TEXTS.pop(path, None)
+        return None
+    stamp = (st.st_mtime, st.st_size)
+    hit = _TEXTS.get(path)
+    if hit is None or hit[0] != stamp:
+        text = bridge._read(path)
+        if text is None:
+            return None
+        hit = (stamp, text)
+        _TEXTS[path] = hit
+    return hit[1], st.st_mtime
+
+
+def _word_count(text):
+    return sum(1 for w in text.split() if any(ch.isalnum() for ch in w))
+
+
+def _n_words(n):
+    return "{:,} {}".format(n, "word" if n == 1 else "words")
+
+
+def _long_day(d):
+    """Thursday 24 September 2026: full names, no abbreviations or ordinals."""
+    return "%s %d %s" % (d.strftime("%A"), d.day, d.strftime("%B %Y"))
+
+
+def _updated_ago(mtime, now):
+    secs = max(0, now.timestamp() - mtime)
+    if secs < 60:
+        return "just now"
+    if secs < 3600:
+        return "%s ago" % bridge._plural(int(secs // 60), "minute")
+    if secs < 48 * 3600:
+        return "%s ago" % bridge._plural(int(secs // 3600), "hour")
+    return "%s ago" % bridge._plural(int(secs // 86400), "day")
+
+
+def _shelf_homes(model):
+    """(owner, data directory, mate, snapshot) for this home and each mate home read."""
+    out = []
+    for hid, mate in [("main", None)] + [(m["id"], m) for m in model.get("mates") or []]:
+        snap = model["snapshots"].get(hid)
+        data = ((snap or {}).get("roots") or {}).get("data")
+        if data:
+            out.append((hid, data, mate, snap))
+    return out
+
+
+def _home_records(data, snap):
+    """{id: record} for one home: its backlog, then its done archive."""
+    recs = {}
+    for rec in bridge.parse_done_archive((_text(os.path.join(data, "done-archive.md")) or ("",))[0]):
+        recs[rec["id"]] = rec
+    for rec in ((snap or {}).get("backlog") or {}).get("records") or []:
+        if rec.get("structured") and rec.get("id"):
+            recs[rec["id"]] = rec
+    return recs
+
+
+def _md_plain(text):
+    """A heading or title without Markdown marks or raw paths."""
+    text = re.sub(r"!?\[([^\]]*)\]\([^)]*\)", r"\1", text or "")
+    text = re.sub(r"(\*\*|__|`)", "", text)
+    return " ".join(_plain(text).split())
+
+
+def _sentence(text):
+    text = text.rstrip(" .")
+    return text + "." if text and text[-1] not in "?!" else text
+
+
+def _project_tag(model, colors, pname):
+    tag = SHIP_TAG if pname is None else clean(bridge._short(model, pname))
+    return tag, H(colors.get(pname.lower() if pname else None, FIRST_MATE_COLOR))
+
+
+# -- the daily journal ---------------------------------------------------------
+
+_DONE_VERBS = {"done": "finished", "merged": "shipped", "reported": "reported on"}
+
+
+def journal(model, fm_name):
+    """One entry per day that has dated records, newest first; days without none.
+
+    Events are the completions in every home's backlog and done archive, and
+    the open items each home filed that day, dated by their since field."""
+    by_key = {p["name"].lower(): p for p in model["projects"]}
+    days = {}
+
+    def add(day, who, text, pname):
+        if bridge._parse_day(day) is None or not text:
+            return
+        days.setdefault(day, []).append({"who": who, "text": text, "project": pname})
+
+    for hid, data, mate, snap in _shelf_homes(model):
+        who = fm_name if mate is None else "The %s mate" % mate_name(model, hid)
+        for rec in _home_records(data, snap).values():
+            title = _md_plain(bridge._clean_title(rec.get("title")))
+            if not title:
+                continue
+            pname = bridge.project_of(rec, mate, by_key, model["ship"])
+            comp = rec.get("completion") or {}
+            if rec.get("state") == "done":
+                verb = _DONE_VERBS.get(comp.get("verb"), "finished")
+                add(comp.get("date"), who, _sentence("%s %s %s" % (who, verb, title)), pname)
+            elif rec.get("state") in ("queued", "in_flight"):
+                if bridge._is_captain(rec):
+                    text = "%s filed a decision for you: %s" % (who, title)
+                elif rec.get("state") == "in_flight":
+                    text = "%s started %s" % (who, title)
+                else:
+                    text = "%s queued %s" % (who, title)
+                add(rec.get("since"), who, _sentence(text), pname)
+    order = {p["name"]: i for i, p in enumerate(model["projects"])}
+    colors = project_colors(model)
+    out = []
+    for day in sorted(days, reverse=True):
+        events = days[day]
+        groups = {}
+        for ev in events:
+            groups.setdefault(ev["project"], []).append(ev)
+        lines, heads = [], {}
+        for pname in sorted(groups, key=lambda p: (p is None, order.get(p, 0))):
+            head = clean(bridge._title(model, pname)) if pname else "The setup itself"
+            heads[head] = H(colors.get(pname.lower() if pname else None, FIRST_MATE_COLOR))
+            lines.extend(["", "## " + head])
+            lines.extend("- " + ev["text"] for ev in groups[pname])
+        text = "\n".join(lines).strip()
+        out.append({"key": "day:" + day, "day": day, "events": len(events), "text": text,
+                    "heads": heads, "words": _word_count("\n".join(ev["text"] for ev in events))})
+    return out
+
+
+def _journal_group(day, today):
+    d, t = bridge._parse_day(day), bridge._parse_day(today)
+    n = (t - d).days
+    if n == 0:
+        return "Today"
+    if n == 1:
+        return "Yesterday"
+    if 1 < n < 7:
+        return "This week"
+    return d.strftime("%B %Y")
+
+
+# -- the shelves ---------------------------------------------------------------
+
+def memory_pages(model, fm_name, now):
+    """Long-term memory pages, then the journal days, as reader pages."""
+    pages = []
+    for hid, data, mate, _snap in _shelf_homes(model):
+        name = None if mate is None else mate_name(model, hid)
+        for rel, mine, theirs in (("captain.md", "What I know about the captain", "What %s knows about the captain"),
+                                  ("learnings.md", "Lessons learned", "Lessons %s learned")):
+            got = _text(os.path.join(data, rel))
+            if got is None:
+                continue
+            text, mtime = got
+            words = _word_count(text)
+            day = _dt.datetime.fromtimestamp(mtime).date()
+            pages.append({"key": "mem:%s:%s" % (hid, rel), "group": "Long-term memory",
+                          "title": mine if name is None else theirs % name,
+                          "sub": "%s, updated %s" % (_n_words(words), _updated_ago(mtime, now)),
+                          "head": "%s, %s, updated %s" % (_long_day(day), _n_words(words), _updated_ago(mtime, now)),
+                          "text": text, "stamp": mtime, "heads": None})
+    for entry in journal(model, fm_name):
+        d = bridge._parse_day(entry["day"])
+        pages.append({"key": entry["key"], "group": _journal_group(entry["day"], model["today"]),
+                      "title": "%s %d %s" % (d.strftime("%A"), d.day, d.strftime("%B")),
+                      "sub": "%s, %s" % (bridge._plural(entry["events"], "event"), _n_words(entry["words"])),
+                      "head": "%s, %s, %s" % (_long_day(d), bridge._plural(entry["events"], "event"),
+                                              _n_words(entry["words"])),
+                      "text": entry["text"], "stamp": entry["day"], "heads": entry["heads"]})
+    return pages
+
+
+def _decision_title(text, rec, keys):
+    hs = bridge.headings(text)
+    t = _md_plain(clean(hs[0][1])) if hs else ""
+    t = re.sub(r"^(?:captain'?s\s+)?decisions?\s*:\s*", "", t, flags=re.I)
+    m = re.match(r"(%s)(?:\s*:\s*|\s+-\s*|$)" % _SLUG, t)
+    if m and m.group(1).lower() in keys:
+        t = t[m.end():]
+    base = _md_plain(bridge._clean_title(rec.get("title"))) if rec else ""
+    action = re.match(r"ACTION\b:?\s*", t)
+    if action:
+        t = t[action.end():]
+    if not t:
+        t = "Decision on %s" % base if base else "A decision"
+    elif action:
+        t = "%s: %s" % (base or "A decision", re.sub(r"^%s\b" % _SHOUTED, lambda m: m.group(0).lower(), t))
+    return t[:1].upper() + t[1:]
+
+
+def _report_title(text, rec):
+    hs = bridge.headings(text)
+    t = _md_plain(clean(hs[0][1])) if hs else ""
+    if not t and rec:
+        t = _md_plain(bridge._clean_title(rec.get("title")))
+    t = t or "A report"
+    return t[:1].upper() + t[1:]
+
+
+def docs_pages(model):
+    """Reports, decision pages and the captain's links, newest first, links last."""
+    by_key = {p["name"].lower(): p for p in model["projects"]}
+    pages = []
+    homes = _shelf_homes(model)
+    records = {}
+    for hid, data, mate, snap in homes:
+        records[hid] = recs = _home_records(data, snap)
+        for r in snap.get("scout_reports") or []:
+            rid = r.get("id") if isinstance(r, dict) else None
+            got = _text(r.get("path")) if rid else None
+            if got is None:
+                continue
+            text, mtime = got
+            rec = recs.get(rid)
+            pages.append({"key": "report:%s:%s" % (hid, rid), "kind": "Report", "text": text, "stamp": mtime,
+                          "title": _report_title(text, rec), "has_project": rec is not None,
+                          "project": bridge.project_of(rec, mate, by_key, model["ship"]) if rec else None})
+    by_data = {os.path.realpath(data): (hid, mate) for hid, data, mate, _s in homes}
+    known = {k.lower() for recs in records.values() for k in recs}
+    for d in bridge._decision_files([data for _h, data, _m, _s in homes]):
+        path = d.get("path")
+        got = _text(path)
+        if got is None:
+            continue
+        text, mtime = got
+        task = os.path.basename(os.path.dirname(path))
+        hid, mate = by_data.get(os.path.realpath(os.path.dirname(os.path.dirname(path))), ("main", None))
+        rec = records.get(hid, {}).get(task)
+        pages.append({"key": "decision:%s:%s/%s" % (hid, task, os.path.basename(path)), "kind": "Decision",
+                      "text": text, "stamp": mtime, "title": _decision_title(text, rec, known | {task.lower()}),
+                      "has_project": rec is not None,
+                      "project": bridge.project_of(rec, mate, by_key, model["ship"]) if rec else None})
+    pages.sort(key=lambda p: -p["stamp"])
+    for i, link in enumerate(model["links"]):
+        label = clean(link.get("label") or "link").strip() or "link"
+        pname = link.get("project") or None
+        if pname and pname.lower() in by_key:
+            pname = by_key[pname.lower()]["name"]
+        pages.append({"key": "link:%d" % i, "kind": "Link", "title": label[:1].upper() + label[1:],
+                      "url": clean(link["url"]), "project": pname, "has_project": True,
+                      "stamp": None, "text": None})
+    for p in pages:
+        if p["text"] is not None:
+            p["words"] = _word_count(p["text"])
+    return pages
+
+
+class Shelf:
+    """The Memory and Docs pages, rebuilt at most every SHELF_TTL seconds, and
+    each page's rendered lines, redrawn only when its text or the width changes."""
+
+    def __init__(self):
+        self.built = {}
+        self.lines = {}
+
+    def pages(self, view, model, fm_name, now):
+        key = (id(model), fm_name, model["today"])
+        hit = self.built.get(view)
+        if hit is not None and hit[0] == key and time.monotonic() - hit[1] < SHELF_TTL:
+            return hit[2]
+        pages = memory_pages(model, fm_name, now) if view == "memory" else docs_pages(model)
+        self.built[view] = (key, time.monotonic(), pages)
+        return pages
+
+    def render(self, page, width):
+        hit = self.lines.get(page["key"])
+        if hit is None or hit[0] != width or hit[1] != page["text"]:
+            hit = (width, page["text"], render_markdown(page["text"], width, page.get("heads")))
+            self.lines[page["key"]] = hit
+        return hit[2]
+
+
+# -- Markdown to terminal lines ------------------------------------------------
+
+_INLINE = re.compile(
+    r"(?P<b>\*\*|__)(?P<bt>.+?)(?P=b)"
+    r"|`(?P<code>[^`]+)`"
+    r"|!?\[(?P<label>[^\]]*)\]\((?P<url>[^)\s]+)(?:\s+\"[^\"]*\")?\)"
+    r"|<(?P<auto>https?://[^>\s]+)>"
+    r"|(?<![\w*])\*(?=\S)(?P<em>[^*]+?)\*(?![\w*])"
+    r"|(?<![\w_])_(?=\S)(?P<em2>[^_]+?)_(?![\w_])")
+
+
+def _inline(text, fg=BODY, bold=False):
+    """Runs of (text, colour, bold) for one block's inline Markdown."""
+    runs, at = [], 0
+    text = re.sub(r"<br\s*/?>", " ", text)
+    for m in _INLINE.finditer(text):
+        if m.start() > at:
+            runs.append((text[at:m.start()], fg, bold))
+        if m.group("b"):
+            runs.extend(_inline(m.group("bt"), INK, True))
+        elif m.group("code") is not None:
+            runs.append((m.group("code"), CODE, bold))
+        elif m.group("url") is not None:
+            label, url = m.group("label").strip(), m.group("url")
+            if label and label != url:
+                runs.extend(_inline(label, INK if not bold else fg, bold))
+                runs.append((" (%s)" % url, DIM, False))
+            else:
+                runs.append((url, DIM, False))
+        elif m.group("auto"):
+            runs.append((m.group("auto"), DIM, False))
+        else:
+            runs.extend(_inline(m.group("em") or m.group("em2"), fg, bold))
+        at = m.end()
+    if at < len(text):
+        runs.append((text[at:], fg, bold))
+    return [(clean(t), c, b) for t, c, b in runs if t]
+
+
+def _wrap_runs(runs, width, lead=(("", BODY),), hang=""):
+    """Greedy word wrap of styled runs; the first line starts with lead, the rest with hang."""
+    words, cur = [], []
+    for text, fg, b in runs:
+        for part in re.split(r"(\s+)", text):
+            if not part:
+                continue
+            if part.isspace():
+                if cur:
+                    words.append(cur)
+                    cur = []
+            else:
+                cur.append((part, fg, b))
+    if cur:
+        words.append(cur)
+    lead = [(t, c, False) for t, c in lead if t]
+    lead_w = sum(len(t) for t, _c, _b in lead)
+    lines, line, n = [], list(lead), lead_w
+    start = lead_w
+    avail = max(width, len(hang) + 4, lead_w + 4)
+
+    def flush():
+        lines.append(line)
+        return [(hang, BODY, False)] if hang else [], len(hang)
+
+    for w in words:
+        wl = sum(len(t) for t, _c, _b in w)
+        if n > start and n + 1 + wl > avail:
+            line, n = flush()
+            start = n
+        if n > start:
+            line.append((" ", BODY, False))
+            n += 1
+        chars = [(ch, c, b) for t, c, b in w for ch in t]
+        while n + len(chars) > avail and len(chars) > 0:
+            room = avail - n
+            if room <= 0:
+                line, n = flush()
+                start = n
+                continue
+            line.extend(chars[:room])
+            chars = chars[room:]
+            line, n = flush()
+            start = n
+        line.extend(chars)
+        n += len(chars)
+    if n > start or not lines:
+        lines.append(line)
+    return lines
+
+
+def _table(rows, width):
+    """A Markdown table: aligned when it fits, else one block per row."""
+    cells = [[_md_plain(clean(c)) for c in r] for r in rows]
+    ncol = max(len(r) for r in cells)
+    cells = [r + [""] * (ncol - len(r)) for r in cells]
+    widths = [max(len(r[i]) for r in cells) for i in range(ncol)]
+    out = []
+    if sum(widths) + 3 * (ncol - 1) <= width:
+        for j, r in enumerate(cells):
+            segs = []
+            for i, c in enumerate(r):
+                if i:
+                    segs.append((" │ ", DIMMER, False))
+                segs.append((c.ljust(widths[i]), INK if j == 0 else BODY, j == 0))
+            out.append(segs)
+            if j == 0:
+                out.append([("─┼─".join("─" * w for w in widths), DIMMER, False)])
+        return out
+    head = cells[0]
+    for r in cells[1:]:
+        out.extend(_wrap_runs([(r[0], INK, True)], width, (("• ", DIM),), "  "))
+        for i in range(1, ncol):
+            if r[i]:
+                out.extend(_wrap_runs([(r[i], BODY, False)], width, (("  " + (head[i] + ": " if head[i] else ""),
+                                                                        DIM),), "    "))
+    return out
+
+
+_ITEM = re.compile(r"^(\s*)([-*+]|\d{1,3}[.)])\s+(.*)$")
+_RULE = re.compile(r"^\s{0,3}([-*_])(\s*\1){2,}\s*$")
+_HEAD = re.compile(r"^\s{0,3}(#{1,6})\s+(.*?)\s*#*\s*$")
+_TABLE_SEP = re.compile(r"^\s*\|?\s*:?-{2,}:?\s*(\|\s*:?-{2,}:?\s*)*\|?\s*$")
+
+
+def render_markdown(text, width, heads=None):
+    """Markdown as terminal lines, each a list of (text, colour, bold) runs.
+
+    Headings are bold in the accent colour (or heads[heading] when given),
+    list items hang under their marker, tables stay aligned or become one
+    block per row, and links read as their label with the address after it."""
+    heads = heads or {}
+    out = []
+    block = None      # ("para", [lines]) or ("item", indent, marker, [lines]) or ("quote", [lines])
+    fence = None
+
+    def blank():
+        if out and out[-1]:
+            out.append([])
+
+    def flush():
+        nonlocal block
+        if block is None:
+            return
+        kind = block[0]
+        if kind == "para":
+            out.extend(_wrap_runs(_inline(" ".join(block[1])), width))
+        elif kind == "quote":
+            out.extend(_wrap_runs(_inline(" ".join(block[1]), SOFT), width, (("│ ", DIMMER),), "│ "))
+        elif kind == "item":
+            _k, level, marker, parts = block
+            pad = "  " * level
+            mark = "• " if not marker[0].isdigit() else marker.rstrip(")").rstrip(".") + ". "
+            out.extend(_wrap_runs(_inline(" ".join(parts)), width, (("  " + pad, BODY), (mark, DIM)),
+                                  "  " + pad + " " * len(mark)))
+        elif kind == "table" and block[1]:
+            out.extend(_table(block[1], width))
+        block = None
+
+    for raw in (text or "").splitlines():
+        line = raw.rstrip()
+        if fence is not None:
+            if line.strip().startswith(fence):
+                fence = None
+                blank()
+                continue
+            code = clean(line.replace("\t", "    "))
+            while True:
+                out.append([("  " + code[:max(1, width - 2)], CODE, False)])
+                code = code[max(1, width - 2):]
+                if not code:
+                    break
+            continue
+        m = re.match(r"^\s{0,3}(```|~~~)", line)
+        if m:
+            flush()
+            blank()
+            fence = m.group(1)
+            continue
+        if not line.strip():
+            flush()
+            blank()
+            continue
+        if block and block[0] == "para" and re.match(r"^\s{0,3}(=+|-+)\s*$", line):
+            heading = " ".join(block[1])
+            block = None
+            blank()
+            out.extend(_wrap_runs(_inline(heading, ACCENT, True), width))
+            continue
+        m = _HEAD.match(line)
+        if m:
+            flush()
+            blank()
+            title = _md_plain(clean(m.group(2)))
+            out.extend(_wrap_runs([(title, heads.get(title, ACCENT), True)], width))
+            continue
+        if _RULE.match(line):
+            flush()
+            out.append([("─" * width, DIMMER, False)])
+            continue
+        if line.lstrip().startswith("|"):
+            if block is None or block[0] != "table":
+                flush()
+                block = ("table", [])
+            if not _TABLE_SEP.match(line):
+                block[1].append([c.strip() for c in line.strip().strip("|").split("|")])
+            continue
+        m = re.match(r"^\s{0,3}>\s?(.*)$", line)
+        if m:
+            if block is None or block[0] != "quote":
+                flush()
+                block = ("quote", [])
+            block[1].append(m.group(1))
+            continue
+        m = _ITEM.match(line)
+        if m:
+            flush()
+            indent = len(m.group(1).replace("\t", "    "))
+            block = ("item", min(4, indent // 2), m.group(2), [m.group(3)])
+            continue
+        if block and block[0] in ("item", "para") and (block[0] == "para" or raw[:1] in (" ", "\t")):
+            block[-1].append(line.strip())
+            continue
+        flush()
+        block = ("para", [line.strip()])
+    flush()
+    while out and not out[-1]:
+        out.pop()
+    return out
+
+
+def _draw_runs(cv, c, r, runs, width):
+    """Draw (text, colour, bold[, background]) runs from column c, at most width cells."""
+    for run in runs:
+        text, fg, bold = run[:3]
+        if width <= 0:
+            break
+        cv.put(c, r, text[:width], fg, run[3] if len(run) > 3 else None, bold)
+        c += len(text[:width])
+        width -= len(text)
+
+
+# -- the two screens -----------------------------------------------------------
+
+def _shelf_layout(C):
+    list_w = 36 if C < 130 else 46
+    return list_w, list_w + 1
+
+
+def _pick_page(ui, pages):
+    keys = [p["key"] for p in pages]
+    return ui.pages.get(ui.view) if ui.pages.get(ui.view) in keys else (keys[0] if keys else None)
+
+
+def _page_list(cv, ui, rows, pick, c0, r0, w, h):
+    """The left list: group rules and two-line rows, scrolled to keep the pick in view."""
+    lines = []
+    for kind, p in rows:
+        if kind == "group":
+            if lines and not p[2]:
+                lines.append(("gap", None, 0))
+            lines.append(("group", p, 0))
+        else:
+            lines.append(("item", p, 0))
+            lines.append(("item", p, 1))
+    at = [i for i, (k, p, _j) in enumerate(lines) if k == "item" and p["key"] == pick]
+    room = h
+    off = 0
+    if len(lines) > room:
+        room = h - 1
+        if at and at[-1] >= room:
+            off = at[-1] - room + 1
+    ui.list_hits = {}
+    for i, (kind, p, j) in enumerate(lines[off:off + room]):
+        r = r0 + i
+        if kind == "group":
+            label, n, sub = p
+            if sub:
+                cv.put(c0 + 2, r, label, DIM)
+                cv.put(c0 + 3 + len(label), r, str(n), DIMMER)
+            else:
+                cv.put(c0, r, label.upper(), SOFT, None, True)
+                cv.put(c0 + 1 + len(label), r, str(n), DIMMER)
+            continue
+        if kind != "item":
+            continue
+        on = p["key"] == pick
+        ui.list_hits[r] = p["key"]
+        if on:
+            for cc in range(c0, c0 + w):
+                k = r * cv.C + cc
+                cv.top[k] = cv.bot[k] = PICK_BG
+        if j == 0:
+            if on:
+                cv.put(c0, r, "▸", AMBER, None, True)
+            day = p.get("day") or ""
+            cv.put(c0 + 2, r, clip(p["title"], w - 3 - (len(day) + 1 if day else 0)), INK, None, True)
+            if day:
+                cv.put(c0 + w - 1 - len(day), r, day, DIMMER)
+        else:
+            _draw_runs(cv, c0 + 2, r, p["line2"], w - 3)
+    below = sum(1 for k, _p, j in lines[off + room:] if k == "item" and j == 0)
+    above = sum(1 for k, _p, j in lines[:off] if k == "item" and j == 0)
+    if above:
+        cv.put(c0 + w - 2 - len("%d more above" % above), r0 - 1, "%d more above" % above, DIM)
+    if below:
+        s = "%d more below" % below
+        cv.put(c0 + w - 1 - len(s), r0 + h - 1, s, DIM)
+
+
+def _reader(cv, ui, page, c0, r0, w, h, title, sub, tags=()):
+    """The reader pane: the page's title and facts, then its text, scrolled."""
+    _box(cv, c0, r0, w, h, PANEL)
+    inner = w - 4
+    c = c0 + 2
+    for run in tags:
+        _draw_runs(cv, c, r0 + 1, [run], inner)
+        c += len(run[0]) + 1
+    cv.put(c, r0 + 1, clip(title, c0 + w - 2 - c), INK, None, True)
+    cv.put(c0 + 2, r0 + 2, clip(sub, inner), DIM)
+    cv.put(c0, r0 + 3, "├" + "─" * (w - 2) + "┤", PANEL)
+    top, body_h = r0 + 4, h - 5
+    lines = page["lines"]
+    if ui.scroll_key != page["key"]:
+        ui.scroll, ui.scroll_key = 0, page["key"]
+    most = max(0, len(lines) - body_h)
+    ui.scroll = max(0, min(ui.scroll, most))
+    ui.reader_box = (c0, r0, c0 + w, r0 + h)
+    ui.reader_page = max(1, body_h - 2)
+    for i, runs in enumerate(lines[ui.scroll:ui.scroll + body_h]):
+        _draw_runs(cv, c0 + 2, top + i, runs, inner)
+    if most:
+        last = min(len(lines), ui.scroll + body_h)
+        s = " lines %d to %d of %d " % (ui.scroll + 1, last, len(lines))
+        cv.put(c0 + w - 2 - len(s), r0 + h - 1, s, DIM)
+
+
+def _fm_name(scene):
+    return next((c["name"] for c in scene.crew if c["kind"] == "first"), "First mate")
+
+
+def _shelf_header(cv, parts, c=1):
+    for n, label, color in parts:
+        cv.put(c, 3, n, color, None, True)
+        cv.put(c + len(n) + 1, 3, label, SOFT)
+        c += len(n) + len(label) + 5
+    return c
+
+
+def _read_only_pill(cv, c):
+    for pill in ("read only, changes happen in chat", "read only"):
+        if cv.C - len(pill) - 1 > c:
+            cv.put(cv.C - len(pill) - 1, 3, pill, BG, GREEN, True)
+            break
+
+
+def _memory_screen(cv, ui, scene, now):
+    C, R = cv.C, cv.R
+    model = scene.model
+    pages = ui.shelf.pages("memory", model, _fm_name(scene), now)
+    longs = [p for p in pages if p["group"] == "Long-term memory"]
+    days = [p for p in pages if p["group"] != "Long-term memory"]
+    c = _shelf_header(cv, ((str(len(longs)), "pages of long-term memory" if len(longs) != 1
+                            else "page of long-term memory", INK),
+                           (str(len(days)), "days in the journal" if len(days) != 1 else "day in the journal", INK)))
+    _read_only_pill(cv, c)
+    ui.page_keys = [p["key"] for p in pages]
+    if not pages:
+        cv.put(3, 5, "Nothing is remembered yet.", SOFT, None, True)
+        cv.put(3, 7, "Lessons, notes about you and the days' work show up here once they are written down.", DIMMER)
+        return
+    pick = _pick_page(ui, pages)
+    list_w, rc = _shelf_layout(C)
+    rows = []
+    if longs:
+        rows.append(("group", ("Long-term memory", len(longs), False)))
+        rows += [("item", p) for p in longs]
+    if days:
+        rows.append(("group", ("Daily journal", len(days), False)))
+        group = None
+        for p in days:
+            if p["group"] != group:
+                group = p["group"]
+                rows.append(("group", (group, sum(1 for d in days if d["group"] == group), True)))
+            rows.append(("item", p))
+    for p in pages:
+        p["line2"] = [(p["sub"], DIMMER, False)]
+    _page_list(cv, ui, rows, pick, 0, 5, list_w, R - 7)
+    page = next(p for p in pages if p["key"] == pick)
+    page["lines"] = ui.shelf.render(page, C - rc - 4)
+    _reader(cv, ui, page, rc, 5, C - rc, R - 7, page["title"], page["head"])
+
+
+def _kind_pill(kind):
+    color = H(dict(DOC_KINDS)[kind])
+    return (" %s " % kind, color, True, mix(color, BG, 0.8))
+
+
+def _doc_facts(model, colors, p):
+    """A document row's second line: its kind, its project and its size."""
+    runs = [_kind_pill(p["kind"])]
+    if p["has_project"]:
+        tag, tc = _project_tag(model, colors, p["project"])
+        runs.append(("  ■ " + tag, tc, True))
+    if p["kind"] == "Link":
+        runs.append(("  " + re.sub(r"^https?://([^/]+).*$", r"\1", p["url"]), DIMMER, False))
+    else:
+        runs.append(("  " + _n_words(p["words"]), DIMMER, False))
+    return runs
+
+
+def _docs_screen(cv, ui, scene, now):
+    C, R = cv.C, cv.R
+    model = scene.model
+    colors = project_colors(model)
+    pages = ui.shelf.pages("docs", model, _fm_name(scene), now)
+    counts = {t: sum(1 for p in pages if t == "All" or p["kind"] == t) for t in DOC_TAGS}
+    ui.doc_tag = max(0, min(ui.doc_tag, len(DOC_TAGS) - 1))
+    c = 1
+    for i, t in enumerate(DOC_TAGS):
+        s = " %s %d " % (t, counts[t])
+        on = i == ui.doc_tag
+        color = INK if t == "All" else H(dict(DOC_KINDS)[t])
+        cv.put(c, 3, s, BG if on else color, color if on else None, True)
+        c += len(s) + 1
+    _read_only_pill(cv, c + 2)
+    tag = DOC_TAGS[ui.doc_tag]
+    shown = [p for p in pages if tag == "All" or p["kind"] == tag]
+    ui.page_keys = [p["key"] for p in shown]
+    if not shown:
+        cv.put(3, 5, "No documents of this kind yet." if pages else "No documents yet.", SOFT, None, True)
+        cv.put(3, 7, "Finished investigations, decision pages and your saved links show up here.", DIMMER)
+        return
+    pick = _pick_page(ui, shown)
+    list_w, rc = _shelf_layout(C)
+    for p in shown:
+        p["line2"] = _doc_facts(model, colors, p)
+        p["day"] = bridge._day(_dt.datetime.fromtimestamp(p["stamp"]).strftime("%Y-%m-%d"), model["today"]) \
+            if p["stamp"] else ""
+    _page_list(cv, ui, [("item", p) for p in shown], pick, 0, 5, list_w, R - 7)
+    page = next(p for p in shown if p["key"] == pick)
+    facts = []
+    if page["has_project"]:
+        facts.append("project %s" % clean(bridge._title(model, page["project"])) if page["project"]
+                     else "the ship's own setup")
+    if page["kind"] == "Link":
+        head = "A saved link" + (" for %s" % facts[0] if facts else "")
+        lines = [[(page["title"], INK, True)], []]
+        if facts:
+            lines += [[(facts[0][:1].upper() + facts[0][1:], SOFT, False)], []]
+        lines += [[("The address, to copy or tap:", DIM, False)]]
+        url = page["url"]
+        width = C - rc - 4
+        for k in range(0, len(url), max(1, width)):
+            lines.append([(url[k:k + width], H("#8fb8ff"), False)])
+        page["lines"] = lines
+    else:
+        d = _dt.datetime.fromtimestamp(page["stamp"]).date()
+        head = ", ".join([_long_day(d), _n_words(page["words"])] + facts)
+        page["lines"] = ui.shelf.render(page, C - rc - 4)
+    _reader(cv, ui, page, rc, 5, C - rc, R - 7, page["title"], head, (_kind_pill(page["kind"]),))
 
 
 # ---------------------------------------------------------------------------
@@ -3180,6 +3972,10 @@ def compose(scene, renderer, ui, cols, rows, now, records_ok=True, notice=None, 
         _calendar_screen(cv, ui, scene.model, scene.crew, agents_ok)
     elif ui.view == "team":
         _team_screen(cv, ui, scene)
+    elif ui.view == "memory":
+        _memory_screen(cv, ui, scene, now)
+    elif ui.view == "docs":
+        _docs_screen(cv, ui, scene, now)
     elif ui.view == "system":
         _system_screen(cv, health)
     else:
@@ -3569,13 +4365,53 @@ def _pick_decision(ui, scene, down):
     return True
 
 
+def _pick_row(ui, key):
+    """Memory and Docs: pick a row; the reader starts at its top."""
+    if key is None or ui.pages.get(ui.view) == key:
+        return False
+    ui.pages[ui.view] = key
+    return True
+
+
+def _step_row(ui, down):
+    keys = ui.page_keys
+    if not keys:
+        return False
+    cur = ui.pages.get(ui.view)
+    i = keys.index(cur) if cur in keys else 0
+    return _pick_row(ui, keys[max(0, min(len(keys) - 1, i + (1 if down else -1)))])
+
+
+def _scroll(ui, lines):
+    before = ui.scroll
+    ui.scroll = max(0, ui.scroll + lines)
+    return ui.scroll != before
+
+
+def _shelf_mouse(ui, x, y, btn):
+    """A wheel turn over the reader scrolls it; a tap on a row picks it."""
+    if ui.view not in ("memory", "docs"):
+        return False
+    if btn & 64:
+        box = ui.reader_box
+        if btn & ~(4 | 8 | 16) in (64, 65) and box and box[0] <= x < box[2] and box[1] <= y < box[3]:
+            return _scroll(ui, 3 if btn & 1 else -3)
+        return False
+    if y in ui.list_hits and ui.reader_box and x < ui.reader_box[0]:
+        return _pick_row(ui, ui.list_hits[y])
+    return False
+
+
 def _handle_input(data, ui, scene, feed):
     changed = False
     for m in _KEYS.finditer(data):
         tok = m.group(0)
         if m.group(1) is not None:
             btn, x, y, kind = int(m.group(1)), int(m.group(2)), int(m.group(3)), m.group(4)
-            if kind != b"M" or btn & (3 | 32 | 64 | 128):
+            if kind != b"M" or btn & (32 | 128) or (btn & 3 and not btn & 64):
+                continue
+            if btn & 64:
+                changed = _shelf_mouse(ui, x - 1, y - 1, btn) or changed
                 continue
             if y == 1:
                 for c0, c1, i in ui.tab_hits:
@@ -3586,6 +4422,8 @@ def _handle_input(data, ui, scene, feed):
                 act = next((a for r0, r1, c0, c1, a in ui.cal_hits if r0 <= y - 1 < r1 and c0 <= x - 1 < c1), None)
                 if act is not None:
                     changed = cal_action(ui, scene.model, act) or changed
+            else:
+                changed = _shelf_mouse(ui, x - 1, y - 1, btn) or changed
             continue
         if tok in (b"q", b"Q"):
             ui.view = "quit"
@@ -3606,6 +4444,15 @@ def _handle_input(data, ui, scene, feed):
             changed = _pick_decision(ui, scene, tok in (b"\x1b[B", b"\x1bOB")) or changed
         elif tok in (b"\x1b[A", b"\x1bOA", b"\x1b[B", b"\x1bOB") and ui.view == "team":
             changed = _pick_mate(ui, scene, tok in (b"\x1b[B", b"\x1bOB")) or changed
+        elif ui.view in ("memory", "docs") and tok in (b"\x1b[A", b"\x1bOA", b"\x1b[B", b"\x1bOB"):
+            changed = _step_row(ui, tok in (b"\x1b[B", b"\x1bOB")) or changed
+        elif ui.view in ("memory", "docs") and tok in (b"\x1b[5~", b"\x1b[6~"):
+            changed = _scroll(ui, ui.reader_page * (1 if tok == b"\x1b[6~" else -1)) or changed
+        elif ui.view == "docs" and tok in (b"\x1b[C", b"\x1bOC", b"\x1b[D", b"\x1bOD"):
+            i = max(0, min(len(DOC_TAGS) - 1, ui.doc_tag + (1 if tok in (b"\x1b[C", b"\x1bOC") else -1)))
+            if i != ui.doc_tag:
+                ui.doc_tag = i
+                changed = True
         elif tok in (b"\x1b[A", b"\x1bOA", b"\x1b[B", b"\x1bOB"):
             keys = [m_["key"] for m_ in scene.crew]
             if keys:
@@ -3617,7 +4464,7 @@ def _handle_input(data, ui, scene, feed):
                 ui.selected = keys[i]
                 ui.view = "office"
                 changed = True
-        elif tok in (b"\r", b"\n") and ui.view != "approvals":
+        elif tok in (b"\r", b"\n") and ui.view not in ("approvals", "memory", "docs"):
             if ui.view == "team" and scene.model is not None:
                 cards = team_cards(scene.model, scene.crew)
                 i = _team_pick(ui, cards)
@@ -3682,6 +4529,8 @@ def frame(home, config_dir, agents_text, view, cols, rows, fmt, session="default
         actors.append({"key": a.key, "name": m["name"], "kind": m["kind"], "state": a.state,
                        "x": a.x, "feet": a.feet, "lead": m.get("lead"), "slot": a.slot})
     cols_ = board(model)
+    now = bridge._now()
+    docs = docs_pages(model)
     health = system_cards(readings or {}, crew, model, bridge._now(), agents_ok=agents_ok)
     return json.dumps({
         "size": [cols, rows], "too_small": small, "room_height": L.height,
@@ -3696,6 +4545,10 @@ def frame(home, config_dir, agents_text, view, cols, rows, fmt, session="default
         "approvals": [{"name": g["name"], "count": len(g["items"])} for g in approvals(model, crew)],
         "team": [{"name": m["name"], "role": m["role"], "doing": m["doing"], "path": m["path"],
                   "status": m["status"]} for m in crew],
+        "memory": [{"group": p["group"], "title": p["title"], "sub": p["sub"]}
+                   for p in memory_pages(model, _fm_name(scene), now)],
+        "docs": {"tags": {t: sum(1 for p in docs if t == "All" or p["kind"] == t) for t in DOC_TAGS},
+                 "rows": [{"kind": p["kind"], "title": p["title"], "project": p["project"]} for p in docs]},
         "system": {"overall": health["overall"], "dot": health["dot"], "rack": "ok" if health["ok"] else "check",
                    "cards": [{"title": c["title"], "dot": c["dot"], "head": c["head"],
                               "lines": [{"dot": d, "text": t} for d, t in c["lines"]]} for c in health["cards"]]},
