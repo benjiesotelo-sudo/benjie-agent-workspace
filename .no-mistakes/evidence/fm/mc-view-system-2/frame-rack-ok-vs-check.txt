@@ -1,0 +1,10 @@
+$ fm-mission-control.sh frame --readings ok.json --agents agents.json --view system --size 170x50 | sed -n 4p
+ ● All systems normal read only, nothing here acts
+$ ... --view office | rack sign
+ ok  
+
+$ fm-mission-control.sh frame --readings stale.json --agents agents.json --view system --size 170x50 | sed -n 4p
+ ● 1 thing needs a look: crew monitoring read only, nothing here acts
+$ ... --view office | rack sign
+check
+
