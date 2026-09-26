@@ -605,11 +605,11 @@ class Layout:
         self.height = room_height(rows)
         self.walk_y = 50 + self.band
         self.inbox_y = 59 + self.band
-        self.desks = {"fm": {"x": 34, "y": 13, "w": 21, "two": True, "cap": 4}}
+        self.desks = {"fm": {"x": 34, "y": 13, "w": 21, "two": True, "cap": 4, "room": (0, OW)}}
         for i, m in enumerate(down):
             row, col = divmod(i, 3)
             self.desks[m["key"]] = {"x": 1 + 29 * col, "y": 33 + ROW_BAND * row, "w": 13, "two": False,
-                                    "cap": 3 if col == 2 else 2}
+                                    "cap": 3 if col == 2 else 2, "room": (29 * col, 28)}
         self.down = down
         self.signature = (self.height, tuple((k, d["x"], d["y"]) for k, d in sorted(self.desks.items())))
 
@@ -1330,7 +1330,8 @@ class Renderer:
             if a is None:
                 continue
             cx = d["x"] + d["w"] // 2
-            name = a.member["name"]
+            lo, room = d["room"]
+            name = clip(a.member["name"], room)
             if info.get(key) == "retired" or a.state == "retired":
                 st, stc = "retired", AMBER
             elif a.state == "work":
@@ -1339,7 +1340,8 @@ class Renderer:
                 st, stc = "asleep", ZZZ
             else:
                 st, stc = "walking", AMBER
-            o.text(cx - len(name) // 2, d["y"] + 12, name, H(a.member["color"]), False, True)
+            x = max(lo, min(cx - len(name) // 2, lo + room - len(name)))
+            o.text(x, d["y"] + 12, name, H(a.member["color"]), False, True)
             o.text(cx - len(st) // 2, d["y"] + 14, st, stc)
 
 

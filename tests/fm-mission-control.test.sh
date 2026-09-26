@@ -1248,6 +1248,16 @@ name = [fg for _, fg in rows[i][j:j + 12]] + [fg for _, fg in rows[i + 1][j:j + 
 assert text[i + 1][j:].startswith("9: Chapter"), text[i + 1]
 assert len(set(name)) == 1 and rows[i + 1][j + 3][1] != name[0], (name, rows[i + 1][j + 3])
 ' || fail "a Week name split across lines keeps its project colour on every piece"
+# A long desk label starts at the office's left edge, and one wider than its desk's room is clipped
+# rather than running on under the next desk.
+printf '{"first_mate_name": "Denver", "names": {"alpha": "SAP-Management-App"}}\n' > "$CAL/config/mission-control.json"
+grep -q '^SAP-Management-A' <<<"$(mc "$CAL" frame --agents "$AGENTS" --size 132x44)" \
+  || fail "a long desk label keeps its first letters"
+printf '{"first_mate_name": "Denver", "names": {"alpha": "Social Media Marketing Livelihood"}}\n' \
+  > "$CAL/config/mission-control.json"
+LABEL=$(mc "$CAL" frame --agents "$AGENTS" --size 132x44 | grep -m1 '^Social Media Ma') \
+  || fail "a desk label wider than its desk's room keeps its first letters"
+[ -z "$(tr -d ' ' <<<"${LABEL:28:68}")" ] || fail "a desk label stays inside its desk's room, got: $LABEL"
 rm -f "$CAL/config/mission-control.json"
 pass "without a names map projects and second mates keep the repository names"
 
