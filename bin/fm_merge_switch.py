@@ -14,7 +14,8 @@ System view only reads it.
 READ. read() parses the file each time it is called. A missing file is OFF. A
 file that is not valid JSON, or whose top level, permissions or
 permissions.allow has the wrong shape, reads as an error with no state, and
-switch() then refuses to write, so the file is left exactly as it was.
+switch() then refuses to write, so the file is left exactly as it was. A null
+permissions or permissions.allow counts as empty, in read() and switch() alike.
 
 WRITE. switch() rereads the file, adds the missing rules (ON) or removes every
 copy of exactly those two (OFF), and keeps every other key and entry in their
