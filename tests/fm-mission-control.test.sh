@@ -694,7 +694,7 @@ print(mc.compose(scene, mc.Renderer(), ui, 170, 50, now)[0].text())
 PY
 D=$(cat "$TMP_ROOT/day.txt")
 grep -Eq '^▸ Saturday 12 September ' <<<"$D" || fail "down picks the journal day"
-for want in '│ Saturday 12 September 2026, 1 event, 7 words ' '│ alpha ' '│   • The alpha mate finished Chapter four notes\. '; do
+for want in '│ Saturday 12 September 2026, 1 event, 5 words ' '│ alpha ' '│   • alpha finished Chapter four notes\. '; do
   grep -Eq "$want" <<<"$D" || fail "a journal day reads as plain sentences under its project: $want"
 done
 DJ=$(PYTHONPATH="$ROOT/bin" FM_BRIDGE_NOW=2026-09-20T10:00:00 PATH="$FAKEBIN:$PATH" python3 - "$HOME_DIR" <<'PY'
@@ -721,11 +721,11 @@ O=$(mc "$HOME_DIR" frame --agents "$AGENTS" --view docs --size 170x50) || fail "
   = "Report|Scout report: the quiz format in a local file|alpha,Decision|The quiz stays private|alpha,Report|A study with no task|null,Decision|A decision: fix, option (b)|null,Link|Class Drive folder|alpha,Link|Status page|null" ] \
   || fail "documents run newest first, links last, with plain titles, got $(jq -c .docs.rows <<<"$MJ")"
 for want in '^  All 6   Report 2   Decision 2   Link 2 ' '^▸ Scout report: the quiz format in\.\.\. +19 Sep  ┌' \
-  '^   Report   ■ alpha  [0-9]+ words' '^  The quiz stays private +18 Sep  │' '^   Decision   ■ alpha  ' \
+  '^   Report   ■ Alpha  [0-9]+ words' '^  The quiz stays private +18 Sep  │' '^   Decision   ■ Alpha  ' \
   '^   Report   [0-9]+ words' '^  A decision: fix, option \(b\) ' '^   Decision   [0-9]+ words' \
-  '^   Link   ■ alpha  drive\.example\.org' '^   Link   ■ setup  status\.example\.org' \
+  '^   Link   ■ Alpha  drive\.example\.org' '^   Link   ■ setup  status\.example\.org' \
   '│  Report  Scout report: the quiz format in a local file ' \
-  '│ Saturday 19 September 2026, [0-9]+ words, project alpha ' \
+  '│ Saturday 19 September 2026, [0-9]+ words, project Alpha ' \
   '│ What we found ' '│   • First finding with bold words and a code span ' \
   '│   • Second finding, see the course page \(https://example\.org/course\) ' \
   '│     1\. A nested numbered step ' '│ Option +│ Cost ' '│ Rebuild +│ two days '; do
@@ -1145,6 +1145,24 @@ done
 NS=$(mc "$HOME_DIR" frame --readings "$TMP_ROOT/names-ok.json" --agents "$AGENTS" --view system --size 170x50) \
   || fail "named system failed"
 grep -q 'Course A: window open' <<<"$NS" || fail "the System view names the second mate by its project"
+NM=$(mc "$HOME_DIR" frame --agents "$AGENTS" --view memory --size 170x50) || fail "named memory failed"
+grep -q 'Lessons Course A learned' <<<"$NM" || fail "Memory names a second mate's pages by its project"
+PYTHONPATH="$ROOT/bin" FM_BRIDGE_NOW=2026-09-20T10:00:00 PATH="$FAKEBIN:$PATH" python3 - "$HOME_DIR" <<'PY' \
+  || fail "the journal names projects and second mates by the names map"
+import os
+import sys
+import fm_mission_control as mc
+home = os.path.realpath(sys.argv[1])
+model = mc.with_settings(mc.bridge.collect(home, home + "/config", mc.bridge._now()), mc.read_settings(home + "/config"))
+text = "\n".join(d["text"] for d in mc.journal(model, "Denver"))
+assert "## Course A" in text and "## Outreach" in text and "- Course A finished Chapter four notes." in text, text
+assert "## alpha" not in text and "mate" not in text, text
+PY
+ND=$(mc "$HOME_DIR" frame --agents "$AGENTS" --view docs --size 170x50) || fail "named docs failed"
+for want in '^   Report   ■ Course A  ' '^   Link   ■ Setup  status\.example\.org' \
+  '│ Saturday 19 September 2026, [0-9]+ words, project Course A '; do
+  grep -Eq "$want" <<<"$ND" || fail "the Docs view takes the display names: $want"
+done
 # A title that already starts with its project's name does not repeat it.
 cp "$CAL/data/backlog.md" "$TMP_ROOT/cal-backlog.saved"
 printf '%s\n' '- [x] n1 - Outreach flyer printed (repo: beta) (kind: ship) (done 2026-09-22)' \

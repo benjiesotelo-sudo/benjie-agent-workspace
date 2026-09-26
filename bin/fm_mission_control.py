@@ -322,6 +322,13 @@ def project_name(model, pname, card=False):
     return clean(bridge._title(model, pname) if card else bridge._short(model, pname))
 
 
+def project_phrase(model, pname):
+    """"project <name>", or "the ship's own setup" while the names map leaves the setup unnamed."""
+    if pname is None and project_name(model, None) == SHIP_TAG:
+        return "the ship's own setup"
+    return "project %s" % project_name(model, pname, card=True)
+
+
 def mate_name(model, mid):
     """A second mate is named by its first registered project; with none, by its id."""
     mate = next((m for m in model.get("mates") or [] if m["id"] == mid), None)
@@ -1914,10 +1921,7 @@ def _approvals_screen(cv, ui, scene):
     since = bridge._day(it["since"], today)
     age = _age(it["since"], today)[0]
     asked = ("asked %s" % ("today" if age == "today" else "%s, %s ago" % (since, age))) if since else ""
-    if it["project"] is None and project_name(model, None) == SHIP_TAG:
-        project = "the ship's own setup"
-    else:
-        project = "project %s" % project_name(model, it["project"], card=True)
+    project = project_phrase(model, it["project"])
     facts = ", ".join(x for x in (asked, "sits with %s" % g["name"], project) if x)
     cv.put(3, r, clip(facts, w), H(g["color"]))
     r += 1
@@ -2313,7 +2317,7 @@ def _sentence(text):
 
 
 def _project_tag(model, colors, pname):
-    tag = SHIP_TAG if pname is None else clean(bridge._short(model, pname))
+    tag = project_name(model, pname)
     return tag, H(colors.get(pname.lower() if pname else None, FIRST_MATE_COLOR))
 
 
@@ -2336,7 +2340,7 @@ def journal(model, fm_name):
         days.setdefault(day, []).append({"who": who, "text": text, "project": pname})
 
     for hid, data, mate, snap in _shelf_homes(model):
-        who = fm_name if mate is None else "The %s mate" % mate_name(model, hid)
+        who = fm_name if mate is None else mate_name(model, hid)
         for rec in _home_records(data, snap).values():
             title = _md_plain(bridge._clean_title(rec.get("title")))
             if not title:
@@ -2364,7 +2368,7 @@ def journal(model, fm_name):
             groups.setdefault(ev["project"], []).append(ev)
         lines, heads = [], {}
         for pname in sorted(groups, key=lambda p: (p is None, order.get(p, 0))):
-            head = clean(bridge._title(model, pname)) if pname else "The setup itself"
+            head = project_name(model, pname, card=True)
             heads[head] = H(colors.get(pname.lower() if pname else None, FIRST_MATE_COLOR))
             lines.extend(["", "## " + head])
             lines.extend("- " + ev["text"] for ev in groups[pname])
@@ -2959,8 +2963,7 @@ def _docs_screen(cv, ui, scene, now):
     page = next(p for p in shown if p["key"] == pick)
     facts = []
     if page["has_project"]:
-        facts.append("project %s" % clean(bridge._title(model, page["project"])) if page["project"]
-                     else "the ship's own setup")
+        facts.append(project_phrase(model, page["project"]))
     if page["kind"] == "Link":
         head = "A saved link" + (" for %s" % facts[0] if facts else "")
         lines = [[(page["title"], INK, True)], []]
