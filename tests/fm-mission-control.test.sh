@@ -815,13 +815,16 @@ spanning two lines -->
 
 Keep `<code>` spans and `a < b` as written.
 
+Replace <a path> and <id> before running.
+
 ![](figures/blank.png)
 MD
 P=$(mc "$PIC" frame --agents "$AGENTS" --view docs --size 170x50) || fail "pictures docs frame failed"
 for want in '│ picture: The staff Students table +│' \
   '│ A line with a linked picture picture: Status board inline\. +│' \
   '│ picture: Phone screen while offline +│' '│ Offline on a phone & still scoring\. +│' \
-  '│ build\.py +│' '│ Keep <code> spans and a < b as written\. +│' '│ picture +│'; do
+  '│ build\.py +│' '│ Keep <code> spans and a < b as written\. +│' '│ picture +│' \
+  '│ Replace <a path> and <id> before running\. +│'; do
   grep -Eq "$want" <<<"$P" || fail "the Docs reader shows: $want"
 done
 grep -Eq '\.png|figures|shots/|<t[dr]|</|<img|<details|<summary|align=|&amp;|note for the author|spanning two' <<<"$P" \

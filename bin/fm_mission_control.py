@@ -2471,10 +2471,12 @@ class Shelf:
 # -- Markdown to terminal lines ------------------------------------------------
 
 # HTML a report may carry: block tags read as a break between words, inline
-# tags vanish, and anything else in angle brackets stays as written.
+# tags vanish, and anything else in angle brackets, such as a <path>
+# placeholder, stays as written.
 _HTML_BLOCK = ("table|thead|tbody|tfoot|tr|td|th|div|p|details|summary|figure|figcaption|center|picture"
                "|source|br|hr|ul|ol|li|dl|dt|dd|blockquote|section|h[1-6]")
-_HTML_TAG = r"</?(?:%s|img|a|b|i|u|s|em|strong|code|kbd|span|sup|sub|small|mark|del|ins)\b[^<>]*>" % _HTML_BLOCK
+_HTML_TAG = (r"</?(?:%s|img|a|b|i|u|s|em|strong|code|kbd|span|sup|sub|small|mark|del|ins)"
+             r"(?:\s+[a-z][\w:-]*\s*=\s*(?:\"[^\"]*\"|'[^']*'|[^\s\"'<>]+)|\s+(?:open|hidden))*\s*/?>") % _HTML_BLOCK
 _HTML_LINE = re.compile(r"^\s*(?:<!--|</?(?:%s|img)\b)" % _HTML_BLOCK, re.I)
 
 _INLINE = re.compile(
