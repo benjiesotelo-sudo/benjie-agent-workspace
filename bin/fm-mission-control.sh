@@ -2,11 +2,12 @@
 # fm-mission-control.sh - Mission Control, the crew as a live read-only office.
 #
 # Mission Control draws the whole crew as an animated pixel-art office, plus a
-# task board, a card per project, the decisions waiting on the captain and a
-# week, month and year calendar, in one terminal pane; bin/fm_mission_control.py owns what it
-# reads, how the crew maps onto the office, and how frames are drawn. It is
-# read-only: it never writes a record, never sends keys or prompts to an agent,
-# and never starts or stops one.
+# task board, a card per project, the decisions waiting on the captain, a
+# week, month and year calendar and the crew as an org chart, in one terminal
+# pane; bin/fm_mission_control.py owns what it reads, how the crew maps onto
+# the office, and how frames are drawn. It is read-only: it never writes a
+# record, never sends keys or prompts to an agent, and never starts or stops
+# one.
 #
 # Commands:
 #   run                     draw the screen in this terminal until q
@@ -21,8 +22,8 @@
 #                           `herdr agent list` file (tests, a quick look),
 #                           or without --agents from asking Herdr once;
 #                           <v> is office, tasks, approvals, projects,
-#                           calendar, or a later view's name; <keys> are
-#                           keys and mouse taps applied first, as the
+#                           calendar, team, or a later view's name; <keys>
+#                           are keys and mouse taps applied first, as the
 #                           terminal sends them (Enter and q are ignored)
 #
 # Keys while running: 1-9 switch view, p pauses the animation, q quits,
@@ -33,7 +34,9 @@
 # answers or changes a decision. On the calendar, left and right move one
 # week, month or year, t returns to today and v cycles Week, Month and Year;
 # its control bar does the same when tapped, and tapping a month in Year opens
-# it. Tapping a tab switches view when the terminal reports mouse clicks.
+# it. On the Team view up/down pick a second mate's card instead and Enter
+# moves to that mate's pane. Tapping a tab switches view when the terminal
+# reports mouse clicks.
 #
 # start creates the workspace with `herdr workspace create --label
 # mission-control --no-focus` in this home and types the run command into its
