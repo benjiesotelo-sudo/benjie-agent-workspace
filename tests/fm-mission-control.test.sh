@@ -6,8 +6,9 @@
 # inbox count, the task columns, the project cards, the Approvals groups, the
 # calendar's week, month and year (completions, due dates, what always runs,
 # the tappable control bar), the Team org chart, the Memory and Docs lists
-# with their Markdown reader, and the System view's dots, overall line and
-# office rack sign from saved readings; then the live screen in a
+# with their Markdown reader, the System view's dots, overall line and
+# office rack sign from saved readings, and the names map renaming projects
+# and second mates in every view; then the live screen in a
 # pseudo-terminal, which must redraw only what changed, pick project cards
 # with up/down, pick, filter and scroll Memory and Docs pages, and restore the
 # terminal on q and on SIGTERM. The record parsers themselves are covered by
@@ -38,7 +39,7 @@ for record in projects backlog done-archive captain learnings; do
 done
 sed "s|@MATE_HOME@|$MATE|" "$FIX/secondmates.fixture" > "$HOME_DIR/data/secondmates.md"
 cp "$FIX/mate-backlog.fixture" "$MATE/data/backlog.md"
-printf '{"first_mate_name": "Denver"}\n' > "$HOME_DIR/config/mission-control.json"
+printf '{"first_mate_name": "Denver", "names": {"alpha": "Alpha"}}\n' > "$HOME_DIR/config/mission-control.json"
 
 meta() {  # <home> <id> <worktree> <project> [extra lines...]
   local home=$1 id=$2 wt=$3 project=$4
@@ -117,7 +118,8 @@ for word in Denver working asleep; do
   grep -q "$word" <<<"$T" || fail "desk labels name the first mate and say working and asleep: $word"
 done
 grep -q "Alpha's intern" <<<"$T" || fail "the team list names the intern's person in charge"
-grep -q 'projects/alpha' <<<"$T" || fail "the team list shows the project path"
+grep -Eq "Alpha's intern .*  Alpha *\$" <<<"$T" || fail "the team list names the project by its display name"
+grep -q 'PROJECT (the one it works in)' <<<"$T" || fail "the team list's last column is the project"
 grep -q 'LIVE ACTIVITY' <<<"$T" || fail "the activity column has its heading"
 grep -q 'Alpha finished Chapter' <<<"$T" \
   || fail "the activity column starts with this month's completions, each with a verb"
@@ -162,19 +164,19 @@ PJ=$(mc "$HOME_DIR" frame --agents "$AGENTS" --view projects --format json) || f
 card() {  # <name> <jq path>
   jq -r --arg n "$1" ".projects[] | select(.name == \$n) | $2" <<<"$PJ"
 }
-[ "$(jq -r '[.projects[].name] | join(",")' <<<"$PJ")" = "alpha,beta,The setup itself" ] \
+[ "$(jq -r '[.projects[].name] | join(",")' <<<"$PJ")" = "Alpha,beta,The setup itself" ] \
   || fail "one card per registered project in registry order, the home's own repository folded into the setup card"
 grep -Eq '^ 2 projects +1 active +0 parked +1 quiet' <<<"$P" || fail "the header counts projects by status"
-[ "$(card alpha .status)" = active ] || fail "a project with a working agent and work in flight is active, even when parked"
+[ "$(card Alpha .status)" = active ] || fail "a project with a working agent and work in flight is active, even when parked"
 [ "$(card beta .status)" = quiet ] || fail "a project with nothing moving is quiet"
-[ "$(card alpha .lead)" = Alpha ] || fail "a project a second mate has registered is in its charge"
+[ "$(card Alpha .lead)" = Alpha ] || fail "a project a second mate has registered is in its charge"
 [ "$(card beta .lead)" = Denver ] || fail "a project no second mate has registered is in the first mate's charge"
 [ "$(card "The setup itself" .lead)" = Denver ] || fail "the setup itself is in the first mate's charge"
-[ "$(card alpha '.counts | [.waiting, .queued, .in_flight, .done] | join(" ")')" = "2 2 1 2" ] \
-  || fail "alpha's four counts come from the Bridge's buckets, got $(card alpha .counts)"
+[ "$(card Alpha '.counts | [.waiting, .queued, .in_flight, .done] | join(" ")')" = "2 2 1 2" ] \
+  || fail "alpha's four counts come from the Bridge's buckets, got $(card Alpha .counts)"
 [ "$(card "The setup itself" '.counts | [.waiting, .queued] | join(" ")')" = "1 1" ] \
   || fail "items with no project, and the home's own, count on the setup card"
-for want in '│ alpha +Active  │' '│ beta +Quiet  │' '│ The setup itself +Quiet  │' \
+for want in '│ Alpha +Active  │' '│ beta +Quiet  │' '│ The setup itself +Quiet  │' \
   '│ 2 waiting on you +2 queued ' '│ 1 in flight +2 done this month ' '━ 29%  2/7 │' \
   '│ ■ Alpha in charge ' '│ ■ Denver in charge ' '│ Alpha course materials for a class; decks and notes'; do
   grep -Eq "$want" <<<"$P" || fail "a project card shows: $want"
@@ -239,7 +241,8 @@ TJ=$(mc "$TWO" frame --agents "$TMP_ROOT/two.json" --view projects --format json
 two() {  # <name> <jq path>
   jq -r --arg n "$1" ".projects[] | select(.name == \$n) | $2" <<<"$TJ"
 }
-[ "$(two alpha .lead)" = PAIR ] && [ "$(two beta .lead)" = PAIR ] || fail "both projects are in the pair mate's charge"
+[ "$(two alpha .lead)" = alpha ] && [ "$(two beta .lead)" = alpha ] \
+  || fail "both projects are in the pair mate's charge, named by its first project"
 [ "$(two alpha .status)" = parked ] || fail "a working mate with two projects does not make its parked one active"
 [ "$(two beta .status)" = quiet ] || fail "a working mate with two projects does not make its quiet one active"
 [ "$(two extra1 .status)" = active ] || fail "a working mate with one project makes that project active"
@@ -257,10 +260,10 @@ grep -q 'oldest since 29 Aug, 22 days ago' <<<"$A" || fail "the header dates the
 grep -q '─ Denver 3 ─' <<<"$A" || fail "the first mate's group is named from the settings file, with its count"
 grep -q '─ Alpha 1 ─' <<<"$A" || fail "the second mate's group carries its count"
 rows=$(grep -E '^ .* days +■ ' <<<"$A")
-[ "$(sed -E 's/.*■ ([a-z]+) +(.*)/\1: \2/' <<<"$rows")" = "setup: Tick a profile setting only the captain can reach
-alpha: Choose the quiz format
+[ "$(sed -E 's/.*■ ([A-Za-z]+) +(.*)/\1: \2/' <<<"$rows")" = "setup: Tick a profile setting only the captain can reach
+Alpha: Choose the quiz format
 beta: Approve the module outline
-alpha: Decide the chapter five review point" ] || fail "rows run oldest first within each agent, with tags, got: $rows"
+Alpha: Decide the chapter five review point" ] || fail "rows run oldest first within each agent, with tags, got: $rows"
 grep -Eq '^ ▸ +22 days +■ setup +Tick a profile' <<<"$A" || fail "the oldest decision starts highlighted, with its age"
 grep -q ' THE DECISION ' <<<"$A" || fail "the detail panel has its heading"
 grep -q "asked 29 Aug, 22 days ago, sits with Denver, the ship's own setup" <<<"$A" \
@@ -329,17 +332,17 @@ line_of() {  # <text> - the first screen row holding it
   grep -n -m1 -F "$1" <<<"$TM" | cut -d: -f1
 }
 for text in 'You, the captain' '4 things wait on you' 'Denver' 'Chief of staff' 'Alpha' \
-  'Alpha course, its decks and its quizzes' 'owns alpha' '2 listed, 1 for you'; do
+  'Alpha course, its decks and its quizzes' 'owns Alpha' '2 listed, 1 for you'; do
   grep -qF "$text" <<<"$TM" || fail "the org chart shows: $text"
 done
 [ "$(line_of 'You, the captain')" -lt "$(line_of 'Chief of staff')" ] \
-  && [ "$(line_of 'Chief of staff')" -lt "$(line_of 'owns alpha')" ] \
+  && [ "$(line_of 'Chief of staff')" -lt "$(line_of 'owns Alpha')" ] \
   || fail "the captain sits above the first mate, who sits above the second mates"
 grep -Eq 'Denver +● working' <<<"$TM" || fail "the first mate's working pane reads working"
 grep -Eq 'Alpha +z asleep' <<<"$TM" || fail "the mate's idle pane reads asleep"
 grep -q '├─ ○ state not readable: Print the handouts' <<<"$TM" \
   || fail "the first mate's intern branches off its line"
-[ "$(line_of 'Build chapter four')" -gt "$(line_of 'owns alpha')" ] || fail "the mate's intern is listed under its card"
+[ "$(line_of 'Build chapter four')" -gt "$(line_of 'owns Alpha')" ] || fail "the mate's intern is listed under its card"
 grep -q 'Add a text layer' <<<"$TM" || fail "the mate's second intern is listed too"
 grep -q 'ABOUT ALPHA' <<<"$TM" || fail "the first second mate's card is picked by default"
 grep -q '^   Persistent second mate for the alpha course$' <<<"$TM" || fail "the picked card shows its charter's first sentence"
@@ -371,7 +374,7 @@ printf '# Second mates\n\n- far-mate - Mate on the other box (host: box; root: /
 TF=$(mc "$FAR" frame --agents "$AGENTS" --view team --size 114x40) || fail "remote team frame failed"
 grep -q 'list on another machine' <<<"$TF" || fail "a remote mate's card says its list is on another machine"
 grep -q 'could not be read' <<<"$TF" && fail "a remote mate's records are not called unreadable"
-grep -Eq 'FAR +away' <<<"$TF" || fail "a remote mate reads away beside its full name"
+grep -Eq 'alpha +away' <<<"$TF" || fail "a remote mate reads away beside its project's name"
 grep -q '/srv/far' <<<"$TF" && fail "no remote path may reach the Team view"
 pass "a remote mate's card says it works on another machine"
 
@@ -691,7 +694,7 @@ print(mc.compose(scene, mc.Renderer(), ui, 170, 50, now)[0].text())
 PY
 D=$(cat "$TMP_ROOT/day.txt")
 grep -Eq '^▸ Saturday 12 September ' <<<"$D" || fail "down picks the journal day"
-for want in '│ Saturday 12 September 2026, 1 event, 7 words ' '│ alpha ' '│   • The Alpha mate finished Chapter four notes\. '; do
+for want in '│ Saturday 12 September 2026, 1 event, 5 words ' '│ alpha ' '│   • alpha finished Chapter four notes\. '; do
   grep -Eq "$want" <<<"$D" || fail "a journal day reads as plain sentences under its project: $want"
 done
 DJ=$(PYTHONPATH="$ROOT/bin" FM_BRIDGE_NOW=2026-09-20T10:00:00 PATH="$FAKEBIN:$PATH" python3 - "$HOME_DIR" <<'PY'
@@ -718,11 +721,11 @@ O=$(mc "$HOME_DIR" frame --agents "$AGENTS" --view docs --size 170x50) || fail "
   = "Report|Scout report: the quiz format in a local file|alpha,Decision|The quiz stays private|alpha,Report|A study with no task|null,Decision|A decision: fix, option (b)|null,Link|Class Drive folder|alpha,Link|Status page|null" ] \
   || fail "documents run newest first, links last, with plain titles, got $(jq -c .docs.rows <<<"$MJ")"
 for want in '^  All 6   Report 2   Decision 2   Link 2 ' '^▸ Scout report: the quiz format in\.\.\. +19 Sep  ┌' \
-  '^   Report   ■ alpha  [0-9]+ words' '^  The quiz stays private +18 Sep  │' '^   Decision   ■ alpha  ' \
+  '^   Report   ■ Alpha  [0-9]+ words' '^  The quiz stays private +18 Sep  │' '^   Decision   ■ Alpha  ' \
   '^   Report   [0-9]+ words' '^  A decision: fix, option \(b\) ' '^   Decision   [0-9]+ words' \
-  '^   Link   ■ alpha  drive\.example\.org' '^   Link   ■ setup  status\.example\.org' \
+  '^   Link   ■ Alpha  drive\.example\.org' '^   Link   ■ setup  status\.example\.org' \
   '│  Report  Scout report: the quiz format in a local file ' \
-  '│ Saturday 19 September 2026, [0-9]+ words, project alpha ' \
+  '│ Saturday 19 September 2026, [0-9]+ words, project Alpha ' \
   '│ What we found ' '│   • First finding with bold words and a code span ' \
   '│   • Second finding, see the course page \(https://example\.org/course\) ' \
   '│     1\. A nested numbered step ' '│ Option +│ Cost ' '│ Rebuild +│ two days '; do
@@ -850,14 +853,14 @@ for d in 'Sun 20' 'Mon 21' 'Tue 22' 'Wed 23' 'Thu 24' 'Fri 25' 'Sat 26'; do
   grep -q "$d" <<<"$K" || fail "a wide pane shows the whole week: $d"
 done
 [ "$(day_of "$K" ' today ')" = 'Wed 23' ] || fail "today's column is marked today"
-[ "$(day_of "$K" 'Chapter five')" = 'Mon 21' ] || fail "a past completion sits on its day"
-[ "$(day_of "$K" 'Tidy the ship')" = 'Wed 23' ] || fail "today's completion sits on today"
-[ "$(day_of "$K" 'Book the lecture')" = 'Fri 25' ] || fail "a hold-until date makes an item due that day"
-[ "$(day_of "$K" 'Send the grades')" = 'Sat 26' ] || fail "a date written in a title makes it due that day"
+[ "$(day_of "$K" 'alpha: Chapter')" = 'Mon 21' ] || fail "a past completion sits on its day"
+[ "$(day_of "$K" 'setup: Tidy the')" = 'Wed 23' ] || fail "today's completion sits on today"
+[ "$(day_of "$K" 'beta: Book the')" = 'Fri 25' ] || fail "a hold-until date makes an item due that day"
+[ "$(day_of "$K" 'alpha: Send the')" = 'Sat 26' ] || fail "a date written in a title makes it due that day"
 grep -q '─ due ┐' <<<"$K" || fail "scheduled items are marked due"
 grep -q '─ done ┐' <<<"$K" || fail "completions are marked done"
-grep -q '┌ alpha ' <<<"$K" || fail "blocks carry their project tag"
-grep -q '┌ setup ' <<<"$K" || fail "the ship's own items carry the setup tag"
+grep -q '│ alpha: Chapter ' <<<"$K" || fail "blocks start with their project's name"
+grep -q '│ setup: Tidy ' <<<"$K" || fail "the ship's own items start with setup"
 for skip in 'Review the syllabus' 'Compare the' 'staff meeting' 'Recap of' 'Due Sat' 'Print the' 'Ask Jan' \
     'Rota for' 'Lab check' 'An older handout' 'Wrap the'; do
   grep -q "$skip" <<<"$K" && fail "a guessed, past or other-week date stays off the grid: $skip"
@@ -865,7 +868,7 @@ done
 grep -q '2 done, 2 due' <<<"$K" || fail "the control bar counts the week's blocks"
 grep -q 'Busy day' <<<"$K" && fail "another week's completions stay off the week"
 grep -q 'ALWAYS RUNNING' <<<"$K" || fail "the always-running strip has its heading"
-for chip in '● Bridge running' '● Mission Control off' '● Alpha asleep'; do
+for chip in '● Bridge running' '● Mission Control off' '● alpha asleep'; do
   grep -q "$chip" <<<"$K" || fail "the always-running strip reads the real state: $chip"
 done
 grep -Eq '\b(h1|t[1-9]|t1[01]|w[1-4])\b' <<<"$K" && fail "no task id may reach the calendar"
@@ -884,12 +887,12 @@ herdr_cal() {
     "$MC" frame --view calendar --size 170x50
 }
 K=$(herdr_cal) || fail "calendar frame without a saved agent list failed: $K"
-grep -q '● Alpha asleep' <<<"$K" || fail "frame reads a live mate window from Herdr"
+grep -q '● alpha asleep' <<<"$K" || fail "frame reads a live mate window from Herdr"
 touch "$TMP_ROOT/herdr-cal-down"
 K=$(herdr_cal) || fail "calendar frame with Herdr silent failed: $K"
 rm -f "$TMP_ROOT/herdr-cal-down"
-grep -q '● Alpha unknown' <<<"$K" || fail "with Herdr silent a mate's window is unknown"
-grep -q 'Alpha closed' <<<"$K" && fail "with Herdr silent no mate is called closed"
+grep -q '● alpha unknown' <<<"$K" || fail "with Herdr silent a mate's window is unknown"
+grep -q 'alpha closed' <<<"$K" && fail "with Herdr silent no mate is called closed"
 rm -f "$TMP_ROOT/bridge-up"
 K=$(cal 2026-10-01T10:00:00 170x50 vv) || fail "calendar frame failed: $K"
 grep -q '27 September to 3 October' <<<"$K" || fail "a week across two months names both"
@@ -897,7 +900,7 @@ grep -q '27 September to 3 October' <<<"$K" || fail "a week across two months na
 grep -q '● Bridge off' <<<"$K" || fail "a Bridge with no LaunchAgent is off"
 K=$(cal 2026-09-23T10:00:00 96x40 vv) || fail "narrow calendar frame failed: $K"
 grep -q 'Tue 22' <<<"$K" && fail "a narrow pane starts at today"
-[ "$(day_of "$K" 'Hand in the')" = 'Sun 27' ] || fail "a narrow pane shows today and the next few days"
+[ "$(day_of "$K" 'beta: Hand')" = 'Sun 27' ] || fail "a narrow pane shows today and the next few days"
 pass "the Calendar shows the week's completions, due dates and what always runs"
 
 # Month (the first mode) and Year, their control bar, and moving with keys and taps.
@@ -983,11 +986,13 @@ for size, lines in (("170x50", 6), ("132x44", 5), ("96x36", 3)):
     want = ["30", "31"] + [str(d) for d in range(1, 31)] + ["1 Oct", "2", "3"]
     assert labels(T) == want, (size, labels(T))
     assert all(len(row) == 7 for _, row in weeks(T)), size
-    # A narrow pane shortens item lines to a few letters but keeps every day.
-    n = {"170x50": 14, "132x44": 10, "96x36": 4}[size]
-    for needle, day in (("Chapter five slides", "21"), ("Tidy the ship's", "23"), ("Book the lecture", "25"),
-                        ("Send the grades", "26"), ("Hand in the marks", "27"), ("Wrap the September", "30")):
-        assert day in cells_of(T, needle[:n]), (size, needle)
+    # Every item starts with its project and a colon; a narrow pane shortens the title,
+    # wrapping it under the project, but keeps every day and every project name whole.
+    for tag, needle, day in (("alpha", "Chapter five slides", "21"), ("setup", "Tidy the ship's", "23"),
+                             ("beta", "Book the lecture", "25"), ("alpha", "Send the grades", "26"),
+                             ("beta", "Hand in the marks", "27"), ("beta", "Wrap the September", "30")):
+        assert day in cells_of(T, "%s: " % tag if size == "170x50" else "%s:" % tag), (size, tag, needle)
+        assert day in cells_of(T, "%s: %s" % (tag, needle[:8]) if size == "170x50" else needle[:4]), (size, needle)
     assert cells_of(T, "+%d more" % (8 - (lines - 1))) == {"15"}, (size, T)
     assert "left/right earlier or later   t today   v week, month or year" in T, size
     assert not re.search(r"\b(h1|t[1-9]|t1[01]|w[1-4]|b[1-8])\b", T), size
@@ -1003,12 +1008,13 @@ seg = "".join(c for c, _, _ in row)
 k = seg.index(" Month ")
 assert row[k + 1][2] == GREEN and row[seg.index(" Week ") + 1][2] != GREEN, "the active mode is lit"
 # A done item wears its project's colour, dimmed; a due item is bright.
-i = next(i for i, ln in enumerate(T.split("\n")) if "Chapter fi" in ln)
-j = T.split("\n")[i].index("Chapter fi")
+i = next(i for i, ln in enumerate(T.split("\n")) if "alpha: Chapter" in ln)
+j = T.split("\n")[i].index("alpha: Chapter")
 fg = cells(A)[i][j][1]
 assert fg != INK and fg[2] > fg[0], fg
-i = next(i for i, ln in enumerate(T.split("\n")) if "Send the g" in ln)
-j = T.split("\n")[i].index("Send the g")
+assert cells(A)[i][j + 7][1] == fg, "the project name and the title share the project's colour"
+i = next(i for i, ln in enumerate(T.split("\n")) if "alpha: Send" in ln)
+j = T.split("\n")[i].index("alpha: Send")
 assert cells(A)[i][j - 2][0] == "●" and cells(A)[i][j - 2][1] == (0xff, 0xb4, 0x54), "due items are marked"
 
 # February 2026 fills five rows; August 2026 needs six.
@@ -1096,6 +1102,164 @@ assert re.search(r"Month │ Year +◂ +February 2026 +▸", bar(F)), bar(F)
 assert labels(F)[0] == "1", labels(F)
 PY
 pass "Month and Year show whole months, marked days and today, and every control works by key and by tap"
+
+# --- project names ---------------------------------------------------------
+
+# The names map renames a project in every view, matched ignoring case; this
+# home's own repository names the setup, and a second mate takes its
+# project's name with no "mate" suffix.
+NAMES_CFG="$HOME_DIR/config/mission-control.json"
+cp "$NAMES_CFG" "$TMP_ROOT/names.saved"
+printf '{"first_mate_name": "Denver", "names": {"alpha": "Course A", "BETA": "Outreach", "homeship": "Setup"}}\n' \
+  > "$NAMES_CFG"
+sed 's/homeship/calship/' "$NAMES_CFG" > "$CAL/config/mission-control.json"
+readings "$TMP_ROOT/names-ok.json"
+NJ=$(mc "$HOME_DIR" frame --agents "$AGENTS" --format json) || fail "named office json failed"
+[ "$(jq -r '[.desks[].name] | join(",")' <<<"$NJ")" = "Denver,Course A" ] \
+  || fail "desk labels name the second mate by its project, got $(jq -c '[.desks[].name]' <<<"$NJ")"
+[ "$(jq -r '[.team[] | select(.role == "second mate") | .name] | join(",")' <<<"$NJ")" = "Course A" ] \
+  || fail "the team list names the second mate by its project"
+[ "$(jq -r '[.projects[].name] | join(",")' <<<"$NJ")" = "Course A,Outreach,Setup" ] \
+  || fail "project cards take the display names, the setup card included"
+[ "$(jq -r '[.approvals[].name] | join(",")' <<<"$NJ")" = "Denver,Course A" ] \
+  || fail "Approvals groups name the second mate by its project"
+NO=$(mc "$HOME_DIR" frame --agents "$AGENTS" --size 170x50) || fail "named office failed"
+grep -Eq "Course A's intern .*  Course A *\$" <<<"$NO" || fail "the team list's project column shows the display name"
+grep -Eq 'Denver.s intern .*  Outreach *$' <<<"$NO" || fail "a worker on a renamed project shows its display name"
+grep -q 'Course A finished Chapter' <<<"$NO" || fail "the activity column names the second mate by its project"
+NB=$(mc "$HOME_DIR" frame --agents "$AGENTS" --view tasks) || fail "named tasks failed"
+for tag in '■ Course A' '■ Outreach' '■ Setup'; do
+  grep -q "$tag" <<<"$NB" || fail "task tags take the display names: $tag"
+done
+NP=$(mc "$HOME_DIR" frame --agents "$AGENTS" --view projects --size 170x50) || fail "named projects failed"
+grep -Eq '│ Course A  alpha +Active  │' <<<"$NP" || fail "a renamed card keeps its repository name in soft print"
+grep -q '■ Course A in charge' <<<"$NP" || fail "a card's person in charge is the second mate's project name"
+NA=$(mc "$HOME_DIR" frame --agents "$AGENTS" --view approvals) || fail "named approvals failed"
+grep -q '─ Course A 1 ─' <<<"$NA" || fail "an Approvals group names the second mate by its project"
+grep -Eq '■ Setup +Tick a profile' <<<"$NA" || fail "the setup's decisions carry the setup's display name"
+grep -q 'sits with Denver, project Setup' <<<"$NA" || fail "the decision panel names the setup by its display name"
+NT=$(mc "$HOME_DIR" frame --agents "$AGENTS" --view team --size 170x50) || fail "named team failed"
+for text in 'Course A' 'owns Course A' 'ABOUT COURSE A'; do
+  grep -qF "$text" <<<"$NT" || fail "the Team view shows: $text"
+done
+NS=$(mc "$HOME_DIR" frame --readings "$TMP_ROOT/names-ok.json" --agents "$AGENTS" --view system --size 170x50) \
+  || fail "named system failed"
+grep -q 'Course A: window open' <<<"$NS" || fail "the System view names the second mate by its project"
+NM=$(mc "$HOME_DIR" frame --agents "$AGENTS" --view memory --size 170x50) || fail "named memory failed"
+grep -q 'Lessons Course A learned' <<<"$NM" || fail "Memory names a second mate's pages by its project"
+PYTHONPATH="$ROOT/bin" FM_BRIDGE_NOW=2026-09-20T10:00:00 PATH="$FAKEBIN:$PATH" python3 - "$HOME_DIR" <<'PY' \
+  || fail "the journal names projects and second mates by the names map"
+import os
+import sys
+import fm_mission_control as mc
+home = os.path.realpath(sys.argv[1])
+model = mc.with_settings(mc.bridge.collect(home, home + "/config", mc.bridge._now()), mc.read_settings(home + "/config"))
+text = "\n".join(d["text"] for d in mc.journal(model, "Denver"))
+assert "## Course A" in text and "## Outreach" in text and "- Course A finished Chapter four notes." in text, text
+assert "## alpha" not in text and "mate" not in text, text
+PY
+ND=$(mc "$HOME_DIR" frame --agents "$AGENTS" --view docs --size 170x50) || fail "named docs failed"
+for want in '^   Report   ■ Course A  ' '^   Link   ■ Setup  status\.example\.org' \
+  '│ Saturday 19 September 2026, [0-9]+ words, project Course A '; do
+  grep -Eq "$want" <<<"$ND" || fail "the Docs view takes the display names: $want"
+done
+# A title that already starts with its project's name does not repeat it.
+cp "$CAL/data/backlog.md" "$TMP_ROOT/cal-backlog.saved"
+printf '%s\n' '- [x] n1 - Outreach flyer printed (repo: beta) (kind: ship) (done 2026-09-22)' \
+  '- [x] n2 - Outreachers lunch booked (repo: beta) (kind: ship) (done 2026-09-22)' >> "$CAL/data/backlog.md"
+NK=$(cal 2026-09-23T10:00:00 170x50) || fail "named month with self-named titles failed"
+grep -q 'Outreach: flyer' <<<"$NK" || fail "a title's own leading project name is dropped"
+grep -q 'Outreach: Outreach ' <<<"$NK" && fail "a Calendar line never repeats its project's name"
+grep -q 'Outreach: Outrea' <<<"$NK" || fail "a title that only begins with the same letters keeps them"
+printf '%s\n' "- [x] n3 - Outreach's poster hung (repo: beta) (kind: ship) (done 2026-09-24)" \
+  '- [x] n4 - Venue booked (repo: beta) (kind: ship) (done 2026-08-14)' \
+  '- [x] n5 - Chairs booked (repo: beta) (kind: ship) (done 2026-08-14)' >> "$CAL/data/backlog.md"
+NK=$(cal 2026-09-23T10:00:00 170x50 vv) || fail "named week with a possessive title failed"
+[ "$(day_of "$NK" "Outreach's pos")" = 'Thu 24' ] || fail "a possessive title keeps its project's name as its subject"
+# Six weeks at the smallest pane leave two lines a day: a name that needs both keeps one for "+N more".
+NK=$(cal 2026-09-23T10:00:00 96x36 $'\x1b[D') || fail "a six-week month at the smallest pane failed"
+grep -q 'August 2026' <<<"$NK" || fail "left goes back to August"
+grep -q '+1 more' <<<"$NK" || fail "a day whose first name fills its cell still counts the items it hides"
+mv "$TMP_ROOT/cal-backlog.saved" "$CAL/data/backlog.md"
+for size in 132x44 170x50; do
+  NK=$(cal 2026-09-23T10:00:00 "$size") || fail "named month at $size failed"
+  grep -q '● Course A asleep' <<<"$NK" || fail "the always-running strip names the mate by its project at $size"
+  for tag in '■ Course A' '■ Outreach' '■ Setup'; do
+    grep -q "$tag" <<<"$NK" || fail "the Calendar legend takes the display names at $size: $tag"
+  done
+  NW=$(cal 2026-09-23T10:00:00 "$size" vv) || fail "named week at $size failed"
+  [ "$(day_of "$NW" '│ Course A:')" = 'Mon 21' ] || fail "a Week item starts with its project at $size"
+  [ "$(day_of "$NW" '│ Setup:')" = 'Wed 23' ] || fail "the setup's Week item starts with Setup at $size"
+  [ "$(day_of "$NW" '│ Outreach:')" = 'Fri 25' ] || fail "a due Week item starts with its project at $size"
+done
+PATH="$FAKEBIN:$PATH" FM_HOME="$CAL" python3 - "$MC" "$AGENTS" <<'PY' || fail "every Month line starts with its project, whole"
+import os, re, subprocess, sys
+MC, AGENTS = sys.argv[1:]
+for size in ("132x44", "170x50"):
+    env = dict(os.environ, FM_BRIDGE_NOW="2026-09-23T10:00:00")
+    T = subprocess.run([MC, "frame", "--agents", AGENTS, "--view", "calendar", "--size", size], env=env,
+                       check=True, capture_output=True, text=True).stdout
+    grid = [ln for ln in T.split("\n")[10:] if ln.startswith("│")]
+    items = [m.group(1) for ln in grid for m in re.finditer(r"│ [✓●] ([^│]*?) *(?=│)", ln)]
+    assert items, (size, T)
+    for it in items:
+        assert re.match(r"(Course A|Outreach|Setup):", it), (size, it)
+    # 170 columns fit the title beside the name; at 132 it wraps under the name.
+    if size == "170x50":
+        assert any(it.startswith("Course A: Chap") for it in items), (size, items)
+    else:
+        lines = T.split("\n")
+        hits = [(i, ln.index("✓ Course A: ")) for i, ln in enumerate(lines) if re.search(r"✓ Course A: +│", ln)]
+        assert any(lines[i + 1][j + 2:].startswith("Chapter") for i, j in hits), (size, T)
+PY
+mv "$TMP_ROOT/names.saved" "$NAMES_CFG"
+rm -f "$CAL/config/mission-control.json"
+pass "the names map renames every project in every view, and second mates by their project"
+
+# Without a names map a project keeps its repository name, and a second mate
+# takes that name.
+printf '{"first_mate_name": "Denver"}\n' > "$CAL/config/mission-control.json"
+DJ=$(mc "$CAL" frame --agents "$AGENTS" --format json) || fail "unnamed office json failed"
+[ "$(jq -r '[.projects[].name] | join(",")' <<<"$DJ")" = "alpha,beta,homeship,The setup itself" ] \
+  || fail "without a names map the cards keep the repository names"
+[ "$(jq -r '[.desks[].name] | join(",")' <<<"$DJ")" = "Denver,alpha" ] \
+  || fail "without a names map a second mate takes its repository's name"
+DK=$(cal 2026-09-23T10:00:00 132x44) || fail "unnamed month failed"
+grep -q '✓ alpha: Chapter' <<<"$DK" || fail "without a names map a Calendar line starts with the repository name"
+grep -Eq 'alpha[- ]mate|Alpha mate' <<<"$DK$(mc "$CAL" frame --agents "$AGENTS" --view team --size 170x50)" \
+  && fail "a second mate is never shown with a mate suffix"
+# A name wider than a Week line breaks inside itself and keeps its colour on every piece.
+printf '{"first_mate_name": "Denver", "names": {"alpha": "Telos_FIN1209"}}\n' > "$CAL/config/mission-control.json"
+cal 2026-09-23T10:00:00 132x44 vv ansi | python3 -c '
+import re, sys
+rows = []
+for line in sys.stdin.read().split("\n"):
+    row, fg = [], None
+    for m in re.finditer(r"\x1b\[([0-9;]*)m|([^\x1b])", line):
+        if m.group(2) is not None:
+            row.append((m.group(2), fg))
+        elif len(m.group(1).split(";")) == 11:
+            fg = tuple(m.group(1).split(";")[3:6])
+    rows.append(row)
+text = ["".join(c for c, _ in row) for row in rows]
+i = next(i for i, t in enumerate(text) if "│ Telos_FIN120 " in t)
+j = text[i].index("Telos_FIN120")
+name = [fg for _, fg in rows[i][j:j + 12]] + [fg for _, fg in rows[i + 1][j:j + 2]]
+assert text[i + 1][j:].startswith("9: Chapter"), text[i + 1]
+assert len(set(name)) == 1 and rows[i + 1][j + 3][1] != name[0], (name, rows[i + 1][j + 3])
+' || fail "a Week name split across lines keeps its project colour on every piece"
+# A long desk label starts at the office's left edge, and one wider than its desk's room is clipped
+# rather than running on under the next desk.
+printf '{"first_mate_name": "Denver", "names": {"alpha": "SAP-Management-App"}}\n' > "$CAL/config/mission-control.json"
+grep -q '^SAP-Management-A' <<<"$(mc "$CAL" frame --agents "$AGENTS" --size 132x44)" \
+  || fail "a long desk label keeps its first letters"
+printf '{"first_mate_name": "Denver", "names": {"alpha": "Social Media Marketing Livelihood"}}\n' \
+  > "$CAL/config/mission-control.json"
+LABEL=$(mc "$CAL" frame --agents "$AGENTS" --size 132x44 | grep -m1 '^Social Media Ma') \
+  || fail "a desk label wider than its desk's room keeps its first letters"
+[ -z "$(tr -d ' ' <<<"${LABEL:28:68}")" ] || fail "a desk label stays inside its desk's room, got: $LABEL"
+rm -f "$CAL/config/mission-control.json"
+pass "without a names map projects and second mates keep the repository names"
 
 # --- seven mates: a second floor ------------------------------------------
 
@@ -1259,9 +1423,9 @@ code=$(DRIVE_NOW=2026-09-20T10:00:00 drive "$TMP_ROOT/ap" "4=3,5=$DOWN,6=$DOWN$D
 [ "$code" = 0 ] || fail "the approvals run quits cleanly, got exit $code"
 screen "$TMP_ROOT/ap" 2 | grep -q 'sits with Denver, the ship' || fail "key 3 opens Approvals on the oldest decision"
 screen "$TMP_ROOT/ap" 3 | grep -Eq '^ ▸ .*Choose the quiz format' || fail "down highlights the next decision"
-screen "$TMP_ROOT/ap" 3 | grep -q 'asked 2 Sep, 18 days ago, sits with Denver, project alpha' \
+screen "$TMP_ROOT/ap" 3 | grep -q 'asked 2 Sep, 18 days ago, sits with Denver, project Alpha' \
   || fail "the panel follows the highlight"
-screen "$TMP_ROOT/ap" 4 | grep -q 'sits with Alpha, project alpha' || fail "down crosses into the next agent and stops at the end"
+screen "$TMP_ROOT/ap" 4 | grep -q 'sits with Alpha, project Alpha' || fail "down crosses into the next agent and stops at the end"
 screen "$TMP_ROOT/ap" 5 | grep -Eq '^ ▸ .*Approve the module outline' || fail "up moves back"
 screen "$TMP_ROOT/ap" 6 | grep -Eq '^ ▸ .*Approve the module outline' || fail "enter leaves the view and the pick alone"
 screen "$TMP_ROOT/ap" 6 | grep -q 'moving your view' && fail "enter on Approvals moves no pane"
@@ -1375,10 +1539,10 @@ code=$(DRIVE_HOME="$BIG" DRIVE_AGENTS="$TMP_ROOT/big.json" DRIVE_ROWS=60 \
   drive "$TMP_ROOT/up" "5=SH:sed -i.bak /m6-mate/d $BIG/data/secondmates.md,14=6,16=q") || fail "the pty driver failed"
 cp "$TMP_ROOT/big-mates.saved" "$BIG/data/secondmates.md"
 screen "$TMP_ROOT/up" 1 | grep -q '1 upstairs, 0 working' || fail "the sixth mate starts upstairs"
-screen "$TMP_ROOT/up" 2 | grep -Eq '□ M6 +second mate +retired' || fail "the upstairs mate has a retired row"
-screen "$TMP_ROOT/up" 2 | grep -q 'M6 retires' || fail "the activity column shows the retirement"
+screen "$TMP_ROOT/up" 2 | grep -Eq '□ p6 +second mate +retired' || fail "the upstairs mate has a retired row"
+screen "$TMP_ROOT/up" 2 | grep -q 'p6 retires' || fail "the activity column shows the retirement"
 screen "$TMP_ROOT/up" 2 | grep -q 'upstairs,' && fail "nobody is left upstairs"
-screen "$TMP_ROOT/up" 3 | grep -A2 ' ALUMNI ' | grep -Eq 'M6 *$' || fail "the Team view's alumni row shows the retired mate"
+screen "$TMP_ROOT/up" 3 | grep -A2 ' ALUMNI ' | grep -Eq 'p6 *$' || fail "the Team view's alumni row shows the retired mate"
 screen "$TMP_ROOT/up" 3 | grep -A2 ' ALUMNI ' | grep -q 'retired' || fail "the alumni row says retired"
 pass "a mate that leaves the registry from upstairs goes on the alumni wall"
 
@@ -1388,11 +1552,11 @@ UP=$'\e[A'
 code=$(DRIVE_HOME="$BIG" DRIVE_AGENTS="$TMP_ROOT/big.json" DRIVE_ROWS=44 \
   drive "$TMP_ROOT/pick" "3=6,4=$DOWN,5=$DOWN,6=$UP,7=q") || fail "the pty driver failed"
 [ "$code" = 0 ] || fail "the team run quits cleanly, got exit $code"
-for want in 2:M1 3:M2 4:M3 5:M2; do
+for want in 2:P1 3:P2 4:P3 5:P2; do
   n=${want%%:*}
   who=${want#*:}
   screen "$TMP_ROOT/pick" "$n" | grep -q "ABOUT $who" || fail "screen $n shows the picked card $who"
-  screen "$TMP_ROOT/pick" "$n" | grep -q "Mate number ${who#M}" || fail "screen $n shows $who's charter"
+  screen "$TMP_ROOT/pick" "$n" | grep -q "Mate number ${who#P}" || fail "screen $n shows $who's charter"
 done
 screen "$TMP_ROOT/pick" 2 | grep -q '4 more ▸' || fail "cards beyond the pane's width are counted"
 pass "up and down pick a second mate on the Team view"

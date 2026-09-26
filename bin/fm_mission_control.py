@@ -26,6 +26,13 @@ WHAT IT READS.
             first_mate_name is the first mate's name on its desk, in the team
             list, in the activity column and on its Team view card; "First
             mate" when absent.
+            names maps a repository name (as registered in data/projects.md,
+            matched ignoring case) to the name every view shows for that
+            project: tags and legends, cards, lists, the Calendar and the
+            second mates; this home's own repository names the setup. A
+            project with no entry keeps the Bridge's name for it, which is its
+            repository name unless config/bridge.json says otherwise, and the
+            setup reads "setup" ("The setup itself" on its card).
             Reread on every crew update, so an edit shows without a restart.
   Services  for the Calendar's always-running strip, every SERVICES_EVERY
             seconds: `launchctl print gui/<uid>/com.firstmate.bridge` (the
@@ -47,7 +54,9 @@ or mate never match the first mate. agent_status "working" is working; every
 other status is asleep, and a working agent falls asleep only after it has been
 idle for SLEEP_AFTER seconds, so the gaps between turns do not flicker.
 
-THE CREW. The first mate has the top desk. Every registered second mate gets
+THE CREW. The first mate has the top desk. A second mate is named by its
+first registered project's display name, with no "mate" suffix; one with no
+project keeps a name made from its id. Every registered second mate gets
 a desk, three to a row; a floor holds six when the pane is tall enough for two
 rows, else three. Beyond that the busiest mates (working, then most interns,
 then most open items) stay downstairs and a sign counts the rest upstairs.
@@ -59,14 +68,16 @@ route and the home), so the wall starts empty on every run.
 
 PROJECTS. One card per registered project except this home's own repository,
 in registry order, then "The setup itself" for items with no project, as on
-the Bridge. A card is Active when a working intern's project is it, its person
-in charge (the second mate whose registered projects include it, else the
-first mate) is working and has no other registered project, or it has work in
-flight; else Parked when its registry note says the captain parked it; else
-Quiet. The first mate, and a mate with several projects, never count as
-working on any one of them by themselves. Its counts are the Bridge's buckets
-and its bar is done this month against done plus everything still open. The
-picked card lists its first three items waiting on the captain under the grid.
+the Bridge. A card renamed by the names map shows its repository name in soft
+print beside the name while it fits. A card is Active when a working intern's
+project is it, its person in charge (the second mate whose registered projects
+include it, else the first mate) is working and has no other registered
+project, or it has work in flight; else Parked when its registry note says the
+captain parked it; else Quiet. The first mate, and a mate with several
+projects, never count as working on any one of them by themselves. Its counts
+are the Bridge's buckets and its bar is done this month against done plus
+everything still open. The picked card lists its first three items waiting on
+the captain under the grid.
 
 APPROVALS. The decisions waiting on the captain are exactly the office
 inbox's items, the Bridge's waiting bucket, grouped by the agent whose home
@@ -87,7 +98,11 @@ DAY_MIN_WIDTH fit it is that many days from today or the day moved to, and is
 "this week" only while today is among them, else whole weeks rounded up so
 every step changes the label. Left and right move one period, t comes back to
 today and v cycles the modes; nothing is ever dropped from the month grid,
-item lines shorten instead. A day shows the Done records completed on it (this
+item lines shorten instead. Every item in Month and Week reads "Project:
+title" in its project's colour, without a leading copy of the project's name
+that the title already carries; the title shortens, never the project: a
+name wider than its line wraps onto the next, and a day's spare lines go to
+titles the name crowds out. A day shows the Done records completed on it (this
 month's items plus the Bridge's history of other months) and, from today on,
 open items due on it: a hold-until date first, else the one date a title
 clearly names (a day and a full month name in either order, with an optional
@@ -291,7 +306,34 @@ def _real(path):
         return None
 
 
+def project_name(model, pname, card=False):
+    """A project as the screen names it: its display name from the names map, else the
+    Bridge's (the repository name). pname None is this home's own setup; card asks for
+    the longer name a project card heads with."""
+    key = pname or model.get("ship")
+    names = model.get("display") or {}
+    hit = names.get(key) if key else None
+    if hit is None and key:
+        hit = next((v for k, v in names.items() if k.lower() == key.lower()), None)
+    if hit:
+        return hit
+    if pname is None:
+        return "The setup itself" if card else SHIP_TAG
+    return clean(bridge._title(model, pname) if card else bridge._short(model, pname))
+
+
+def project_phrase(model, pname):
+    """"project <name>", or "the ship's own setup" while the names map leaves the setup unnamed."""
+    if pname is None and project_name(model, None) == SHIP_TAG:
+        return "the ship's own setup"
+    return "project %s" % project_name(model, pname, card=True)
+
+
 def mate_name(model, mid):
+    """A second mate is named by its first registered project; with none, by its id."""
+    mate = next((m for m in model.get("mates") or [] if m["id"] == mid), None)
+    if mate and mate["projects"]:
+        return project_name(model, mate["projects"][0])
     entry = model["names"].get(mid)
     if isinstance(entry, dict) and entry.get("title"):
         return clean(entry["title"])
@@ -381,17 +423,26 @@ class _Matcher:
         return hit
 
 
-def first_mate_name(config_dir):
-    """config/mission-control.json first_mate_name, else "First mate"."""
+def read_settings(config_dir):
+    """config/mission-control.json: the first mate's name ("First mate" when absent) and
+    the names map, repository name to display name ({} when absent)."""
     try:
         with open(os.path.join(config_dir, "mission-control.json"), encoding="utf-8") as fh:
             cfg = json.load(fh)
     except (OSError, ValueError):
-        return "First mate"
-    name = cfg.get("first_mate_name") if isinstance(cfg, dict) else None
-    if not isinstance(name, str) or not clean(name).strip():
-        return "First mate"
-    return clean(name).strip()
+        cfg = {}
+    if not isinstance(cfg, dict):
+        cfg = {}
+    name = cfg.get("first_mate_name")
+    name = clean(name).strip() if isinstance(name, str) else ""
+    raw = cfg.get("names") if isinstance(cfg.get("names"), dict) else {}
+    names = {k: clean(v).strip() for k, v in raw.items() if isinstance(v, str) and clean(v).strip()}
+    return {"first_mate_name": name or "First mate", "names": names}
+
+
+def with_settings(model, settings):
+    """The model as this screen shows it: the Bridge's read plus the names map."""
+    return dict(model, display=settings["names"])
 
 
 def build_crew(model, agents, home, session="default", own_pane=None, fm_name="First mate"):
@@ -443,7 +494,8 @@ def build_crew(model, agents, home, session="default", own_pane=None, fm_name="F
             interns.append({
                 "key": "intern:%s:%s" % (hid, t["id"]), "kind": "intern", "lead": lead, "home": hid,
                 "status": "work" if working else "idle", "doing": clean(doing),
-                "path": "projects/%s" % proj if proj else "no project", "project": proj,
+                "path": project_name(model, None if proj == model.get("ship") else proj) if proj else "no project",
+                "project": proj,
                 "pane": agent["pane"] if agent else None, "title": clean(title),
             })
 
@@ -472,7 +524,7 @@ def build_crew(model, agents, home, session="default", own_pane=None, fm_name="F
             "key": "mate:" + m["id"], "kind": "mate", "id": m["id"], "name": mate_name(model, m["id"]),
             "role": "second mate", "color": color, "hair": hair,
             "status": "work" if working else "sleep", "doing": doing,
-            "path": "projects/%s" % m["projects"][0] if m["projects"] else "no project",
+            "path": ", ".join(project_name(model, p) for p in m["projects"]) or "no project",
             "pane": agent["pane"] if agent else None, "waiting": n_wait, "open": n_open,
         })
 
@@ -553,11 +605,11 @@ class Layout:
         self.height = room_height(rows)
         self.walk_y = 50 + self.band
         self.inbox_y = 59 + self.band
-        self.desks = {"fm": {"x": 34, "y": 13, "w": 21, "two": True, "cap": 4}}
+        self.desks = {"fm": {"x": 34, "y": 13, "w": 21, "two": True, "cap": 4, "room": (0, OW)}}
         for i, m in enumerate(down):
             row, col = divmod(i, 3)
             self.desks[m["key"]] = {"x": 1 + 29 * col, "y": 33 + ROW_BAND * row, "w": 13, "two": False,
-                                    "cap": 3 if col == 2 else 2}
+                                    "cap": 3 if col == 2 else 2, "room": (29 * col, 28)}
         self.down = down
         self.signature = (self.height, tuple((k, d["x"], d["y"]) for k, d in sorted(self.desks.items())))
 
@@ -1278,7 +1330,8 @@ class Renderer:
             if a is None:
                 continue
             cx = d["x"] + d["w"] // 2
-            name = a.member["name"]
+            lo, room = d["room"]
+            name = clip(a.member["name"], room)
             if info.get(key) == "retired" or a.state == "retired":
                 st, stc = "retired", AMBER
             elif a.state == "work":
@@ -1287,7 +1340,8 @@ class Renderer:
                 st, stc = "asleep", ZZZ
             else:
                 st, stc = "walking", AMBER
-            o.text(cx - len(name) // 2, d["y"] + 12, name, H(a.member["color"]), False, True)
+            x = max(lo, min(cx - len(name) // 2, lo + room - len(name)))
+            o.text(x, d["y"] + 12, name, H(a.member["color"]), False, True)
             o.text(cx - len(st) // 2, d["y"] + 14, st, stc)
 
 
@@ -1437,7 +1491,7 @@ def _office_screen(cv, ui, scene, renderer, now, healthy, notice):
     cv.put(3, tr + 1, "NAME", DIMMER)
     cv.put(14, tr + 1, "ROLE", DIMMER)
     cv.put(34, tr + 1, "DOING NOW", DIMMER)
-    cv.put(path_c, tr + 1, "PATH (the project it works in)", DIMMER)
+    cv.put(path_c, tr + 1, "PROJECT (the one it works in)", DIMMER)
     note_r = R - 4
     last = note_r - 1 if note_r > tr + 3 else R - 3
     r = tr + 2
@@ -1547,7 +1601,7 @@ def _tasks_screen(cv, model):
             if r > r0 + h - 5:
                 break
             pname = it["project"]
-            tag = SHIP_TAG if pname is None else clean(bridge._short(model, pname))
+            tag = project_name(model, pname)
             tc = H(colors.get(pname.lower() if pname else None, FIRST_MATE_COLOR))
             day = bridge._day(it["date"] if key == "done" else it.get("since"), today) \
                 if key in ("done", "waiting") else ""
@@ -1599,11 +1653,10 @@ def project_cards(model, crew):
             entry = model["names"].get(pname)
             desc = entry.get("description") if isinstance(entry, dict) and entry.get("description") \
                 else bridge._summary(p["description"])
-            name = bridge._title(model, pname)
         else:
             lead = fm
             desc = "Housekeeping that belongs to no project, and work on the first mate itself."
-            name = "The setup itself"
+        name = project_name(model, pname, card=True)
         agent_on = pname in working or (lead is not fm and len(mate["projects"]) == 1 and lead["status"] == "work")
         if agent_on or counts["in_flight"]:
             status = "active"
@@ -1613,6 +1666,7 @@ def project_cards(model, crew):
             status = "quiet"
         cards.append({
             "key": pname or "", "name": clean(name), "desc": clean(desc), "status": status,
+            "repo": clean(pname) if pname and clean(name).lower() != clean(pname).lower() else "",
             "color": colors.get(pname.lower() if pname else None, FIRST_MATE_COLOR),
             "lead": {"name": lead["name"], "color": lead["color"]}, "counts": counts,
             "decisions": [it for it in pitems if it["bucket"] == "waiting"],
@@ -1642,7 +1696,10 @@ def _project_card(cv, c0, r0, w, card, picked):
     label, pill_bg = PROJECT_PILLS[card["status"]]
     pill = " %s " % label
     cv.put(c0 + w - 2 - len(pill), r0 + 1, pill, BG if card["status"] != "quiet" else SOFT, pill_bg, True)
-    cv.put(c0 + 2, r0 + 1, clip(card["name"], inner - len(pill) - 1), H(card["color"]), None, True)
+    name = clip(card["name"], inner - len(pill) - 1)
+    cv.put(c0 + 2, r0 + 1, name, H(card["color"]), None, True)
+    if card["repo"] and len(name) + 2 + len(card["repo"]) <= inner - len(pill) - 1:
+        cv.put(c0 + 4 + len(name), r0 + 1, card["repo"], DIMMER)
     lines = wrap(" ".join(card["desc"].split()), inner)
     if len(lines) > 2:
         lines = [lines[0], clip(lines[1] + " " + lines[2], inner)]
@@ -1835,7 +1892,7 @@ def _approvals_screen(cv, ui, scene):
             age, days = _age(it["since"], today)
             cv.put(12 - len(age), r, age, AMBER if days >= 7 else QUIET)
             pname = it["project"]
-            tag = SHIP_TAG if pname is None else clean(bridge._short(model, pname))
+            tag = project_name(model, pname)
             tc = H(colors.get(pname.lower() if pname else None, FIRST_MATE_COLOR))
             cv.put(14, r, clip("■ " + tag, qc - 16), tc, None, True)
         cv.put(qc, r, ln, INK if on else H("#c3cbd5"), None, on and j == 0)
@@ -1866,7 +1923,7 @@ def _approvals_screen(cv, ui, scene):
     since = bridge._day(it["since"], today)
     age = _age(it["since"], today)[0]
     asked = ("asked %s" % ("today" if age == "today" else "%s, %s ago" % (since, age))) if since else ""
-    project = "project %s" % bridge._title(model, it["project"]) if it["project"] else "the ship's own setup"
+    project = project_phrase(model, it["project"])
     facts = ", ".join(x for x in (asked, "sits with %s" % g["name"], project) if x)
     cv.put(3, r, clip(facts, w), H(g["color"]))
     r += 1
@@ -1949,7 +2006,7 @@ def team_cards(model, crew):
         if c is None:
             continue
         team = next((e for e in model["team"] if e["id"] == m["id"]), {})
-        owns = ", ".join(clean(bridge._title(model, p)) for p in m["projects"]) or "no project"
+        owns = ", ".join(project_name(model, p, card=True) for p in m["projects"]) or "no project"
         extra = {"state": "elsewhere"} if m["remote"] else {}
         cards.append(card(c, role=_role(m["scope"]), owns=owns, charter=_first_sentence(m["summary"]),
                           scope=_words(m["scope"]), readable=team.get("readable", True), **extra))
@@ -2262,7 +2319,7 @@ def _sentence(text):
 
 
 def _project_tag(model, colors, pname):
-    tag = SHIP_TAG if pname is None else clean(bridge._short(model, pname))
+    tag = project_name(model, pname)
     return tag, H(colors.get(pname.lower() if pname else None, FIRST_MATE_COLOR))
 
 
@@ -2285,7 +2342,7 @@ def journal(model, fm_name):
         days.setdefault(day, []).append({"who": who, "text": text, "project": pname})
 
     for hid, data, mate, snap in _shelf_homes(model):
-        who = fm_name if mate is None else "The %s mate" % mate_name(model, hid)
+        who = fm_name if mate is None else mate_name(model, hid)
         for rec in _home_records(data, snap).values():
             title = _md_plain(bridge._clean_title(rec.get("title")))
             if not title:
@@ -2313,7 +2370,7 @@ def journal(model, fm_name):
             groups.setdefault(ev["project"], []).append(ev)
         lines, heads = [], {}
         for pname in sorted(groups, key=lambda p: (p is None, order.get(p, 0))):
-            head = clean(bridge._title(model, pname)) if pname else "The setup itself"
+            head = project_name(model, pname, card=True)
             heads[head] = H(colors.get(pname.lower() if pname else None, FIRST_MATE_COLOR))
             lines.extend(["", "## " + head])
             lines.extend("- " + ev["text"] for ev in groups[pname])
@@ -2908,8 +2965,7 @@ def _docs_screen(cv, ui, scene, now):
     page = next(p for p in shown if p["key"] == pick)
     facts = []
     if page["has_project"]:
-        facts.append("project %s" % clean(bridge._title(model, page["project"])) if page["project"]
-                     else "the ship's own setup")
+        facts.append(project_phrase(model, page["project"]))
     if page["kind"] == "Link":
         head = "A saved link" + (" for %s" % facts[0] if facts else "")
         lines = [[(page["title"], INK, True)], []]
@@ -3656,8 +3712,87 @@ def _week_span(days, today):
 
 def _item_color(model, colors, it):
     pname = it["project"]
-    tag = SHIP_TAG if pname is None else clean(bridge._short(model, pname))
+    tag = project_name(model, pname)
     return tag, H(colors.get(pname.lower() if pname else None, FIRST_MATE_COLOR))
+
+
+def _untagged(name, title):
+    """The title without a leading copy of its project's name, so "FIN1209: FIN1209 Activity 1"
+    reads "FIN1209: Activity 1"; a title that is only the name, or starts with it as a longer
+    word like "FIN1209's", stays as it is."""
+    title = clean(title)
+    if title[:len(name)].lower() == name.lower() and title[len(name):len(name) + 1] in ("", " ", ":", "-", ","):
+        rest = title[len(name):].lstrip(" :-,")
+        if rest:
+            return rest
+    return title
+
+
+def _entry_lines(name, title, width, rows):
+    """A Calendar item as "Name: title" in at most rows lines: the title shortens, the name
+    only when rows cannot hold it whole."""
+    title = _untagged(name, title)
+    lines = wrap("%s: %s" % (name, title), width) or [""]
+    if len(lines) <= rows:
+        return lines
+    head = wrap(name + ":", width) or [""]
+    if len(head) == rows:
+        # The name ends on the last line: the title gets what is left of it, or nothing.
+        room = width - len(head[-1]) - 1
+        return head[:-1] + [head[-1] + " " + clip(title, room) if room >= 4 else head[-1]]
+    return lines[:rows - 1] + [clip(" ".join(lines[rows - 1:]), width)]
+
+
+def _entry_rows(name, title, width):
+    """(lines an item needs so its name shows whole, lines it would like): one each while the
+    name and a few words of title fit on a line, else the name's lines, plus one for the title."""
+    head = name + ":"
+    if len(head) + 1 + min(len(_untagged(name, title)), 8) <= width:
+        return 1, 1
+    rows = len(wrap(head, width))
+    return rows, rows + 1
+
+
+def _day_rows(wants, room):
+    """How many of a day's items show in room lines, and the lines each takes: every name
+    whole first, then spare lines to the items whose titles would otherwise hide."""
+    rows = _fit_entries([w[0] for w in wants], room, 1)
+    spare = room - sum(rows) - (1 if len(rows) < len(wants) else 0)
+    for i in range(len(rows)):
+        extra = min(spare, wants[i][1] - rows[i])
+        if extra > 0:
+            rows[i] += extra
+            spare -= extra
+    return rows
+
+
+def _fit_entries(needs, room, least):
+    """The lines each leading item that fits in room lines takes, each needing needs[i],
+    keeping one line for "+N more" when not all do; the first item always shows, cut to what
+    is left, while that is at least least lines."""
+    if sum(needs) <= room:
+        return list(needs)
+    shown = []
+    for need in needs:
+        if sum(shown) + need > room - 1:
+            break
+        shown.append(need)
+    first = room - (1 if len(needs) > 1 else 0)
+    return shown or ([first] if first >= least else [])
+
+
+def _name_cols(lines, name):
+    """How many leading columns of each of _entry_lines' lines are the "Name:" prefix, which
+    wrap may break between words or inside a long one, dropping only spaces."""
+    left = len((name + ":").replace(" ", ""))
+    out = []
+    for ln in lines:
+        n = 0
+        while left and n < len(ln):
+            left -= ln[n] != " "
+            n += 1
+        out.append(n)
+    return out
 
 
 def _control_bar(cv, ui, model, colors, title, rel, current, entries):
@@ -3796,26 +3931,26 @@ def _week_grid(cv, model, colors, days, cal, today, top, bottom):
         if not entries:
             cv.put(c0 + 1, r, clip("nothing finished" if d < today else "nothing due", w - 2), DIMMER)
             continue
-        # Two title lines per block while the day has room, else one.
-        tall = len(entries) * 4 <= bottom - r + 1
-        bh = 4 if tall else 3
-        room = (bottom - r + 1) // bh
-        shown = entries if len(entries) <= room else entries[:max(0, room - 1)]
-        for it in shown:
-            tag, pc = _item_color(model, colors, it)
+        # Two lines per block while the day has room, else as few as keep the name whole.
+        tags = [_item_color(model, colors, it) for it in entries]
+        rows = [_entry_rows(tag, it["title"], w - 6) for (tag, _), it in zip(tags, entries)]
+        room = bottom - r + 1
+        heights = [2 + max(2, want) for _, want in rows]
+        if sum(heights) > room:
+            heights = [2 + need for need, _ in rows]
+        heights = _fit_entries(heights, room, 3)
+        for it, (tag, pc), bh in zip(entries, tags, heights):
             due = it["mark"] == "due"
             edge = pc if due else mix(pc, BG, 0.45)
             _box(cv, c0 + 1, r, w - 2, bh, edge)
             mark = " %s " % it["mark"]
-            cv.put(c0 + 2, r, " %s " % clip(tag, w - 7 - len(mark)), pc, None, True)
             cv.put(c0 + w - 2 - len(mark), r, mark, AMBER if due else DIM, None, due)
-            lines = wrap(clean(it["title"]), w - 6)
-            if len(lines) > bh - 2:
-                lines = lines[:bh - 3] + [clip(" ".join(lines[bh - 3:]), w - 6)]
-            for i, ln in enumerate(lines):
+            lines = _entry_lines(tag, it["title"], w - 6, bh - 2)
+            for i, (ln, nc) in enumerate(zip(lines, _name_cols(lines, tag))):
                 cv.put(c0 + 3, r + 1 + i, ln, INK if due else SOFT)
+                cv.put(c0 + 3, r + 1 + i, ln[:nc], pc, None, True)
             r += bh
-        more = len(entries) - len(shown)
+        more = len(entries) - len(heights)
         if more > 0:
             cv.put(c0 + 2, r, "+%d more" % more, DIM)
     for j in range(1, n):
@@ -3861,18 +3996,20 @@ def _month_grid(cv, model, colors, days, cal, anchor, today, top, bottom):
                 num = " %d " % d.day if inside or d.day != 1 else " 1 %s " % d.strftime("%b")
                 cv.put(x + 1, r, num, INK if inside else DIMMER, None, inside)
             entries = cal[d]
-            shown = entries if len(entries) <= k else entries[:k - 1]
-            for n, it in enumerate(shown):
-                _, pc = _item_color(model, colors, it)
+            tags = [_item_color(model, colors, it) for it in entries]
+            rows = _day_rows([_entry_rows(tag, it["title"], w - 4) for (tag, _), it in zip(tags, entries)], k)
+            rr = r + 1
+            for it, (tag, pc), n in zip(entries, tags, rows):
                 due = it["mark"] == "due"
                 col = pc if due else mix(pc, BG, 0.3)
                 if not inside:
                     col = mix(col, BG, 0.5)
-                cv.put(x + 2, r + 1 + n, "●" if due else "✓", AMBER if due and inside else col, None, due)
-                cv.put(x + 4, r + 1 + n, clip(clean(it["title"]), w - 4), col, None, due)
-            if len(shown) < len(entries):
-                cv.put(x + 4, r + 1 + len(shown), "+%d more" % (len(entries) - len(shown)),
-                       DIM if inside else DIMMER)
+                cv.put(x + 2, rr, "●" if due else "✓", AMBER if due and inside else col, None, due)
+                for ln in _entry_lines(tag, it["title"], w - 4, n):
+                    cv.put(x + 4, rr, ln, col, None, due)
+                    rr += 1
+            if len(rows) < len(entries):
+                cv.put(x + 4, rr, "+%d more" % (len(entries) - len(rows)), DIM if inside else DIMMER)
 
 
 def _year_grid(cv, ui, model, colors, year, cal, today, top, bottom):
@@ -4311,8 +4448,10 @@ def run(home, config_dir, herdr):
             now_m = time.monotonic()
             due = sleeper.due()
             if model is not None and (gen != last_gen or (due is not None and now_m >= due)):
+                settings = read_settings(config_dir)
+                model = with_settings(model, settings)
                 crew = build_crew(model, sleeper.apply(agents, now_m), home, session, own_pane,
-                                  first_mate_name(config_dir))
+                                  settings["first_mate_name"])
                 scene.observe(model, crew, size[1])
                 last_gen = gen
                 dirty = True
@@ -4499,7 +4638,9 @@ def frame(home, config_dir, agents_text, view, cols, rows, fmt, session="default
     # Unread is a failure only where the System view checks it; elsewhere it is unchecked.
     agents_ok = True if agents is not None else (False if live else None)
     agents = agents or []
-    crew = build_crew(model, agents, home, session, None, first_mate_name(config_dir))
+    settings = read_settings(config_dir)
+    model = with_settings(model, settings)
+    crew = build_crew(model, agents, home, session, None, settings["first_mate_name"])
     scene = Scene()
     scene.observe(model, crew, rows)
     ui = UI()
