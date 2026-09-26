@@ -2,11 +2,11 @@
 # fm-mission-control.sh - Mission Control, the crew as a live read-only office.
 #
 # Mission Control draws the whole crew as an animated pixel-art office, plus a
-# task board, a card per project, the decisions waiting on the captain and
-# the crew as an org chart, in one terminal pane; bin/fm_mission_control.py
-# owns what it reads, how the crew maps onto the office, and how frames are
-# drawn. It is read-only: it never writes a record, never sends keys or
-# prompts to an agent, and never starts or stops one.
+# task board, a card per project, the decisions waiting on the captain, a
+# week calendar and the crew as an org chart, in one terminal pane;
+# bin/fm_mission_control.py owns what it reads, how the crew maps onto the
+# office, and how frames are drawn. It is read-only: it never writes a record,
+# never sends keys or prompts to an agent, and never starts or stops one.
 #
 # Commands:
 #   run                     draw the screen in this terminal until q
@@ -19,15 +19,16 @@
 #   frame [--view <v>] [--size <cols>x<rows>] [--agents <file>] [--format text|json|ansi]
 #                           print one frame from the records and a saved
 #                           `herdr agent list` file (tests, a quick look);
-#                           <v> is office, tasks, approvals, projects, team,
-#                           or a later view's name
+#                           <v> is office, tasks, approvals, projects,
+#                           calendar, team, or a later view's name
 #
 # Keys while running: 1-9 switch view, p pauses the animation, q quits,
 # up/down pick an agent in the team list and Enter moves your Herdr view to
 # its pane (`herdr agent focus`, navigation only); on the Projects view
 # up/down pick a project card instead. On the Approvals view up/down move
 # the highlight through the decisions instead, and Enter does nothing: no key
-# answers or changes a decision. On the Team view up/down pick a second mate's
+# answers or changes a decision. On the calendar, left and right move a week
+# and t returns to this week. On the Team view up/down pick a second mate's
 # card instead and Enter moves to that mate's pane. Tapping a tab switches
 # view when the terminal reports mouse clicks.
 #

@@ -30,7 +30,9 @@ COUNTING. An open item is waiting on the captain when it is queued, is a
 captain item (kind: captain or hold-kind: captain), has no unresolved blocker,
 and carries no hold-until date still in the future. Other queued items are
 queued. In-flight items are in flight. Done this month means a Done record
-whose completion date falls in the current calendar month.
+whose completion date falls in the current calendar month; dated Done records
+from other months are returned apart as history, which nothing here counts
+(Mission Control's Calendar reads it).
 An item belongs to the registered project named by its repo field (an
 owner/ prefix is ignored); a second mate's item with no repo belongs to the
 mate's single project when it has exactly one. Everything else, and the
@@ -364,7 +366,7 @@ def collect(home, config_dir, now):
     if "main" not in snaps:
         raise RuntimeError("this home's records could not be read")
 
-    items = []
+    items, history = [], []
 
     def add(rec, owner, mate):
         bucket = classify(rec, today)
@@ -372,7 +374,7 @@ def collect(home, config_dir, now):
             return
         if bucket == "done":
             date = (rec.get("completion") or {}).get("date")
-            if _parse_day(date) is None or not date.startswith(month):
+            if _parse_day(date) is None:
                 return
         else:
             date = None
@@ -381,12 +383,13 @@ def collect(home, config_dir, now):
             key = mate["projects"][0].lower()
         project = by_key.get(key) if key else None
         pname = project["name"] if project and project["name"] != ship_name else None
-        items.append({
+        # Done records from other months are kept apart so every count stays this month's.
+        (history if date and not date.startswith(month) else items).append({
             "id": rec.get("id"), "title": _clean_title(rec.get("title")),
             "bucket": bucket, "project": pname, "owner": owner, "date": date,
             "hold": rec.get("hold_kind") == "captain",
             "blocked": bool(rec.get("unresolved_blocker_ids")),
-            "since": rec.get("since"),
+            "since": rec.get("since"), "until": rec.get("hold_until"),
         })
 
     seen = set()
@@ -471,7 +474,7 @@ def collect(home, config_dir, now):
 
     return {
         "now": now, "today": today, "projects": projects, "ship": ship_name,
-        "names": names, "items": items, "workers": workers, "team": team,
+        "names": names, "items": items, "history": history, "workers": workers, "team": team,
         "memory": memory, "decisions": decisions, "reports": reports,
         "links": links, "errors": errors, "config_error": cfg.get("_error"),
         "first_mate": str(cfg.get("first_mate") or "First mate"),
