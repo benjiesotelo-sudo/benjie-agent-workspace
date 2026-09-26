@@ -111,7 +111,7 @@ as the office's alumni wall, so it too starts empty on every run.
 
 MEMORY AND DOCS. Both are a list on the left and one reader on the right; the
 reader renders Markdown to terminal lines (render_markdown) and never runs or
-opens anything. Memory's long-term pages are data/captain.md and
+opens anything; a picture reads as its caption, never its file name. Memory's long-term pages are data/captain.md and
 data/learnings.md of this home and of each second mate home whose records were
 read. Its daily journal has one entry per day that has dated records, built
 only from every home's backlog and done archive: completions on their
@@ -150,6 +150,7 @@ write nothing.
 """
 
 import datetime as _dt
+import html
 import json
 import math
 import os
@@ -2468,26 +2469,53 @@ class Shelf:
 
 # -- Markdown to terminal lines ------------------------------------------------
 
+# HTML a report may carry: block tags read as a break between words, inline
+# tags vanish, and anything else in angle brackets stays as written.
+_HTML_BLOCK = ("table|thead|tbody|tfoot|tr|td|th|div|p|details|summary|figure|figcaption|center|picture"
+               "|source|br|hr|ul|ol|li|dl|dt|dd|blockquote|section|h[1-6]")
+_HTML_TAG = r"</?(?:%s|img|a|b|i|u|s|em|strong|code|kbd|span|sup|sub|small|mark|del|ins)\b[^<>]*>" % _HTML_BLOCK
+_HTML_LINE = re.compile(r"^\s*(?:<!--|</?(?:%s|img)\b)" % _HTML_BLOCK, re.I)
+
 _INLINE = re.compile(
     r"(?P<b>\*\*|__)(?P<bt>.+?)(?P=b)"
     r"|`(?P<code>[^`]+)`"
-    r"|!?\[(?P<label>[^\]]*)\]\((?P<url>[^)\s]+)(?:\s+\"[^\"]*\")?\)"
+    r"|\[!\[(?P<limg>[^\]]*)\]\([^)\s]+(?:\s+\"[^\"]*\")?\)\]\([^)\s]+\)"
+    r"|!\[(?P<img>[^\]]*)\]\([^)\s]+(?:\s+\"[^\"]*\")?\)"
+    r"|(?P<himg><img\b[^<>]*>)"
+    r"|\[(?P<label>[^\]]*)\]\((?P<url>[^)\s]+)(?:\s+\"[^\"]*\")?\)"
     r"|<(?P<auto>https?://[^>\s]+)>"
+    r"|(?P<note><!--.*?(?:-->|$))"
+    r"|(?P<tag>" + _HTML_TAG + r")"
     r"|(?<![\w*])\*(?=\S)(?P<em>[^*]+?)\*(?![\w*])"
-    r"|(?<![\w_])_(?=\S)(?P<em2>[^_]+?)_(?![\w_])")
+    r"|(?<![\w_])_(?=\S)(?P<em2>[^_]+?)_(?![\w_])", re.I)
+
+
+def _picture(caption):
+    """A picture reads as its caption, never as its file name."""
+    caption = " ".join(html.unescape(caption or "").split())
+    return [("picture: ", DIM, False), (caption, SOFT, False)] if caption else [("picture", DIM, False)]
 
 
 def _inline(text, fg=BODY, bold=False):
     """Runs of (text, colour, bold) for one block's inline Markdown."""
     runs, at = [], 0
-    text = re.sub(r"<br\s*/?>", " ", text)
     for m in _INLINE.finditer(text):
         if m.start() > at:
-            runs.append((text[at:m.start()], fg, bold))
+            runs.append((html.unescape(text[at:m.start()]), fg, bold))
         if m.group("b"):
             runs.extend(_inline(m.group("bt"), INK, True))
         elif m.group("code") is not None:
             runs.append((m.group("code"), CODE, bold))
+        elif m.group("limg") is not None or m.group("img") is not None:
+            runs.extend(_picture(m.group("limg") if m.group("limg") is not None else m.group("img")))
+        elif m.group("himg"):
+            alt = re.search(r"\b(?:alt|title)\s*=\s*(\"[^\"]*\"|'[^']*')", m.group("himg"), re.I)
+            runs.extend(_picture(alt.group(1)[1:-1] if alt else ""))
+        elif m.group("note"):
+            pass
+        elif m.group("tag"):
+            if re.match(r"</?(?:%s)\b" % _HTML_BLOCK, m.group("tag"), re.I):
+                runs.append((" ", fg, bold))
         elif m.group("url") is not None:
             label, url = m.group("label").strip(), m.group("url")
             if label and label != url:
@@ -2501,7 +2529,7 @@ def _inline(text, fg=BODY, bold=False):
             runs.extend(_inline(m.group("em") or m.group("em2"), fg, bold))
         at = m.end()
     if at < len(text):
-        runs.append((text[at:], fg, bold))
+        runs.append((html.unescape(text[at:]), fg, bold))
     return [(clean(t), c, b) for t, c, b in runs if t]
 
 
@@ -2595,11 +2623,13 @@ def render_markdown(text, width, heads=None):
 
     Headings are bold in the accent colour (or heads[heading] when given),
     list items hang under their marker, tables stay aligned or become one
-    block per row, and links read as their label with the address after it."""
+    block per row, links read as their label with the address after it, a
+    picture reads as "picture: <caption>", and HTML tags and comments drop out."""
     heads = heads or {}
     out = []
     block = None      # ("para", [lines]) or ("item", indent, marker, [lines]) or ("quote", [lines])
     fence = None
+    note = False      # inside an HTML comment that spans lines
 
     def blank():
         if out and out[-1]:
@@ -2644,9 +2674,21 @@ def render_markdown(text, width, heads=None):
             blank()
             fence = m.group(1)
             continue
+        if note:
+            note = "-->" not in line
+            continue
         if not line.strip():
             flush()
             blank()
+            continue
+        if _HTML_LINE.match(line):
+            # An HTML block line stands alone: its tags drop out, a picture
+            # reads as its caption, and a line left with no words is skipped.
+            flush()
+            note = line.lstrip().startswith("<!--") and "-->" not in line
+            runs = _inline(line)
+            if "".join(t for t, _c, _b in runs).strip():
+                out.extend(_wrap_runs(runs, width))
             continue
         if block and block[0] == "para" and re.match(r"^\s{0,3}(=+|-+)\s*$", line):
             heading = " ".join(block[1])

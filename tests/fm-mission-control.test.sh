@@ -775,6 +775,41 @@ assert not mc._handle_input(b"\x1b[<0;13;4M", ui, scene, None) and ui.doc_tag ==
 PY
 pass "decision titles keep real words, an empty table renders, and only the vertical wheel scrolls"
 
+# A report with pictures and HTML reads as plain lines in the Docs reader.
+PIC="$TMP_ROOT/picship"
+mkdir -p "$PIC/data/pics" "$PIC/state" "$PIC/config"
+cat > "$PIC/data/pics/report.md" <<'MD'
+# Pictures in a report
+
+![The staff Students table](figures/fig4-flags.png)
+
+A line with a linked picture [![Status board](figures/fig2.png)](https://example.org/board) inline.
+
+<table>
+<tr><td align="center"><img src="shots/phone.png" width="300" alt="Phone screen while offline"></td></tr>
+<tr><td align="center">Offline on a phone &amp; still scoring.</td></tr>
+</table>
+
+<!-- a note for the author,
+spanning two lines -->
+
+<details><summary>build.py</summary>
+
+Keep `<code>` spans and `a < b` as written.
+
+![](figures/blank.png)
+MD
+P=$(mc "$PIC" frame --agents "$AGENTS" --view docs --size 170x50) || fail "pictures docs frame failed"
+for want in '│ picture: The staff Students table +│' \
+  '│ A line with a linked picture picture: Status board inline\. +│' \
+  '│ picture: Phone screen while offline +│' '│ Offline on a phone & still scoring\. +│' \
+  '│ build\.py +│' '│ Keep <code> spans and a < b as written\. +│' '│ picture +│'; do
+  grep -Eq "$want" <<<"$P" || fail "the Docs reader shows: $want"
+done
+grep -Eq '\.png|figures|shots/|<t[dr]|</|<img|<details|<summary|align=|&amp;|note for the author|spanning two' <<<"$P" \
+  && fail "no picture file, HTML tag, entity or comment reaches the Docs reader, got: $(grep -E 'png|<|&amp;|note' <<<"$P")"
+pass "the Docs reader shows a picture as its caption and drops HTML tags and comments"
+
 
 L=$(mc "$HOME_DIR" frame --agents "$AGENTS" --view docs)
 grep -q ' 9 System ' <<<"$L" || fail "the tab bar shows all nine views"
