@@ -30,10 +30,10 @@
 # the highlight through the decisions instead, and Enter does nothing: no key
 # answers or changes a decision. On the calendar, left and right move a week
 # and t returns to this week. On Memory and Docs up/down pick a page
-# and the reader shows it, Page Up/Page Down scroll the reader, and on Docs
-# left/right pick a kind of document. Tapping a tab switches view when the
-# terminal reports mouse clicks; on Memory and Docs tapping a row picks it
-# and the wheel over the reader scrolls it.
+# and the reader shows it, Page Up/Page Down scroll the reader, on Docs
+# left/right pick a kind of document, and Enter does nothing. Tapping a tab
+# switches view when the terminal reports mouse clicks; on Memory and Docs
+# tapping a row picks it and the wheel over the reader scrolls it.
 #
 # start creates the workspace with `herdr workspace create --label
 # mission-control --no-focus` in this home and types the run command into its
