@@ -30,7 +30,9 @@
 #                           Herdr once, and the other views leave the system
 #                           unchecked. <keys> are keys and mouse taps applied
 #                           first, as the terminal sends them (Enter and q
-#                           are ignored)
+#                           are ignored; a tap on an agent in the office or
+#                           on the Team view runs `herdr agent focus` on its
+#                           pane, as the live screen does)
 #
 # Keys while running: 1-9 switch view, p pauses the animation, q quits,
 # up/down pick an agent in the team list and Enter moves your Herdr view to
@@ -45,7 +47,10 @@
 # reader shows it, Page Up/Page Down scroll the reader, on Docs left/right
 # pick a kind of document, and Enter does nothing. Tapping a tab switches view
 # when the terminal reports mouse clicks; on Memory and Docs tapping a row
-# picks it and the wheel over the reader scrolls it.
+# picks it and the wheel over the reader scrolls it. Tapping an agent in the
+# office (its desk, an intern's sprite or its team row) or on the Team view (a
+# card or an intern's line) moves your Herdr view to its pane the same way; a
+# pane that has closed says so in one line in the footer.
 #
 # start creates the workspace with `herdr workspace create --label
 # mission-control --no-focus` in this home and types the run command into its
