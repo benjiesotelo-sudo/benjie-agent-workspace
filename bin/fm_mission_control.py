@@ -7,8 +7,11 @@ the crew maps onto the office, and how frames are drawn and written.
 
 READ ONLY. Nothing here writes a record, sends a key or a prompt to an agent,
 or starts or stops anything. The one outward call besides the reads is
-`herdr agent focus` when the captain presses Enter on a team row or a picked
-Team card, which only moves the captain's own view to that agent's pane.
+`herdr agent focus` when the captain taps an agent in the Office (its desk, an
+intern's sprite or its team row) or on the Team view (a card or an intern's
+line), or presses Enter on a team row or a picked Team card; it only moves the
+captain's own view to that agent's pane. A pane Herdr no longer has, or an
+agent with none, reads as one plain line in the footer.
 
 WHAT IT READS.
   Records   bin/fm_bridge.py collect(), the Bridge's single reader: backlog
@@ -19,7 +22,8 @@ WHAT IT READS.
             done-archive file changes, and at least every two minutes.
   Agents    `herdr agent list` (JSON), polled every two seconds, never faster
             than once a second; `frame` asks once unless given a saved list.
-            Each entry carries pane_id, agent_status, cwd and foreground_cwd.
+            Each entry carries pane_id, agent_status, cwd, foreground_cwd and
+            terminal_title_stripped, the window title a helper shows.
             Until Herdr has answered, a second mate with no pane is unknown on
             the Calendar's always-running strip, never closed.
   Settings  config/mission-control.json (optional, gitignored with config/):
@@ -32,7 +36,8 @@ WHAT IT READS.
             Bridge's LaunchAgent; "state = running" is running, any other
             answer stopped, no job off) and, from `frame` only, `ps` for a
             `fm_mission_control.py run` on this home; a running screen counts
-            itself. Second mates take their state from the crew below.
+            itself. The first mate and second mates take their state from the
+            crew below.
 
 MATCHING a Herdr agent to a crew member, first rule that applies:
   a worker    the pane in its task's recorded Herdr endpoint (fleet snapshot
@@ -41,21 +46,32 @@ MATCHING a Herdr agent to a crew member, first rule that applies:
               or foreground_cwd is the task's worktree;
   a second mate  the pane recorded for its kind=secondmate task in this home,
               else an agent whose cwd is the mate's registered home;
-  the first mate  an agent whose cwd is this home.
-This screen's own pane (HERDR_PANE_ID) and panes already claimed by a worker
-or mate never match the first mate. agent_status "working" is working; every
+  the first mate  an agent whose cwd is this home;
+  a helper    every other agent: a pane no record claims, such as a worker
+              whose task record is gone. It stands beside the mate whose home
+              its cwd is in, else the first mate, as "<lead>'s helper", doing
+              its window title in plain words; its project is the registered
+              project its cwd is named after (a projects/<name> folder or the
+              folder itself). It is never dropped.
+This screen's own pane (HERDR_PANE_ID) is never matched, and panes already
+claimed by a worker or mate never match the first mate. agent_status "working" is working; every
 other status is asleep, and a working agent falls asleep only after it has been
 idle for SLEEP_AFTER seconds, so the gaps between turns do not flicker.
 
-THE CREW. The first mate has the top desk. Every registered second mate gets
-a desk, three to a row; a floor holds six when the pane is tall enough for two
+THE CREW. The first mate has the top desk. Every registered second mate gets a
+desk, three to a row; a floor holds six when the pane is tall enough for two
 rows, else three. Beyond that the busiest mates (working, then most interns,
 then most open items) stay downstairs and a sign counts the rest upstairs.
 Every worker is an intern standing beside its person in charge: the mate whose
 home launched it, else the mate whose registered projects include its project,
-else the first mate. The alumni wall shows mates this screen watched leave the
-registry; retirement leaves no durable record (fm-teardown.sh removes the
-route and the home), so the wall starts empty on every run.
+else the first mate; a helper, beside the lead MATCHING names. The first mate
+has seven places, four right of its desk and three left; a mate has two, or
+three at the end of a row; "+N" beside the last place counts the rest, and the
+team list under the office shows every one, or counts the rows it has no room
+for. Tapping a desk or a standing sprite opens that agent's chat (see READ
+ONLY). The alumni wall shows mates this screen watched leave the registry;
+retirement leaves no durable record (fm-teardown.sh removes the route and the
+home), so the wall starts empty on every run.
 
 PROJECTS. One card per registered project except this home's own repository,
 in registry order, then "The setup itself" for items with no project, as on
@@ -101,10 +117,13 @@ TEAM. The crew as an org chart: the captain, then the first mate as chief of
 staff, joined to one role card per registered second mate, each with the
 office's standing sprite in the agent's own shirt and hair colours. A mate's
 role is its registered scope up to the first colon; the card also names the
-projects it owns, its state (working, asleep, or away on another machine) and
-how many open items its list holds and how many wait on the captain. Live
-interns branch off the first mate's line or sit under their mate's card, one
-line each; the rows that do not fit are counted instead. Up and down pick a
+projects it owns (the first mate's: every registered project no mate owns,
+and the setup itself), its state (working, asleep, or away on another machine)
+and how many open items its list holds and how many wait on the captain. Live
+interns and helpers branch off the first mate's line or sit under their mate's
+card, one line each; the first mate's all show when they fit beside the mates'
+own, else at least half the rows between, and the rows that do not fit are
+counted instead. Tapping a card or an intern's line opens that agent's chat. Up and down pick a
 mate's card, whose registry description (first sentence) and scope show
 underneath, with raw paths removed. The alumni row reads the same retirements
 as the office's alumni wall, so it too starts empty on every run.
@@ -217,6 +236,8 @@ INTERN_HAIR = "#6b3b2a"
 OW = 96            # office width in pixels (= columns)
 OY = 2             # first screen row of the office
 ROW_BAND = 24      # extra pixels for a second row of mate desks
+FM_LEFT_SPOTS = (19, 12, 5)  # x of the first mate's fifth to seventh interns, left of its desk
+FM_LEFT_LANE = 21  # the column they walk, between the first and second mate desks
 MIN_COLS = OW
 FEED_COL = OW + 2
 FEED_MIN_WIDTH = 24
@@ -302,7 +323,7 @@ def mate_name(model, mid):
 
 
 def parse_agents(text):
-    """`herdr agent list` JSON -> [{pane, status, cwds}]."""
+    """`herdr agent list` JSON -> [{pane, status, cwds, title}]; title is the window title in plain words."""
     try:
         data = json.loads(text)
     except ValueError:
@@ -313,7 +334,10 @@ def parse_agents(text):
         if not isinstance(a, dict) or not a.get("pane_id"):
             continue
         cwds = {c for c in (_real(a.get("cwd")), _real(a.get("foreground_cwd"))) if c}
-        out.append({"pane": str(a["pane_id"]), "status": str(a.get("agent_status") or ""), "cwds": cwds})
+        title = a.get("terminal_title_stripped") or a.get("terminal_title") or ""
+        title = " ".join(bridge.plain_note(clean(title)).split()).strip("?* ")
+        out.append({"pane": str(a["pane_id"]), "status": str(a.get("agent_status") or ""), "cwds": cwds,
+                    "title": title})
     return out
 
 
@@ -478,13 +502,14 @@ def build_crew(model, agents, home, session="default", own_pane=None, fm_name="F
 
     home_real = _real(home)
     fm_agent = match.find(None, [home_real])
+    interns.extend(_helpers(model, match, mates))
     fm_interns = [i for i in interns if i["lead"] == "fm"]
     fm_working = bool(fm_agent and fm_agent["status"] == "working")
     n_wait = waiting("main")
     if fm_working:
         doing = "working"
         if fm_interns:
-            doing += ", %s on jobs" % bridge._plural(len(fm_interns), "intern")
+            doing += ", %s on jobs" % _interns_words(fm_interns)
     else:
         doing = "standing by"
     if n_wait:
@@ -501,12 +526,54 @@ def build_crew(model, agents, home, session="default", own_pane=None, fm_name="F
     for i in interns:
         lead = by_key.get(i["lead"]) or by_key["fm"]
         i["lead"] = lead["key"]
-        i["name"] = "intern"
-        i["role"] = "%s's intern" % lead["name"]
+        i["name"] = "helper" if i.get("helper") else "intern"
+        i["role"] = "%s's %s" % (lead["name"], i["name"])
         i["color"] = "#" + format(mix(H(lead["color"]), 0xFFFFFF, 0.35), "06x")
         i["hair"] = INTERN_HAIR
     crew.extend(interns)
     return crew
+
+
+def _interns_words(interns):
+    """ "3 interns", or "3 interns and 1 helper" when some have no record."""
+    n = sum(1 for i in interns if not i.get("helper"))
+    helpers = len(interns) - n
+    return bridge._plural(n, "intern") + (" and %s" % bridge._plural(helpers, "helper") if helpers else "")
+
+
+HELPER_WORDS = {"done": "finished its turn", "blocked": "waiting for an answer"}
+
+
+def _helpers(model, match, mates):
+    """Agent panes that no task, mate or first mate record claims.
+
+    Each stands beside the mate whose home its folder is in, else the first
+    mate, and reads its window title; its project is the registered project
+    its folder is named after."""
+    names = {p["name"].lower(): p["name"] for p in model.get("projects") or []}
+    homes = [(m["id"], _real(m["home"])) for m in mates if not m["remote"] and m.get("home")]
+    out = []
+    for a in sorted(match.agents, key=lambda a: a["pane"]):
+        if a["pane"] in match.claimed:
+            continue
+        match.claimed.add(a["pane"])
+        lead = next(("mate:" + mid for mid, h in homes if h and any(
+            c == h or c.startswith(h + os.sep) for c in a["cwds"])), "fm")
+        proj = None
+        for c in sorted(a["cwds"]):
+            parts = c.split(os.sep)
+            for cand in ([parts[parts.index("projects") + 1]] if "projects" in parts[:-1] else []) + [parts[-1]]:
+                proj = proj or names.get(cand.lower())
+        working = a["status"] == "working"
+        title = a.get("title") or "a job with no record"
+        doing = title if working else "%s: %s" % (HELPER_WORDS.get(a["status"], "idle"), title)
+        out.append({
+            "key": "helper:" + a["pane"], "kind": "intern", "helper": True, "lead": lead, "home": None,
+            "status": "work" if working else "idle", "doing": clean(doing),
+            "path": "projects/%s" % proj if proj else "no project", "project": proj,
+            "pane": a["pane"], "title": clean(title),
+        })
+    return out
 
 
 def project_colors(model):
@@ -553,7 +620,9 @@ class Layout:
         self.height = room_height(rows)
         self.walk_y = 50 + self.band
         self.inbox_y = 59 + self.band
-        self.desks = {"fm": {"x": 34, "y": 13, "w": 21, "two": True, "cap": 4}}
+        # The first mate's interns stand four to the right of its desk, then
+        # three to the left; a mate's stand to the right of theirs.
+        self.desks = {"fm": {"x": 34, "y": 13, "w": 21, "two": True, "cap": 4 + len(FM_LEFT_SPOTS)}}
         for i, m in enumerate(down):
             row, col = divmod(i, 3)
             self.desks[m["key"]] = {"x": 1 + 29 * col, "y": 33 + ROW_BAND * row, "w": 13, "two": False,
@@ -571,7 +640,18 @@ class Layout:
 
     def spot(self, lead, slot):
         d = self.desks[lead]
+        if lead == "fm" and slot >= 4:
+            return (FM_LEFT_SPOTS[slot - 4], d["y"] + 11)
         return (d["x"] + d["w"] + 1 + 7 * slot, d["y"] + 11)
+
+    def overflow_at(self, lead):
+        """Where the "+N" for interns with no place beside lead goes: past its right-hand row."""
+        d = self.desks[lead]
+        return (d["x"] + d["w"] + 1 + 7 * (4 if lead == "fm" else d["cap"]), d["y"] + 11)
+
+    def lane(self, lead, slot):
+        """The column an intern of lead walks up and down between the floor and its place."""
+        return 81 if lead == "fm" and slot < 4 else FM_LEFT_LANE if lead == "fm" else None
 
 
 # ---------------------------------------------------------------------------
@@ -648,14 +728,16 @@ class Scene:
     def intern_route_in(self, a):
         L = self.layout
         sx, sf = L.spot(a.member["lead"], a.slot)
-        if a.member["lead"] == "fm":
-            return [(81, L.walk_y), (81, sf), (sx, sf)]
+        lane = L.lane(a.member["lead"], a.slot)
+        if lane is not None:
+            return [(lane, L.walk_y), (lane, sf), (sx, sf)]
         return [(sx, L.walk_y), (sx, sf)]
 
     def intern_route_out(self, a):
         L = self.layout
-        if a.member["lead"] == "fm":
-            return [(81, a.feet), (81, L.walk_y), self.door()]
+        lane = L.lane(a.member["lead"], a.slot)
+        if lane is not None:
+            return [(lane, a.feet), (lane, L.walk_y), self.door()]
         return [(a.x, L.walk_y), self.door()]
 
     def inbox_route(self, a):
@@ -1216,7 +1298,7 @@ class Renderer:
             o.text(95 - len(sign), 30, sign, P["paper"], True)
         for lead, extra in scene.overflow.items():
             if lead in L.desks:
-                x, feet = L.spot(lead, L.desks[lead]["cap"])
+                x, feet = L.overflow_at(lead)
                 o.text(min(x, OW - 3), feet - 5, "+%d" % extra, SOFT, True)
         return o
 
@@ -1342,6 +1424,7 @@ class UI:
         self.cal_mode = "month"  # Calendar: week, month or year
         self.cal_at = None      # Calendar: a day in the period shown, None for today's
         self.cal_hits = []      # Calendar: (row0, row1, col0, col1, action) tap targets
+        self.agent_hits = []    # Office and Team: (row0, row1, col0, col1, crew key) tap targets
         self.services = []      # Calendar: read_services()
 
 
@@ -1373,17 +1456,33 @@ def _chrome(cv, ui, now):
         if ui.view == "docs":
             keys = " 1-9 switch view   left/right pick a kind" + keys[16:]
     else:
-        keys = " 1-9 switch view   up/down pick an agent   enter talk to it   p pause   q quit "
+        keys = (" 1-9 switch view   tap an agent to open its chat   up/down pick one   enter talk to it   p pause"
+                "   q quit ")
         if ui.view == "projects":
             keys = " 1-9 switch view   up/down pick a project   p pause   q quit "
         elif ui.view == "calendar":
             keys = " left/right earlier or later   t today   v week, month or year   1-9 switch view   p pause   q quit "
         elif ui.view == "team":
-            keys = " 1-9 switch view   up/down pick a second mate   enter talk to it   p pause   q quit "
+            keys = " 1-9 switch view   tap an agent to open its chat   up/down pick a second mate   q quit "
         elif ui.view == "system":
             keys = " 1-9 switch view   files recheck every 5 s, commands every 5 min   q quit "
     cv.put(0, R - 1, clip(keys, C - len(tag) - 1), DIM)
     cv.put(C - len(tag), R - 1, tag, BG if ui.paused else GREEN, AMBER if ui.paused else None, True)
+
+
+def _office_hits(scene):
+    """Tap targets on the floor: each intern's sprite, then each desk from its
+    monitors down to its name and state, as screen cells."""
+    L = scene.layout
+    hits = []
+    for a in scene.actors.values():
+        if a.member["kind"] == "intern" and a.state not in ("gone", "retired"):
+            hits.append((OY + (a.feet - 9) // 2, OY + a.feet // 2 + 1, a.x, a.x + 7, a.key))
+    for key, d in L.desks.items():
+        a = scene.actors.get(key)
+        if a is not None and a.state != "retired":
+            hits.append((OY + (d["y"] - 6) // 2, OY + (d["y"] + 15) // 2 + 1, d["x"], d["x"] + d["w"], key))
+    return hits
 
 
 def _office_screen(cv, ui, scene, renderer, now, healthy, notice):
@@ -1391,6 +1490,7 @@ def _office_screen(cv, ui, scene, renderer, now, healthy, notice):
     o = renderer.office(scene, now, healthy)
     compose_office(cv, o)
     C, R = cv.C, cv.R
+    ui.agent_hits = _office_hits(scene)
     rows = L.height // 2
     feed_w = C - FEED_COL
     if feed_w >= FEED_MIN_WIDTH:
@@ -1447,9 +1547,18 @@ def _office_screen(cv, ui, scene, renderer, now, healthy, notice):
     gone = [dict(a.member, doing="retired", status="retired") for a in scene.retired.values()
             if a.state == "retired"]
     rows_out = people + gone + interns
+    if len(rows_out) > last - r + 1:
+        # A crowded list takes the note's rows, and counts the rows it still cannot show.
+        note_r = R
+        last = R - 3
+        if len(rows_out) > last - r + 1:
+            cv.put(3, last, "+%d more" % (len(rows_out) - (last - r)), SOFT)
+            rows_out = rows_out[:last - r]
     for m in rows_out:
         if r > last:
             break
+        if m["status"] != "retired":
+            ui.agent_hits.append((r, r + 1, 0, C, m["key"]))
         a = scene.actors.get(m["key"])
         g, gc = _glyph(m, a)
         if ui.selected == m["key"]:
@@ -1470,7 +1579,7 @@ def _office_screen(cv, ui, scene, renderer, now, healthy, notice):
         cv.put(3, r, "interns", QUIET, None, True)
         cv.put(14, r, "one job each", SOFT)
         cv.put(34, r, "none right now", QUIET)
-    if note_r > tr + 3:
+    if tr + 3 < note_r < R:
         cv.put(3, note_r, clip("Interns stand beside their person in charge for one job, then go home. "
                                "Sleeping agents cost nothing.", C - 4), DIMMER)
 
@@ -1942,8 +2051,12 @@ def team_cards(model, crew):
         return base
 
     fm = by_key["fm"]
+    # The first mate owns what no second mate has registered, and the setup itself.
+    taken = {p.lower() for m in model.get("mates") or [] for p in m["projects"]}
+    own = [clean(bridge._title(model, p["name"])) for p in model["projects"]
+           if p["name"] != model["ship"] and p["name"].lower() not in taken]
     cards = [card(fm, role="Chief of staff: routes the work and supervises the crew",
-                  owns="every project", charter="", scope="")]
+                  owns=", ".join(own + ["the setup itself"]), charter="", scope="")]
     for m in model.get("mates") or []:
         c = by_key.get("mate:" + m["id"])
         if c is None:
@@ -2039,13 +2152,17 @@ def _team_screen(cv, ui, scene):
     model = scene.model
     cards = team_cards(model, scene.crew)
     fm, mates = cards[0], cards[1:]
-    n_interns = sum(len(c["interns"]) for c in cards)
+    n_helpers = sum(1 for c in cards for i in c["interns"] if i.get("helper"))
+    n_interns = sum(len(c["interns"]) for c in cards) - n_helpers
     awake = sum(1 for c in cards if c["state"] == "working")
     c = 1
-    for n, label, color in ((len(mates), "second mate" if len(mates) == 1 else "second mates", INK),
-                            (awake, "working", GREEN),
-                            (len(cards) - awake, "asleep or away", ZZZ),
-                            (n_interns, "intern on a job" if n_interns == 1 else "interns on jobs", INK)):
+    stats = [(len(mates), "second mate" if len(mates) == 1 else "second mates", INK),
+             (awake, "working", GREEN),
+             (len(cards) - awake, "asleep or away", ZZZ),
+             (n_interns, "intern on a job" if n_interns == 1 else "interns on jobs", INK)]
+    if n_helpers:
+        stats.append((n_helpers, "helper with no record" if n_helpers == 1 else "helpers with no record", INK))
+    for n, label, color in stats:
         cv.put(c, 3, str(n), color, None, True)
         cv.put(c + len(str(n)) + 1, 3, label, SOFT)
         c += len(str(n)) + len(label) + 5
@@ -2070,21 +2187,30 @@ def _team_screen(cv, ui, scene):
     cv.put(c0 + 2, 7, clip(ask, w - 4), AMBER if waiting else QUIET, None, bool(waiting))
     cv.put(cx, 8, "┬", mix(AMBER, BG, 0.5))
     cv.put(cx, 9, "│", WIRE)
-    w = min(C - 4, max(TEAM_CARD_MIN_W, 60))
+    w = min(C - 4, max(TEAM_CARD_MIN_W, 60, 18 + len(fm["owns"])))
     c0 = cx - w // 2
     _role_card(cv, c0, 10, w, fm, False)
+    ui.agent_hits = [(10, 10 + TEAM_CARD_H, c0, c0 + w, fm["key"])]
     cv.put(cx, 10, "┴", mix(H(fm["color"]), BG, 0.5))
     bottom = 10 + TEAM_CARD_H - 1
     cv.put(cx, bottom, "┬", mix(H(fm["color"]), BG, 0.5))
 
-    # The first mate's interns branch off its line down to the second mates.
-    room = min(4, detail_r - (bottom + 1) - (TEAM_CARD_H + 1) if mates else detail_r - bottom - 3)
+    # The first mate's interns branch off its line down to the second mates,
+    # every one when they fit beside what the mates' own interns need, else
+    # at least half of the rows between.
+    if mates:
+        total = detail_r - (bottom + 1) - (TEAM_CARD_H + 1) - 1
+        need = max(len(c["interns"]) for c in mates)
+        room = total - min(need, total // 2) if len(fm["interns"]) + need > total else len(fm["interns"])
+    else:
+        room = detail_r - bottom - 3
     lines = fm["interns"] if len(fm["interns"]) <= room else fm["interns"][:max(0, room - 1)]
     r = bottom + 1
     for j, i in enumerate(lines):
         last = not mates and j == len(lines) - 1 and len(lines) == len(fm["interns"])
         cv.put(cx, r, "└─" if last else "├─", WIRE)
         _intern_line(cv, cx + 3, r, i, C - cx - 5)
+        ui.agent_hits.append((r, r + 1, cx + 3, C, i["key"]))
         r += 1
     rest = len(fm["interns"]) - len(lines)
     if rest and room > 0:
@@ -2117,11 +2243,13 @@ def _team_screen(cv, ui, scene):
         for k, card in enumerate(shown):
             c0 = left + k * (w + 2)
             _role_card(cv, c0, top, w, card, first + k == pick)
+            ui.agent_hits.append((top, top + TEAM_CARD_H, c0, c0 + w, card["key"]))
             cv.put(drops[k], top, "┴", H(card["color"]) if first + k == pick else mix(H(card["color"]), BG, 0.5))
             ins = card["interns"]
             lines = ins if len(ins) <= avail else ins[:max(0, avail - 1)]
             for j, i in enumerate(lines):
                 _intern_line(cv, c0 + 2, top + TEAM_CARD_H + j, i, w - 3)
+                ui.agent_hits.append((top + TEAM_CARD_H + j, top + TEAM_CARD_H + j + 1, c0, c0 + w, i["key"]))
             rest = len(ins) - len(lines)
             if rest and avail > 0:
                 cv.put(c0 + 2, top + TEAM_CARD_H + len(lines), bridge._plural(rest, "more intern"), SOFT)
@@ -3268,9 +3396,8 @@ def system_cards(r, crew, model, now, records_ok=True, agents_ok=True):
     # Crew.
     people = [c for c in crew if c["kind"] in ("first", "mate")]
     working = sum(1 for c in people if c["status"] == "work")
-    interns = sum(1 for c in crew if c["kind"] == "intern")
     head = "Crew: %d working, %d asleep, %s out" % (working, len(people) - working,
-                                                     bridge._plural(interns, "intern"))
+                                                     _interns_words([c for c in crew if c["kind"] == "intern"]))
     lines = []
     if agents_ok is False:
         lines.append(("amber", "Herdr's agent list could not be read, so some may look asleep", "Herdr's agent list"))
@@ -3713,11 +3840,12 @@ def _control_bar(cv, ui, model, colors, title, rel, current, entries):
 
 
 def _always_running(cv, ui, crew, agents_ok):
-    """The Bridge, this screen, and every second mate."""
+    """The Bridge, this screen, the first mate, and every second mate."""
     C = cv.C
     _box(cv, 0, 5, C, 3, CHIP)
     cv.put(2, 5, " ALWAYS RUNNING ", INK, None, True)
-    chips = list(ui.services) + [(m["name"], _mate_word(m, agents_ok)) for m in crew if m["kind"] == "mate"]
+    chips = list(ui.services) + [(m["name"], _mate_word(m, agents_ok)) for m in crew
+                                 if m["kind"] in ("first", "mate")]
     c = 2
     for i, (name, word) in enumerate(chips):
         chip = "● %s %s" % (name, word)
@@ -3956,6 +4084,7 @@ def compose(scene, renderer, ui, cols, rows, now, records_ok=True, notice=None, 
         cv.put(0, 0, clip(msg, cols), AMBER)
         return cv, True
     _chrome(cv, ui, now)
+    ui.agent_hits = []
     if scene.model is None:
         cv.put(2, 4, notice or "Reading the ship's records...", SOFT)
         return cv, False
@@ -4094,6 +4223,35 @@ def keep_last_good(model, last):
     return dict(model, snapshots=snaps, **kept)
 
 
+def focus_pane(herdr, pane):
+    """`herdr agent focus <pane>`: navigation only, it moves the captain's own view. True when Herdr did it."""
+    try:
+        proc = subprocess.run(list(herdr) + ["agent", "focus", pane], capture_output=True, timeout=5, check=False)
+    except (OSError, subprocess.SubprocessError):
+        return False
+    return proc.returncode == 0
+
+
+class FrameFocus:
+    """frame's stand-in for Feed.focus: asks Herdr at once, so the frame shows the outcome."""
+
+    def __init__(self, herdr):
+        self.herdr = list(herdr)
+
+    def focus(self, pane, ui, name):
+        if not focus_pane(self.herdr, pane):
+            _say(ui, _gone(name))
+
+
+def _gone(name):
+    return "%s's chat has closed, so there is nothing to open" % name
+
+
+def _say(ui, text):
+    ui.toast = text
+    ui.toast_until = time.monotonic() + 3
+
+
 class Feed:
     def __init__(self, home, config_dir, herdr):
         self.home, self.config_dir, self.herdr = home, config_dir, herdr
@@ -4186,13 +4344,13 @@ class Feed:
                 self._services_at = time.monotonic()
             self.stop.wait(max(1.0, AGENT_POLL_SECONDS))
 
-    def focus(self, pane):
+    def focus(self, pane, ui, name):
+        """Moves the captain's view off the render loop; a pane gone since the last poll says so."""
         def go():
-            try:
-                subprocess.run(self.herdr + ["agent", "focus", pane], capture_output=True,
-                               timeout=5, check=False)
-            except (OSError, subprocess.SubprocessError):
-                pass
+            if not focus_pane(self.herdr, pane):
+                with self.lock:
+                    _say(ui, _gone(name))
+                    self.gen += 1
         threading.Thread(target=go, daemon=True).start()
 
 
@@ -4422,6 +4580,8 @@ def _handle_input(data, ui, scene, feed):
                 act = next((a for r0, r1, c0, c1, a in ui.cal_hits if r0 <= y - 1 < r1 and c0 <= x - 1 < c1), None)
                 if act is not None:
                     changed = cal_action(ui, scene.model, act) or changed
+            elif ui.view in ("office", "team"):
+                changed = _tap_agent(ui, scene, feed, x - 1, y - 1) or changed
             else:
                 changed = _shelf_mouse(ui, x - 1, y - 1, btn) or changed
             continue
@@ -4474,14 +4634,30 @@ def _handle_input(data, ui, scene, feed):
             m_ = next((c for c in scene.crew if c["key"] == ui.selected), None)
             if m_ is None:
                 continue
-            if m_.get("pane"):
-                feed.focus(m_["pane"])
-                ui.toast = "moving your view to %s's pane" % m_["name"]
-            else:
-                ui.toast = "%s has no open pane to show" % m_["name"]
-            ui.toast_until = time.monotonic() + 3
+            _open_chat(ui, m_, feed)
             changed = True
     return changed
+
+
+def _open_chat(ui, m, feed):
+    """Move the captain's view to m's pane, or say in one line why not."""
+    who = m["name"] if m["kind"] != "intern" else m["role"]
+    if not m.get("pane"):
+        _say(ui, "%s has no open chat to show" % who)
+    elif feed is not None:
+        _say(ui, "opening %s's chat" % who)
+        feed.focus(m["pane"], ui, who)
+
+
+def _tap_agent(ui, scene, feed, x, y):
+    """A tap on an agent in the Office or on the Team view opens its chat."""
+    key = next((k for r0, r1, c0, c1, k in ui.agent_hits if r0 <= y < r1 and c0 <= x < c1), None)
+    m = next((c for c in scene.crew if c["key"] == key), None) if key else None
+    if m is None:
+        return False
+    ui.selected = key
+    _open_chat(ui, m, feed)
+    return True
 
 
 # ---------------------------------------------------------------------------
@@ -4512,7 +4688,7 @@ def frame(home, config_dir, agents_text, view, cols, rows, fmt, session="default
     for m in _KEYS.finditer(keys.encode("utf-8", "surrogateescape")):
         if m.group(0) not in (b"\r", b"\n", b"q", b"Q"):
             compose(scene, Renderer(), ui, cols, rows, bridge._now(), readings=readings, agents_ok=agents_ok)
-            _handle_input(m.group(0), ui, scene, None)
+            _handle_input(m.group(0), ui, scene, FrameFocus(herdr))
     cv, small = compose(scene, Renderer(), ui, cols, rows, bridge._now(), readings=readings, agents_ok=agents_ok)
     if fmt == "ansi":
         return to_ansi(cv)
