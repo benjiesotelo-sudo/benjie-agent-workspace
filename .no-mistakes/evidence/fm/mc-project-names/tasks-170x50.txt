@@ -1,0 +1,50 @@
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System                                           Sat 10:00
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+ 4 waiting on you    6 queued    1 in flight    11 done this month    oldest decision waiting: 29 Aug                                real list, same one the Bridge reads
+
+┌─ WAITING ON YOU ─4────────────────────┐ ┌─ QUEUED ─6────────────────────────────┐ ┌─ IN FLIGHT ─1─────────────────────────┐ ┌─ DONE THIS MONTH ─11──────────────────┐
+│                                       │ │                                       │ │                                       │ │                                       │
+│ ■ SAP                           2 Sep │ │ ■ FIN1209                             │ │ ■ FIN1209                             │ │ ■ Setup                        25 Sep │
+│   Choose the SAP login flow           │ │   FIN1209 Activity 3 answer key       │ │   Rebuild lecture notes               │ │   Mission Control project names       │
+│                                       │ │                                       │ │                                       │ │                                       │
+│                                       │ │                                       │ │                                       │ │                                       │
+│ ■ BSBA Spec                     3 Sep │ │ ■ Tambiz                              │ │                                       │ │ ■ FIN1209                      25 Sep │
+│   Approve the BSBA outline            │ │   Tambiz's rounding bug               │ │                                       │ │   FIN1209                             │
+│                                       │ │                                       │ │                                       │ │                                       │
+│                                       │ │                                       │ │                                       │ │                                       │
+│ ■ Setup                        29 Aug │ │ ■ Social Media Marketing              │ │                                       │ │ ■ Social Media Marketing       24 Sep │
+│   Tick a profile setting              │ │   Social Media Marketing: post        │ │                                       │ │   Livelihood module handout           │
+│                                       │ │   calendar                            │ │                                       │ │                                       │
+│                                       │ │                                       │ │                                       │ │                                       │
+│ ■ FIN1209                       8 Sep │ │ ■ BSBA Spec                           │ │                                       │ │ ■ BSBA Spec                    24 Sep │
+│   Decide the notes format             │ │   BSBA Spec - chapter two review      │ │                                       │ │   Program learning outcomes           │
+│                                       │ │                                       │ │                                       │ │                                       │
+│                                       │ │                                       │ │                                       │ │                                       │
+│                                       │ │ ■ SAP                                 │ │                                       │ │ ■ Tambiz                       23 Sep │
+│                                       │ │   SAPling nursery import              │ │                                       │ │   Tambiz tax table                    │
+│                                       │ │                                       │ │                                       │ │                                       │
+│                                       │ │                                       │ │                                       │ │                                       │
+│                                       │ │ ■ Setup                               │ │                                       │ │ ■ FIN1209                      22 Sep │
+│                                       │ │   Update the ship's own tooling       │ │                                       │ │   FIN1209 Activity 1 slides           │
+│                                       │ │                                       │ │                                       │ │                                       │
+│                                       │ │                                       │ │                                       │ │                                       │
+│                                       │ │                                       │ │                                       │ │ ■ SAP                          22 Sep │
+│                                       │ │                                       │ │                                       │ │   SAP: fix the invoice export         │
+│                                       │ │                                       │ │                                       │ │                                       │
+│                                       │ │                                       │ │                                       │ │                                       │
+│                                       │ │                                       │ │                                       │ │ ■ FIN1209                      10 Sep │
+│                                       │ │                                       │ │                                       │ │   Quiz 2 rubric                       │
+│                                       │ │                                       │ │                                       │ │                                       │
+│                                       │ │                                       │ │                                       │ │                                       │
+│                                       │ │                                       │ │                                       │ │ ■ FIN1209                      10 Sep │
+│                                       │ │                                       │ │                                       │ │   Quiz 3 rubric                       │
+│                                       │ │                                       │ │                                       │ │                                       │
+│                                       │ │                                       │ │                                       │ │                                       │
+│                                       │ │                                       │ │                                       │ │                                       │
+│                                       │ │                                       │ │                                       │ │                                       │
+│                                       │ │                                       │ │                                       │ │ +2 more                               │
+└───────────────────────────────────────┘ └───────────────────────────────────────┘ └───────────────────────────────────────┘ └───────────────────────────────────────┘
+
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down pick an agent   enter talk to it   p pause   q quit                                                                          updates by itself

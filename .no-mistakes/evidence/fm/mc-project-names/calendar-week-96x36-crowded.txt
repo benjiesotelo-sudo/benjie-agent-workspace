@@ -1,0 +1,36 @@
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar         Wed 10:00
+────────────────────────────────────────────────────────────────────────────────────────────────
+
+  Week │ Month │ Year     ◂   12 to 16 August   ▸    this week   11 done, 0 due
+
+┌─ ALWAYS RUNNING ─────────────────────────────────────────────────────────────────────────────┐
+│ ● Bridge off    ● Mission Control off    ● FIN1209 asleep    ● SAP working    +2 more        │
+└──────────────────────────────────────────────────────────────────────────────────────────────┘
+
+ Wed 12 Aug today │ Thu 13           │ Fri 14           │ Sat 15           │ Sun 16
+──────────────────┼──────────────────┼──────────────────┼──────────────────┼──────────────────
+ ┌──────── done ┐ │ ┌──────── done ┐ │ nothing due      │ nothing due      │ nothing due
+ │ BSBA Spec:   │ │ │ SAP: Week    │ │                  │                  │
+ └──────────────┘ │ │ two notes    │ │                  │                  │
+ ┌──────── done ┐ │ └──────────────┘ │                  │                  │
+ │ Social Media │ │ ┌──────── done ┐ │                  │                  │
+ │ Marketing:   │ │ │ FIN1209:     │ │                  │                  │
+ └──────────────┘ │ │ Week one...  │ │                  │                  │
+ ┌──────── done ┐ │ └──────────────┘ │                  │                  │
+ │ Social Media │ │                  │                  │                  │
+ │ Marketing:   │ │                  │                  │                  │
+ └──────────────┘ │                  │                  │                  │
+ ┌──────── done ┐ │                  │                  │                  │
+ │ Social Media │ │                  │                  │                  │
+ │ Marketing:   │ │                  │                  │                  │
+ └──────────────┘ │                  │                  │                  │
+ ┌──────── done ┐ │                  │                  │                  │
+ │ Social Media │ │                  │                  │                  │
+ │ Marketing:   │ │                  │                  │                  │
+ └──────────────┘ │                  │                  │                  │
+  +4 more         │                  │                  │                  │
+                  │                  │                  │                  │
+                  │                  │                  │                  │
+                  │                  │                  │                  │
+────────────────────────────────────────────────────────────────────────────────────────────────
+ left/right earlier or later   t today   v week, month or year   1-9 swit...  updates by itself

@@ -1,0 +1,50 @@
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System                                           Sat 10:00
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                │ LIVE ACTIVITY real
+                                                                                                │
+                                                                                                │ 25 Sep First mate finished Mission Control project names
+                                                                                                │
+    alumni             tasks                     Z          plan         memory                 │ 25 Sep First mate finished FIN1209
+                                                                                                │
+                                                z                                               │ 24 Sep First mate finished Livelihood module handout
+                                               z                                                │
+                                                                                                │ 24 Sep First mate finished Program learning outcomes
+                                                                                                │
+                                                                                                │ 23 Sep First mate finished Tambiz tax table
+                                                                                                │
+                                       First mate                                               │ 22 Sep First mate finished FIN1209 Activity 1 slides
+                                         asleep                                        system   │
+            Z                                                         Z                  ok     │ 22 Sep First mate finished SAP: fix the invoice export
+                                                                                                │
+           z                                                         z                          │ 10 Sep First mate finished Quiz 2 rubric
+          z                                                         z                           │
+                                                                                                │
+                                                                                                │
+                                                                                                │
+                                                                                                │
+ Telos_FIN1209             SAP-Management-App            Tambiz-Calculator                      │
+    asleep                       working                      asleep                            │
+                                                                                                │
+                                                                                                │
+            Z                                                                                   │
+                                                                                                │
+           z                                                                                    │
+          z                                                                                     │
+                                                                                                │
+                                                                                                │
+                                                                                                │
+                                                                                                │
+     Scout                                                                                      │
+    asleep                                                                                      │
+                                                                                                │
+ CAPTAIN                                                                                        │
+                                                                                                │
+                                                                                                │
+                  inbox 4                                                                       │
+                                                                                                │
+─ TEAM ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   NAME       ROLE                DOING NOW                                                                               PROJECT (the one it works in)
+ z First mate first mate          standing by, 3 waiting on you                                                           every project
+ z Telos_F... second mate         asleep, 1 job listed, 1 waiting on you                                                  Telos_FIN1209
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   up/down pick an agent   enter talk to it   p pause   q quit                                                                          updates by itself
