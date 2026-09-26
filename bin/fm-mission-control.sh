@@ -18,7 +18,8 @@
 #                           screen is running in it
 #   frame [--view <v>] [--size <cols>x<rows>] [--agents <file>] [--format text|json|ansi] [--keys <keys>]
 #                           print one frame from the records and a saved
-#                           `herdr agent list` file (tests, a quick look);
+#                           `herdr agent list` file (tests, a quick look),
+#                           or without --agents from asking Herdr once;
 #                           <v> is office, tasks, approvals, projects,
 #                           calendar, or a later view's name; <keys> are
 #                           keys and mouse taps applied first, as the
@@ -126,7 +127,7 @@ cmd_run() {
 }
 
 cmd_frame() {
-  exec python3 "$PY" frame --home "$FM_HOME" --config-dir "$CONFIG" "$@"
+  exec python3 "$PY" frame --home "$FM_HOME" --config-dir "$CONFIG" --herdr "$HERDR_CMD" "$@"
 }
 
 cmd_start() {

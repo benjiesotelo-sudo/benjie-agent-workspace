@@ -18,8 +18,10 @@ WHAT IT READS.
             background when any home's state/*.meta set or backlog, registry or
             done-archive file changes, and at least every two minutes.
   Agents    `herdr agent list` (JSON), polled every two seconds, never faster
-            than once a second. Each entry carries pane_id, agent_status, cwd
-            and foreground_cwd.
+            than once a second; `frame` asks once unless given a saved list.
+            Each entry carries pane_id, agent_status, cwd and foreground_cwd.
+            Until Herdr has answered, a second mate with no pane is unknown on
+            the Calendar's always-running strip, never closed.
   Settings  config/mission-control.json (optional, gitignored with config/):
             first_mate_name is the first mate's name on its desk, in the team
             list and in the activity column; "First mate" when absent.
@@ -265,6 +267,15 @@ def parse_agents(text):
         cwds = {c for c in (_real(a.get("cwd")), _real(a.get("foreground_cwd"))) if c}
         out.append({"pane": str(a["pane_id"]), "status": str(a.get("agent_status") or ""), "cwds": cwds})
     return out
+
+
+def read_agents(herdr):
+    """Herdr's live agent list, or None when Herdr does not answer."""
+    try:
+        proc = subprocess.run(herdr + ["agent", "list"], capture_output=True, text=True, timeout=5, check=False)
+    except (OSError, subprocess.SubprocessError):
+        return None
+    return parse_agents(proc.stdout) if proc.returncode == 0 else None
 
 
 class SleepTimer:
@@ -1274,6 +1285,7 @@ class UI:
         self.cal_at = None      # Calendar: a day in the period shown, None for today's
         self.cal_hits = []      # Calendar: (row0, row1, col0, col1, action) tap targets
         self.services = []      # Calendar: read_services()
+        self.agents_ok = True   # Calendar: Herdr's agent list has been read, so a mate with no pane is closed
 
 
 def _chrome(cv, ui, now):
@@ -1951,15 +1963,18 @@ def read_services(home, self_running=False):
 
 
 STATE_COLORS = {"running": GREEN, "working": GREEN, "asleep": ZZZ, "stopped": AMBER,
-                "closed": QUIET, "remote": QUIET, "off": DIMMER}
+                "closed": QUIET, "remote": QUIET, "off": DIMMER, "unknown": DIM}
 
 
-def _mate_word(m):
+def _mate_word(m, agents_ok=True):
     if m["doing"] == "works on another machine":
         return "remote"
     if m["status"] == "work":
         return "working"
-    return "asleep" if m.get("pane") else "closed"
+    if m.get("pane"):
+        return "asleep"
+    # With no answer from Herdr, a missing pane says nothing about the window.
+    return "closed" if agents_ok else "unknown"
 
 
 CAL_MODES = ("week", "month", "year")
@@ -2091,7 +2106,7 @@ def _always_running(cv, ui, crew):
     C = cv.C
     _box(cv, 0, 5, C, 3, CHIP)
     cv.put(2, 5, " ALWAYS RUNNING ", INK, None, True)
-    chips = list(ui.services) + [(m["name"], _mate_word(m)) for m in crew if m["kind"] == "mate"]
+    chips = list(ui.services) + [(m["name"], _mate_word(m, ui.agents_ok)) for m in crew if m["kind"] == "mate"]
     c = 2
     for i, (name, word) in enumerate(chips):
         chip = "● %s %s" % (name, word)
@@ -2521,12 +2536,7 @@ class Feed:
 
     def _agents_loop(self):
         while not self.stop.is_set():
-            try:
-                proc = subprocess.run(self.herdr + ["agent", "list"], capture_output=True, text=True,
-                                      timeout=5, check=False)
-                agents = parse_agents(proc.stdout) if proc.returncode == 0 else None
-            except (OSError, subprocess.SubprocessError):
-                agents = None
+            agents = read_agents(self.herdr)
             with self.lock:
                 if agents is not None:
                     changed = [(a["pane"], a["status"], tuple(sorted(a["cwds"]))) for a in agents] != \
@@ -2684,6 +2694,7 @@ def run(home, config_dir, herdr):
             if not dirty:
                 continue
             ui.services = feed.services
+            ui.agents_ok = feed.agents_read
             notice = None
             if model_err:
                 notice = "The records could not be read just now (%s); showing the last good read." % model_err \
@@ -2784,15 +2795,19 @@ def _handle_input(data, ui, scene, feed):
 # One frame, for tests and a quick look
 # ---------------------------------------------------------------------------
 
-def frame(home, config_dir, agents_text, view, cols, rows, fmt, session="default", keys=""):
+def frame(home, config_dir, agents_text, view, cols, rows, fmt, session="default", keys="", herdr=("herdr",)):
     model = bridge.collect(home, config_dir, bridge._now())
-    agents = parse_agents(agents_text) if agents_text else []
+    # Without a saved list, ask Herdr now, as the running screen does.
+    agents = parse_agents(agents_text) if agents_text is not None else read_agents(list(herdr))
+    agents_ok = agents is not None
+    agents = agents or []
     crew = build_crew(model, agents, home, session, None, first_mate_name(config_dir))
     scene = Scene()
     scene.observe(model, crew, rows)
     ui = UI()
     ui.view = view
     ui.services = read_services(home) if view == "calendar" else []
+    ui.agents_ok = agents_ok
     # Keys and taps as the terminal sends them, each on the frame before it;
     # Enter and q do nothing here.
     for m in _KEYS.finditer(keys.encode("utf-8", "surrogateescape")):
@@ -2857,7 +2872,7 @@ def main(argv):
             text = fh.read()
     try:
         out = frame(home, args.config_dir, text, args.view, int(m.group(1)), int(m.group(2)), args.format,
-                    os.environ.get("HERDR_SESSION") or "default", args.keys)
+                    os.environ.get("HERDR_SESSION") or "default", args.keys, args.herdr.split())
     except RuntimeError as exc:
         print("fm_mission_control.py: %s" % exc, file=sys.stderr)
         return 1

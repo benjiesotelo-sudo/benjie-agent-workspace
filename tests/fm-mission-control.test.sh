@@ -414,6 +414,26 @@ for chip in '● Bridge running' '● Mission Control off' '● Alpha asleep'; d
 done
 grep -Eq '\b(h1|t[1-9]|t1[01]|w[1-4])\b' <<<"$K" && fail "no task id may reach the calendar"
 grep -q "$TMP_ROOT" <<<"$K" && fail "no raw path may reach the calendar"
+# Without a saved list, frame asks Herdr itself: a live mate window is asleep,
+# and with Herdr silent a mate is unknown rather than closed.
+cat > "$FAKEBIN/herdr-cal" <<SH
+#!/usr/bin/env bash
+[ -e "$TMP_ROOT/herdr-cal-down" ] && exit 1
+[ "\$1 \$2" = "agent list" ] && exec cat "$AGENTS"
+exit 1
+SH
+chmod +x "$FAKEBIN/herdr-cal"
+herdr_cal() {
+  PATH="$FAKEBIN:$PATH" FM_HOME="$CAL" FM_BRIDGE_NOW=2026-09-23T10:00:00 FM_MC_HERDR="$FAKEBIN/herdr-cal" \
+    "$MC" frame --view calendar --size 170x50
+}
+K=$(herdr_cal) || fail "calendar frame without a saved agent list failed: $K"
+grep -q '● Alpha asleep' <<<"$K" || fail "frame reads a live mate window from Herdr"
+touch "$TMP_ROOT/herdr-cal-down"
+K=$(herdr_cal) || fail "calendar frame with Herdr silent failed: $K"
+rm -f "$TMP_ROOT/herdr-cal-down"
+grep -q '● Alpha unknown' <<<"$K" || fail "with Herdr silent a mate's window is unknown"
+grep -q 'Alpha closed' <<<"$K" && fail "with Herdr silent no mate is called closed"
 rm -f "$TMP_ROOT/bridge-up"
 K=$(cal 2026-10-01T10:00:00 170x50 vv) || fail "calendar frame failed: $K"
 grep -q '27 September to 3 October' <<<"$K" || fail "a week across two months names both"
