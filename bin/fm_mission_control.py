@@ -75,9 +75,10 @@ oldest first. The panel shows the highlighted one's title and note: its
 record's body lines without bookkeeping lines, else its hold reason, with
 paths replaced by the Bridge's plain_note().
 
-THE CALENDAR. Three modes under one control bar whose every part can be
-tapped: Week | Month | Year, the period between two arrows, and a way back to
-today. Month (the first shown) is the whole month in five or six Sunday to
+THE CALENDAR. Three modes under one control bar whose tappable parts are
+Week | Month | Year, the arrows either side of the period, and "back to today"
+while away from today's period; the relative label ("this month") is display
+only. Month (the first shown) is the whole month in five or six Sunday to
 Saturday weeks, neighbouring months' days dimmed, each day's items as short
 lines and "+N more"; Year is twelve small months, a day with items in the
 colour of the project with most of them, and a tapped month opens in Month;
@@ -2868,7 +2869,7 @@ def _item_color(model, colors, it):
 
 
 def _control_bar(cv, ui, model, colors, title, rel, current, entries):
-    """Week | Month | Year, the period with its arrows, and a way back to today, all tappable."""
+    """Tappable Week | Month | Year, arrows either side of the period and back to today; the rest is display."""
     C, r = cv.C, 3
     c = 1
     for i, m in enumerate(CAL_MODES):
