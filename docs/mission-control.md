@@ -130,6 +130,17 @@ Files are rechecked every 5 seconds and commands every 5 minutes; anything that 
 The Bridge has five tabs: Bridge (one card per project), Board (the task columns), Team & Office, Memory, and Documents.
 It is rebuilt from the records when you open or refresh it.
 
+### The System Map
+
+![The System Map on an iPad-sized screen: you, how requests arrive, the first mate, each second mate with its interns and projects, the toolbox and the delivery lane](mission-control/system-map.png)
+
+The System Map is a live diagram of how the whole crew works, at `/system-map` on the Bridge's address; the link sits in the Bridge's header.
+Reading left to right: you, how your requests arrive, the first mate, each second mate with the interns working for it, the projects, and where results show; underneath are the first mate's toolbox and the delivery lane every change travels.
+Nothing on it is drawn by hand: every box comes from the crew's records and the tools installed on this Mac, so a new second mate, project, tool, check or playbook appears by itself, and a box whose source cannot be read says "could not read".
+Whoever is working right now glows, the lines their work flows along move, and each intern sits on its step of the delivery lane; the map refreshes every minute.
+Tap any box for a card saying what it is, what it does in the workflow, who uses it and what it is doing now.
+"How a request travels" walks one request from you to the merge, one sentence per step, and "What changed" lists what was added or removed since you last opened the map on that device.
+
 ## Settings
 
 Both settings files live in this home's `config/` folder and are optional.
