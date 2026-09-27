@@ -1036,6 +1036,22 @@ done
 jq '. + {system_map: null}' "$TMP_ROOT/ok.json" > "$TMP_ROOT/map-bad.json"
 mc "$HOME_DIR" frame --readings "$TMP_ROOT/map-bad.json" --agents "$AGENTS" --view system --size 170x50 \
   | grep -q 'The map could not be read' || fail "an unreadable map says so on its card"
+jq '. + {bridge: {running: true, address: "http://ship.example.ts.net:7373/", local_only: false},
+         system_map: (["You", "  ways in: Chat with Denver, Termius",
+                       "  wake-ups: Session start, Turn end, Watcher, GitHub results, Bridge at login, Publisher",
+                       "  Denver (first mate)", "    own: Claude Code, Memory, rclone, Tailscale, Chrome helper",
+                       "    results: Mission Control, Public page, The Bridge, Google Drive, GitHub"] +
+                      ([range(6)] | map("    Mate \(.) (second mate)", "      own: Model, Memory, Vercel, Neon")) +
+                      ["Shared tools: GitHub CLI, no-mistakes, Herdr", "Delivery lane: Build > Review > Merge"])}' \
+  "$TMP_ROOT/ok.json" > "$TMP_ROOT/map-big.json"
+for size in 170x50 120x40; do
+  BM=$(mc "$HOME_DIR" frame --readings "$TMP_ROOT/map-big.json" --agents "$AGENTS" --view system --size "$size") \
+    || fail "system frame with a big map outline failed at $size"
+  for want in '● GITHUB ' '● TOOLS ' '● SYSTEM MAP ' 'the full map is in Safari'; do
+    grep -q "$want" <<<"$BM" || fail "a big map at $size still shows: $want"
+  done
+  grep -q 'more below' <<<"$BM" && fail "a big map at $size hides no card: $(grep 'more below' <<<"$BM")"
+done
 pass "the System view outlines the System Map and says where to open it"
 
 L=$(mc "$HOME_DIR" frame --agents "$AGENTS" --view docs)

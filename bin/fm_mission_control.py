@@ -3634,16 +3634,6 @@ def system_cards(r, crew, model, now, records_ok=True, agents_ok=True):
                  "Mission Control: running in this terminal, not in its usual Herdr space",
                  (), "Mission Control outside its Herdr space")
 
-    # The System Map: where to open it, and its tree in short (bin/fm_system_map.py outline()).
-    if "system_map" in r:
-        tree, address = r.get("system_map"), (r.get("bridge") or {}).get("address")
-        lines = [("green", "Open in Safari"), (None, address.rstrip("/") + "/system-map")] if address else \
-            [("grey", "Open in Safari once the Bridge page answers")]
-        lines += [(None, re.sub(r"^((?:  )+)", lambda m: "\u00b7" * (len(m.group(1)) // 2) + " ", ln))
-                  for ln in tree] if tree else \
-            [("grey", "The map could not be read")]
-        card("System Map", "green" if tree else "grey", "System Map: how the crew fits together", lines)
-
     # GitHub and the tools.
     if "github" not in r:
         card("GitHub", "grey", "GitHub: %s" % unread)
@@ -3666,6 +3656,18 @@ def system_cards(r, crew, model, now, records_ok=True, agents_ok=True):
         missing = sum(1 for ln in lines if ln[0] != "green")
         card("Tools", "green", "Tools: all installed" if not missing else
              "Tools: %d of %d could not be checked" % (missing, len(lines)), lines)
+
+    # The System Map, last so its tall tree never hides the cards above: where to open it, and its tree
+    # in short (bin/fm_system_map.py outline()), cut to the rows the pane has left.
+    if "system_map" in r:
+        tree, address = r.get("system_map"), (r.get("bridge") or {}).get("address")
+        lines = [("green", "Open in Safari"), (None, address.rstrip("/") + "/system-map")] if address else \
+            [("grey", "Open in Safari once the Bridge page answers")]
+        lines += [(None, re.sub(r"^((?:  )+)", lambda m: "\u00b7" * (len(m.group(1)) // 2) + " ", ln))
+                  for ln in tree] if tree else \
+            [("grey", "The map could not be read")]
+        card("System Map", "green" if tree else "grey", "System Map: how the crew fits together", lines)
+        cards[-1]["trim"] = "the full map is in Safari"
 
     looks = [x for c in cards for x in c["looks"]]
     if looks:
@@ -3704,6 +3706,16 @@ def _system_screen(cv, health):
     r0 = 5
     last = R - 3
     heights = [2 + max(len(b) for _, b in laid[i:i + per_row]) for i in range(0, len(laid), per_row)]
+    if laid and laid[-1][0].get("trim"):
+        # A card that may be cut ends at the rows left, gaps first, then without gaps if that is too few.
+        c, body = laid[-1]
+        above = r0 + sum(heights[:-1])
+        room = last - above - len(heights)
+        if room < 4:
+            room += len(heights) - 1
+        if len(body) > room >= 2:
+            laid[-1] = (c, body[:room - 1] + [(DIM, None, ln, 2) for ln in wrap(clean(c["trim"]), w - 4)][:1])
+            heights[-1] = 2 + max(len(b) for _, b in laid[len(heights) * per_row - per_row:])
     gap = 1 if r0 + sum(heights) + len(heights) - 2 <= last else 0
     for i in range(0, len(laid), per_row):
         row = laid[i:i + per_row]
