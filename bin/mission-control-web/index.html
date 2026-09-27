@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex">
+<title>Mission Control</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="screen">
+  <nav class="bar" id="tabs" aria-label="Views">
+    <span class="badge">MISSION CONTROL</span>
+    <button type="button" data-view="office" aria-current="page">1 Office</button>
+    <button type="button" data-view="tasks" data-locked="true">2 Tasks<svg class="lock" viewBox="0 0 12 14" aria-label="locked"><path d="M3 6V4a3 3 0 0 1 6 0v2" fill="none" stroke="currentColor" stroke-width="1.6"/><rect x="1" y="6" width="10" height="7.5" rx="1.5" fill="currentColor"/></svg></button>
+    <button type="button" data-view="approvals" data-locked="true">3 Approvals<svg class="lock" viewBox="0 0 12 14" aria-label="locked"><path d="M3 6V4a3 3 0 0 1 6 0v2" fill="none" stroke="currentColor" stroke-width="1.6"/><rect x="1" y="6" width="10" height="7.5" rx="1.5" fill="currentColor"/></svg></button>
+    <button type="button" data-view="projects">4 Projects</button>
+    <button type="button" data-view="calendar">5 Calendar</button>
+    <button type="button" data-view="team">6 Team</button>
+    <button type="button" data-view="memory" data-locked="true">7 Memory<svg class="lock" viewBox="0 0 12 14" aria-label="locked"><path d="M3 6V4a3 3 0 0 1 6 0v2" fill="none" stroke="currentColor" stroke-width="1.6"/><rect x="1" y="6" width="10" height="7.5" rx="1.5" fill="currentColor"/></svg></button>
+    <button type="button" data-view="docs" data-locked="true">8 Docs<svg class="lock" viewBox="0 0 12 14" aria-label="locked"><path d="M3 6V4a3 3 0 0 1 6 0v2" fill="none" stroke="currentColor" stroke-width="1.6"/><rect x="1" y="6" width="10" height="7.5" rx="1.5" fill="currentColor"/></svg></button>
+    <button type="button" data-view="system" data-locked="true">9 System<svg class="lock" viewBox="0 0 12 14" aria-label="locked"><path d="M3 6V4a3 3 0 0 1 6 0v2" fill="none" stroke="currentColor" stroke-width="1.6"/><rect x="1" y="6" width="10" height="7.5" rx="1.5" fill="currentColor"/></svg></button>
+    <span class="clock" id="clock"></span>
+  </nav>
+
+  <main>
+    <section class="view" id="view-office" aria-label="Office">
+      <div class="office">
+        <div class="floor">
+          <canvas id="office" role="img" aria-label="The crew's office: who is at their desk working and who is asleep"></canvas>
+          <div class="talk" id="talk" role="dialog" aria-labelledby="talk-name" hidden>
+            <div class="bubble">
+              <div class="who"><span id="talk-name"></span> <span class="role" id="talk-role"></span></div>
+              <p id="talk-line"></p>
+            </div>
+            <div class="choices">
+              <button type="button" id="talk-nice">Nice!</button>
+              <button type="button" id="talk-more">What else?</button>
+              <button type="button" id="talk-chat" class="locked" aria-disabled="true">Open chat<svg class="lock" viewBox="0 0 12 14" aria-label="locked"><path d="M3 6V4a3 3 0 0 1 6 0v2" fill="none" stroke="currentColor" stroke-width="1.6"/><rect x="1" y="6" width="10" height="7.5" rx="1.5" fill="currentColor"/></svg></button>
+            </div>
+          </div>
+        </div>
+        <aside class="feed">
+          <h2>LIVE ACTIVITY <span class="tag">public</span></h2>
+          <ol id="feed"></ol>
+        </aside>
+      </div>
+      <div class="team-list">
+        <h2 class="rule"><span>TEAM</span></h2>
+        <table>
+          <thead><tr><th class="g"></th><th>NAME</th><th>ROLE</th><th>DOING NOW</th><th class="pj">PROJECT (the one it works in)</th></tr></thead>
+          <tbody id="roster"></tbody>
+        </table>
+        <p class="note">Helpers stand beside their person in charge for one job, then go home. Sleeping agents cost nothing.</p>
+      </div>
+    </section>
+
+    <section class="view" id="view-projects" aria-label="Projects" hidden>
+      <div class="grid" id="projects"></div>
+    </section>
+
+    <section class="view" id="view-calendar" aria-label="Calendar" hidden>
+      <div class="calbar">
+        <button type="button" id="cal-prev" aria-label="Previous month">&lt;</button>
+        <h2 id="cal-title"></h2>
+        <button type="button" id="cal-next" aria-label="Next month">&gt;</button>
+        <button type="button" id="cal-today" class="ghost">back to today</button>
+      </div>
+      <div class="legend" id="cal-legend"></div>
+      <div class="month" id="cal-grid"></div>
+    </section>
+
+    <section class="view" id="view-team" aria-label="Team" hidden>
+      <div class="org" id="team"></div>
+    </section>
+
+    <section class="view" id="view-locked" aria-label="Only the captain can open this" hidden>
+      <div class="locked-view">
+        <div class="placeholder" id="placeholder" aria-hidden="true"></div>
+        <div class="shade">
+          <canvas id="padlock" width="13" height="13" aria-hidden="true"></canvas>
+          <p>only the captain can open this</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="bar keys">
+    <span>1-9 switch view &nbsp; tap someone to say hello &nbsp; p pause &nbsp; read only</span>
+    <span class="updated" id="updated">loading</span>
+  </footer>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</div>
+<script src="app.js"></script>
+</body>
+</html>
