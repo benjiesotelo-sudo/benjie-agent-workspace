@@ -7,7 +7,9 @@
 # commits and pushes only when the folder changed, keeps an unchanged snapshot's
 # time until the heartbeat, retries a commit it could not push, leaves a plain
 # folder alone and refuses a checkout of another repository; install writes a
-# schedule at the configured cadence. The record readers are covered by
+# schedule at the configured cadence; the Cloudflare host writes a changed
+# snapshot to Workers KV, deploys the page code only when it changed, retries
+# what failed and never exposes the token. The record readers are covered by
 # fm-bridge.test.sh and the crew by fm-mission-control.test.sh.
 set -u
 
@@ -344,6 +346,184 @@ grep -q "bootstrap gui/" "$TMP_ROOT/launchctl.log" || fail "install loads the jo
 R=$(PATH="$FAKEBIN:$PATH" FM_HOME="$HOME_DIR" FM_MCW_AGENT_DIR="$AGENT_DIR" "$MCW" uninstall) || fail "uninstall failed: $R"
 [ -e "$PL" ] && fail "uninstall removes the plist"
 pass "install schedules publish at the configured cadence and uninstall removes it"
+
+# --- Cloudflare ---------------------------------------------------------------
+# A fake Cloudflare API (curl) and a fake wrangler stand in for the real ones.
+# The token below is a made-up fixture value; it proves the token reaches curl
+# only on standard input and wrangler only in its environment.
+CF_TOKEN_FIXTURE=fixtureTOKENnotreal_0123456789
+CF_ACCOUNT_FIXTURE=0123456789abcdef0123456789abcdef
+CF_STATE="$TMP_ROOT/cf-state.json"
+printf '{"namespaces": [{"id": "ns-other", "title": "someone-else"}], "projects": {}, "kv": {}}\n' > "$CF_STATE"
+cat > "$FAKEBIN/curl" <<EOF
+#!/usr/bin/env python3
+import json, re, sys
+token, account, state_path = "$CF_TOKEN_FIXTURE", "$CF_ACCOUNT_FIXTURE", "$CF_STATE"
+log = open("$TMP_ROOT/curl.log", "a")
+args = sys.argv[1:]
+if any(token in a for a in args):
+    log.write("TOKEN IN ARGUMENTS\n")
+config = sys.stdin.read() if "--config" in args else ""
+method, out, url, body = "GET", None, None, None
+i = 0
+while i < len(args):
+    a = args[i]
+    if a in ("-X", "-o", "-w", "-H", "--data", "--data-binary", "--config"):
+        v = args[i + 1]
+        if a == "-X": method = v
+        if a == "-o": out = v
+        if a in ("--data", "--data-binary"):
+            body = open(v[1:], "rb").read() if v.startswith("@") else v.encode()
+        i += 2
+        continue
+    if a.startswith("https://"):
+        url = a
+    i += 1
+state = json.load(open(state_path))
+prefix = "https://api.cloudflare.com/client/v4/accounts/%s" % account
+path = url[len(prefix):] if url and url.startswith(prefix) else None
+log.write("%s %s\n" % (method, path))
+code, res = 200, None
+def ok(result): return {"success": True, "errors": [], "result": result}
+def err(msg): return {"success": False, "errors": [{"code": 1, "message": msg}], "result": None}
+if 'header = "Authorization: Bearer %s"' % token not in config or path is None:
+    code, res = 401, err("Authentication error")
+elif method == "GET" and path.startswith("/storage/kv/namespaces?"):
+    res = ok(state["namespaces"])
+elif method == "POST" and path == "/storage/kv/namespaces":
+    title = json.loads(body)["title"]
+    ns = {"id": "ns%d" % len(state["namespaces"]), "title": title}
+    state["namespaces"].append(ns)
+    res = ok(ns)
+elif method == "PUT" and re.match(r"^/storage/kv/namespaces/[^/]+/values/snapshot\.json$", path):
+    nid = path.split("/")[4]
+    if state.get("fail_put") or nid not in [n["id"] for n in state["namespaces"]]:
+        code, res = 404, err("namespace not found")
+    else:
+        state["kv"].setdefault(nid, {})["snapshot.json"] = body.decode()
+        res = ok(None)
+elif method == "GET" and path.startswith("/pages/projects/"):
+    name = path.split("/")[3]
+    if name in state["projects"]:
+        res = ok(state["projects"][name])
+    else:
+        code, res = 404, err("Project not found")
+elif method == "POST" and path == "/pages/projects":
+    req = json.loads(body)
+    proj = {"name": req["name"], "subdomain": req["name"] + "-abc.pages.dev",
+            "production_branch": req["production_branch"]}
+    state["projects"][req["name"]] = proj
+    res = ok(proj)
+else:
+    code, res = 400, err("unexpected request")
+json.dump(state, open(state_path, "w"))
+open(out, "w").write(json.dumps(res))
+sys.stdout.write(str(code))
+EOF
+chmod +x "$FAKEBIN/curl"
+cat > "$FAKEBIN/wrangler" <<EOF
+#!/usr/bin/env bash
+{ printf 'wrangler %s\n' "\$*"
+  [ "\$CLOUDFLARE_API_TOKEN" = "$CF_TOKEN_FIXTURE" ] && echo "token in the environment"
+  [ "\$CLOUDFLARE_ACCOUNT_ID" = "$CF_ACCOUNT_FIXTURE" ] && echo "account in the environment"
+  case "\$*" in *"$CF_TOKEN_FIXTURE"*) echo "TOKEN IN ARGUMENTS" ;; esac
+} >> "$TMP_ROOT/wrangler.log"
+rm -rf "$TMP_ROOT/staged"
+cp -R "\$PWD" "$TMP_ROOT/staged"
+[ ! -e "$TMP_ROOT/wrangler.fail" ] || { echo "deploy refused"; exit 1; }
+echo "Deployment complete"
+EOF
+chmod +x "$FAKEBIN/wrangler"
+calls() { [ ! -f "$TMP_ROOT/curl.log" ] || tr '\n' ',' < "$TMP_ROOT/curl.log"; }
+deploys() { grep -c '^wrangler ' "$TMP_ROOT/wrangler.log" 2>/dev/null || echo 0; }
+kv() { jq -r --arg id "$1" '.kv[$id]["snapshot.json"] // empty' "$CF_STATE"; }
+cf_config() {  # <project>
+  printf '{"first_mate_name": "Denver", "names": {"secretrepo-orchard": "Orchard"}, "public_page": {"host": "cloudflare", "project": "%s", "every_minutes": 7}}\n' "$1" \
+    > "$HOME_DIR/config/mission-control.json"
+}
+cf_config mission-control
+CF="$TMP_ROOT/cf-page"
+
+R=$(mcw 2026-09-18T12:00:00 publish "$CF" --agents "$AGENTS" 2>&1) && fail "publish without Cloudflare credentials fails"
+grep -q "CLOUDFLARE_API_TOKEN is not set in $HOME_DIR/.env" <<<"$R" || fail "the refusal names the missing key and where it is read from, got: $R"
+[ -f "$TMP_ROOT/curl.log" ] && fail "nothing is sent without credentials"
+printf 'OTHER=1\nexport CLOUDFLARE_API_TOKEN="%s"\nCLOUDFLARE_ACCOUNT_ID=%s\n' "$CF_TOKEN_FIXTURE" "$CF_ACCOUNT_FIXTURE" > "$HOME_DIR/.env"
+pass "publish to Cloudflare refuses to run until the home's .env holds the credentials"
+
+R=$(mcw 2026-09-18T12:00:00 publish "$CF" --agents "$AGENTS" 2>&1) || fail "first Cloudflare publish failed: $R"
+[ "$(calls)" = "GET /storage/kv/namespaces?per_page=100&page=1,POST /storage/kv/namespaces,PUT /storage/kv/namespaces/ns1/values/snapshot.json,GET /pages/projects/mission-control,POST /pages/projects," ] \
+  || fail "the first publish creates the namespace, writes the snapshot, then creates the project, got $(calls)"
+[ "$(jq -r '.namespaces[1].title' "$CF_STATE")" = mission-control-snapshot ] || fail "the namespace is named after the project"
+[ "$(deploys)" = 1 ] || fail "the first publish deploys the page once"
+grep -q '^wrangler pages deploy public --project-name mission-control --branch main' "$TMP_ROOT/wrangler.log" \
+  || fail "wrangler deploys the staged page to the project's production branch, got $(cat "$TMP_ROOT/wrangler.log")"
+grep -q 'token in the environment' "$TMP_ROOT/wrangler.log" || fail "wrangler gets the token in its environment"
+grep -q 'account in the environment' "$TMP_ROOT/wrangler.log" || fail "wrangler gets the account id in its environment"
+[ "$(cd "$TMP_ROOT/staged" && find . -type f | sort | tr '\n' ' ')" = "./functions/snapshot.json.js ./public/app.js ./public/index.html ./public/style.css ./wrangler.toml " ] \
+  || fail "only the page code and its function are deployed, never the snapshot, got $(cd "$TMP_ROOT/staged" && find . -type f | sort | tr '\n' ' ')"
+grep -q '^binding = "SNAPSHOT"$' "$TMP_ROOT/staged/wrangler.toml" || fail "the deploy binds a namespace to the function"
+grep -q '^id = "ns1"$' "$TMP_ROOT/staged/wrangler.toml" || fail "the bound namespace is the snapshot's"
+cmp -s "$TMP_ROOT/staged/public/app.js" "$ROOT/bin/mission-control-web/app.js" || fail "the deployed page is the tracked page"
+[ "$(kv ns1)" = "$(cat "$CF/snapshot.json")" ] || fail "Workers KV holds the built snapshot"
+kv ns1 | grep -qi secret && fail "the snapshot in Workers KV is the redacted one"
+[ "$(tail -n 1 <<<"$R")" = "fm-mission-control-web: wrote the snapshot to Workers KV and deployed the page for https://mission-control-abc.pages.dev" ] \
+  || fail "publish names the page's real address, got: $R"
+pass "the first Cloudflare publish creates the namespace and project, writes the snapshot to KV and deploys only the page code"
+
+: > "$TMP_ROOT/curl.log"
+R=$(mcw 2026-09-18T12:05:00 publish "$CF" --agents "$AGENTS" 2>&1) || fail "unchanged Cloudflare publish failed: $R"
+[ "$(tail -n 1 <<<"$R")" = "fm-mission-control-web: unchanged; nothing to upload" ] || fail "an unchanged folder uploads nothing, got: $R"
+[ -s "$TMP_ROOT/curl.log" ] && fail "an unchanged run makes no request, got $(calls)"
+[ "$(deploys)" = 1 ] || fail "an unchanged run never redeploys the page"
+printf -- '- [x] zz-secret-c8 - A cloud secret (repo: secretrepo-orchard) (kind: ship) (done 2026-09-18)\n' >> "$HOME_DIR/data/backlog.md"
+R=$(mcw 2026-09-18T12:10:00 publish "$CF" --agents "$AGENTS" 2>&1) || fail "changed Cloudflare publish failed: $R"
+[ "$(calls)" = "PUT /storage/kv/namespaces/ns1/values/snapshot.json," ] || fail "a changed snapshot is one KV write, got $(calls)"
+[ "$(deploys)" = 1 ] || fail "a changed snapshot never redeploys the page"
+[ "$(kv ns1)" = "$(cat "$CF/snapshot.json")" ] || fail "Workers KV holds the new snapshot"
+pass "a scheduled run writes the snapshot to KV only when it changed and never redeploys unchanged page code"
+
+jq '.fail_put = true' "$CF_STATE" > "$CF_STATE.new" && mv "$CF_STATE.new" "$CF_STATE"
+printf -- '- [x] zz-secret-c9 - Another cloud secret (repo: secretrepo-orchard) (kind: ship) (done 2026-09-18)\n' >> "$HOME_DIR/data/backlog.md"
+mcw 2026-09-18T12:15:00 publish "$CF" --agents "$AGENTS" >/dev/null 2>&1 && fail "a KV write that fails fails the run"
+jq '.fail_put = false' "$CF_STATE" > "$CF_STATE.new" && mv "$CF_STATE.new" "$CF_STATE"
+: > "$TMP_ROOT/curl.log"
+R=$(mcw 2026-09-18T12:16:00 publish "$CF" --agents "$AGENTS" 2>&1) || fail "retry after a failed KV write failed: $R"
+[ "$(calls)" = "GET /storage/kv/namespaces?per_page=100&page=1,PUT /storage/kv/namespaces/ns1/values/snapshot.json," ] \
+  || fail "the next run finds the namespace again and writes the snapshot it could not write, got $(calls)"
+[ "$(kv ns1)" = "$(cat "$CF/snapshot.json")" ] || fail "Workers KV catches up"
+touch "$TMP_ROOT/wrangler.fail"
+cf_config mission-control-two
+mcw 2026-09-18T12:20:00 publish "$CF" --agents "$AGENTS" >/dev/null 2>&1 && fail "a deploy that fails fails the run"
+rm -f "$TMP_ROOT/wrangler.fail"
+: > "$TMP_ROOT/curl.log"
+R=$(mcw 2026-09-18T12:21:00 publish "$CF" --agents "$AGENTS" 2>&1) || fail "retry after a failed deploy failed: $R"
+[ "$(calls)" = "GET /pages/projects/mission-control-two," ] || fail "the next run retries only the deploy, got $(calls)"
+[ "$(deploys)" = 3 ] || fail "the failed deploy is retried once"
+grep -q 'mission-control-two-abc.pages.dev' <<<"$R" || fail "the new project's address is reported, got: $R"
+pass "a failed KV write or deploy is retried on the next run, and only what failed is sent again"
+
+grep -q 'TOKEN IN ARGUMENTS' "$TMP_ROOT/curl.log" "$TMP_ROOT/wrangler.log" && fail "the token never appears on a command line"
+HITS=$(grep -rlF -- "$CF_TOKEN_FIXTURE" "$TMP_ROOT" | grep -v "/secretship/.env$" | grep -v "/$(basename "$FAKEBIN")/" || true)
+[ -z "$HITS" ] || fail "the token is never written anywhere but the home's .env, found in: $HITS"
+R=$(mcw 2026-09-18T12:25:00 publish "$CF" --agents "$AGENTS" 2>&1)
+grep -qF -- "$CF_TOKEN_FIXTURE" <<<"$R" && fail "the token is never printed"
+pass "the token reaches curl on standard input and wrangler in its environment, and is never printed, written or put on a command line"
+
+R=$(PATH="$FAKEBIN:$PATH" FM_HOME="$HOME_DIR" FM_MCW_AGENT_DIR="$AGENT_DIR" "$MCW" install "$CF") || fail "Cloudflare install failed: $R"
+[ "$(plx ProgramArguments.2) $(plx ProgramArguments.3) $(plx StartInterval)" = "publish $(cd "$CF" && pwd -P) 420" ] \
+  || fail "the Cloudflare schedule runs publish on the folder at the configured cadence"
+grep -qF -- "$CF_TOKEN_FIXTURE" "$PL" && fail "the schedule never carries the token"
+R=$(PATH="$FAKEBIN:$PATH" FM_HOME="$HOME_DIR" FM_MCW_AGENT_DIR="$AGENT_DIR" "$MCW" status) || fail "status failed: $R"
+grep -q '^address: https://mission-control-two-abc.pages.dev$' <<<"$R" || fail "status shows the page's address, got: $R"
+PATH="$FAKEBIN:$PATH" FM_HOME="$HOME_DIR" FM_MCW_AGENT_DIR="$AGENT_DIR" "$MCW" uninstall >/dev/null || fail "uninstall failed"
+mv "$HOME_DIR/.env" "$HOME_DIR/.env.off"
+R=$(PATH="$FAKEBIN:$PATH" FM_HOME="$HOME_DIR" FM_MCW_AGENT_DIR="$AGENT_DIR" "$MCW" install "$CF" 2>&1) && fail "install without credentials is refused"
+[ -e "$PL" ] && fail "a refused install writes no schedule"
+mv "$HOME_DIR/.env.off" "$HOME_DIR/.env"
+printf '{"public_page": {"host": "netlify"}}\n' > "$HOME_DIR/config/mission-control.json"
+R=$(mcw 2026-09-18T12:30:00 publish "$CF" --agents "$AGENTS" 2>&1) && fail "an unknown host is refused"
+grep -q 'public_page.host in config/mission-control.json is "netlify"' <<<"$R" || fail "the refusal names the host, got: $R"
+pass "install schedules the Cloudflare publish once the credentials are set, and an unknown host is refused"
 
 bash -n "$MCW" || fail "fm-mission-control-web.sh has a syntax error"
 pass "fm-mission-control-web.sh parses"
