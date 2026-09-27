@@ -52,7 +52,7 @@ The first mate has the top desk and each second mate has a desk of their own, la
 Interns, the short-lived workers, stand beside the person in charge of their job.
 An agent pane that no record claims still shows, as a helper of the mate whose home it works in, or of the first mate, doing what its window title says.
 The inbox by the captain's door counts the decisions waiting on you, and the sign under the server rack reads ok, or check when the System view has something for you to look at.
-The column on the right is recent activity in plain sentences: work finished, interns and helpers arriving or leaving, and questions for you.
+The column on the right is recent activity in plain sentences: work finished, interns and helpers arriving or leaving, second mates joining or retiring, and questions for you.
 Who is awake or asleep shows on the desks and in the team list underneath, which says what everyone is doing now, so waking and dozing never crowd the activity column.
 Tapping the corkboard, the calendar, the bookshelf, the server rack, the inbox or the alumni wall opens its view.
 
