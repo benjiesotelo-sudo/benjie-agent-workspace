@@ -1,0 +1,139 @@
+
+== lab settings (docs/herdr-config.toml, key command re-pointed at the lab)
+# Herdr sidebar settings for Mission Control's plain names.
+# Add these lines to ~/.config/herdr/config.toml, run `herdr config check`,
+# then reload with Ctrl+B then Shift+R (or restart Herdr).
+# docs/mission-control.md ("Plain names in Herdr") explains what they show;
+# bin/fm_herdr_names.py sets the `$name`, `$who` and `$job` display values.
+# Deleting these lines restores Herdr's default sidebar.
+
+[ui]
+# Hide the tab strip in a space that has only one tab open.
+hide_tab_bar_when_single_tab = true
+# Keep agents grouped under their space (Herdr's default, written down).
+agent_panel_sort = "spaces"
+
+[ui.sidebar.spaces]
+# One line per space: its plain name.
+rows = [["state_icon", "$name"]]
+
+[ui.sidebar.agents]
+# Line 1: who it is. Line 2, dimmed: what it is working on.
+rows = [["state_icon", "$who"], [{ token = "$job", dim = true }]]
+
+# Ctrl+B then Alt+N puts the plain names back by hand, for example right after
+# Herdr restarts and before Mission Control is running again.
+# Change both paths if your firstmate home or repository lives elsewhere.
+[[keys.command]]
+key = "prefix+alt+n"
+type = "shell"
+command = "FM_HOME=/private/var/folders/jb/yb1cpv3d0vsb1gcnh_v_ds880000gn/T/fm-mc-drive.z5T1ue/benjie-agent-workspace FM_MC_HERDR='/Users/benjie/.no-mistakes/worktrees/40995176e50b/01M3HK9SNT7ERFD45Q1T5RDE34/bin/fm-herdr-lab.sh run fm-lab-mc-drive-72296-10464' /Users/benjie/.no-mistakes/worktrees/40995176e50b/01M3HK9SNT7ERFD45Q1T5RDE34/bin/fm-mission-control.sh names > /private/var/folders/jb/yb1cpv3d0vsb1gcnh_v_ds880000gn/T/fm-mc-drive.z5T1ue/key.log 2>&1"
+config: ok
+PASS: herdr config check
+
+== layout before (labels)
+w1 benjie-agent-workspace
+w1:p1 
+w1:p2 my notes
+w1:t1 1
+w1:t2 scratch
+w2 2ndmate-alpha-mate
+w2:p1 
+w2:p2 
+w2:t1 1
+w2:t2 fm-a1
+w3 └ q1 · p:urXKPBo5LgWV2rrMCPavcQ
+w3:p1 
+w3:t1 1
+
+== display values before
+[{"label":"benjie-agent-workspace","name":null},{"label":"2ndmate-alpha-mate","name":null},{"label":"└ q1 · p:urXKPBo5LgWV2rrMCPavcQ","name":null}]
+[]
+captured /Users/benjie/.no-mistakes/evidence/01M3HK9SNT7ERFD45Q1T5RDE34/sidebar-1-before.html
+
+== SCENARIO one-off names --dry-run, run as if from the first mate's own pane (HERDR_PANE_ID=w1:p1)
+would set: window w1:p1 shows who Denver
+would set: window w1:p1 shows job first mate
+would set: window w2:p1 shows who Alpha
+would set: window w2:p1 shows job second mate
+would set: window w2:p2 shows who Alpha's intern
+would set: window w2:p2 shows job Build chapter four
+would set: window w3:p1 shows who Denver's intern
+would set: window w3:p1 shows job Print the handouts
+would set: space w1 (benjie-agent-workspace) shows Denver
+would set: space w2 (2ndmate-alpha-mate) shows Alpha
+would set: space w3 (└ q1 · p:urXKPBo5LgWV2rrMCPavcQ) shows Denver's intern · Print the handouts
+names: 11 to set (dry run, nothing changed)
+exit 0
+PASS: dry run changed nothing
+
+== SCENARIO one-off names, from the first mate's own pane
+set: window w1:p1 shows who Denver
+set: window w1:p1 shows job first mate
+set: window w2:p1 shows who Alpha
+set: window w2:p1 shows job second mate
+set: window w2:p2 shows who Alpha's intern
+set: window w2:p2 shows job Build chapter four
+set: window w3:p1 shows who Denver's intern
+set: window w3:p1 shows job Print the handouts
+set: space w1 (benjie-agent-workspace) shows Denver
+set: space w2 (2ndmate-alpha-mate) shows Alpha
+set: space w3 (└ q1 · p:urXKPBo5LgWV2rrMCPavcQ) shows Denver's intern · Print the handouts
+names: 11 set, 0 refused
+exit 0
+
+== display values after names
+[{"label":"benjie-agent-workspace","name":"Denver"},{"label":"2ndmate-alpha-mate","name":"Alpha"},{"label":"└ q1 · p:urXKPBo5LgWV2rrMCPavcQ","name":"Denver's intern · Print the handouts"}]
+[{"pane_id":"w1:p1","label":null,"who":"Denver","job":"first mate"},{"pane_id":"w2:p1","label":null,"who":"Alpha","job":"second mate"},{"pane_id":"w2:p2","label":null,"who":"Alpha's intern","job":"Build chapter four"},{"pane_id":"w3:p1","label":null,"who":"Denver's intern","job":"Print the handouts"}]
+PASS: first mate's own window shows who Denver / job first mate
+PASS: helper space reads plain "Denver's intern · Print the handouts" with no └ glyph
+PASS: no space, tab or window label changed (captain's "my notes", fm-a1, └ space, 2ndmate-)
+
+== second names run
+names: every name already shows
+exit 0
+captured /Users/benjie/.no-mistakes/evidence/01M3HK9SNT7ERFD45Q1T5RDE34/sidebar-2-after-names.html
+
+== SCENARIO Herdr restart drops display values; Ctrl+B then Alt+N puts them back
+
+== display values right after restart
+[{"label":"benjie-agent-workspace","name":null},{"label":"2ndmate-alpha-mate","name":null},{"label":"└ q1 · p:urXKPBo5LgWV2rrMCPavcQ","name":null}]
+[]
+PASS: labels survive restart unchanged
+PASS: display values gone after restart
+captured /Users/benjie/.no-mistakes/evidence/01M3HK9SNT7ERFD45Q1T5RDE34/sidebar-3-after-restart-and-key.html
+
+== key command output
+set: window w1:p1 shows who Denver
+set: window w1:p1 shows job first mate
+set: window w2:p1 shows who Alpha
+set: window w2:p1 shows job second mate
+set: window w2:p2 shows who Alpha's intern
+set: window w2:p2 shows job Build chapter four
+set: window w3:p1 shows who Denver's intern
+set: window w3:p1 shows job Print the handouts
+set: space w1 (benjie-agent-workspace) shows Denver
+set: space w2 (2ndmate-alpha-mate) shows Alpha
+set: space w3 (└ q1 · p:urXKPBo5LgWV2rrMCPavcQ) shows Denver's intern · Print the handouts
+names: 11 set, 0 refused
+
+== display values after the key
+[{"label":"benjie-agent-workspace","name":"Denver"},{"label":"2ndmate-alpha-mate","name":"Alpha"},{"label":"└ q1 · p:urXKPBo5LgWV2rrMCPavcQ","name":"Denver's intern · Print the handouts"}]
+[{"pane_id":"w1:p1","label":null,"who":"Denver","job":"first mate"},{"pane_id":"w2:p1","label":null,"who":"Alpha","job":"second mate"},{"pane_id":"w2:p2","label":null,"who":"Alpha's intern","job":"Build chapter four"},{"pane_id":"w3:p1","label":null,"who":"Denver's intern","job":"Print the handouts"}]
+PASS: Ctrl+B Alt+N restored the first mate's who
+
+== SCENARIO running Mission Control screen keeps names after another restart
+screen started
+
+== display values set by the running screen
+[{"label":"benjie-agent-workspace","name":"Denver"},{"label":"2ndmate-alpha-mate","name":"Alpha"},{"label":"└ q1 · p:urXKPBo5LgWV2rrMCPavcQ","name":"Denver's intern · Print the handouts"},{"label":"mission-control","name":"Mission Control"}]
+[{"pane_id":"w1:p1","label":null,"who":"Denver","job":"first mate"},{"pane_id":"w2:p1","label":null,"who":"Alpha","job":"second mate"},{"pane_id":"w2:p2","label":null,"who":"Alpha's intern","job":"Build chapter four"},{"pane_id":"w3:p1","label":null,"who":"Denver's intern","job":"Print the handouts"}]
+PASS: running screen named the first mate's window
+PASS: running screen named its own space Mission Control
+PASS: screen renamed nothing (every earlier label still present)
+
+== captain renames the helper tab to a name of their own while the screen runs; wait 12s (two naming passes)
+PASS: captain's own window name sticks under the running screen
+captured /Users/benjie/.no-mistakes/evidence/01M3HK9SNT7ERFD45Q1T5RDE34/sidebar-4-running-screen.html
+captured /Users/benjie/.no-mistakes/evidence/01M3HK9SNT7ERFD45Q1T5RDE34/sidebar-5-single-tab-space.html
+done

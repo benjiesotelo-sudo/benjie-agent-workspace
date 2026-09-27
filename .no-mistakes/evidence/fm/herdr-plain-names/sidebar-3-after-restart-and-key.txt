@@ -1,0 +1,42 @@
+ spaces                  │ 1        scratch    +
+                         │benjie@Benjamins-Mac-mini-2 benjie-agent-workspace %
+ ○ Denver                │
+ ● Alpha                 │
+ ○ Denver's intern · Pri…│
+                         │
+                         │
+                         │
+                         │
+                         │
+                         │
+                         │
+                         │
+                         │
+                         │
+                         │
+                         │
+                         │
+                         │
+                         │
+ new               ● menu│
+─────────────────────────│
+ agents           grouped│
+                         │
+ ○ Denver                │
+   first mate            │
+ ○ Alpha                 │
+   second mate           │
+ ● Alpha's intern        │
+   Build chapter four    │
+ ○ Denver's intern       │
+   Print the handouts    │
+                         │
+                         │
+                         │
+                         │
+                         │
+                         │
+                         │
+                         │
+                         │
+                        «│

@@ -1,0 +1,4 @@
+ok - docs/herdr-config.toml passes herdr config check
+ok - the running screen shows plain names in the lab and renames no space, tab or window
+ok - a lab Herdr restart drops the display values and keeps every name
+ok - Mission Control started again after the restart puts every display value back
