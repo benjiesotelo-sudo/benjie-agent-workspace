@@ -1,36 +1,36 @@
- MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System                                           Sat 19:07
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System                                           Sat 10:00
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 
- ● All systems normal                                                                                                                        read only, nothing here acts
+ ● 4 things need a look: crew monitoring, the Bridge page, Mission Control outside its Herdr space, herdr                                    read only, nothing here acts
 
 ┌─ ● THIS MAC ─────────────────────────────────────────────────────────────────────┐ ┌─ ● CREW MONITORING ──────────────────────────────────────────────────────────────┐
-│ This Mac: healthy                                                                │ │ Monitoring the crew: healthy, last check 13 seconds ago                          │
-│ ● Up since Sun 20 Sep 16:23, 6 days                                              │ │ ● Away mode is off                                                               │
-│ ● Processor load 3.7 on 10 cores                                                 │ │ ● No notifications waiting for the first mate                                    │
-│ ● Memory: 9.3 GB of 16 GB in use                                                 │ │                                                                                  │
+│ This Mac: healthy                                                                │ │ Monitoring the crew: not running, and work is under way                          │
+│ ● Up since Sat 19 Sep 06:11, 7 days                                              │ │ ● Away mode is off                                                               │
+│ ● Processor load 2.3 on 10 cores                                                 │ │ ● No notifications waiting for the first mate                                    │
+│ ● Memory: 9.0 GB of 16 GB in use                                                 │ │                                                                                  │
 │ ● Disk: 35 GB free of 228 GB                                                     │ │                                                                                  │
 │ ● On the tailnet                                                                 │ │                                                                                  │
 └──────────────────────────────────────────────────────────────────────────────────┘ └──────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─ ● CREW ─────────────────────────────────────────────────────────────────────────┐ ┌─ ● SECOND MATES ─────────────────────────────────────────────────────────────────┐
-│ Crew: 0 working, 4 asleep, 6 interns and 1 helper out                            │ │ Second mates: all 3 windows open                                                 │
-│                                                                                  │ │ ● FIN1209: window open, home changed 45 minutes ago                              │
-│                                                                                  │ │ ● SAP: window open, home changed 46 minutes ago                                  │
-│                                                                                  │ │ ● Tambiz: window open, home changed 46 minutes ago                               │
+│ Crew: 1 working, 1 asleep, 2 interns and 2 helpers out                           │ │ Second mates: all 1 window open                                                  │
+│ ● Merge switch OFF: every merge waits for you                                    │ │ ● FIN1209 Finance: window open, home changed 12 seconds ago                      │
 └──────────────────────────────────────────────────────────────────────────────────┘ └──────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─ ● THE BRIDGE PAGE ──────────────────────────────────────────────────────────────┐ ┌─ ● MISSION CONTROL ──────────────────────────────────────────────────────────────┐
-│ The Bridge page: running                                                         │ │ Mission Control: running in its Herdr space                                      │
-│ ● Open it at                                                                     │ │                                                                                  │
-│ http://benjamins-mac-mini-2.tail2ec559.ts.net:7373/                              │ │                                                                                  │
+│ The Bridge page: not running                                                     │ │ Mission Control: running in this terminal, not in its usual Herdr space          │
 └──────────────────────────────────────────────────────────────────────────────────┘ └──────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─ ● GITHUB ───────────────────────────────────────────────────────────────────────┐ ┌─ ● TOOLS ────────────────────────────────────────────────────────────────────────┐
-│ GitHub: signed in, checked just now                                              │ │ Tools: all installed                                                             │
+│ GitHub: signed in, checked just now                                              │ │ Tools: 1 of 3 could not be checked                                               │
 │                                                                                  │ │ ● no-mistakes 1.79.0                                                             │
-│                                                                                  │ │ ● herdr 0.8.0                                                                    │
+│                                                                                  │ │ ● herdr: could not be checked                                                    │
 │                                                                                  │ │ ● claude 2.1.283                                                                 │
 └──────────────────────────────────────────────────────────────────────────────────┘ └──────────────────────────────────────────────────────────────────────────────────┘
+
+
+
+
 
 
 

@@ -1,0 +1,41 @@
+## office at 132x44: tap cell (col,row zero-based) -> herdr calls | footer
+  tap 44  8   Denver-desk                    herdr: [agent focus w1:p1 ] |  opening Denver's chat updates by itself
+  tap 58  12  BSBA-intern-sprite(b1)         herdr: [agent focus w3:p1 ] |  opening Denver's intern's chat updates by itself
+  tap 65  12  FIN1209-quiz-helper-sprite     herdr: [agent focus w5:p1 ] |  opening Denver's helper's chat updates by itself
+  tap 72  12  SocialMedia-helper-sprite      herdr: [agent focus w6:p1 ] |  opening Denver's helper's chat updates by itself
+  tap 6   20  FIN1209-mate-desk              herdr: [agent focus w2:p1 ] |  opening FIN1209 Finance's chat updates by itself
+  tap 17  22  mate's-intern-sprite(f7)       herdr: [agent focus w4:p1 ] |  opening FIN1209 Finance's intern's chat updates by itself
+  tap 30  30  empty-floor                    herdr: [] |  1-9 switch view tap an agent to open its chat up/down pick one p pause q quit updates by itself
+  tap 90  3   wall                           herdr: [] |  1-9 switch view tap an agent to open its chat up/down pick one p pause q quit updates by itself
+  tap team-list row "Denver's helper" herdr: [agent focus w5:p1 ] |  opening Denver's helper's chat updates by itself
+  tap team-list row "Denver's intern" herdr: [agent focus w3:p1 ] |  opening Denver's intern's chat updates by itself
+## team view at 132x44
+  tap "Chief of staff" herdr: [agent focus w1:p1 ] |  opening Denver's chat updates by itself
+  tap "owns FIN1209 Finance" herdr: [agent focus w2:p1 ] |  opening FIN1209 Finance's chat updates by itself
+  tap "FIN1209 quiz one for chapter six" herdr: [agent focus w5:p1 ] |  opening Denver's helper's chat updates by itself
+  tap "idle: Edit a local file" herdr: [agent focus w6:p1 ] |  opening Denver's helper's chat updates by itself
+  tap "Build the chapter seven deck" herdr: [agent focus w4:p1 ] |  opening FIN1209 Finance's intern's chat updates by itself
+  tap "Draft the BSBA" herdr: [agent focus w3:p1 ] |  opening Denver's intern's chat updates by itself
+## office at 170x50: tap cell (col,row zero-based) -> herdr calls | footer
+  tap 44  8   Denver-desk                    herdr: [agent focus w1:p1 ] |  opening Denver's chat updates by itself
+  tap 58  12  BSBA-intern-sprite(b1)         herdr: [agent focus w3:p1 ] |  opening Denver's intern's chat updates by itself
+  tap 65  12  FIN1209-quiz-helper-sprite     herdr: [agent focus w5:p1 ] |  opening Denver's helper's chat updates by itself
+  tap 72  12  SocialMedia-helper-sprite      herdr: [agent focus w6:p1 ] |  opening Denver's helper's chat updates by itself
+  tap 6   20  FIN1209-mate-desk              herdr: [agent focus w2:p1 ] |  opening FIN1209 Finance's chat updates by itself
+  tap 17  22  mate's-intern-sprite(f7)       herdr: [agent focus w4:p1 ] |  opening FIN1209 Finance's intern's chat updates by itself
+  tap 30  30  empty-floor                    herdr: [] |  1-9 switch view tap an agent to open its chat up/down pick one p pause q quit updates by itself
+  tap 90  3   wall                           herdr: [] |  1-9 switch view tap an agent to open its chat up/down pick one p pause q quit updates by itself
+  tap team-list row "Denver's helper" herdr: [agent focus w5:p1 ] |  opening Denver's helper's chat updates by itself
+  tap team-list row "Denver's intern" herdr: [agent focus w3:p1 ] |  opening Denver's intern's chat updates by itself
+## team view at 170x50
+  tap "Chief of staff" herdr: [agent focus w1:p1 ] |  opening Denver's chat updates by itself
+  tap "owns FIN1209 Finance" herdr: [agent focus w2:p1 ] |  opening FIN1209 Finance's chat updates by itself
+  tap "FIN1209 quiz one for chapter six" herdr: [agent focus w5:p1 ] |  opening Denver's helper's chat updates by itself
+  tap "idle: Edit a local file" herdr: [agent focus w6:p1 ] |  opening Denver's helper's chat updates by itself
+  tap "Build the chapter seven deck" herdr: [agent focus w4:p1 ] |  opening FIN1209 Finance's intern's chat updates by itself
+  tap "Draft the BSBA" herdr: [agent focus w3:p1 ] |  opening Denver's intern's chat updates by itself
+## closed pane: Denver's pane id is gone (herdr agent focus exits 1)
+  exit=0 herdr: [agent focus w9:gone ] |  Denver's chat has closed, so there is nothing to open updates by itself
+  pane id occurrences on screen: 0
+## Enter in frame is ignored; herdr gets no call
+  herdr: []

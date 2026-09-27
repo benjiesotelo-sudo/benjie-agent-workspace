@@ -1,48 +1,48 @@
- MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System                                           Sat 19:06
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System                                           Sat 10:00
 ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
                                                                                                 │ LIVE ACTIVITY real
                                                                                                 │
-                                                                                                │ today  Denver finished Mission Control views: memory and docs
                                                                                                 │
-    alumni             tasks                     Z          plan         memory                 │ today  Denver finished Mission Control Calendar: real month grid and
-                                                                                                │        month/year switch
-                                                z                                               │
-                                               z                                                │ today  Denver finished Mission Control view: system
                                                                                                 │
-                                                                                                │ today  Denver finished Mission Control view: team
+    alumni             tasks                                plan         memory                 │
                                                                                                 │
-                                                                                                │ today  Denver finished Mission Control view: calendar
+                                                                                                │
+                                                                                                │
+                                                                                                │
+                                                                                                │
+                                                                                                │
+                                                                                                │
                                          Denver                                                 │
-                                         asleep                                        system   │ 25 Sep Denver finished Update the BSBA Programme Specification from
-            Z                            Z                            Z                  ok     │        2018 to the 2024-2025 curriculum
+                                         working                                       system   │
+            Z                                                                            ok     │
                                                                                                 │
-           z                            z                            z                          │ 25 Sep Denver finished GitHub Actions minutes nearly exhausted (1,807
-          z                            z                            z                           │        of 2,000, resets 1 Oct): budget and how to continue Mission
-                                                                                                │        Control
+           z                                                                                    │
+          z                                                                                     │
                                                                                                 │
-                                                                                                │ 24 Sep Denver finished Privacy and secrets audit before making
-                                                                                                │        benjie-agent-workspace public
-    FIN1209                        SAP                        Tambiz                            │
-    asleep                       asleep                       asleep                            │
+                                                                                                │
+                                                                                                │
+                                                                                                │
+FIN1209 Finance                                                                                 │
+    asleep                                                                                      │
                                                                                                 │
  CAPTAIN                                                                                        │
                                                                                                 │
                                                                                                 │
-                  inbox 58                                                                      │
+                  inbox 0                                                                       │
                                                                                                 │
 ─ TEAM ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-   NAME       ROLE                DOING NOW                                                                               PATH (the project it works in)
- z Denver     first mate          standing by, 12 waiting on you                                                          every project
- z FIN1209    second mate         asleep, 27 jobs listed, 25 waiting on you                                               projects/Telos_FIN1209
- z SAP        second mate         asleep, 18 jobs listed, 18 waiting on you                                               projects/SAP-Management-App
- z Tambiz     second mate         asleep, 5 jobs listed, 3 waiting on you                                                 projects/Tambiz-Calculator
- ○ intern     Denver's intern     waiting: Hello IABF: revision 2 of the BSBA Programme Specification (clean edition,...  projects/FEU-BSBA-Program-Spec
- ● intern     Denver's intern     Mission Control docs clear and screenshots correct                                      projects/benjie-agent-workspace
- ○ intern     Denver's intern     waiting: Controls screen: a tappable switch letting Denver merge green workspace PRs    projects/benjie-agent-workspace
- ● intern     Denver's intern     Mission Control: every agent shown, and agents clickable to their chats                 projects/benjie-agent-workspace
- ● intern     Denver's intern     Mission Control: show the captain's project names (FIN1209, SAP, Tambiz, Social Med...  projects/benjie-agent-workspace
- ○ intern     Denver's intern     finished: Mission Control view: approvals                                               projects/benjie-agent-workspace
- ○ helper     Denver's helper     idle: FIN1209 Quiz 1 Chapters 1 and 2                                                   projects/Telos_FIN1209
+   NAME       ROLE                DOING NOW                                                                               PROJECT (the one it works in)
+ ● Denver     first mate          working, 1 intern and 2 helpers on jobs                                                 every project
+ z FIN1209... second mate         asleep, 1 job listed                                                                    FIN1209 Finance
+ ● intern     Denver's intern     Draft the BSBA assignment brief                                                         BSBA
+ ● intern     FIN1209 Finance'... Build the chapter seven deck                                                            FIN1209 Finance
+ ● helper     Denver's helper     FIN1209 quiz one for chapter six                                                        FIN1209 Finance
+ ○ helper     Denver's helper     idle: Edit a local file                                                                 Social Media Marketing
+
+
+
+
+
 
    Interns stand beside their person in charge for one job, then go home. Sleeping agents cost nothing.
 

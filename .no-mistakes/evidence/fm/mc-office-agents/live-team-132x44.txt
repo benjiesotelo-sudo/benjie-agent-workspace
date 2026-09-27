@@ -1,0 +1,44 @@
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System     Sun 20:18
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+ 1 second mate    1 working    1 asleep or away    2 interns on jobs    3 helpers with no record                          real crew
+
+                                            ┌──────────────────────────────────────────┐
+                                            │ You, the captain: decisions and merges   │
+                                            │ nothing waits on you                     │
+                                            └─────────────────────┬────────────────────┘
+                                                                  │
+                                  ┌───────────────────────────────┴──────────────────────────────┐
+                                  │  ▀   ▀   Denver                                    ● working │
+                                  │  ▀▀ ▀▀   Chief of staff: routes the work and supervises the  │
+                                  │          crew                                                │
+                                  │ ▀▀▀▀▀▀▀  owns BSBA, Social Media Marketing, the setup itself │
+                                  │          1 listed                                            │
+                                  └───────────────────────────────┬──────────────────────────────┘
+                                                                  ├─ ● Draft the BSBA assignment brief
+                                                                  ├─ ● FIN1209 quiz one for chapter six
+                                                                  ├─ ○ idle: Edit a local file
+                                                                  ├─ ● Grading rubric draft
+                                                                  │
+                                     ┌────────────────────────────┴───────────────────────────┐
+                                     │  ▀   ▀   FIN1209 Finance                      z asleep │
+                                     │  ▀▀ ▀▀   FIN1209 course                                │
+                                     │                                                        │
+                                     │ ▀▀▀▀▀▀▀  owns FIN1209 Finance                          │
+                                     │          1 listed                                      │
+                                     └────────────────────────────────────────────────────────┘
+                                       ● Build the chapter seven deck
+
+
+
+─ ABOUT FIN1209 FINANCE ────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   Persistent second mate for FIN1209
+   Scope: the FIN1209 course
+
+
+
+─ ALUMNI ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   No one has retired yet.
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   tap an agent to open its chat   up/down pick a second mate   q quit                            updates by itself

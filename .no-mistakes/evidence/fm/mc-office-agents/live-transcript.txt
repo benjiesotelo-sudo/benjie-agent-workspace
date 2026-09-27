@@ -1,0 +1,36 @@
+## live office up at 132x44 (pty winsize set via TIOCSWINSZ)
+   herdr focus calls so far: []
+   footer: 1-9 switch view tap an agent to open its chat up/down pick one p pause q quit updates by itself
+## tapped Denver's desk at cell (44,8)
+   herdr focus calls so far: ['agent focus w1:p1']
+   footer: opening Denver's chat updates by itself
+## a new unclaimed pane appeared in herdr agent list
+   herdr focus calls so far: ['agent focus w1:p1']
+   footer: 1-9 switch view tap an agent to open its chat up/down pick one p pause q quit updates by itself
+   feed lines: ['20:17  Denver calls in a helper']
+   team rows: ["● helper Denver's helper FIN1209 quiz one for chapter six FIN1209 Finance", "○ helper Denver's helper idle: Edit a local file Social Media Marketing", "◐ helper Denver's helper Grading rubric draft BSBA"]
+## tapped the new helper's team-list row
+   herdr focus calls so far: ['agent focus w1:p1', 'agent focus w7:p1']
+   footer: opening Denver's helper's chat updates by itself
+## pressed 6 for the Team view
+   herdr focus calls so far: ['agent focus w1:p1', 'agent focus w7:p1']
+   footer: 1-9 switch view tap an agent to open its chat up/down pick a second mate q quit updates by itself
+## tapped the first mate's Team card
+   herdr focus calls so far: ['agent focus w1:p1', 'agent focus w7:p1', 'agent focus w1:p1']
+   footer: opening Denver's chat updates by itself
+## pressed Enter on Team (moves to picked mate's pane: navigation only)
+   herdr focus calls so far: ['agent focus w1:p1', 'agent focus w7:p1', 'agent focus w1:p1', 'agent focus w2:p1']
+   footer: opening FIN1209 Finance's chat updates by itself
+## Denver's pane closed (focus exits 1), then tapped the desk
+   herdr focus calls so far: ['agent focus w1:p1', 'agent focus w7:p1', 'agent focus w1:p1', 'agent focus w2:p1', 'agent focus w9:gone']
+   footer: Denver's chat has closed, so there is nothing to open updates by itself
+## q pressed; exit status 0
+## every herdr call other than agent list:
+   --version
+   workspace list
+   workspace list
+   agent focus w1:p1
+   agent focus w7:p1
+   agent focus w1:p1
+   agent focus w2:p1
+   agent focus w9:gone

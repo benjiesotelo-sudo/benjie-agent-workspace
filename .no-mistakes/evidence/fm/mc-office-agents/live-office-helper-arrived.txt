@@ -1,0 +1,44 @@
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System     Sun 20:17
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀    ▀▀▀▀▀▀▀▀▀   ▀▀▀▀▀▀▀▀▀▀▀▀▀           │ LIVE ACTIVITY real
+                             ▀▀                          ▀   ▀ ▀ ▀ ▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀           │
+     ▀▀   ▀▀   ▀▀                        ▀▀▀▀▀▀▀ ▀▀▀▀▀▀      ▀ ▀ ▀ ▀     ▀▀▀▀▀▀▀▀▀▀▀            │ 20:17  Denver calls in a helper
+▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀│
+    alumni             tasks        ▀▀▀▀▀▀   ▀▀▀▀▀          plan         memory         ▀▀▀▀▀▀▀ │
+   ▀▀▀                              ▀▀▀▀▀▀▀  ▀▀▀▀▀▀▀                                      ▀ ▀   │
+  ▀   ▀                    ▀▀▀▀▀  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                                   ▀ ▀   │
+                             ▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀   ▀▀▀    ▀▀▀    ▀▀▀               ▀ ▀   │
+   ▀▀▀                                    ▀   ▀           ▀▀▀    ▀▀▀    ▀▀▀               ▀ ▀   │
+                                          ▀▀▀▀▀         ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀             ▀ ▀   │
+                                         ▀     ▀         ▀▀▀▀▀  ▀▀▀▀▀  ▀▀▀▀▀              ▀ ▀   │
+                                         ▀▀▀▀▀▀▀        ▀ ▀▀▀ ▀▀ ▀▀▀ ▀▀ ▀▀▀ ▀                   │
+                                         Denver           ▀ ▀    ▀ ▀    ▀ ▀             ▀▀▀▀▀▀▀ │
+   ▀▀▀▀▀▀▀▀▀                             working                                       system   │
+                                                                                        check   │
+    ▀▀▀▀▀▀▀z                                                                                    │
+ ▀▀▀▀▀▀▀▀▀▀▀▀▀                                                                                  │
+ ▀▀▀▀▀▀▀▀▀z▀▀▀   ▀▀▀                                                                            │
+     ▀▀▀▀▀       ▀▀▀                                                                            │
+               ▀▀▀▀▀▀▀                                                                          │
+                ▀▀▀▀▀                                                                 ▀▀▀       │
+     ▀▀▀▀▀     ▀ ▀▀▀ ▀                                                                ▀▀▀       │
+FIN1209 Finance  ▀ ▀                                                                ▀▀▀▀▀▀▀     │
+    asleep                                                                                    ▀▀│
+ ▀▀▀▀▀▀▀▀                                                                           ▀ ▀▀▀ ▀     │
+ CAPTAIN                    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                  ▀ ▀▀▀ ▀  ▀  │
+                                          ▀▀▀▀▀▀▀▀▀                                  ▀▀▀        │
+       ▀                            ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                                       │
+                  inbox 0             ▀▀▀▀         ▀▀▀▀                                         │
+          ▀▀▀▀▀▀▀                       ▀▀▀         ▀▀▀                                       ▀▀│
+─ TEAM ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   NAME       ROLE                DOING NOW                                         PROJECT (the one it works in)
+ ● Denver     first mate          working, 1 intern and 3 helpers on jobs           every project
+ z FIN1209... second mate         asleep, 1 job listed                              FIN1209 Finance
+ ● intern     Denver's intern     Draft the BSBA assignment brief                   BSBA
+ ● intern     FIN1209 Finance'... Build the chapter seven deck                      FIN1209 Finance
+ ● helper     Denver's helper     FIN1209 quiz one for chapter six                  FIN1209 Finance
+ ○ helper     Denver's helper     idle: Edit a local file                           Social Media Marketing
+ ◐ helper     Denver's helper     Grading rubric draft                              BSBA
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   tap an agent to open its chat   up/down pick one   p pause   q quit                            updates by itself
