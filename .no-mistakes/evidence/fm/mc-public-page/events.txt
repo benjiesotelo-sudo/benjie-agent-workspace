@@ -1,0 +1,8 @@
+# build 2: orchard mate goes idle (asleep), the one-off helper's pane closes, an Orchard item is marked done today
+changed: snapshot.json
+{"mate_state":"asleep","events":["Helper for a one-off job goes home","Orchard finishes a job"]}
+# build 3: the mate wakes up again and a new one-off helper appears
+changed: snapshot.json
+{"mate_state":"working","events":["Denver calls in a helper for a one-off job","Helper for a one-off job goes home","Orchard finishes a job"]}
+# redaction sweep after events
+(no matches)

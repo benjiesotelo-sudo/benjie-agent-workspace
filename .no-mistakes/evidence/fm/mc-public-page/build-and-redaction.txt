@@ -1,0 +1,23 @@
+$ bin/fm-mission-control-web.sh build <page> --agents agents.json
+changed: index.html style.css app.js .nojekyll snapshot.json
+
+$ grep -ril secret <page>   # every private fixture string contains "secret"
+(no matches)
+
+$ ls -A <page>
+.nojekyll
+app.js
+index.html
+snapshot.json
+style.css
+
+$ jq ".agents[] | {name, role, activity, state, projects}" snapshot.json
+{"name":"Denver","role":"first mate","activity":"working","state":"working","projects":["p1","p2"]}
+{"name":"Orchard","role":"second mate for Orchard","activity":"working on Orchard","state":"working","projects":["p1"]}
+{"name":"helper for Orchard","role":"helper for Orchard","activity":"working on Orchard","state":"working","projects":["p1"]}
+{"name":"helper for Project 2","role":"helper for Project 2","activity":"between steps on Project 2","state":"asleep","projects":["p2"]}
+{"name":"helper for setup","role":"helper for setup","activity":"between steps on setup","state":"asleep","projects":["p0"]}
+{"name":"helper for a one-off job","role":"helper for a one-off job","activity":"working on a one-off job","state":"working","projects":[]}
+
+$ jq "keys" snapshot.json
+["agents","calendar","events","every_minutes","generated_at","heartbeat_minutes","office","projects","schema","today"]

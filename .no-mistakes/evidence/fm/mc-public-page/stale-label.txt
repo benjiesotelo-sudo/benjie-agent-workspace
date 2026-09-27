@@ -1,0 +1,4 @@
+## heartbeat_minutes 120, snapshot built 100 minutes ago
+result: "{\"text\":\"checked every 5 minutes · updated 1 hour ago\",\"stale\":false,\"color\":\"rgb(127, 137, 149)\"}"
+## heartbeat_minutes 120, snapshot built 200 minutes ago
+result: "{\"text\":\"checked every 5 minutes · updated 3 hours ago\",\"stale\":true,\"color\":\"rgb(127, 137, 149)\"}"

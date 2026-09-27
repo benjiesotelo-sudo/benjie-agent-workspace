@@ -1,0 +1,25 @@
+$ fm-mission-control-web.sh publish <pages clone>   # first run
+changed: index.html style.css app.js .nojekyll snapshot.json
+fm-mission-control-web: pushed f1cd32d to octo/pages
+$ git show --name-only HEAD (remote)
+Update Mission Control snapshot
+
+.nojekyll
+app.js
+index.html
+snapshot.json
+style.css
+$ fm-mission-control-web.sh publish <pages clone>   # nothing changed
+changed: nothing
+fm-mission-control-web: unchanged; nothing to push
+$ git rev-list --count --all (remote)
+2
+$ git show HEAD:snapshot.json (remote) | grep -ci secret
+0
+$ cmp built static files with bin/mission-control-web/ (updates reach the page on the next build)
+index.html identical
+style.css identical
+app.js identical
+$ fm-mission-control-web.sh status
+schedule: not loaded
+repository: octo/pages

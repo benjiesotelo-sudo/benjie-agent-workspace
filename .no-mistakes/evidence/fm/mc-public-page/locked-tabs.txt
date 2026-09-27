@@ -1,0 +1,10 @@
+## clicked Tasks
+result: "{\"hash\":\"#tasks\",\"lockedViewShown\":true,\"shadeText\":\"only the captain can open this\",\"placeholderText\":\"\",\"placeholderChildren\":4,\"placeholderFilter\":\"blur(7px)\",\"visiblePublicViews\":[],\"mainText\":\"only the captain can open this\"}"
+## clicked Approvals
+result: "{\"hash\":\"#approvals\",\"lockedViewShown\":true,\"shadeText\":\"only the captain can open this\",\"placeholderText\":\"\",\"placeholderChildren\":1,\"placeholderFilter\":\"blur(7px)\",\"visiblePublicViews\":[],\"mainText\":\"only the captain can open this\"}"
+## clicked Memory (re-driven; the first click in the loop hit a stale browser ref)
+result: "{\"hash\":\"#memory\",\"lockedViewShown\":true,\"shadeText\":\"only the captain can open this\",\"placeholderText\":\"\",\"placeholderChildren\":2,\"placeholderFilter\":\"blur(7px)\",\"visiblePublicViews\":[],\"mainText\":\"only the captain can open this\"}"
+## clicked Docs
+result: "{\"hash\":\"#docs\",\"lockedViewShown\":true,\"shadeText\":\"only the captain can open this\",\"placeholderText\":\"\",\"placeholderChildren\":2,\"placeholderFilter\":\"blur(7px)\",\"visiblePublicViews\":[],\"mainText\":\"only the captain can open this\"}"
+## clicked System
+result: "{\"hash\":\"#system\",\"lockedViewShown\":true,\"shadeText\":\"only the captain can open this\",\"placeholderText\":\"\",\"placeholderChildren\":3,\"placeholderFilter\":\"blur(7px)\",\"visiblePublicViews\":[],\"mainText\":\"only the captain can open this\"}"

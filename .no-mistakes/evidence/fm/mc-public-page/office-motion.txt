@@ -1,0 +1,3 @@
+result: "{\"canvas\":\"960x600\",\"frameHashesOneSecondApart\":[887093090,-1471378023,-859420894,161675813,-1481744612,-1852404815],\"distinct\":6}"
+help[1]:
+  Run `chrome-devtools-axi snapshot` to see current page state

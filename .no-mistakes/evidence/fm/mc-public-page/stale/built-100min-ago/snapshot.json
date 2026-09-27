@@ -1,0 +1,195 @@
+{
+ "agents": [
+  {
+   "activity": "working",
+   "color": "#2fbf71",
+   "hair": "#3b2a20",
+   "key": "a1",
+   "kind": "first",
+   "lead": null,
+   "name": "Denver",
+   "projects": [
+    "p1",
+    "p2"
+   ],
+   "role": "first mate",
+   "state": "working"
+  },
+  {
+   "activity": "working on Orchard",
+   "color": "#3fb6c9",
+   "hair": "#1f1f24",
+   "key": "a2",
+   "kind": "mate",
+   "lead": "a1",
+   "name": "Orchard",
+   "projects": [
+    "p1"
+   ],
+   "role": "second mate for Orchard",
+   "state": "working"
+  },
+  {
+   "activity": "working on Orchard",
+   "color": "#82d0dc",
+   "hair": "#6b3b2a",
+   "key": "a3",
+   "kind": "helper",
+   "lead": "a2",
+   "name": "helper for Orchard",
+   "projects": [
+    "p1"
+   ],
+   "role": "helper for Orchard",
+   "state": "working"
+  },
+  {
+   "activity": "between steps on Project 2",
+   "color": "#78d5a3",
+   "hair": "#6b3b2a",
+   "key": "a4",
+   "kind": "helper",
+   "lead": "a1",
+   "name": "helper for Project 2",
+   "projects": [
+    "p2"
+   ],
+   "role": "helper for Project 2",
+   "state": "asleep"
+  },
+  {
+   "activity": "between steps on setup",
+   "color": "#78d5a3",
+   "hair": "#6b3b2a",
+   "key": "a5",
+   "kind": "helper",
+   "lead": "a1",
+   "name": "helper for setup",
+   "projects": [
+    "p0"
+   ],
+   "role": "helper for setup",
+   "state": "asleep"
+  },
+  {
+   "activity": "working on a one-off job",
+   "color": "#78d5a3",
+   "hair": "#6b3b2a",
+   "key": "a6",
+   "kind": "helper",
+   "lead": "a1",
+   "name": "helper for a one-off job",
+   "projects": [],
+   "role": "helper for a one-off job",
+   "state": "working"
+  }
+ ],
+ "calendar": {
+  "days": [
+   {
+    "date": "2026-08-30",
+    "done": {
+     "p2": 1
+    },
+    "due": {}
+   },
+   {
+    "date": "2026-09-14",
+    "done": {
+     "p2": 1
+    },
+    "due": {}
+   },
+   {
+    "date": "2026-09-15",
+    "done": {
+     "p1": 1
+    },
+    "due": {}
+   },
+   {
+    "date": "2026-09-16",
+    "done": {
+     "p2": 1
+    },
+    "due": {}
+   },
+   {
+    "date": "2026-09-17",
+    "done": {
+     "p1": 1
+    },
+    "due": {}
+   },
+   {
+    "date": "2026-09-27",
+    "done": {
+     "p1": 1
+    },
+    "due": {}
+   },
+   {
+    "date": "2026-09-30",
+    "done": {},
+    "due": {
+     "p2": 1
+    }
+   }
+  ],
+  "from": "2026-07-01",
+  "to": "2026-10-31"
+ },
+ "events": [],
+ "every_minutes": 5,
+ "generated_at": "2026-09-27T12:19:43Z",
+ "heartbeat_minutes": 120,
+ "office": {
+  "inbox": 3
+ },
+ "projects": [
+  {
+   "color": "#3fb6c9",
+   "counts": {
+    "done_month": 3,
+    "done_week": 1,
+    "in_flight": 1,
+    "waiting": 2
+   },
+   "key": "p1",
+   "lead": "a2",
+   "name": "Orchard",
+   "short": "Orchard",
+   "status": "active"
+  },
+  {
+   "color": "#7b93ff",
+   "counts": {
+    "done_month": 2,
+    "done_week": 0,
+    "in_flight": 0,
+    "waiting": 1
+   },
+   "key": "p2",
+   "lead": "a1",
+   "name": "Project 2",
+   "short": "Project 2",
+   "status": "parked"
+  },
+  {
+   "color": "#2fbf71",
+   "counts": {
+    "done_month": 0,
+    "done_week": 0,
+    "in_flight": 0,
+    "waiting": 0
+   },
+   "key": "p0",
+   "lead": "a1",
+   "name": "The setup itself",
+   "short": "setup",
+   "status": "active"
+  }
+ ],
+ "schema": "fm-mission-control-public.v1",
+ "today": "2026-09-27"
+}

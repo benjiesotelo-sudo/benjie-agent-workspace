@@ -1,0 +1,51 @@
+{
+ "objects": [
+  {
+   "tapped": "corkboard (tasks)",
+   "now": "#tasks",
+   "lockedShown": true
+  },
+  {
+   "tapped": "wall calendar (plan)",
+   "now": "#calendar",
+   "lockedShown": false
+  },
+  {
+   "tapped": "bookshelf (memory)",
+   "now": "#office",
+   "lockedShown": false
+  },
+  {
+   "tapped": "server rack (system)",
+   "now": "#system",
+   "lockedShown": true
+  }
+ ],
+ "agentsTapped": {
+  "Denver": {
+   "role": "first mate",
+   "line": "Hi, I'm Denver, the first mate. I keep the whole crew on course. Right now I'm working."
+  },
+  "Orchard": {
+   "role": "second mate for Orchard",
+   "line": "Hi, I'm Orchard. I'm working on Orchard."
+  },
+  "helper for Project 2": {
+   "role": "helper for Project 2",
+   "line": "I'm a helper for Project 2. I'm between steps at the moment."
+  },
+  "helper for setup": {
+   "role": "helper for setup",
+   "line": "I'm a helper for setup. I'm between steps at the moment."
+  },
+  "helper for a one-off job": {
+   "role": "helper for a one-off job",
+   "line": "I'm a helper for a one-off job, here for one job. Right now I'm working on a one-off job."
+  },
+  "helper for Orchard": {
+   "role": "helper for Orchard",
+   "line": "I'm a helper for Orchard, here for one job. Right now I'm working on Orchard."
+  }
+ }
+}
+result: "[[800,60,\"#memory\",\"\"],[830,80,\"#memory\",\"\"],[900,70,\"#memory\",\"\"],[920,100,\"#memory\",\"\"]]"
