@@ -222,7 +222,7 @@ grep -q 'Interns stand beside' <<<"$CS" && fail "a crowded list gives up the not
 for size in 132x44 170x50; do
   CM=$(mc "$CROWD" frame --agents "$TMP_ROOT/crowd.json" --size "$size" --view team) || fail "crowded team failed"
   [ "$(grep -c '├─ ○\|└─ ○' <<<"$CM")" = 8 ] || fail "at $size the Team view lists all eight interns"
-  grep -q 'more intern' <<<"$CM" && fail "at $size no intern is folded into a count"
+  grep -Eq 'more (interns?|helpers?)|more:' <<<"$CM" && fail "at $size no intern is folded into a count"
   grep -q 'owns alpha, Beta Outreach, homeship, the setup itself' <<<"$CM" \
     || fail "at $size the first mate's card names its projects by their display names"
 done
@@ -1520,8 +1520,14 @@ meta "$BIG8" b1 "$TMP_ROOT/wt-b1" "$BIG8/projects/beta"
 jq -n --arg home "$BIG8" '{result: {agents: [range(1; 10) as $n | {pane_id: "w5:p\($n)", agent_status: "idle",
   cwd: ($home + "/scratch"), terminal_title_stripped: "Job \($n)"}]}}' > "$TMP_ROOT/big8-helpers.json"
 TH=$(mc "$BIG8" frame --agents "$TMP_ROOT/big8-helpers.json" --size 132x44 --view team) || fail "team text failed"
-grep -Eq '├─ [0-9]+ helpers? more' <<<"$TH" || fail "hidden helpers are counted as helpers"
-grep -q 'more intern\|interns\? and' <<<"$TH" && fail "no helper is counted as an intern, and no zero count shows"
+grep -q '├─ 4 more helpers' <<<"$TH" || fail "hidden helpers are counted as helpers"
+grep -Eq 'more interns?|more:' <<<"$TH" && fail "no helper is counted as an intern"
+for n in 2 3 4 5 6 7; do
+  meta "$BIG8" "b$n" "$TMP_ROOT/wt-b$n" "$BIG8/projects/beta"
+done
+TM=$(mc "$BIG8" frame --agents "$TMP_ROOT/big8-helpers.json" --size 132x44 --view team) || fail "team text failed"
+grep -q '├─ 10 more: 1 intern and 9 helpers' <<<"$TM" || fail "a mixed count names interns and helpers"
+grep -Eq '(^|[^0-9])0 (interns?|helpers?)' <<<"$TH$TM" && fail "no zero count shows"
 pass "a list with no room counts every row it hides, helpers as helpers"
 
 readings "$TMP_ROOT/big-ok.json" '.mates = ([range(1; 8) | {key: "m\(.)-mate", value: 180}] | from_entries)'

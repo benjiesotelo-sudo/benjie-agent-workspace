@@ -603,6 +603,14 @@ def _interns_words(interns):
     return " and ".join(words)
 
 
+def _more_words(rest):
+    """ "3 more interns", "2 more helpers", or "3 more: 1 intern and 2 helpers"."""
+    kinds = {bool(i.get("helper")) for i in rest}
+    if len(kinds) == 1:
+        return bridge._plural(len(rest), "more helper" if True in kinds else "more intern")
+    return "%d more: %s" % (len(rest), _interns_words(rest))
+
+
 HELPER_WORDS = {"done": "finished its turn", "blocked": "waiting for an answer"}
 
 
@@ -2214,7 +2222,7 @@ def _intern_line(cv, c, r, i, width):
 
 def _hidden(cv, c0, r0, w, rest):
     """How many of a card's interns found no row, on its bottom border."""
-    s = " %s more " % _interns_words(rest)
+    s = " %s " % clip(_more_words(rest), w - 6)
     cv.put(c0 + w - 2 - len(s), r0 + TEAM_CARD_H - 1, s, SOFT)
 
 
@@ -2286,7 +2294,7 @@ def _team_screen(cv, ui, scene):
     rest = fm["interns"][len(lines):]
     if rest and room > 0:
         cv.put(cx, r, "├─" if mates else "└─", WIRE)
-        cv.put(cx + 3, r, _interns_words(rest) + " more", SOFT)
+        cv.put(cx + 3, r, _more_words(rest), SOFT)
         r += 1
     elif rest:
         _hidden(cv, c0, 10, w, rest)
@@ -2323,7 +2331,7 @@ def _team_screen(cv, ui, scene):
                 ui.agent_hits.append((top + TEAM_CARD_H + j, top + TEAM_CARD_H + j + 1, c0, c0 + w, i["key"]))
             rest = ins[len(lines):]
             if rest and avail > 0:
-                cv.put(c0 + 2, top + TEAM_CARD_H + len(lines), _interns_words(rest) + " more", SOFT)
+                cv.put(c0 + 2, top + TEAM_CARD_H + len(lines), clip(_more_words(rest), w - 3), SOFT)
             elif rest:
                 _hidden(cv, c0, top, w, rest)
 
