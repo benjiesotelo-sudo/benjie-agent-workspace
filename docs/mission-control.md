@@ -33,8 +33,9 @@ When Tailscale is not running it listens only on this Mac, and `status` says so.
 |---|---|
 | `1` to `9`, or tap a tab | Switch view |
 | up and down | Pick the next or previous thing in the view: an agent, a decision, a project card, a second mate or a page; on Tasks, Calendar and System they jump to the Office and pick an agent there |
-| Enter | On the Office and Team views, move your Herdr view to the picked agent's pane so you can talk to it; on Tasks, Projects, Calendar and System it does the same for the agent picked in the Office; on Approvals, Memory and Docs it does nothing |
-| Tap an agent | On the Office and Team views, move your Herdr view to that agent's pane to open its chat; a chat that has closed says so in one line in the footer |
+| Enter | On the Office and Team views, the picked agent stands up and talks; on Tasks, Projects, Calendar and System it moves your Herdr view to the agent picked in the Office; on Approvals, Memory and Docs it does nothing |
+| Tap an agent | On the Office and Team views, the agent stands up and says one short line, with the answers Open chat, What else? and Bye (see below) |
+| Tap a thing in the office | Open its view: the corkboard opens Tasks, the calendar Calendar, the bookshelf Memory, the server rack System, the inbox Approvals and the alumni wall Team |
 | `p` | Pause or restart the office animation |
 | `q` | Quit |
 
@@ -51,9 +52,17 @@ The first mate has the top desk and each second mate has a desk of their own, la
 Interns, the short-lived workers, stand beside the person in charge of their job.
 An agent pane that no record claims still shows, as a helper of the mate whose home it works in, or of the first mate, doing what its window title says.
 The inbox by the captain's door counts the decisions waiting on you, and the sign under the server rack reads ok, or check when the System view has something for you to look at.
-The column on the right is recent activity in plain sentences, and the team list underneath says what everyone is doing now.
-Up and down pick someone in the team list, and Enter moves your view to their pane.
-Tapping a desk, an intern or a row in the team list opens that agent's chat.
+The column on the right is recent activity in plain sentences: work finished, interns and helpers arriving or leaving, and questions for you.
+Who is awake or asleep shows on the desks and in the team list underneath, which says what everyone is doing now, so waking and dozing never crowd the activity column.
+Tapping the corkboard, the calendar, the bookshelf, the server rack, the inbox or the alumni wall opens its view.
+
+![An agent talking: the first mate has stood up from its desk and says one line, with Open chat, What else? and Bye beside it](mission-control/office-talk.png)
+
+Tapping a desk, an intern or a row in the team list has that agent stand up and say one short line, like someone in a game: what it is doing now, something it finished lately, or a fun fact that fits its project.
+Up and down pick someone in the team list, and Enter does the same.
+Open chat moves your Herdr view to its pane, and a chat that has closed says so in one line in the footer.
+What else? has it say another line, and Bye, Esc or a tap anywhere else has it sit back down.
+Left and right pick an answer and Enter gives it.
 
 ### 2 Tasks
 
@@ -95,8 +104,8 @@ You can also tap Week, Month or Year, the arrows either side of the date, and "b
 The crew as an org chart: you at the top, then the first mate, then a card for each second mate, with each busy intern and helper under its person in charge.
 Each card says whether that agent is working or asleep, which projects it owns, and how many of its jobs wait on you.
 The first mate's card owns every project no second mate has, and the setup itself.
-Up and down pick a second mate, whose description shows underneath, and Enter moves your view to that mate's pane.
-Tapping a card or an intern's line opens that agent's chat.
+Up and down pick a second mate, whose description shows underneath, and Enter has that mate talk.
+Tapping a card or an intern's line has that agent talk, the same way as in the Office.
 The alumni row lists mates that retired while the screen was open.
 
 ### 7 Memory
