@@ -1,0 +1,17 @@
+=== Mission Control screen running in the lab (fm-mission-control.sh start) ===
+space w1 label="benjie-agent-workspace" name="Denver"
+space w2 label="2ndmate-alpha-mate" name="Alpha"
+space w3 label="└ q1 · p:urXKPBo5LgWV2rrMCPavcQ" name="Denver's intern · Print the handouts"
+space w4 label="└ bsba-rev2 · p:zzzzzzzzzzzz" name="bsba-rev2"
+space w5 label="firstmate" name="Denver's interns"
+space w6 label="mission-control" name="Mission Control"
+
+=== captain/other process overwrites two display values by hand ===
+space w2 name=WRONG  window w2:p2 who=WRONG
+=== 7 s later, without running anything ===
+space w2 name=Alpha  window w2:p2 who=Alpha's intern
+
+=== window names before vs after the screen ran (Mission Control's own new window excluded) ===
+8a9
+> w6:p1 
+(only additions are the Mission Control screen's own window)

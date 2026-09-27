@@ -2,8 +2,8 @@ ok - every space shows its plain name: the first mate's, a mate's, a helper spac
 ok - every agent window shows who it is and its job, the first mate's own window included
 ok - every window keeps its own name: the captain's and firstmate's names stay
 ok - names only sets display values: no rename, move, close, create or focus
+ok - only the space holding the first mate's window reads the first mate's name
 ok - a second pass changes nothing
 ok - after a Herdr restart the lost display values are sent again
-ok - --dry-run prints the changes and makes none
 ok - a change Herdr refuses is reported and names exits non-zero
 ok - the running screen's Keeper names everything but its own window and puts lost display values back on its own

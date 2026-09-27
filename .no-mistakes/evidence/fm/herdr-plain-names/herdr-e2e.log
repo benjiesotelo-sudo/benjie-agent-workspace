@@ -1,0 +1,5 @@
+ok - docs/herdr-config.toml passes herdr config check
+ok - the running screen shows plain names in the lab and renames no space, tab or window
+ok - a lab Herdr restart drops the display values and keeps every name
+ok - Mission Control started again after the restart puts every display value back
+bash tests/fm-mission-control-names-herdr-e2e.test.sh  0.76s user 0.77s system 9% cpu 16.933 total

@@ -1,0 +1,45 @@
+=== lab Herdr stopped and started again: display values gone, names intact ===
+space w1 label="benjie-agent-workspace" name=null
+space w2 label="2ndmate-alpha-mate" name=null
+space w3 label="└ q1 · p:urXKPBo5LgWV2rrMCPavcQ" name=null
+space w4 label="└ bsba-rev2 · p:zzzzzzzzzzzz" name=null
+space w5 label="firstmate" name=null
+window w1:p1 label="" who=null job=null
+window w1:p2 label="my notes" who=null job=null
+window w1:p3 label="fm-old-job" who=null job=null
+window w2:p1 label="" who=null job=null
+window w2:p2 label="" who=null job=null
+window w3:p1 label="" who=null job=null
+window w4:p1 label="" who=null job=null
+window w5:p1 label="" who=null job=null
+
+=== attached client: pressed Ctrl+B then Alt+N (the docs/herdr-config.toml key, command pointed at this lab) ===
+--- the key's command output ---
+set: window w1:p1 shows who Denver
+set: window w1:p1 shows job first mate
+set: window w2:p1 shows who Alpha
+set: window w2:p1 shows job second mate
+set: window w2:p2 shows who Alpha's intern
+set: window w2:p2 shows job Build chapter four
+set: window w3:p1 shows who Denver's intern
+set: window w3:p1 shows job Print the handouts
+set: space w1 (benjie-agent-workspace) shows Denver
+set: space w2 (2ndmate-alpha-mate) shows Alpha
+set: space w3 (└ q1 · p:urXKPBo5LgWV2rrMCPavcQ) shows Denver's intern · Print the handouts
+set: space w4 (└ bsba-rev2 · p:zzzzzzzzzzzz) shows bsba-rev2
+set: space w5 (firstmate) shows Denver's interns
+names: 13 set, 0 refused
+--- Herdr state after the key ---
+space w1 label="benjie-agent-workspace" name="Denver"
+space w2 label="2ndmate-alpha-mate" name="Alpha"
+space w3 label="└ q1 · p:urXKPBo5LgWV2rrMCPavcQ" name="Denver's intern · Print the handouts"
+space w4 label="└ bsba-rev2 · p:zzzzzzzzzzzz" name="bsba-rev2"
+space w5 label="firstmate" name="Denver's interns"
+window w1:p1 label="" who="Denver" job="first mate"
+window w1:p2 label="my notes" who=null job=null
+window w1:p3 label="fm-old-job" who=null job=null
+window w2:p1 label="" who="Alpha" job="second mate"
+window w2:p2 label="" who="Alpha's intern" job="Build chapter four"
+window w3:p1 label="" who="Denver's intern" job="Print the handouts"
+window w4:p1 label="" who=null job=null
+window w5:p1 label="" who=null job=null
