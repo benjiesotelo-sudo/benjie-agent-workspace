@@ -3376,16 +3376,10 @@ def read_slow(home, herdr):
         tools[name] = _version(got[1]) if got and not got[0] else None
     bridge_st = _screen_status([os.path.join(here, "fm-bridge.sh"), "status"], env)
     mc_st = _screen_status([os.path.join(here, "fm-mission-control.sh"), "status"], env)
-    try:
-        import fm_system_map
-        outline = fm_system_map.outline(fm_system_map.build(
-            home, os.environ.get("FM_BRIDGE_CONFIG_DIR") or os.path.join(home, "config")))
-    except Exception:  # noqa: BLE001 - the card says the map could not be read
-        outline = None
     return {
         "slow_at": time.time(), "uptime": _uptime(), "tailnet": tailnet,
         "github": None if gh is None else gh[0] == 0, "tools": tools, "bridge": bridge_st,
-        "mission_control": None if mc_st is None else mc_st["running"], "system_map": outline,
+        "mission_control": None if mc_st is None else mc_st["running"],
     }
 
 
@@ -3657,17 +3651,16 @@ def system_cards(r, crew, model, now, records_ok=True, agents_ok=True):
         card("Tools", "green", "Tools: all installed" if not missing else
              "Tools: %d of %d could not be checked" % (missing, len(lines)), lines)
 
-    # The System Map, last so its tall tree never hides the cards above: where to open it, and its tree
-    # in short (bin/fm_system_map.py outline()), cut to the rows the pane has left.
-    if "system_map" in r:
-        tree, address = r.get("system_map"), (r.get("bridge") or {}).get("address")
-        lines = [("green", "Open in Safari"), (None, address.rstrip("/") + "/system-map")] if address else \
-            [("grey", "Open in Safari once the Bridge page answers")]
-        lines += [(None, re.sub(r"^((?:  )+)", lambda m: "\u00b7" * (len(m.group(1)) // 2) + " ", ln))
-                  for ln in tree] if tree else \
-            [("grey", "The map could not be read")]
-        card("System Map", "green" if tree else "grey", "System Map: how the crew fits together", lines)
-        cards[-1]["trim"] = "the full map is in Safari"
+    # The System Map: where to open it, from the Bridge page's reading, since the Bridge serves it.
+    if "bridge" not in r:
+        card("System Map", "grey", "System Map: %s" % unread)
+    elif r.get("bridge") is None:
+        card("System Map", "amber", "System Map: its address could not be checked")
+    elif (r["bridge"] or {}).get("running") and r["bridge"].get("address"):
+        card("System Map", "green", "System Map: how the crew fits together",
+             [("green", "Open in Safari"), (None, r["bridge"]["address"].rstrip("/") + "/system-map")])
+    else:
+        card("System Map", "amber", "System Map: opens once the Bridge page answers")
 
     looks = [x for c in cards for x in c["looks"]]
     if looks:
@@ -3706,16 +3699,6 @@ def _system_screen(cv, health):
     r0 = 5
     last = R - 3
     heights = [2 + max(len(b) for _, b in laid[i:i + per_row]) for i in range(0, len(laid), per_row)]
-    if laid and laid[-1][0].get("trim"):
-        # A card that may be cut ends at the rows left, gaps first, then without gaps if that is too few.
-        c, body = laid[-1]
-        above = r0 + sum(heights[:-1])
-        room = last - above - len(heights)
-        if room < 4:
-            room += len(heights) - 1
-        if len(body) > room >= 2:
-            laid[-1] = (c, body[:room - 1] + [(DIM, None, ln, 2) for ln in wrap(clean(c["trim"]), w - 4)][:1])
-            heights[-1] = 2 + max(len(b) for _, b in laid[len(heights) * per_row - per_row:])
     gap = 1 if r0 + sum(heights) + len(heights) - 2 <= last else 0
     for i in range(0, len(laid), per_row):
         row = laid[i:i + per_row]

@@ -5,7 +5,7 @@ The Bridge (bin/fm_bridge.py) serves it at /system-map (the page) and
 /system-map.json (the map), and bin/fm-bridge.sh owns the command surface and
 the address. This module owns what the map reads, which nodes and lines it
 draws, the guided tour, and the page that draws them in the browser.
-Mission Control's System and Docs views reuse outline() and important_links().
+Mission Control's Docs view reuses important_links().
 
 THE SHAPE. Top to bottom, like an automation graph: the captain and every way
 work arrives or wakes the crew; the first mate, with where results show beside
@@ -81,9 +81,8 @@ email addresses and long token-like strings; the identifiers the page joins on
 shown, only the event and the scripts' own descriptions; .env and credentials
 are never read.
 
-Commands: `json` prints the map, `page` prints the page, `outline` prints the
-plain text tree Mission Control shows; each takes --home and the Bridge's
---config-dir like bin/fm_bridge.py.
+Commands: `json` prints the map and `page` prints the page; each takes --home
+and the Bridge's --config-dir like bin/fm_bridge.py.
 """
 
 import json
@@ -950,10 +949,11 @@ def build(home, config_dir, now=None, probes=None):
     tools_by_key = {}
 
     def use(agent, key, label, icon, what, role, now_words, source, status="idle"):
-        t = tools_by_key.setdefault(key, {"label": label, "icon": icon, "what": what, "role": role,
-                                          "now": now_words, "sources": [], "status": status, "users": []})
-        if source not in t["sources"]:
-            t["sources"].append(source)
+        t = tools_by_key.setdefault(key, {"label": label, "icon": icon, "what": what, "roles": [],
+                                          "nows": [], "sources": [], "status": status, "users": []})
+        for field, value in (("roles", role), ("nows", now_words), ("sources", source)):
+            if value not in t[field]:
+                t[field].append(value)
         if agent not in t["users"]:
             t["users"].append(agent)
 
@@ -984,14 +984,16 @@ def build(home, config_dir, now=None, probes=None):
                       "Opened when a situation comes up; the ones marked yours you can start by typing a slash "
                       "and the name.")
     if skills is None:
-        use("fm", "tool:playbooks", "Playbooks", "line:book-open", COULD_NOT_READ, playbook_words[1],
-            "Could not read the playbooks.", "the playbook folder", status="unreadable")
+        playbooks = (COULD_NOT_READ, playbook_words[1], "Could not read the playbooks.", "the playbook folder",
+                     "unreadable")
     else:
-        use("fm", "tool:playbooks", "Playbooks", "line:book-open", playbook_words[0], playbook_words[1],
-            "%s, %d you can start." % (_cap(bridge._plural(len(skills), "playbook")),
-                                       sum(1 for s in skills if s["yours"])), "each playbook's own description")
-        for s in skills:
-            tracked.append({"key": "playbook:" + s["name"], "label": "Playbook: " + s["name"], "kind": "playbook"})
+        playbooks = (playbook_words[0], playbook_words[1],
+                     "%s, %d you can start." % (_cap(bridge._plural(len(skills), "playbook")),
+                                                sum(1 for s in skills if s["yours"])),
+                     "each playbook's own description", "idle")
+    use("fm", "tool:playbooks", "Playbooks", "line:book-open", *playbooks)
+    for s in skills or []:
+        tracked.append({"key": "playbook:" + s["name"], "label": "Playbook: " + s["name"], "kind": "playbook"})
 
     for oid, label, script, icon, role, users in OUTPUTS:
         nid = "output:" + oid
@@ -1093,13 +1095,13 @@ def build(home, config_dir, now=None, probes=None):
         if not m["remote"]:
             use(aid, "tool:tasks", *_cli(found, "tasks"))
             use(aid, "tool:herdr", *_cli(found, "herdr"))
-            use(aid, "tool:playbooks", "Playbooks", "line:book-open", *(playbook_words + (
-                "%s." % _cap(bridge._plural(len(skills or []), "playbook")), "each playbook's own description")))
+            use(aid, "tool:playbooks", "Playbooks", "line:book-open", *playbooks)
             charter = _read(os.path.join(home, "data", m["id"], "brief.md"))
             for key in charter_services(charter):
                 label, icon, what = STACK[key]
-                use(aid, "tool:" + key, label, icon, what, "Named in its charter as part of its work.",
-                    "Named in its charter.", "its charter")
+                use(aid, "tool:" + key, label, icon, what,
+                    "Named in %s's charter as part of its work." % mc.mate_name(model, m["id"]),
+                    "Named in %s's charter." % mc.mate_name(model, m["id"]), "its charter")
 
     def agent_home(aid):
         if aid == "fm":
@@ -1137,15 +1139,16 @@ def build(home, config_dir, now=None, probes=None):
         stack = detect_stack(os.path.join(agent_home(owner), "projects", p["name"]))
         for key, where in (stack or {}).items():
             label, icon, what = STACK[key]
-            use(owner, "tool:" + key, label, icon, what, "Part of %s, found in %s." %
-                (mc.project_name(model, pname, card=pname is None), where), "In use by its project.", where)
+            shown = mc.project_name(model, pname, card=pname is None)
+            use(owner, "tool:" + key, label, icon, what, "Part of %s, found in %s." % (shown, where),
+                "In use by %s." % shown, where)
 
     for key, t in tools_by_key.items():
         shared = len(t["users"]) > 1
         names = [fm if u == "fm" else by_key.get(u, {}).get("name") or u for u in t["users"]]
         extra = {"shared": True} if shared else {"owner": t["users"][0], "slot": "tool"}
-        add(_node(key, "tool", t["label"], t["icon"], t["what"], t["role"],
-                  "Used by %s." % ", ".join(names), t["now"], ", ".join(t["sources"]), status=t["status"],
+        add(_node(key, "tool", t["label"], t["icon"], t["what"], " ".join(t["roles"]),
+                  "Used by %s." % ", ".join(names), " ".join(t["nows"]), ", ".join(t["sources"]), status=t["status"],
                   users_ids=t["users"], **extra))
         for u in t["users"]:
             edge(u, key, kind="uses" if shared else "own")
@@ -1339,37 +1342,6 @@ def build_tour(nodes, edges, fm):
     hop("output:github", "The change now lives on GitHub with the rest of the project.")
     hop("output:mission-control", "Mission Control and the Bridge show it done, and %s tells you in chat." % fm)
     return hops
-
-
-def outline(m):
-    """The map as a short plain-text tree, for Mission Control's System view."""
-    nodes = m.get("nodes") or []
-    by = {n["id"]: n for n in nodes}
-
-    def names(ns):
-        return ", ".join(n["label"] for n in ns) or "none"
-
-    lines = ["You"]
-    lines.append("  ways in: " + names([n for n in nodes if n["kind"] == "channel"]))
-    wakes = [n for n in nodes if n["kind"] == "trigger"]
-    if wakes:
-        lines.append("  wake-ups: " + names(wakes))
-    for aid in m.get("agents") or []:
-        a = by.get(aid)
-        if not a:
-            continue
-        pad = "  " if aid == "fm" else "    "
-        lines.append("%s%s (%s)" % (pad, a["label"], "first mate" if aid == "fm" else "second mate"))
-        lines.append("%s  own: %s" % (pad, names([n for n in nodes if n.get("owner") == aid
-                                                    and n["kind"] in ("kit", "project", "tool")])))
-        if aid == "fm":
-            lines.append("    results: " + names([n for n in nodes if n["kind"] == "output"]))
-        busy = [n for n in nodes if n["kind"] == "helper" and n.get("owner") == aid]
-        if busy:
-            lines.append("%s  helpers at work: %d" % (pad, len(busy)))
-    lines.append("Shared tools: " + names([n for n in nodes if n["kind"] == "tool" and n.get("shared")]))
-    lines.append("Delivery lane: " + " > ".join(by[i]["label"] for i in m.get("lane") or [] if i in by))
-    return lines
 
 
 def public_url(home):
@@ -1811,18 +1783,14 @@ class Cache:
 def main(argv):
     import argparse
     ap = argparse.ArgumentParser(prog="fm_system_map.py")
-    ap.add_argument("command", choices=["json", "page", "outline"])
+    ap.add_argument("command", choices=["json", "page"])
     ap.add_argument("--home", required=True)
     ap.add_argument("--config-dir", required=True)
     args = ap.parse_args(argv)
     if args.command == "page":
         sys.stdout.write(page())
         return 0
-    got = build(args.home, args.config_dir)
-    if args.command == "outline":
-        print("\n".join(outline(got)))
-        return 0
-    print(json.dumps(got, indent=1))
+    print(json.dumps(build(args.home, args.config_dir), indent=1))
     return 0
 
 

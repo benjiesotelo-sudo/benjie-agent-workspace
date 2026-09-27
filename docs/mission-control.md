@@ -124,7 +124,7 @@ The reader shows headings, lists and tables as text; a picture shows as a "pictu
 The health of this Mac and of the crew's plumbing, one card each, with a green, amber, red or grey dot.
 The line at the top reads "All systems normal" or names what needs a look.
 Files are rechecked every 5 seconds and commands every 5 minutes; anything that cannot be read says "could not be checked" rather than guessing.
-The System Map card gives the map's full address to open in Safari and the crew's tree in short: you and the ways work arrives, the first mate, each second mate and what it has of its own, the shared tools and the delivery lane.
+The System Map card gives the map's full address to open in Safari, taken from the Bridge page's reading, since the Bridge serves it.
 
 ## The Bridge
 

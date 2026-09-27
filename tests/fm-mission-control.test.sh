@@ -615,7 +615,7 @@ ST=$(sys_frame "$TMP_ROOT/ok.json") || fail "system text failed"
 [ "$(jq -r '[.system.cards[].dot] | unique | join(",")' <<<"$SJ")" = green ] \
   || fail "healthy readings give every card a green dot, got $(jq -c '[.system.cards[] | [.title, .dot]]' <<<"$SJ")"
 [ "$(jq -r '[.system.cards[].title] | join(",")' <<<"$SJ")" \
-  = "This Mac,Crew monitoring,Crew,Second mates,The Bridge page,Mission Control,GitHub,Tools" ] \
+  = "This Mac,Crew monitoring,Crew,Second mates,The Bridge page,Mission Control,GitHub,Tools,System Map" ] \
   || fail "the cards come in order"
 grep -q '● All systems normal' <<<"$ST" || fail "the overall line says all systems normal"
 for want in 'Up since Tue 15 Sep 10:00, 5 days' 'Processor load 1.1 on 8 cores' 'Memory: 8.0 GB of 16 GB in use' \
@@ -1024,35 +1024,27 @@ mv "$TMP_ROOT/mc-settings.keep" "$HOME_DIR/config/mission-control.json" 2>/dev/n
 rm -f "$HOME_DIR/state/bridge.addr"
 pass "the Docs view pins the System Map, the Bridge, the public page and the saved links first"
 
-jq '. + {bridge: {running: true, address: "http://ship.example.ts.net:7373/", local_only: false},
-         system_map: ["You", "  ways in: Chat with Denver", "  Denver (first mate)", "    Alpha (second mate)",
-                      "Shared tools: GitHub CLI"]}' "$TMP_ROOT/ok.json" > "$TMP_ROOT/map.json"
-SM=$(mc "$HOME_DIR" frame --readings "$TMP_ROOT/map.json" --agents "$AGENTS" --view system --size 170x50) \
-  || fail "system frame with the map outline failed"
-for want in '● SYSTEM MAP ' 'Open in Safari' 'http://ship.example.ts.net:7373/system-map' '│ · ways in: Chat with Denver ' \
-  '│ ·· Alpha \(second mate\) ' '│ Shared tools: GitHub CLI '; do
+SM=$(mc "$HOME_DIR" frame --readings "$TMP_ROOT/ok.json" --agents "$AGENTS" --view system --size 170x50) \
+  || fail "system frame with the map card failed"
+for want in '● SYSTEM MAP ' 'Open in Safari' '│ http://ship.example.ts.net:7373/system-map '; do
   grep -Eq "$want" <<<"$SM" || fail "the System view's map card shows: $want"
 done
-jq '. + {system_map: null}' "$TMP_ROOT/ok.json" > "$TMP_ROOT/map-bad.json"
-mc "$HOME_DIR" frame --readings "$TMP_ROOT/map-bad.json" --agents "$AGENTS" --view system --size 170x50 \
-  | grep -q 'The map could not be read' || fail "an unreadable map says so on its card"
-jq '. + {bridge: {running: true, address: "http://ship.example.ts.net:7373/", local_only: false},
-         system_map: (["You", "  ways in: Chat with Denver, Termius",
-                       "  wake-ups: Session start, Turn end, Watcher, GitHub results, Bridge at login, Publisher",
-                       "  Denver (first mate)", "    own: Claude Code, Memory, rclone, Tailscale, Chrome helper",
-                       "    results: Mission Control, Public page, The Bridge, Google Drive, GitHub"] +
-                      ([range(6)] | map("    Mate \(.) (second mate)", "      own: Model, Memory, Vercel, Neon")) +
-                      ["Shared tools: GitHub CLI, no-mistakes, Herdr", "Delivery lane: Build > Review > Merge"])}' \
-  "$TMP_ROOT/ok.json" > "$TMP_ROOT/map-big.json"
-for size in 170x50 120x40; do
-  BM=$(mc "$HOME_DIR" frame --readings "$TMP_ROOT/map-big.json" --agents "$AGENTS" --view system --size "$size") \
-    || fail "system frame with a big map outline failed at $size"
-  for want in '● GITHUB ' '● TOOLS ' '● SYSTEM MAP ' 'the full map is in Safari'; do
-    grep -q "$want" <<<"$BM" || fail "a big map at $size still shows: $want"
-  done
-  grep -q 'more below' <<<"$BM" && fail "a big map at $size hides no card: $(grep 'more below' <<<"$BM")"
-done
-pass "the System view outlines the System Map and says where to open it"
+[ "$(dot "$(sys_frame "$TMP_ROOT/ok.json" "" json)" "System Map")" = green ] || fail "a running Bridge gives the map a green dot"
+readings "$TMP_ROOT/map-unread.json" 'del(.bridge)'
+MJ=$(sys_frame "$TMP_ROOT/map-unread.json" "" json)
+[ "$(dot "$MJ" "System Map")" = grey ] || fail "the map card is grey while the Bridge is not read yet"
+readings "$TMP_ROOT/map-bad.json" '.bridge = null'
+MJ=$(sys_frame "$TMP_ROOT/map-bad.json" "" json)
+[ "$(dot "$MJ" "System Map")" = amber ] || fail "the map card is amber when the Bridge cannot be checked"
+jq -r '.system.cards[] | select(.title == "System Map") | .head' <<<"$MJ" | grep -q 'could not be checked' \
+  || fail "the map card says its address could not be checked"
+jq -r .system.overall <<<"$MJ" | grep -q 'needs a look' || fail "an unchecked Bridge is reported, not still checking"
+readings "$TMP_ROOT/map-down.json" '.bridge = {running: false, address: null, local_only: false}'
+MJ=$(sys_frame "$TMP_ROOT/map-down.json" "" json)
+[ "$(dot "$MJ" "System Map")" = amber ] || fail "the map card is amber while the Bridge is down"
+jq -r '.system.cards[] | select(.title == "System Map") | .head' <<<"$MJ" | grep -q 'once the Bridge page answers' \
+  || fail "the map card says it opens once the Bridge answers"
+pass "the System view gives the System Map's address, its dot following the Bridge's reading"
 
 L=$(mc "$HOME_DIR" frame --agents "$AGENTS" --view docs)
 grep -q ' 9 System ' <<<"$L" || fail "the tab bar shows all nine views"

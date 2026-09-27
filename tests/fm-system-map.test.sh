@@ -5,8 +5,8 @@
 # and lines (each agent's own kit under it, shared tools drawn once), grows
 # when an agent, a dependency or a tool is added, says "could not read" when a
 # source is missing, never carries a path, link, email address, token or hook
-# command, prints its outline and important links, and the Bridge serves the
-# page and the map.
+# command, gives the important links Mission Control pins, and the Bridge
+# serves the page and the map.
 set -u
 
 # shellcheck source=tests/lib.sh
@@ -312,20 +312,12 @@ esac
 [ "$(jq -r '[.tour[] | select(.text == "")] | length' <<<"$OUT")" = 0 ] || fail "every tour hop has a sentence"
 pass "the tour walks one request through the real nodes"
 
-outline=$(PATH="$FAKEBIN:$PATH" FM_BRIDGE_STATE_DIR="$RUN" FM_BRIDGE_TAILSCALE="$FAKEBIN/tailscale-down" \
-  FM_BRIDGE_AGENT_DIR="$AGENT_DIR" python3 "$ROOT/bin/fm_system_map.py" outline --home "$HOME_DIR" \
-  --config-dir "$HOME_DIR/config") || fail "the outline did not print"
-for want in '^You$' '^  ways in: Chat with Denver, Termius$' '^  Denver \(first mate\)$' \
-  '^    Garden Club \(second mate\)$' '^      own: Claude Code, Memory, Garden Club, ' '^Shared tools: .*Backlog tool' \
-  '^Delivery lane: Build > Your words > Review > '; do
-  grep -Eq "$want" <<<"$outline" || fail "the outline shows: $want; got: $outline"
-done
 links=$(FM_BRIDGE_STATE_DIR="$RUN" PYTHONPATH="$ROOT/bin" python3 -c '
 import sys, fm_system_map as m
 print("|".join("%s=%s" % t for t in m.important_links(sys.argv[1])))' "$HOME_DIR")
 [ "$links" = "System Map=http://100.64.0.9:7373/system-map|The Bridge page=http://100.64.0.9:7373/|Public Mission Control page=https://octo.github.io/crew-office/" ] \
   || fail "important links come from the Bridge's address and the public page's repository: $links"
-pass "the outline and the important links Mission Control shows come from the same map"
+pass "the important links Mission Control pins come from the Bridge's address and the public page's setting"
 
 # --- steps from the current state -----------------------------------------
 
@@ -364,8 +356,15 @@ for task in fin1209-ch1-materials-audit fin1209-ch1-term-visuals-part1; do
   mkdir -p "$TMP_ROOT/$task-worktree"
   sed -e "s|m1|$task|" -e "s|kind=scout|kind=ship|" "$MATE/state/m1.meta" > "$MATE/state/$task.meta"
 done
+printf 'import os\n' > "$MATE/projects/garden/plots.py"
 GROWN=$(NM_BROKEN=1 map) || fail "the grown map did not build"
-rm -f "$MATE"/state/fin1209-*.meta
+rm -f "$MATE"/state/fin1209-*.meta "$MATE/projects/garden/plots.py"
+[ "$(node "$GROWN" tool:python .shared)" = true ] || fail "Python in two agents' projects is shared"
+[ "$(node "$GROWN" tool:python .card.role)" = \
+  "Part of Garden Club, found in its scripts. Part of Chess League, found in its scripts." ] \
+  || fail "a shared tool names every project it is part of: $(node "$GROWN" tool:python .card.role)"
+[ "$(node "$GROWN" tool:python .card.now)" = "In use by Garden Club. In use by Chess League." ] \
+  || fail "a shared tool is in use by every project: $(node "$GROWN" tool:python .card.now)"
 for task in fin1209-ch1-materials-audit fin1209-ch1-term-visuals-part1; do
   [ "$(node "$GROWN" "intern:garden-mate:$task" .owner)" = mate:garden-mate ] \
     || fail "a helper with a long task id keeps its own node: $task"
