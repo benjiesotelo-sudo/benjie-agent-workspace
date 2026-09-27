@@ -45,20 +45,19 @@ Each view below lists its own extra keys.
 
 While Mission Control runs, it also gives Herdr's sidebar plain names, every few seconds.
 Each space reads as the agent it belongs to: the first mate's name, each second mate's name, Mission Control and Controls.
-Each agent's window is named for who it is: the first mate's name, a second mate's name, or "<name>'s intern" after whoever is in charge of the intern (a window no record claims reads "<name>'s helper").
+Each agent in the agents list shows who it is: the first mate's name, a second mate's name, or "<name>'s intern" after whoever is in charge of the intern (an agent no record claims reads "<name>'s helper").
 Its job shows as a second, dimmed line.
-A space firstmate still opens for a single intern reads "└ <name>'s intern" and that intern's job.
+A space firstmate still opens for a single intern reads "<name>'s intern · <job>", for example "Denver's intern · BSBA Spec revision 2".
 The names come from `config/mission-control.json` (see Settings below).
 Herdr shows them only with the sidebar settings in [`herdr-config.toml`](herdr-config.toml): add those lines to `~/.config/herdr/config.toml`, run `herdr config check`, then press Ctrl+B then Shift+R.
-Without those settings the sidebar looks as it always has.
+Without those settings the sidebar looks as it always has, because the naming step only sets display values.
 
 To name everything once without the screen, run `bin/fm-mission-control.sh names`; `--dry-run` only lists what it would change.
-Herdr forgets the space names and jobs when Herdr itself restarts, so they come back when Mission Control starts again, or at once with Ctrl+B then Alt+N, which those settings bind to the same command.
-Window names survive a restart.
+Herdr forgets display values when Herdr itself restarts, so they come back when Mission Control starts again, or at once with Ctrl+B then Alt+N, which those settings bind to the same command.
 
-The naming step only sets display names.
-It never renames a space or a tab, never moves, closes or opens anything, and never touches the crew's records.
-It never renames a window whose name starts with `fm-`, `2ndmate-`, `firstmate` or `└`, because firstmate finds its own work again by those names; helper tabs therefore keep firstmate's short job names such as `fm-bsba-rev2`.
+The naming step only sets display values; it never renames anything.
+Every space, tab and window keeps the name it has, so a window you named yourself keeps your name, and firstmate's own names (`fm-`, `2ndmate-`, `firstmate`, `└`) stay as firstmate set them; helper tabs therefore keep firstmate's short job names such as `fm-bsba-rev2`.
+It never moves, closes or opens anything, and never touches the crew's records.
 `bin/fm_herdr_names.py` has the exact rules.
 
 ## The nine views

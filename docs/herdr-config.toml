@@ -2,7 +2,7 @@
 # Add these lines to ~/.config/herdr/config.toml, run `herdr config check`,
 # then reload with Ctrl+B then Shift+R (or restart Herdr).
 # docs/mission-control.md ("Plain names in Herdr") explains what they show;
-# bin/fm_herdr_names.py sets the `$name` and `$job` values and the window names.
+# bin/fm_herdr_names.py sets the `$name`, `$who` and `$job` display values.
 # Deleting these lines restores Herdr's default sidebar.
 
 [ui]
@@ -16,8 +16,8 @@ agent_panel_sort = "spaces"
 rows = [["state_icon", "$name"]]
 
 [ui.sidebar.agents]
-# Line 1: who it is (the window name). Line 2, dimmed: what it is working on.
-rows = [["state_icon", "pane"], [{ token = "$job", dim = true }]]
+# Line 1: who it is. Line 2, dimmed: what it is working on.
+rows = [["state_icon", "$who"], [{ token = "$job", dim = true }]]
 
 # Ctrl+B then Alt+N puts the plain names back by hand, for example right after
 # Herdr restarts and before Mission Control is running again.

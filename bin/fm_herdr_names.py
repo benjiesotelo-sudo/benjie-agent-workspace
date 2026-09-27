@@ -8,36 +8,35 @@ names Herdr shows. The running screen repeats the step every NAMES_EVERY
 seconds through Keeper, because Herdr forgets display values when Herdr itself
 restarts.
 
-WHAT IT CHANGES, and nothing else:
+WHAT IT CHANGES, and nothing else: display values, which Herdr shows but
+never keeps across its own restart and never uses as a name.
   a space     the display value `name` (`herdr workspace report-metadata
               <space> --source mission-control --token name=<value>`), shown
               by the sidebar's `$name` space token;
   an agent's window
-              its window name (`herdr pane rename <pane> <name>`), shown by the
-              sidebar's `pane` agent token and kept across Herdr restarts, and
-              the display value `job` (`herdr pane report-metadata <pane>
-              --source mission-control --token job=<value>`), shown by the
-              `$job` agent token.
+              the display values `who` and `job` (`herdr pane report-metadata
+              <pane> --source mission-control --token who=<value>`, and the
+              same with job=), shown by the sidebar's `$who` and `$job` agent
+              tokens.
 A value that already reads right is not sent again. docs/herdr-config.toml is
 the sidebar settings that show these values.
 
-WHAT IT NEVER DOES. It never renames a space or a tab, never moves, closes,
-creates or focuses anything, and never writes a record. It never renames a
-window whose current name starts with fm-, 2ndmate-, firstmate or └ (the names
-firstmate itself uses to find its work again), and never gives a window such a
-name.
+WHAT IT NEVER DOES. It never renames anything: no space, tab or window name
+changes, so the captain's own window names stick and firstmate's names (fm-,
+2ndmate-, firstmate, └) stay exactly as firstmate set them. It never moves,
+closes, creates or focuses anything, and never writes a record.
 
 THE NAMES. Settings are Mission Control's own: config/mission-control.json's
 first_mate_name and names map (fm_mission_control.py's header owns them).
-  Agent windows: the first mate reads first_mate_name with job "first mate"; a
-    second mate reads its Mission Control name (its first project's display
-    name) with job "second mate"; an intern or helper reads "<lead>'s intern"
-    or "<lead>'s helper" with its job in plain words (its backlog title, else
-    its window title).
+  Agent windows: the first mate is first_mate_name with job "first mate"; a
+    second mate is its Mission Control name (its first project's display
+    name) with job "second mate"; an intern or helper is "<lead>'s intern" or
+    "<lead>'s helper" with its job in plain words (its backlog title, else its
+    window title).
   Spaces, first rule that applies:
     a firstmate helper space (its name starts with └) reads
-      "└ <lead>'s intern · <job>" for the intern whose window it holds, else
-      "└ <job>" from its own name without the " · p:<code>" suffix;
+      "<lead>'s intern · <job>" for the intern whose window it holds, else
+      "<job>" from its own name without the └ and the " · p:<code>" suffix;
     a space holding the first mate's window reads first_mate_name;
     a space holding a second mate's window, or named 2ndmate-<id> for a
       registered second mate, reads that mate's name;
@@ -46,8 +45,9 @@ first_mate_name and names map (fm_mission_control.py's header owns them).
     any other space reads its own name, so its sidebar line is never blank.
 
 Environment: HERDR_SESSION is the session whose recorded endpoints count (as
-on the Office), default "default"; HERDR_PANE_ID, this screen's own window, is
-never named.
+on the Office), default "default". The running screen's Keeper leaves out its
+own window (HERDR_PANE_ID there); the one-off `names` command has no screen and
+leaves out nothing.
 """
 
 import json
@@ -61,16 +61,11 @@ import fm_mission_control as mc  # noqa: E402  - the one owner of who everyone i
 
 SOURCE = "mission-control"
 SPACE_TOKEN = "name"
+WHO_TOKEN = "who"
 JOB_TOKEN = "job"
-PROTECTED = ("fm-", "2ndmate-", "firstmate", "└")
 SCREENS = {"mission-control": "Mission Control", "controls": "Controls"}
 HELPER_SUFFIX = " · p:"
 NAMES_EVERY = 5.0
-
-
-def protected(name):
-    """True for a name firstmate relies on, which is never renamed or handed out."""
-    return bool(name) and name.startswith(PROTECTED)
 
 
 def _one_line(text):
@@ -114,13 +109,12 @@ def _job(member):
 
 
 def plan(model, crew, spaces, windows, fm_name):
-    """The changes that make Herdr show plain names, and the windows left alone.
+    """The display values that make Herdr show plain names.
 
-    Each change is {"kind": "space"|"window"|"job", "id", "value", "was"}; a
-    left-alone entry is {"id", "name"} for a window whose name firstmate owns."""
+    Each change is {"kind": "space"|"who"|"job", "id", "value", "was"}."""
     by_pane = {w.get("pane_id"): w for w in windows if w.get("pane_id")}
     in_space = {}
-    changes, left = [], []
+    changes = []
 
     for m in crew:
         pane = m.get("pane")
@@ -128,16 +122,10 @@ def plan(model, crew, spaces, windows, fm_name):
         if win is None:
             continue
         in_space.setdefault(win.get("workspace_id"), []).append(m)
-        label = win.get("label") or ""
-        who = _one_line(_who(m))
-        if protected(label):
-            left.append({"id": pane, "name": label})
-        elif who and label != who and not protected(who):
-            changes.append({"kind": "window", "id": pane, "value": who, "was": label})
-        job = _job(m)
-        was = (win.get("tokens") or {}).get(JOB_TOKEN)
-        if job and was != job:
-            changes.append({"kind": "job", "id": pane, "value": job, "was": was})
+        tokens = win.get("tokens") or {}
+        for kind, value in ((WHO_TOKEN, _one_line(_who(m))), (JOB_TOKEN, _job(m))):
+            if value and tokens.get(kind) != value:
+                changes.append({"kind": kind, "id": pane, "value": value, "was": tokens.get(kind)})
 
     mates = {m["id"]: m for m in model.get("mates") or []}
     for s in spaces:
@@ -149,9 +137,9 @@ def plan(model, crew, spaces, windows, fm_name):
         if label.startswith("└"):
             intern = kinds.get("intern")
             if intern:
-                value = "└ %s · %s" % (_one_line(intern["role"]), _job(intern))
+                value = "%s · %s" % (_one_line(intern["role"]), _job(intern))
             else:
-                value = label.split(HELPER_SUFFIX, 1)[0]
+                value = label[len("└"):].split(HELPER_SUFFIX, 1)[0]
         elif "first" in kinds:
             value = fm_name
         elif "mate" in kinds:
@@ -166,7 +154,7 @@ def plan(model, crew, spaces, windows, fm_name):
         was = (s.get("tokens") or {}).get(SPACE_TOKEN)
         if value and was != value:
             changes.append({"kind": "space", "id": sid, "value": value, "was": was, "label": label})
-    return changes, left
+    return changes
 
 
 def command(change):
@@ -174,17 +162,15 @@ def command(change):
     if change["kind"] == "space":
         return ["workspace", "report-metadata", change["id"], "--source", SOURCE,
                 "--token", "%s=%s" % (SPACE_TOKEN, change["value"])]
-    if change["kind"] == "window":
-        return ["pane", "rename", change["id"], change["value"]]
     return ["pane", "report-metadata", change["id"], "--source", SOURCE,
-            "--token", "%s=%s" % (JOB_TOKEN, change["value"])]
+            "--token", "%s=%s" % (change["kind"], change["value"])]
 
 
 def describe(change):
     if change["kind"] == "space":
         return "space %s (%s) shows %s" % (change["id"], change["label"], change["value"])
-    if change["kind"] == "window":
-        return "window %s is named %s" % (change["id"], change["value"])
+    if change["kind"] == WHO_TOKEN:
+        return "window %s shows who %s" % (change["id"], change["value"])
     return "window %s shows job %s" % (change["id"], change["value"])
 
 
@@ -215,8 +201,8 @@ def names_once(model, agents, home, config_dir, herdr, session, own_pane):
     if layout is None:
         return None
     model, crew, fm_name = crew_for(model, config_dir, agents, home, session, own_pane)
-    changes, left = plan(model, crew, layout[0], layout[1], fm_name)
-    return changes, left, apply(herdr, changes)
+    changes = plan(model, crew, layout[0], layout[1], fm_name)
+    return changes, apply(herdr, changes)
 
 
 class Keeper:
@@ -255,7 +241,6 @@ def main(argv):
     home = os.path.abspath(args.home)
     herdr = args.herdr.split()
     session = os.environ.get("HERDR_SESSION") or "default"
-    own_pane = os.environ.get("HERDR_PANE_ID")
     try:
         model = mc.bridge.collect(home, args.config_dir, mc.bridge._now())
     except RuntimeError as exc:
@@ -266,10 +251,8 @@ def main(argv):
     if agents is None or layout is None:
         print("names: Herdr did not answer; run this inside a Herdr session", file=sys.stderr)
         return 1
-    model, crew, fm_name = crew_for(model, args.config_dir, agents, home, session, own_pane)
-    changes, left = plan(model, crew, layout[0], layout[1], fm_name)
-    for entry in left:
-        print("left alone: window %s is named %s, a name firstmate uses" % (entry["id"], entry["name"]))
+    model, crew, fm_name = crew_for(model, args.config_dir, agents, home, session, None)
+    changes = plan(model, crew, layout[0], layout[1], fm_name)
     failed = [] if args.dry_run else apply(herdr, changes)
     for c in changes:
         mark = "would set" if args.dry_run else ("refused" if c in failed else "set")

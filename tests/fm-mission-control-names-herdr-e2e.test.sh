@@ -2,10 +2,10 @@
 # Real-Herdr E2E for Mission Control's naming step in a guarded lab session:
 # docs/herdr-config.toml passes `herdr config check` and is the lab server's
 # settings; the running screen (started with `fm-mission-control.sh start`)
-# gives the spaces their display names and the agent windows their names and
-# jobs on its own, never renames a space or a tab or a window firstmate named;
-# after a lab Herdr restart the display values are gone and the window names
-# are not, and the screen started again puts the display values back.
+# gives the spaces their display names and the agent windows their who and job
+# display values on its own, and renames no space, tab or window; after a lab
+# Herdr restart the display values are gone and every name is unchanged, and
+# the screen started again puts the display values back.
 # Every Herdr call goes through bin/fm-herdr-lab.sh; the live default session
 # is never touched.
 set -u
@@ -91,14 +91,14 @@ start_screen() {
 space_name() {  # <label>
   H workspace list | jq -r --arg l "$1" '.result.workspaces[] | select(.label == $l) | .tokens.name // ""'
 }
-window() {  # <pane> <field: label|job>
-  H pane get "$1" | jq -r --arg f "$2" 'if $f == "job" then .result.pane.tokens.job // "" else .result.pane.label // "" end'
+window() {  # <pane> <field: label|who|job>
+  H pane get "$1" | jq -r --arg f "$2" 'if $f == "label" then .result.pane.label // "" else .result.pane.tokens[$f] // "" end'
 }
 named() {
   [ "$(space_name benjie-agent-workspace)" = Denver ] \
     && [ "$(space_name 2ndmate-alpha-mate)" = Alpha ] \
     && [ "$(space_name mission-control)" = "Mission Control" ] \
-    && [ "$(space_name "└ q1 · p:urXKPBo5LgWV2rrMCPavcQ")" = "└ Denver's intern · Print the handouts" ] \
+    && [ "$(space_name "└ q1 · p:urXKPBo5LgWV2rrMCPavcQ")" = "Denver's intern · Print the handouts" ] \
     && [ "$(window "$INTERN_P" job)" = "Build chapter four" ]
 }
 wait_named() {
@@ -112,7 +112,8 @@ wait_named() {
 }
 labels() {
   { H workspace list | jq -r '.result.workspaces[] | .workspace_id + " " + .label'
-    H tab list | jq -r '.result.tabs[] | .tab_id + " " + .label'; } | sort
+    H tab list | jq -r '.result.tabs[] | .tab_id + " " + .label'
+    H pane list | jq -r '.result.panes[] | .pane_id + " " + (.label // "")'; } | sort
 }
 
 agents_up
@@ -122,22 +123,23 @@ wait_named || fail "the running screen did not name the spaces: $(H workspace li
 for triple in "$FM_P|Denver|first mate" "$MATE_P|Alpha|second mate" "$INTERN_P|Alpha's intern|Build chapter four" \
   "$HELPER_P|Denver's intern|Print the handouts"; do
   IFS='|' read -r p who job <<<"$triple"
-  [ "$(window "$p" label)" = "$who" ] || fail "window $p should be named '$who', is '$(window "$p" label)'"
+  [ "$(window "$p" who)" = "$who" ] || fail "window $p should show who '$who', shows '$(window "$p" who)'"
   [ "$(window "$p" job)" = "$job" ] || fail "window $p should show job '$job', shows '$(window "$p" job)'"
 done
 [ "$(window "$OLD_P" label)" = fm-old-job ] || fail "a window firstmate named was renamed"
 AFTER=$(labels)
 while IFS= read -r line; do
-  grep -F -x -q "$line" <<<"$AFTER" || fail "a space or tab changed its name or closed: $line"
+  grep -F -x -q "$line" <<<"$AFTER" || fail "a space, tab or window changed its name or closed: $line"
 done <<<"$BEFORE"
-pass "the running screen names spaces and agent windows in the lab and renames no space, tab or firstmate window"
+pass "the running screen shows plain names in the lab and renames no space, tab or window"
 
 "$HERDR_LAB_HELPER" stop "$HERDR_LAB_SESSION" >/dev/null || fail "the guarded lab stop failed"
 HERDR_CONFIG_PATH="$CONFIG" "$HERDR_LAB_HELPER" provision "$HERDR_LAB_SESSION" >/dev/null \
   || fail "the lab session did not restart"
-[ -z "$(space_name benjie-agent-workspace)" ] || fail "expected the restart to drop the space display values"
-[ "$(window "$FM_P" label)" = Denver ] || fail "window names should survive a Herdr restart"
-pass "a lab Herdr restart drops the display values and keeps the window names"
+[ -z "$(space_name benjie-agent-workspace)" ] && [ -z "$(window "$FM_P" who)" ] \
+  || fail "expected the restart to drop the display values"
+[ "$(window "$OLD_P" label)" = fm-old-job ] || fail "window names should survive a Herdr restart"
+pass "a lab Herdr restart drops the display values and keeps every name"
 
 agents_up
 start_screen

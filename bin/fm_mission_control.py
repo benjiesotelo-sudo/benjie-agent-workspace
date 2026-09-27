@@ -13,8 +13,8 @@ intern's line), or presses Enter on a team row or a picked Team card; it only
 moves the captain's own view to that agent's pane. A pane Herdr no longer has,
 or an agent with none, reads as one plain line in the footer. The other is the
 naming step: the running screen keeps plain names in Herdr's sidebar through
-bin/fm_herdr_names.py, whose header owns exactly which display values and
-window names it sets and what it never touches.
+bin/fm_herdr_names.py, whose header owns exactly which display values it sets
+and that it never renames anything.
 
 WHAT IT READS.
   Records   bin/fm_bridge.py collect(), the Bridge's single reader: backlog

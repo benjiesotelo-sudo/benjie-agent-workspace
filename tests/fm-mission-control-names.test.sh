@@ -2,12 +2,14 @@
 # Behavior tests for Mission Control's naming step (bin/fm-mission-control.sh
 # names over bin/fm_herdr_names.py): from fixture records and a stand-in Herdr
 # that keeps its spaces and windows in JSON files, assert which spaces get
-# which display name, which agent windows get which name and job, that windows
-# named fm-, 2ndmate-, firstmate or └ are never renamed, that no space or tab
-# is ever renamed and nothing is moved, closed or created, that a second pass
-# changes nothing, that a restart's lost display values come back without
-# renaming anything again, --dry-run, a refused change, and the running
-# screen's Keeper putting lost values back on its own.
+# which display name, which agent windows get which who and job display
+# values, that nothing is ever renamed (the captain's own window names and
+# firstmate's fm-, 2ndmate-, firstmate and └ names all stay) and nothing is
+# moved, closed or created, that the one-off command run from the first mate's
+# own window still finds the first mate there, that a second pass changes
+# nothing, that a restart's lost display values come back, --dry-run, a
+# refused change, and the running screen's Keeper putting lost values back on
+# its own while leaving out its own window.
 # Fixtures are the Bridge's, in tests/assets/bridge/.
 set -u
 
@@ -48,7 +50,8 @@ printf '#!/usr/bin/env bash\nexit 1\n' > "$FAKEBIN/tmux"
 chmod +x "$FAKEBIN/tmux"
 
 # The stand-in Herdr: lists come from $HX/*.json, every other call is logged
-# to $HX/calls.log, and the three naming calls update the JSON as Herdr would.
+# to $HX/calls.log, and the two display-value calls update the JSON as Herdr
+# would; any other call fails.
 # $HX/refuse makes every change fail.
 cat > "$FAKEBIN/herdr" <<'SH'
 #!/usr/bin/env bash
@@ -72,9 +75,6 @@ case "${1:-} ${2:-}" in
     jq --arg id "$3" --arg k "${t%%=*}" --arg v "${t#*=}" \
       '(.result.panes[] | select(.pane_id == $id)).tokens[$k] = $v' "$HX/windows.json" > "$HX/w.tmp" \
       && mv "$HX/w.tmp" "$HX/windows.json" ;;
-  "pane rename")
-    jq --arg id "$3" --arg v "$4" '(.result.panes[] | select(.pane_id == $id)).label = $v' "$HX/windows.json" \
-      > "$HX/w.tmp" && mv "$HX/w.tmp" "$HX/windows.json" ;;
   *) exit 1 ;;
 esac
 echo '{"result":{}}'
@@ -135,10 +135,11 @@ fresh_herdr() {
 
 names() {
   PATH="$FAKEBIN:$PATH" FM_HOME="$HOME_DIR" FM_BRIDGE_NOW=2026-09-20T10:00:00 FM_MC_HERDR="$FAKEBIN/herdr" \
-    HERDR_SESSION=default HERDR_PANE_ID='' "$MC" names "$@"
+    HERDR_SESSION=default HERDR_PANE_ID=w1:p1 "$MC" names "$@"
 }
 space_name() { jq -r --arg id "$1" '.result.workspaces[] | select(.workspace_id == $id) | .tokens.name // ""' "$HX/spaces.json"; }
 window_name() { jq -r --arg id "$1" '.result.panes[] | select(.pane_id == $id) | .label // ""' "$HX/windows.json"; }
+window_who() { jq -r --arg id "$1" '.result.panes[] | select(.pane_id == $id) | .tokens.who // ""' "$HX/windows.json"; }
 window_job() { jq -r --arg id "$1" '.result.panes[] | select(.pane_id == $id) | .tokens.job // ""' "$HX/windows.json"; }
 
 # --- the first pass -----------------------------------------------------------
@@ -146,8 +147,8 @@ window_job() { jq -r --arg id "$1" '.result.panes[] | select(.pane_id == $id) | 
 fresh_herdr
 OUT=$(names) || fail "names failed: $OUT"
 
-for pair in "w1|Denver" "w2|Alpha" "w3|└ Denver's intern · Print the handouts" "w4|Mission Control" \
-  "w5|Controls" "w6|scratch" "w7|└ gone-job" "w8|Denver" "w9|2ndmate-unknown-mate"; do
+for pair in "w1|Denver" "w2|Alpha" "w3|Denver's intern · Print the handouts" "w4|Mission Control" \
+  "w5|Controls" "w6|scratch" "w7|gone-job" "w8|Denver" "w9|2ndmate-unknown-mate"; do
   id=${pair%%|*} want=${pair#*|}
   [ "$(space_name "$id")" = "$want" ] || fail "space $id should show '$want', shows '$(space_name "$id")'"
 done
@@ -156,25 +157,24 @@ pass "every space shows its plain name: the first mate's, a mate's, a helper spa
 for triple in "w1:p1|Denver|first mate" "w2:p1|Alpha|second mate" "w2:p2|Alpha's intern|Build chapter four" \
   "w3:p1|Denver's intern|Print the handouts"; do
   IFS='|' read -r id who job <<<"$triple"
-  [ "$(window_name "$id")" = "$who" ] || fail "window $id should be named '$who', is '$(window_name "$id")'"
+  [ "$(window_who "$id")" = "$who" ] || fail "window $id should show who '$who', shows '$(window_who "$id")'"
   [ "$(window_job "$id")" = "$job" ] || fail "window $id should show job '$job', shows '$(window_job "$id")'"
 done
-pass "every agent window is named for who it is and shows its job"
+pass "every agent window shows who it is and its job, the first mate's own window included"
 
-for pair in "w1:p3|fm-fin1209-quiz1" "w2:p3|└ m2" "w6:p1|2ndmate-left-over"; do
+for pair in "w1:p1|temporary" "w1:p3|fm-fin1209-quiz1" "w2:p3|└ m2" "w6:p1|2ndmate-left-over" "w2:p1|"; do
   id=${pair%%|*} want=${pair#*|}
-  [ "$(window_name "$id")" = "$want" ] || fail "window $id is named by firstmate and must keep '$want'"
-  grep -q "^pane rename $id " "$HX/calls.log" && fail "window $id was sent a rename"
-  grep -q "left alone: window $id is named $want" <<<"$OUT" || fail "names says it left $id alone: $OUT"
+  [ "$(window_name "$id")" = "$want" ] || fail "window $id must keep its name '$want', is '$(window_name "$id")'"
 done
-[ "$(window_job w1:p3)" = "Sorting a local file" ] || fail "a protected window still shows its job as a display value"
-[ -z "$(window_name w1:p2)" ] || fail "a window with no agent is never named"
-pass "windows named fm-, 2ndmate- or └ are never renamed, and say so"
+[ "$(window_job w1:p3)" = "Sorting a local file" ] && [ -n "$(window_who w1:p3)" ] \
+  || fail "a window firstmate named still shows who and job as display values"
+[ -z "$(window_who w1:p2)" ] || fail "a window with no agent gets no display value"
+pass "every window keeps its own name: the captain's and firstmate's names stay"
 
-grep -Ev '^(workspace report-metadata w[0-9]+ --source mission-control --token name=|pane rename w[0-9]+:p[0-9]+ |pane report-metadata w[0-9]+:p[0-9]+ --source mission-control --token job=)' \
-  "$HX/calls.log" && fail "names made a call other than a display value or a window name"
+grep -Ev '^(workspace report-metadata w[0-9]+ --source mission-control --token name=|pane report-metadata w[0-9]+:p[0-9]+ --source mission-control --token (who|job)=)' \
+  "$HX/calls.log" && fail "names made a call other than a display value"
 grep -q 'w6 ' "$HX/calls.log" && fail "a space already showing its name was sent it again"
-pass "names only sets display values and window names: no space or tab rename, move, close, create or focus"
+pass "names only sets display values: no rename, move, close, create or focus"
 
 # --- again, after a restart, dry run, refused ------------------------------
 
@@ -187,10 +187,9 @@ pass "a second pass changes nothing"
 jq '.result.workspaces[] |= del(.tokens)' "$HX/spaces.json" > "$HX/s.tmp" && mv "$HX/s.tmp" "$HX/spaces.json"
 jq '.result.panes[] |= del(.tokens)' "$HX/windows.json" > "$HX/w.tmp" && mv "$HX/w.tmp" "$HX/windows.json"
 OUT=$(names) || fail "the pass after a restart failed: $OUT"
-grep -q '^pane rename' "$HX/calls.log" && fail "window names survive a restart and are not sent again"
-[ "$(space_name w2)" = Alpha ] && [ "$(window_job w2:p1)" = "second mate" ] \
+[ "$(space_name w2)" = Alpha ] && [ "$(window_who w2:p1)" = Alpha ] && [ "$(window_job w2:p1)" = "second mate" ] \
   || fail "the display values a restart lost come back"
-pass "after a Herdr restart only the lost display values are sent again"
+pass "after a Herdr restart the lost display values are sent again"
 
 fresh_herdr
 OUT=$(names --dry-run) || fail "names --dry-run failed: $OUT"
@@ -200,7 +199,7 @@ pass "--dry-run prints the changes and makes none"
 
 touch "$HX/refuse"
 if OUT=$(names 2>&1); then fail "names succeeded although Herdr refused every change"; fi
-grep -q "refused: window w1:p1 is named Denver" <<<"$OUT" || fail "names reports what Herdr refused: $OUT"
+grep -q "refused: window w1:p1 shows who Denver" <<<"$OUT" || fail "names reports what Herdr refused: $OUT"
 pass "a change Herdr refuses is reported and names exits non-zero"
 
 # --- the running screen's Keeper --------------------------------------------
@@ -220,12 +219,17 @@ names.NAMES_EVERY = 0.2
 model = mc.bridge.collect(home, home + "/config", mc.bridge._now())
 with open(hx + "/agents.json", encoding="utf-8") as fh:
     agents = mc.parse_agents(fh.read())
-keeper = names.Keeper(lambda: (model, agents), home, home + "/config", [herdr], "default", None)
+keeper = names.Keeper(lambda: (model, agents), home, home + "/config", [herdr], "default", "w6:p1")
 
 
 def spaces():
     with open(hx + "/spaces.json", encoding="utf-8") as fh:
         return {w["workspace_id"]: (w.get("tokens") or {}).get("name") for w in json.load(fh)["result"]["workspaces"]}
+
+
+def whos():
+    with open(hx + "/windows.json", encoding="utf-8") as fh:
+        return {w["pane_id"]: (w.get("tokens") or {}).get("who") for w in json.load(fh)["result"]["panes"]}
 
 
 def wait_for(ok):
@@ -239,6 +243,8 @@ def wait_for(ok):
 
 keeper.start()
 assert wait_for(lambda: spaces().get("w1") == "Denver"), spaces()
+assert wait_for(lambda: whos().get("w1:p1") == "Denver"), whos()
+assert whos().get("w6:p1") is None, whos()
 with open(hx + "/spaces.json", encoding="utf-8") as fh:
     data = json.load(fh)
 for w in data["result"]["workspaces"]:
@@ -249,4 +255,4 @@ os.replace(hx + "/spaces.tmp", hx + "/spaces.json")
 assert wait_for(lambda: spaces().get("w1") == "Denver" and spaces().get("w4") == "Mission Control"), spaces()
 keeper.stop.set()
 PY
-pass "the running screen's Keeper names everything and puts lost display values back on its own"
+pass "the running screen's Keeper names everything but its own window and puts lost display values back on its own"
