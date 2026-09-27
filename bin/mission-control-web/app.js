@@ -718,7 +718,7 @@
       const g = el("td", "g " + (working ? "working" : helper ? "idle" : "asleep"), working ? "●" : helper ? "○" : "z");
       const nm = el("td", "nm", helper ? "helper" : str(d.name));
       nm.style.color = colour(d.color, "#d9e0e8");
-      const role = d.kind === "first" ? "first mate" : d.kind === "mate" ? "second mate" : str(d.name);
+      const role = str(d.role);
       let doing = str(d.activity);
       const w = helper ? 0 : waitingFor(d);
       if (w) doing += ", " + w + " waiting on the captain";

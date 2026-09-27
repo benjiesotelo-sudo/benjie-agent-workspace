@@ -34,8 +34,9 @@ records, so a field added to a record later never reaches the page.
             each live worker as "helper for <project>"; state working or asleep;
             one activity line built only from a fixed phrase and project names
             ("working on <project>"); the shirt and hair colours; the person in
-            charge of a helper; a second mate's one-line role only when it
-            passes _safe_role(), else "Looks after <projects>".
+            charge of a helper; a role built only from those names ("first
+            mate", "second mate for <projects>", "helper for <project>"),
+            never from a registered scope or charter.
   projects  public name, colour, status (active, parked or quiet), person in
             charge, and four counts: waiting on the captain, in flight, done
             this week (Sunday to Saturday) and done this month.
@@ -54,7 +55,7 @@ display name when that differs from the repository name, else "Project N" in
 registry order; this home's own repository is "setup" unless the names map
 names it. Every agent, project and calendar key is a position ("a1", "p2"),
 never a record id. Nothing is read from task titles, notes, paths, links,
-emails, charters beyond the role, data/captain.md, data/learnings.md, reports
+emails, scopes, charters, data/captain.md, data/learnings.md, reports
 or decision pages into the snapshot.
 
 SETTINGS. config/mission-control.json `public_page` (optional object):
@@ -133,21 +134,6 @@ def _public_names(model):
     return names, order
 
 
-def _safe_role(role, blocked):
-    """A second mate's one-line role, or None when it could carry anything private."""
-    role = (role or "").strip()
-    if not role or len(role) > 60:
-        return None
-    if not re.match(r"^[A-Za-z0-9 ,&'-]+$", role):
-        return None
-    words = {w.lower() for w in re.findall(r"[A-Za-z0-9]+", role)}
-    for b in blocked:
-        parts = {w.lower() for w in re.findall(r"[A-Za-z0-9]+", b or "")}
-        if parts and parts <= words:
-            return None
-    return role
-
-
 def _join(names):
     names = [n for n in names if n]
     if len(names) <= 2:
@@ -174,7 +160,6 @@ def public_snapshot(model, crew, settings, pub, now):
         return registered.get(os.path.basename(os.path.normpath(str(raw))).lower())
 
     mates = model.get("mates") or []
-    blocked = [p["name"] for p in model["projects"]] + [m["id"] for m in mates] + [model["ship"]]
     akey = {}
     agents = []
 
@@ -189,7 +174,7 @@ def public_snapshot(model, crew, settings, pub, now):
 
     by_key = {c["key"]: c for c in crew}
     fm = by_key["fm"]
-    add(fm, kind="first", name=settings["first_mate_name"], role="First mate",
+    add(fm, kind="first", name=settings["first_mate_name"], role="first mate",
         activity="working" if fm["status"] == "work" else "standing by",
         projects=[pkey[p] for p in order], lead=None)
     shown = 0
@@ -207,8 +192,7 @@ def public_snapshot(model, crew, settings, pub, now):
             activity = "working on %s" % (_join(pub_owned) if pub_owned else "its own list")
         else:
             activity = "asleep"
-        role = _safe_role(mc._role(m["scope"]), blocked) or (
-            "Looks after %s" % _join(pub_owned) if pub_owned else "Second mate")
+        role = "second mate for %s" % _join(pub_owned) if pub_owned else "second mate"
         add(c, kind="mate", name=name, role=role, activity=activity,
             projects=[pkey[p] for p in owned], lead=akey["fm"])
     for c in crew:
@@ -219,7 +203,7 @@ def public_snapshot(model, crew, settings, pub, now):
         lead = akey.get(c["lead"])
         if lead is None:
             continue
-        add(c, kind="helper", name="helper for %s" % where, role="Helper",
+        add(c, kind="helper", name="helper for %s" % where, role="helper for %s" % where,
             activity=("working on %s" if c["status"] == "work" else "between steps on %s") % where,
             projects=[pkey[p]], lead=lead)
 

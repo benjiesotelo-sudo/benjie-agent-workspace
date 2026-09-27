@@ -43,7 +43,7 @@ EOF
 cat > "$HOME_DIR/data/secondmates.md" <<EOF
 # Second mates
 
-- secret-mate-id - Charter with secretcharter words and https://secret.example.org/charter (home: $MATE; scope: Secretrepo-orchard clients: the secretscope details; projects: secretrepo-orchard; added 2026-09-01)
+- secret-mate-id - Charter with secretcharter words and https://secret.example.org/charter (home: $MATE; scope: Orchard clients for Secretford University: the secretscope details; projects: secretrepo-orchard; added 2026-09-01)
 EOF
 cat > "$HOME_DIR/data/backlog.md" <<'EOF'
 # Backlog
@@ -142,7 +142,9 @@ pass "the snapshot's shape is exactly the allow-list, with positional keys"
 [ "$(q '.events | length')" = 0 ] || fail "a first build has no activity to report"
 [ "$(q '.agents | map(.name) | join("|")')" = "Denver|Orchard|helper for Orchard|helper for Project 2" ] \
   || fail "the first mate by name, the second mate by its project's public name, helpers by project, got $(q '.agents | map(.name) | join("|")')"
-[ "$(q '.agents[1].role')" = "Looks after Orchard" ] || fail "a role naming a repository falls back to what the mate looks after"
+[ "$(q '.agents | map(.role) | join("|")')" = "first mate|second mate for Orchard|helper for Orchard|helper for Project 2" ] \
+  || fail "every role is built only from public names, never a scope, got $(q '.agents | map(.role) | join("|")')"
+grep -q 'University\|clients' "$OUT/snapshot.json" && fail "a scope naming an institution never reaches the page"
 [ "$(q '.agents[1].activity')" = "working on Orchard" ] || fail "a working mate's activity is built from its project's name"
 [ "$(q '.agents[2].lead')" = "$(q '.agents[1].key')" ] || fail "the orchard helper stands with the orchard mate"
 [ "$(q '.agents[3].lead')" = "$(q '.agents[0].key')" ] || fail "a helper on an unowned project stands with the first mate"

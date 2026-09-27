@@ -142,8 +142,8 @@ In the office the corkboard, bookshelf, server rack and inbox carry the same loc
 Tapping someone makes them stand up and say one line, like a character in a game: what they are doing, a count from their projects, or a fun fact.
 Its Open chat button is locked, because only you talk to the crew.
 
-The page shows only public facts: the first mate's name, each second mate by its project's name, helpers as "helper for" a project, working or asleep, project names and colours, how many items are waiting on you, in flight and done, how many were done or are due on each calendar day, and plain events such as "wakes up".
-It never shows task titles, notes, paths, links, email addresses, repository names or anything from the crew's memory, reports or decisions.
+The page shows only public facts: the first mate's name, each second mate by its project's name, helpers as "helper for" a project, roles built only from those names (such as "second mate for" a project), working or asleep, project names and colours, how many items are waiting on you, in flight and done, how many were done or are due on each calendar day, and plain events such as "wakes up".
+It never shows task titles, notes, paths, links, email addresses, repository names, the second mates' registered scopes or anything from the crew's memory, reports or decisions.
 A project whose repository has no name in `config/mission-control.json` shows as "Project 1", "Project 2" and so on.
 
 The page is a snapshot rather than a live view, so this Mac is never reachable from the internet.
