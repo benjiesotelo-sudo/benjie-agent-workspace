@@ -4,19 +4,19 @@
   All 7   Report 0   Decision 3   Link 4                                                                                                read only, changes happen in chat
 
 IMPORTANT LINKS 4                              ┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
-  System Map                                   │  Decision  The menu tiles stay square                                                                                   │
-   Link   127.0.0.1:49906                      │ Saturday 26 September 2026, 9 words                                                                                     │
+  System Map                                   │  Decision  Ladder ranking fix                                                                                           │
+   Link   127.0.0.1:49906                      │ Sunday 27 September 2026, 5 words                                                                                       │
   The Bridge page                              ├─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
-   Link   127.0.0.1:49906                      │ The menu tiles stay square                                                                                              │
+   Link   127.0.0.1:49906                      │ Ladder ranking fix                                                                                                      │
   Public Mission Control page                  │                                                                                                                         │
-   Link   octo.github.io                       │ We keep them square.                                                                                                    │
+   Link   octo.github.io                       │ Use Elo.                                                                                                                │
   Repository                                   │                                                                                                                         │
    Link   ■ Garden Club  github.com            │                                                                                                                         │
                                                │                                                                                                                         │
 DOCUMENTS 3                                    │                                                                                                                         │
-  Ladder ranking fix                   27 Sep  │                                                                                                                         │
+▸ Ladder ranking fix                   27 Sep  │                                                                                                                         │
    Decision   5 words                          │                                                                                                                         │
-▸ The menu tiles stay square           26 Sep  │                                                                                                                         │
+  The menu tiles stay square           26 Sep  │                                                                                                                         │
    Decision   9 words                          │                                                                                                                         │
   Which oven to buy                    25 Sep  │                                                                                                                         │
    Decision   8 words                          │                                                                                                                         │

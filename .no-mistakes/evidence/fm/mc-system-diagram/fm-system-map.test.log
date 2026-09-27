@@ -10,3 +10,4 @@ ok - adding an agent, a dependency or a tool adds a node, and a missing source s
 ok - a missing rule book or unreadable hook settings say could not read
 ok - no paths, links, email addresses, tokens or hook commands reach the map
 ok - the Bridge serves the System Map page and its map, and nothing else new
+exit 0

@@ -4,7 +4,10 @@ ok - the office text layer: inbox, labels, team list and activity in plain words
 ok - workers match by their recorded Herdr pane
 ok - a pane with no record shows as a helper, in plain words, on every view
 ok - the first mate's interns fill seven places, and every one is listed
-ok - tapping an agent in the office or on the Team view opens its chat, and nothing else
+ok - tapping an agent stands it up to talk, and only its Open chat answer opens the chat
+ok - an agent's lines are its work now, its recent finishes and a fun fact for its project
+ok - each thing in the office opens its view when tapped
+ok - waking and sleeping stay on the desks, and the activity column keeps real events
 ok - the Tasks view shows four columns with the Bridge's counts
 ok - the Projects view shows one card per project with status, person in charge, counts and decisions
 ok - the Approvals view groups what waits on the captain by agent, oldest first, in plain words
@@ -44,7 +47,8 @@ ok - a Herdr outage keeps the last states and says so
 ok - the live Calendar moves by month, returns to today, and changes mode by key and by tap
 ok - a mate that leaves the registry from upstairs goes on the alumni wall
 ok - up and down pick a second mate on the Team view
-ok - a tap on the live office opens that agent's chat
-ok - an idle pane falls asleep after SLEEP_AFTER seconds, on the desk and the team list alike
+ok - a tap on the live office starts a talk whose Open chat opens that agent's chat
+ok - a paused office still ends a talk on Bye
+ok - an idle pane falls asleep after SLEEP_AFTER seconds, on the desk and the team list alike, not in the activity column
 ok - fm-mission-control.sh parses
-bash tests/fm-mission-control.test.sh  85.46s user 80.82s system 69% cpu 3:59.27 total
+exit 0
