@@ -5082,6 +5082,8 @@ def run(home, config_dir, herdr):
                 dirty = True
             if not dirty:
                 continue
+            if ui.paused:
+                scene.settle_talk()
             ui.services = feed.services
             notice = None
             if model_err:

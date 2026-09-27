@@ -1986,6 +1986,18 @@ screen "$TMP_ROOT/livetap" 3 | grep -q "opening Denver's chat" || fail "the live
 screen "$TMP_ROOT/livetap" 3 | grep -qF ' What else? ' && fail "Open chat ends the live talk"
 pass "a tap on the live office starts a talk whose Open chat opens that agent's chat"
 
+# Paused, the scene never ticks, yet a talk still stands up and its Bye still
+# sits the agent back down at once.
+BYE=$(tap_on "$(mc "$HOME_DIR" frame --agents "$AGENTS" --keys "$(tap_at 44 8)")" ' Bye ')
+code=$(drive "$TMP_ROOT/pausetap" "3=p,4=$(tap_at 44 8),6=$BYE,8=q") || fail "the pty driver failed"
+[ "$code" = 0 ] || fail "the paused tap run quits cleanly, got exit $code"
+screen "$TMP_ROOT/pausetap" 3 | grep -q 'PAUSED' || fail "p pauses the live office"
+screen "$TMP_ROOT/pausetap" 3 | grep -qF ' What else? ' || fail "a paused tap opens the talk box"
+screen "$TMP_ROOT/pausetap" 4 | grep -qF ' What else? ' && fail "a paused Bye ends the talk"
+screen "$TMP_ROOT/pausetap" 4 | grep -q 'talking' && fail "after a paused Bye the desk no longer reads talking"
+screen "$TMP_ROOT/pausetap" 4 | grep -q 'working' || fail "after a paused Bye the first mate is back at work"
+pass "a paused office still ends a talk on Bye"
+
 # A pane that stops working keeps its desk lit for SLEEP_AFTER seconds, and
 # the team list agrees with the desk.
 PYTHONPATH="$ROOT/bin" FM_BRIDGE_NOW=2026-09-20T10:00:00 PATH="$FAKEBIN:$PATH" \
