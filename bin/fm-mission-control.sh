@@ -18,25 +18,29 @@
 #   stop                    close that workspace
 #   status                  report whether the workspace exists and whether the
 #                           screen is running in it
-#   frame [--view <v>] [--size <cols>x<rows>] [--agents <file>] [--readings <file>]
+#   frame [--view <v>] [--size <cols>x<rows>] [--agents <file>]... [--readings <file>]
 #         [--format text|json|ansi] [--keys <keys>]
 #                           print one frame from the records and a saved
 #                           `herdr agent list` file (tests, a quick look),
 #                           or without --agents from asking Herdr once;
+#                           --agents again adds a later look at the crew;
 #                           <v> is office, tasks, approvals, projects,
 #                           calendar, team, memory, docs, or system.
 #                           --readings is a saved set of System readings;
 #                           without it the system view reads this machine and
 #                           Herdr once, and the other views leave the system
 #                           unchecked. <keys> are keys and mouse taps applied
-#                           first, as the terminal sends them (Enter and q
-#                           are ignored; a tap on an agent in the office or
-#                           on the Team view runs `herdr agent focus` on its
-#                           pane, as the live screen does)
+#                           first, as the terminal sends them, each shown
+#                           settled (q is ignored; answering Open chat, or a
+#                           tap on the Team view, runs `herdr agent focus` on
+#                           the agent's pane, as the live screen does)
 #
 # Keys while running: 1-9 switch view, p pauses the animation, q quits,
-# up/down pick an agent in the team list and Enter moves your Herdr view to
-# its pane (`herdr agent focus`, navigation only); on the Projects view
+# up/down pick an agent in the team list and Enter has it stand up and talk;
+# on the Tasks, Projects, Calendar and System views Enter moves your Herdr view to the
+# agent picked in the office (`herdr agent focus`, navigation only). While an
+# agent talks, left/right pick an answer (Open chat, What else?, Bye), Enter
+# gives it and Esc ends the talk. On the Projects view
 # up/down pick a project card instead. On the Approvals view up/down move
 # the highlight through the decisions instead, and Enter does nothing: no key
 # answers or changes a decision. On the calendar, left and right move one
@@ -48,9 +52,13 @@
 # pick a kind of document, and Enter does nothing. Tapping a tab switches view
 # when the terminal reports mouse clicks; on Memory and Docs tapping a row
 # picks it and the wheel over the reader scrolls it. Tapping an agent in the
-# office (its desk, an intern's sprite or its team row) or on the Team view (a
-# card or an intern's line) moves your Herdr view to its pane the same way; a
-# pane that has closed says so in one line in the footer.
+# office (its desk, an intern's sprite or its team row) has it stand up and say
+# one short line with the answers Open chat, What else? and Bye; Open chat moves
+# your Herdr view to its pane the same way, as does tapping a card or an
+# intern's line on the Team view, and a pane that has closed says so in one
+# line in the footer. A tap anywhere else ends the talk. Tapping a thing in the office
+# opens its view: the corkboard Tasks, the calendar Calendar, the bookshelf
+# Memory, the server rack System, the inbox Approvals and the alumni wall Team.
 #
 # start, stop and status keep the mission-control workspace through
 # bin/fm-herdr-screen-lib.sh, whose header owns how a workspace is created,

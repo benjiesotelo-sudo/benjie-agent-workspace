@@ -3,7 +3,9 @@
 # bin/fm_mission_control.py): one-frame snapshots from fixture records and a
 # saved `herdr agent list`, asserting desks, working and asleep states, interns
 # beside the right person in charge, the second-floor sign at seven mates, the
-# inbox count, the task columns, the project cards, the Approvals groups, the
+# inbox count, a tapped agent standing up to talk (its lines from its records,
+# its answers, and what ends a talk), the office things opening their views,
+# the activity column keeping sleep and wake out, the task columns, the project cards, the Approvals groups, the
 # calendar's week, month and year (completions, due dates, what always runs,
 # the tappable control bar), the Team org chart, the Memory and Docs lists
 # with their Markdown reader, the System view's dots, overall line and
@@ -228,7 +230,7 @@ for size in 132x44 170x50; do
 done
 pass "the first mate's interns fill seven places, and every one is listed"
 
-# --- tapping an agent opens its chat -----------------------------------------
+# --- tapping an agent: it stands up and talks ---------------------------------
 
 # A fake herdr logs every call; a pane it no longer has answers not found.
 cat > "$FAKEBIN/herdr-log" <<SH
@@ -262,32 +264,104 @@ tap_at() {  # <col> <row>, zero-based screen cells
 focused() {  # the panes Herdr was asked to focus, space separated
   tr '\n' ' ' < "$TMP_ROOT/herdr.log" | sed 's/ $//'
 }
+ESC=$'\e'
+UP=$'\e[A'
+DOWN=$'\e[B'
+RIGHT=$'\e[C'
+ENTER=$'\r'
 for size in 132x44 170x50; do
   # The office is 96 cells wide at every size: the first mate's desk spans
   # columns 34-54 and rows 5-16; its first place right (x 56) and first place
   # left (x 19) hold sprites on rows 9-14; the mate's desk spans columns 1-13
   # and rows 15-26, and its first intern stands at x 15 on rows 19-24.
-  for want in "44 8:w1:p1" "54 16:w1:p1" "66 12:w4:p1" "6 20:w2:p1" "17 22:w3:p1"; do
-    at=${want%%:*}
-    pane=${want#*:}
+  for want in "44 8|fm|w1:p1" "54 16|fm|w1:p1" "66 12|helper:w4:p1|w4:p1" "6 20|mate:alpha-mate|w2:p1" \
+    "17 22|intern:main:a1|w3:p1"; do
+    IFS='|' read -r at key pane <<<"$want"
     # shellcheck disable=SC2086
-    T=$(mct "$HOME_DIR" frame --agents "$AGENTS2" --size "$size" --keys "$(tap_at $at)") \
+    TAP=$(tap_at $at)
+    TJ=$(mct "$HOME_DIR" frame --agents "$AGENTS2" --size "$size" --keys "$TAP" --format json) \
       || fail "a tap at $at failed at $size"
-    [ "$(focused)" = "agent focus $pane" ] || fail "at $size a tap at $at opens $pane's chat, Herdr got: $(focused)"
+    [ "$(jq -r .talk.key <<<"$TJ")" = "$key" ] || fail "at $size a tap at $at starts a talk with $key"
+    [ -z "$(focused)" ] || fail "at $size a tap on an agent opens no chat by itself, got: $(focused)"
+    [ "$(jq -r --arg k "$key" '.actors[] | select(.key == $k) | .pose' <<<"$TJ")" = up ] \
+      || fail "at $size the tapped $key stands up"
+    jq -e '.talk.line as $l | .talk.lines | index($l)' <<<"$TJ" >/dev/null \
+      || fail "at $size the line said is one of $key's lines"
+    T=$(mct "$HOME_DIR" frame --agents "$AGENTS2" --size "$size" --keys "$TAP") || fail "talk text failed"
+    for part in '╭──' '╰──' ' Open chat ' ' What else? ' ' Bye ' 'left/right pick an answer'; do
+      grep -qF "$part" <<<"$T" || fail "at $size the talk with $key shows '$part'"
+    done
+    grep -qFf <(jq -r '.talk.lines[] | split(" ")[0:3] | join(" ")' <<<"$TJ") <<<"$T" \
+      || fail "at $size the box shows one of $key's lines"
+    T=$(mct "$HOME_DIR" frame --agents "$AGENTS2" --size "$size" --keys "$TAP$(tap_on "$T" ' Open chat ')") \
+      || fail "open chat failed"
+    [ "$(focused)" = "agent focus $pane" ] || fail "at $size Open chat on $key opens $pane's chat, got: $(focused)"
     grep -q "opening .*'s chat" <<<"$T" || fail "at $size the footer says the chat is opening"
+    grep -qF ' What else? ' <<<"$T" && fail "at $size Open chat ends the talk"
   done
+
+  # The first mate stands up from its chair beside the desk, and sits back down on Bye.
+  O=$(mc "$HOME_DIR" frame --agents "$AGENTS2" --size "$size" --format json) || fail "office json failed"
+  [ "$(jq -r '.actors[] | select(.key == "fm") | "\(.pose) \(.state)"' <<<"$O")" = "null work" ] \
+    || fail "at $size before a tap the first mate sits working"
+  grep -q talking <<<"$(mc "$HOME_DIR" frame --agents "$AGENTS2" --size "$size")" && fail "nobody talks before a tap"
+  T=$(mct "$HOME_DIR" frame --agents "$AGENTS2" --size "$size" --keys "$(tap_at 44 8)") || fail "stand-up frame failed"
+  grep -Eq '^ {30,}talking' <<<"$T" || fail "at $size the first mate's desk says talking"
+  grep -q '^ *Denver *$' <<<"$T" && fail "at $size the desk's name label gives way to the standing sprite"
+  grep -qF 'Denver · first mate' <<<"$T" || fail "at $size the box names the first mate"
+  A0=$(mc "$HOME_DIR" frame --agents "$AGENTS2" --size "$size" --format ansi | sed -n 8,15p)
+  A1=$(mct "$HOME_DIR" frame --agents "$AGENTS2" --size "$size" --format ansi --keys "$(tap_at 44 8)" | sed -n 8,15p)
+  [ "$A0" != "$A1" ] || fail "at $size the standing first mate is drawn differently from the seated one"
+  B=$(mct "$HOME_DIR" frame --agents "$AGENTS2" --size "$size" --format json --keys "$(tap_at 44 8)$(tap_on "$T" ' Bye ')") \
+    || fail "bye failed"
+  [ "$(jq -r '.talk' <<<"$B")" = null ] || fail "at $size Bye ends the talk"
+  [ "$(jq -r '.actors[] | select(.key == "fm") | "\(.pose) \(.state)"' <<<"$B")" = "null work" ] \
+    || fail "at $size after Bye the first mate sits back down at work"
+  [ -z "$(focused)" ] || fail "at $size Bye opens no chat"
+
+  # What else? says another line each time, every line once before any repeats.
+  n=$(jq -r '.talk.lines | length' <<<"$(mct "$HOME_DIR" frame --agents "$AGENTS2" --size "$size" \
+    --keys "$(tap_at 44 8)" --format json)")
+  KEYS=$(tap_at 44 8)
+  for _ in $(seq 2 "$n"); do
+    KEYS="$KEYS$(tap_on "$T" ' What else? ')"
+  done
+  W=$(mct "$HOME_DIR" frame --agents "$AGENTS2" --size "$size" --keys "$KEYS" --format json) || fail "what else failed"
+  [ "$n" -gt 5 ] || fail "at $size the first mate has several lines, got $n"
+  jq -e '(.talk.said | length) == (.talk.lines | length) and (.talk.said | unique | length) == (.talk.lines | length)' \
+    <<<"$W" >/dev/null || fail "at $size What else? goes through every line once: $(jq -c .talk.said <<<"$W")"
+  [ "$(jq -r .talk.answer <<<"$W")" = 'What else?' ] || fail "at $size the answer tapped stays highlighted"
+
+  # Esc, a tap on the floor, or another view ends the talk; a tap on another agent starts theirs.
+  for end in "$ESC" "$(tap_at 30 30)" 2; do
+    E=$(mct "$HOME_DIR" frame --agents "$AGENTS2" --size "$size" --keys "$(tap_at 44 8)$end" --format json) \
+      || fail "ending the talk failed"
+    [ "$(jq -r '.talk' <<<"$E")" = null ] || fail "at $size '$end' ends the talk"
+    [ -z "$(focused)" ] || fail "at $size ending a talk opens no chat"
+  done
+  E=$(mct "$HOME_DIR" frame --agents "$AGENTS2" --size "$size" --keys "$(tap_at 44 8)$(tap_at 6 20)" --format json)
+  [ "$(jq -r '.talk.key' <<<"$E")" = mate:alpha-mate ] || fail "at $size a tap on another agent talks to them instead"
+  [ "$(jq -r '.actors[] | select(.key == "fm") | .pose' <<<"$E")" = null ] || fail "at $size the first mate sits back down"
+
+  # The keyboard: up/down pick, Enter talks, left/right pick an answer, Enter answers.
+  K=$(mct "$HOME_DIR" frame --agents "$AGENTS2" --size "$size" --keys "$DOWN$ENTER" --format json)
+  [ "$(jq -r '.talk.key' <<<"$K")" = fm ] || fail "at $size Enter on a picked agent starts a talk"
+  K=$(mct "$HOME_DIR" frame --agents "$AGENTS2" --size "$size" --keys "$DOWN$ENTER$RIGHT$ENTER" --format json)
+  [ "$(jq -r '.talk.said | length' <<<"$K")" = 2 ] || fail "at $size right then Enter is What else?"
+  mct "$HOME_DIR" frame --agents "$AGENTS2" --size "$size" --keys "$DOWN$ENTER$ENTER" >/dev/null
+  [ "$(focused)" = "agent focus w1:p1" ] || fail "at $size Enter on Open chat opens the chat, got: $(focused)"
+  mct "$HOME_DIR" frame --agents "$AGENTS2" --size "$size" --keys "$DOWN$ENTER"$'\t'"$ENTER" >/dev/null
+  [ "$(focused)" = "agent focus w1:p1" ] || fail "at $size Tab picks no other answer, got: $(focused)"
+
+  # An intern with no pane talks too; only Open chat says there is nothing to open.
   T=$(mct "$HOME_DIR" frame --agents "$AGENTS2" --size "$size" --keys "$(tap_at 59 12)") || fail "tap failed"
+  T=$(mct "$HOME_DIR" frame --agents "$AGENTS2" --size "$size" --keys "$(tap_at 59 12)$(tap_on "$T" ' Open chat ')")
   [ -z "$(focused)" ] || fail "at $size an intern with no pane asks Herdr nothing, got: $(focused)"
   grep -q "Denver's intern has no open chat to show" <<<"$T" || fail "at $size an intern with no pane says so"
-  for none in "95 12" "30 30" "0 0"; do
-    # shellcheck disable=SC2086
-    mct "$HOME_DIR" frame --agents "$AGENTS2" --size "$size" --keys "$(tap_at $none)" >/dev/null || fail "tap failed"
-    [ -z "$(focused)" ] || fail "at $size a tap on the floor at $none opens nothing, got: $(focused)"
-  done
   O=$(mc "$HOME_DIR" frame --agents "$AGENTS2" --size "$size") || fail "office text failed"
-  mct "$HOME_DIR" frame --agents "$AGENTS2" --size "$size" --keys "$(tap_on "$O" "Denver's helper")" >/dev/null
-  [ "$(focused)" = "agent focus w4:p1" ] || fail "at $size a team list row opens its agent's chat, got: $(focused)"
-  grep -q 'tap an agent to open its chat' <<<"$O" || fail "at $size the office footer says taps open chats"
+  mct "$HOME_DIR" frame --agents "$AGENTS2" --size "$size" --keys "$(tap_on "$O" "Denver's helper")" --format json \
+    | jq -e '.talk.key == "helper:w4:p1"' >/dev/null || fail "at $size a team list row starts a talk"
+  grep -q 'tap an agent to talk' <<<"$O" || fail "at $size the office footer says a tap talks"
 
   M=$(mc "$HOME_DIR" frame --agents "$AGENTS2" --size "$size" --view team) || fail "team text failed"
   grep -q 'tap an agent to open its chat' <<<"$M" || fail "at $size the Team footer says taps open chats"
@@ -295,19 +369,103 @@ for size in 132x44 170x50; do
     "Build chapter four:w3:p1"; do
     needle=${want%:*:*}
     pane=${want#"$needle":}
-    T=$(mct "$HOME_DIR" frame --agents "$AGENTS2" --size "$size" --view team --keys "$(tap_on "$M" "$needle")") \
-      || fail "team tap failed"
+    TJ=$(mct "$HOME_DIR" frame --agents "$AGENTS2" --size "$size" --view team --keys "$(tap_on "$M" "$needle")" \
+      --format json) || fail "team tap failed"
     [ "$(focused)" = "agent focus $pane" ] || fail "at $size tapping '$needle' opens $pane's chat, got: $(focused)"
+    [ "$(jq -r .talk <<<"$TJ")" = null ] || fail "at $size a tap on the Team view starts no talk"
   done
+  T=$(mct "$HOME_DIR" frame --agents "$AGENTS2" --size "$size" --view team --keys "$DOWN$ENTER") || fail "team enter failed"
+  [ "$(focused)" = "agent focus w2:p1" ] || fail "at $size Enter on a picked Team card opens its chat, got: $(focused)"
+  grep -q "opening Alpha's chat" <<<"$T" || fail "at $size the Team footer says the chat is opening"
+  grep -qF ' What else? ' <<<"$T" && fail "at $size the Team view shows no talk box"
 done
 
 # A pane that closed since the last look says so in one line, and nothing fails.
 jq '.result.agents[0].pane_id = "w9:gone"' "$AGENTS2" > "$TMP_ROOT/gone.json"
 T=$(mct "$HOME_DIR" frame --agents "$TMP_ROOT/gone.json" --keys "$(tap_at 44 8)") || fail "a tap on a closed pane failed"
+T=$(mct "$HOME_DIR" frame --agents "$TMP_ROOT/gone.json" --keys "$(tap_at 44 8)$(tap_on "$T" ' Open chat ')")
 [ "$(focused)" = "agent focus w9:gone" ] || fail "the closed pane was asked for, got: $(focused)"
 grep -q "Denver's chat has closed, so there is nothing to open" <<<"$T" || fail "a closed pane reads as one plain line"
 grep -q 'w9:gone' <<<"$T" && fail "no pane id reaches the screen"
-pass "tapping an agent in the office or on the Team view opens its chat, and nothing else"
+pass "tapping an agent stands it up to talk, and only its Open chat answer opens the chat"
+
+# What an agent says comes from its own records, in plain short words.
+lines() {  # <home> <tap col> <tap row> - every line the tapped agent may say, one per line
+  mc "$1" frame --agents "$AGENTS2" --keys "$(tap_at "$2" "$3")" --format json | jq -r '.talk.lines[]'
+}
+FM_LINES=$(lines "$HOME_DIR" 44 8)
+for want in 'Keeping an eye on the whole crew right now.' 'One of my interns is on Print the handouts.' \
+  '3 things wait on you in the inbox. No rush!' 'Finished Chapter three decks on 5 Sep. Felt good!' \
+  'Wrapped up Module one handout on 2 Sep.' 'Fun fact: a first mate is second in command, right after the captain.'; do
+  grep -qxF "$want" <<<"$FM_LINES" || fail "the first mate may say: $want"
+done
+MATE_LINES=$(lines "$HOME_DIR" 6 20)
+for want in 'Resting between jobs. 2 jobs waiting for me later.' 'Finished Chapter four notes on 12 Sep. Felt good!' \
+  'One thing waits on you in the inbox. No rush!' 'Fun fact: the first computer bug was a real moth, found in 1947.'; do
+  grep -qxF "$want" <<<"$MATE_LINES" || fail "the alpha mate may say: $want"
+done
+grep -q 'Chapter three decks' <<<"$MATE_LINES" && fail "a mate talks only about its own finished work"
+INTERN_LINES=$(lines "$HOME_DIR" 17 22)
+for want in 'Heads down on Build chapter four.' 'Finished Chapter four notes on 12 Sep. Felt good!' \
+  'Ticked off an old chapter on 20 Jul.'; do
+  grep -qxF "$want" <<<"$INTERN_LINES" || fail "the alpha intern may say: $want"
+done
+grep -q 'Module one' <<<"$INTERN_LINES" && fail "an intern talks only about its own project's finished work"
+ALL="$FM_LINES"$'\n'"$MATE_LINES"$'\n'"$INTERN_LINES"
+awk 'length > 80 { exit 1 }' <<<"$ALL" || fail "every line stays within 80 characters"
+grep -q '—' <<<"$ALL" && fail "no line has an em dash"
+grep -qF '....' <<<"$ALL" && fail "a shortened title never doubles its dots"
+grep -Eq "$TMP_ROOT|https?:|\b(a1|q1|m2|m3|d1|d3|d4)\b" <<<"$ALL" && fail "no line carries a path, link or id"
+# A project about technical analysis talks about charts and markets.
+TOPIC="$TMP_ROOT/topicship"
+cp -R "$HOME_DIR" "$TOPIC"
+sed -i.bak 's/Alpha course materials for a class/Technical analysis course on charts and markets/' "$TOPIC/data/projects.md"
+for at in "6 20" "17 22"; do
+  # shellcheck disable=SC2086
+  lines "$TOPIC" $at | grep -qxF 'Fun fact: candlestick charts come from Japanese rice traders in the 1700s.' \
+    || fail "an agent on a markets project tells a markets fact (tap at $at)"
+done
+pass "an agent's lines are its work now, its recent finishes and a fun fact for its project"
+
+# The things in the office open their views: the corkboard Tasks, the
+# calendar, the bookshelf Memory, the rack System, the inbox Approvals and the
+# alumni wall Team; the bare floor opens nothing.
+for size in 132x44 170x50; do
+  for want in "10 3|team" "28 3|tasks" "63 3|calendar" "78 3|memory" "90 10|system" "12 29|approvals" \
+    "20 30|approvals" "45 26|office"; do
+    IFS='|' read -r at view <<<"$want"
+    # shellcheck disable=SC2086
+    V=$(mct "$HOME_DIR" frame --agents "$AGENTS2" --size "$size" --keys "$(tap_at $at)" --format json) \
+      || fail "a tap at $at failed"
+    [ "$(jq -r .view <<<"$V")" = "$view" ] || fail "at $size a tap at $at opens $view, got $(jq -r .view <<<"$V")"
+    [ -z "$(focused)" ] || fail "at $size a tap on a thing moves no pane"
+  done
+  B=$(mct "$HOME_DIR" frame --agents "$AGENTS2" --size "$size" --keys "$(tap_at 28 3)") || fail "corkboard tap failed"
+  grep -q 'WAITING ON YOU' <<<"$B" || fail "at $size the corkboard opens the task board"
+  V=$(mct "$HOME_DIR" frame --agents "$AGENTS2" --size "$size" --view team --keys "$(tap_at 10 3)" --format json)
+  [ "$(jq -r .view <<<"$V")" = team ] || fail "at $size the office's things take no taps on the Team view"
+done
+pass "each thing in the office opens its view when tapped"
+
+# Waking up and falling asleep stay on the desks: a burst of flips between
+# looks adds nothing to the activity column, while real events still show.
+jq '(.result.agents[] | select(.pane_id == "w1:p1" or .pane_id == "w3:p1") | .agent_status) = "idle"
+  | (.result.agents[] | select(.pane_id == "w2:p1") | .agent_status) = "working"' "$AGENTS" > "$TMP_ROOT/flip1.json"
+jq '(.result.agents[] | select(.pane_id == "w1:p1" or .pane_id == "w3:p1") | .agent_status) = "idle"
+  | (.result.agents[] | select(.pane_id == "w2:p1") | .agent_status) = "working"' "$AGENTS2" > "$TMP_ROOT/flip2.json"
+F=$(mc "$HOME_DIR" frame --agents "$AGENTS" --agents "$TMP_ROOT/flip1.json" --agents "$AGENTS" \
+  --agents "$TMP_ROOT/flip1.json" --agents "$AGENTS2" --agents "$TMP_ROOT/flip2.json" --agents "$AGENTS2" \
+  --agents "$TMP_ROOT/flip2.json" --size 170x50 --format json) || fail "a frame over several looks failed"
+jq -e '[.feed[].text | select(test("asleep|wakes up|awake"))] | length == 0' <<<"$F" >/dev/null \
+  || fail "no sleep or wake line reaches the activity column: $(jq -c '[.feed[].text]' <<<"$F")"
+jq -e '[.feed[] | select(.who == "Denver" and .text == "calls in a helper")] | length == 1' <<<"$F" >/dev/null \
+  || fail "the helper arriving still shows: $(jq -c '[.feed[] | "\(.who) \(.text)"]' <<<"$F")"
+jq -e '[.feed[] | select(.text | startswith("finished "))] | length >= 3' <<<"$F" >/dev/null \
+  || fail "the finished work still shows"
+[ "$(jq -r '.actors[] | select(.key == "fm") | .state' <<<"$F")" = sleep ] || fail "the desk shows the last look's sleep"
+FT=$(mc "$HOME_DIR" frame --agents "$AGENTS" --agents "$TMP_ROOT/flip1.json" --agents "$AGENTS" --size 170x50)
+grep -Eq 'falls asleep|wakes up' <<<"$FT" && fail "the activity column never says falls asleep or wakes up"
+pass "waking and sleeping stay on the desks, and the activity column keeps real events"
 
 # --- the task board --------------------------------------------------------
 
@@ -1873,14 +2031,30 @@ TB=$(mct "$BIG" frame --agents "$TMP_ROOT/big.json" --size 132x44 --view team \
 grep -q 'ABOUT P3' <<<"$TB" || fail "a tap on the first mate's card keeps P3 picked"
 pass "up and down pick a second mate on the Team view"
 
-# On the live screen a tap on the first mate's desk moves the captain's view
-# to its pane, and the footer says so.
+# On the live screen a tap on the first mate's desk stands it up to talk, and
+# its Open chat answer moves the captain's view to its pane.
 : > "$TMP_ROOT/live-focus.log"
-code=$(drive "$TMP_ROOT/livetap" "3=$(printf '\e[<0;45;9M'),5=q") || fail "the pty driver failed"
+OPEN=$(tap_on "$(mc "$HOME_DIR" frame --agents "$AGENTS" --keys "$(tap_at 44 8)")" ' Open chat ')
+code=$(drive "$TMP_ROOT/livetap" "3=$(tap_at 44 8),5=$OPEN,7=q") || fail "the pty driver failed"
 [ "$code" = 0 ] || fail "the tap run quits cleanly, got exit $code"
-[ "$(cat "$TMP_ROOT/live-focus.log")" = w1:p1 ] || fail "a live tap focuses the first mate's pane, got: $(cat "$TMP_ROOT/live-focus.log")"
-screen "$TMP_ROOT/livetap" 2 | grep -q "opening Denver's chat" || fail "the live footer says the chat is opening"
-pass "a tap on the live office opens that agent's chat"
+screen "$TMP_ROOT/livetap" 2 | grep -qF ' What else? ' || fail "a live tap opens the talk box"
+screen "$TMP_ROOT/livetap" 2 | grep -q 'talking' || fail "the live first mate stands up to talk"
+[ "$(cat "$TMP_ROOT/live-focus.log")" = w1:p1 ] || fail "Open chat focuses the first mate's pane, got: $(cat "$TMP_ROOT/live-focus.log")"
+screen "$TMP_ROOT/livetap" 3 | grep -q "opening Denver's chat" || fail "the live footer says the chat is opening"
+screen "$TMP_ROOT/livetap" 3 | grep -qF ' What else? ' && fail "Open chat ends the live talk"
+pass "a tap on the live office starts a talk whose Open chat opens that agent's chat"
+
+# Paused, the scene never ticks, yet a talk still stands up and its Bye still
+# sits the agent back down at once.
+BYE=$(tap_on "$(mc "$HOME_DIR" frame --agents "$AGENTS" --keys "$(tap_at 44 8)")" ' Bye ')
+code=$(drive "$TMP_ROOT/pausetap" "3=p,4=$(tap_at 44 8),6=$BYE,8=q") || fail "the pty driver failed"
+[ "$code" = 0 ] || fail "the paused tap run quits cleanly, got exit $code"
+screen "$TMP_ROOT/pausetap" 3 | grep -q 'PAUSED' || fail "p pauses the live office"
+screen "$TMP_ROOT/pausetap" 3 | grep -qF ' What else? ' || fail "a paused tap opens the talk box"
+screen "$TMP_ROOT/pausetap" 4 | grep -qF ' What else? ' && fail "a paused Bye ends the talk"
+screen "$TMP_ROOT/pausetap" 4 | grep -q 'talking' && fail "after a paused Bye the desk no longer reads talking"
+screen "$TMP_ROOT/pausetap" 4 | grep -q 'working' || fail "after a paused Bye the first mate is back at work"
+pass "a paused office still ends a talk on Bye"
 
 # A pane that stops working keeps its desk lit for SLEEP_AFTER seconds, and
 # the team list agrees with the desk.
@@ -1910,9 +2084,9 @@ assert fm["status"] == "work" and fm["doing"].startswith("working") and a.state 
 fm, a = at(2 + mc.SLEEP_AFTER, "idle")
 assert fm["status"] == "sleep" and fm["doing"].startswith("standing by") and a.state == "sleep", (fm, a.state)
 assert timer.due() is None
-assert scene.feed[0]["text"] == "falls asleep", scene.feed[0]
+assert not any("asleep" in f["text"] or "wakes" in f["text"] for f in scene.feed), scene.feed
 PY
-pass "an idle pane falls asleep after SLEEP_AFTER seconds, on the desk and the team list alike"
+pass "an idle pane falls asleep after SLEEP_AFTER seconds, on the desk and the team list alike, not in the activity column"
 
 bash -n "$MC" || fail "fm-mission-control.sh has a syntax error"
 pass "fm-mission-control.sh parses"
