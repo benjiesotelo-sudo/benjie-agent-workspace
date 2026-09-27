@@ -35,6 +35,7 @@ When Tailscale is not running it listens only on this Mac, and `status` says so.
 | `1` to `9`, or tap a tab | Switch view |
 | up and down | Pick the next or previous thing in the view: an agent, a decision, a project card, a second mate or a page; on Tasks, Calendar and System they jump to the Office and pick an agent there |
 | Enter | On the Office and Team views, move your Herdr view to the picked agent's pane so you can talk to it; on Tasks, Projects, Calendar and System it does the same for the agent picked in the Office; on Approvals, Memory and Docs it does nothing |
+| Tap an agent | On the Office and Team views, move your Herdr view to that agent's pane to open its chat; a chat that has closed says so in one line in the footer |
 | `p` | Pause or restart the office animation |
 | `q` | Quit |
 
@@ -49,9 +50,11 @@ Each view below lists its own extra keys.
 
 The first mate has the top desk and each second mate has a desk of their own, labelled working or asleep.
 Interns, the short-lived workers, stand beside the person in charge of their job.
+An agent pane that no record claims still shows, as a helper of the mate whose home it works in, or of the first mate, doing what its window title says.
 The inbox by the captain's door counts the decisions waiting on you, and the sign under the server rack reads ok, or check when the System view has something for you to look at.
 The column on the right is recent activity in plain sentences, and the team list underneath says what everyone is doing now.
 Up and down pick someone in the team list, and Enter moves your view to their pane.
+Tapping a desk, an intern or a row in the team list opens that agent's chat.
 
 ### 2 Tasks
 
@@ -82,7 +85,7 @@ Up and down pick a card, and the list below it shows what that project is waitin
 ![The Calendar view in Month mode: a September grid with finished and due items and today lit](mission-control/calendar.png)
 
 A week, a month or a year of work: finished items are dimmed with a tick, and items that are due are bright with a dot.
-The strip at the top shows what always runs: the Bridge, Mission Control and each second mate.
+The strip at the top shows what always runs: the Bridge, Mission Control, the first mate and each second mate.
 Left and right move a week, month or year, `t` returns to today, and `v` cycles Week, Month and Year.
 You can also tap Week, Month or Year, the arrows either side of the date, and "back to today" when it shows; in Year, tapping a month opens it.
 
@@ -90,9 +93,11 @@ You can also tap Week, Month or Year, the arrows either side of the date, and "b
 
 ![The Team view: an org chart from the captain to the first mate and each second mate](mission-control/team.png)
 
-The crew as an org chart: you at the top, then the first mate, then a card for each second mate, with each busy intern under its person in charge.
+The crew as an org chart: you at the top, then the first mate, then a card for each second mate, with each busy intern and helper under its person in charge.
 Each card says whether that agent is working or asleep, which projects it owns, and how many of its jobs wait on you.
+The first mate's card owns every project no second mate has, and the setup itself.
 Up and down pick a second mate, whose description shows underneath, and Enter moves your view to that mate's pane.
+Tapping a card or an intern's line opens that agent's chat.
 The alumni row lists mates that retired while the screen was open.
 
 ### 7 Memory
