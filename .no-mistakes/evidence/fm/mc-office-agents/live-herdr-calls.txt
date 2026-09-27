@@ -1,0 +1,7 @@
+   1 --version
+   1 agent focus w1:p1
+   1 agent focus w2:p1
+   1 agent focus w3:p1
+   1 agent focus w9:gone
+  11 agent list
+   2 workspace list

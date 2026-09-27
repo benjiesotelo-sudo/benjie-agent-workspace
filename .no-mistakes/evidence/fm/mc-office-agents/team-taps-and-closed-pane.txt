@@ -1,0 +1,27 @@
+== office team-list row taps at 132x44
+row 'Denver's intern' #0 rc=0 herdr:[agent focus w3:p1] footer: opening Denver's intern's chat updates by itself
+row 'Denver's helper' #0 rc=0 herdr:[agent focus w4:p1] footer: opening Denver's helper's chat updates by itself
+row 'Denver's helper' #1 rc=0 herdr:[agent focus w5:p1] footer: opening Denver's helper's chat updates by itself
+row 'FIN1209's helper' #0 rc=0 herdr:[agent focus w7:p1] footer: opening FIN1209's helper's chat updates by itself
+row 'second mate' #0     rc=0 herdr:[agent focus w2:p1] footer: opening FIN1209's chat updates by itself
+== team view taps at 132x44
+'Chief of staff'         rc=0 herdr:[agent focus w1:p1] footer: opening Denver's chat updates by itself
+'owns FIN1209'           rc=0 herdr:[agent focus w2:p1] footer: opening FIN1209's chat updates by itself
+'FIN1209 quiz one'       rc=0 herdr:[agent focus w4:p1] footer: opening Denver's helper's chat updates by itself
+'Drafting posts'         rc=0 herdr:[agent focus w5:p1] footer: opening Denver's helper's chat updates by itself
+'a job with no record'   rc=0 herdr:[agent focus w7:p1] footer: opening FIN1209's helper's chat updates by itself
+== office team-list row taps at 170x50
+row 'Denver's intern' #0 rc=0 herdr:[agent focus w3:p1] footer: opening Denver's intern's chat updates by itself
+row 'Denver's helper' #0 rc=0 herdr:[agent focus w4:p1] footer: opening Denver's helper's chat updates by itself
+row 'Denver's helper' #1 rc=0 herdr:[agent focus w5:p1] footer: opening Denver's helper's chat updates by itself
+row 'FIN1209's helper' #0 rc=0 herdr:[agent focus w7:p1] footer: opening FIN1209's helper's chat updates by itself
+row 'second mate' #0     rc=0 herdr:[agent focus w2:p1] footer: opening FIN1209's chat updates by itself
+== team view taps at 170x50
+'Chief of staff'         rc=0 herdr:[agent focus w1:p1] footer: opening Denver's chat updates by itself
+'owns FIN1209'           rc=0 herdr:[agent focus w2:p1] footer: opening FIN1209's chat updates by itself
+'FIN1209 quiz one'       rc=0 herdr:[agent focus w4:p1] footer: opening Denver's helper's chat updates by itself
+'Drafting posts'         rc=0 herdr:[agent focus w5:p1] footer: opening Denver's helper's chat updates by itself
+'a job with no record'   rc=0 herdr:[agent focus w7:p1] footer: opening FIN1209's helper's chat updates by itself
+== closed pane: first mate's pane w1:p1 is gone by the time of the tap
+rc=0 herdr:[agent focus w9:gone] footer: Denver's chat has closed, so there is nothing to open updates by itself
+pane id occurrences on screen: 0

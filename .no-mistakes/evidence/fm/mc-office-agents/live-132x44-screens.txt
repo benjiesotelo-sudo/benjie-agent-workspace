@@ -1,0 +1,360 @@
+===== 1 start: office before any tap
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System     Sun 21:00
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀    ▀▀▀▀▀▀▀▀▀   ▀▀▀▀▀▀▀▀▀▀▀▀▀           │ LIVE ACTIVITY real
+                                                         ▀   ▀ ▀ ▀ ▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀           │
+     ▀▀   ▀▀   ▀▀                        ▀▀▀▀▀▀▀ ▀▀▀▀▀▀      ▀ ▀ ▀ ▀     ▀▀▀▀▀▀▀▀▀▀▀            │
+▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀│
+    alumni             tasks        ▀▀▀▀▀    ▀▀▀▀           plan         memory         ▀▀▀▀▀▀▀ │
+   ▀▀▀                              ▀▀▀▀▀▀▀  ▀▀▀▀▀▀▀                                      ▀ ▀   │
+  ▀   ▀                    ▀▀▀▀▀  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                                   ▀ ▀   │
+                             ▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀   ▀▀▀    ▀▀▀                      ▀ ▀   │
+   ▀▀▀                                    ▀   ▀           ▀▀▀    ▀▀▀                      ▀ ▀   │
+                                          ▀▀▀▀▀         ▀▀▀▀▀▀▀▀▀▀▀▀▀▀                    ▀ ▀   │
+                                         ▀     ▀         ▀▀▀▀▀  ▀▀▀▀▀                     ▀ ▀   │
+                                         ▀▀▀▀▀▀▀        ▀ ▀▀▀ ▀▀ ▀▀▀ ▀                          │
+                                         Denver           ▀ ▀    ▀ ▀                    ▀▀▀▀▀▀▀ │
+   ▀▀▀▀▀▀▀▀▀                             working                                       system   │
+                                                                                        check   │
+    ▀▀▀▀▀▀▀z                                                                                    │
+ ▀▀▀▀▀▀▀▀▀z▀▀▀                                                                                  │
+ ▀▀▀▀▀▀▀▀▀▀▀▀▀   ▀▀▀    ▀▀▀                                                                     │
+     ▀▀▀▀▀       ▀▀▀    ▀▀▀                                                                     │
+               ▀▀▀▀▀▀▀▀▀▀▀▀▀▀                                                                   │
+                ▀▀▀▀▀  ▀▀▀▀▀                                                                    │
+     ▀▀▀▀▀     ▀ ▀▀▀ ▀▀ ▀▀▀ ▀                                                                   │
+    FIN1209      ▀ ▀    ▀ ▀                                                                     │
+    asleep                                                                                    ▀▀│
+ ▀▀▀▀▀▀▀▀                                                                                       │
+ CAPTAIN                    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                  ▀   ▀       │
+                                          ▀▀▀▀▀▀▀▀▀                                  ▀▀▀        │
+       ▀                            ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                                       │
+                  inbox 0             ▀▀▀▀         ▀▀▀▀                                         │
+          ▀▀▀▀▀▀▀                       ▀▀▀         ▀▀▀                                       ▀▀│
+─ TEAM ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   NAME       ROLE                DOING NOW                                         PROJECT (the one it works in)
+ ● Denver     first mate          working, 1 intern and 1 helper on jobs            every project
+ z FIN1209    second mate         asleep, 0 jobs listed                             FIN1209
+ ● intern     Denver's intern     working on a one-off job                          BSBA
+ ● intern     FIN1209's intern    working on a one-off job                          FIN1209
+ ○ helper     FIN1209's helper    idle: a job with no record                        no project
+ ○ helper     Denver's helper     idle: Drafting posts in a local file              Social Media Marketing
+   Interns stand beside their person in charge for one job, then go home. Sleeping agents cost nothing.
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   tap an agent to open its chat   up/down pick one   p pause   q quit                            updates by itself
+===== 2 the quiz helper's pane appears mid-run
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System     Sun 21:00
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀    ▀▀▀▀▀▀▀▀▀   ▀▀▀▀▀▀▀▀▀▀▀▀▀           │ LIVE ACTIVITY real
+                                                         ▀   ▀ ▀ ▀ ▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀           │
+     ▀▀   ▀▀   ▀▀                        ▀▀▀▀▀▀▀ ▀▀▀▀▀▀      ▀ ▀ ▀ ▀     ▀▀▀▀▀▀▀▀▀▀▀            │ 21:00  Denver calls in a helper
+▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀│
+    alumni             tasks        ▀▀▀▀     ▀▀▀            plan         memory         ▀▀▀▀▀▀▀ │
+   ▀▀▀                              ▀▀▀▀▀▀▀  ▀▀▀▀▀▀▀                                      ▀ ▀   │
+  ▀   ▀                    ▀▀▀▀▀  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                                   ▀ ▀   │
+                             ▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀   ▀▀▀    ▀▀▀                      ▀ ▀   │
+   ▀▀▀                                    ▀   ▀           ▀▀▀    ▀▀▀                      ▀ ▀   │
+                                          ▀▀▀▀▀         ▀▀▀▀▀▀▀▀▀▀▀▀▀▀                    ▀ ▀   │
+                                         ▀     ▀         ▀▀▀▀▀  ▀▀▀▀▀                     ▀ ▀   │
+                                         ▀▀▀▀▀▀▀        ▀ ▀▀▀ ▀▀ ▀▀▀ ▀                          │
+                                         Denver           ▀ ▀    ▀ ▀                    ▀▀▀▀▀▀▀ │
+   ▀▀▀▀▀▀▀▀▀                             working                                       system   │
+            Z                                                                           check   │
+    ▀▀▀▀▀▀▀                                                                                     │
+ ▀▀▀▀▀▀▀▀▀▀▀▀▀                                                                                  │
+ ▀▀▀▀▀▀▀▀▀▀z▀▀   ▀▀▀    ▀▀▀                                                        ▀▀▀          │
+     ▀▀▀▀▀       ▀▀▀    ▀▀▀                                                        ▀▀▀          │
+               ▀▀▀▀▀▀▀▀▀▀▀▀▀▀                                                    ▀▀▀▀▀▀▀        │
+                ▀▀▀▀▀  ▀▀▀▀▀                                                                    │
+     ▀▀▀▀▀     ▀ ▀▀▀ ▀▀ ▀▀▀ ▀                                                    ▀▀▀▀▀▀▀        │
+    FIN1209      ▀ ▀    ▀ ▀                                                        ▀▀▀          │
+    asleep                                                                          ▀         ▀▀│
+ ▀▀▀▀▀▀▀▀                                                                                       │
+ CAPTAIN                    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                  ▀  ▀▀ ▀  ▀  │
+                                          ▀▀▀▀▀▀▀▀▀                                  ▀▀▀        │
+       ▀                            ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                                       │
+                  inbox 0             ▀▀▀▀         ▀▀▀▀                                         │
+          ▀▀▀▀▀▀▀                       ▀▀▀         ▀▀▀                                       ▀▀│
+─ TEAM ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   NAME       ROLE                DOING NOW                                         PROJECT (the one it works in)
+ ● Denver     first mate          working, 1 intern and 2 helpers on jobs           every project
+ z FIN1209    second mate         asleep, 0 jobs listed                             FIN1209
+ ● intern     Denver's intern     working on a one-off job                          BSBA
+ ● intern     FIN1209's intern    working on a one-off job                          FIN1209
+ ◐ helper     Denver's helper     FIN1209 quiz one                                  FIN1209
+ ○ helper     FIN1209's helper    idle: a job with no record                        no project
+ ○ helper     Denver's helper     idle: Drafting posts in a local file              Social Media Marketing
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   tap an agent to open its chat   up/down pick one   p pause   q quit                            updates by itself
+===== 3 after tapping the first mate's desk
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System     Sun 21:00
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀    ▀▀▀▀▀▀▀▀▀   ▀▀▀▀▀▀▀▀▀▀▀▀▀           │ LIVE ACTIVITY real
+                                                         ▀   ▀ ▀ ▀ ▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀           │
+     ▀▀   ▀▀   ▀▀                        ▀▀▀▀▀▀▀ ▀▀▀▀▀▀      ▀ ▀ ▀ ▀     ▀▀▀▀▀▀▀▀▀▀▀            │ 21:00  Denver calls in a helper
+▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀│
+    alumni             tasks        ▀▀▀      ▀▀▀▀▀▀▀        plan         memory         ▀▀▀▀▀▀▀ │
+   ▀▀▀                              ▀▀▀▀▀▀▀  ▀▀▀▀▀▀▀                                      ▀ ▀   │
+  ▀   ▀                    ▀▀▀▀▀  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                                   ▀ ▀   │
+                             ▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀   ▀▀▀    ▀▀▀                      ▀ ▀   │
+   ▀▀▀                                    ▀   ▀           ▀▀▀    ▀▀▀                      ▀ ▀   │
+                                          ▀▀▀▀▀         ▀▀▀▀▀▀▀▀▀▀▀▀▀▀                    ▀ ▀   │
+                                         ▀     ▀         ▀▀▀▀▀  ▀▀▀▀▀                     ▀ ▀   │
+                                         ▀▀▀▀▀▀▀        ▀ ▀▀▀ ▀▀ ▀▀▀ ▀                          │
+                                         Denver           ▀ ▀    ▀ ▀                    ▀▀▀▀▀▀▀ │
+   ▀▀▀▀▀▀▀▀▀                             working                                   ▀22;38;2;2   │
+            Z                                                                     ▀   ▀ check   │
+    ▀▀▀▀▀▀▀                                                                       ▀▀ ▀▀         │
+ ▀▀▀▀▀▀▀▀▀▀z▀▀                                                                                  │
+ ▀▀▀▀▀▀▀▀▀z▀▀▀   ▀▀▀    ▀▀▀                                                      ▀▀▀▀▀▀▀        │
+     ▀▀▀▀▀       ▀▀▀    ▀▀▀                                                                     │
+               ▀▀▀▀▀▀▀▀▀▀▀▀▀▀                                                       ▀           │
+                ▀▀▀▀▀  ▀▀▀▀▀                                                        ▀           │
+     ▀▀▀▀▀     ▀ ▀▀▀ ▀▀ ▀▀▀ ▀                                                                   │
+    FIN1209      ▀ ▀    ▀ ▀                                                         ▀           │
+    asleep                                                                          ▀         ▀▀│
+ ▀▀▀▀▀▀▀▀                                                                                       │
+ CAPTAIN                    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                  ▀  ▀▀ ▀  ▀  │
+                                          ▀▀▀▀▀▀▀▀▀                                  ▀▀▀        │
+       ▀                            ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                                       │
+                  inbox 0             ▀▀▀▀         ▀▀▀▀                                         │
+          ▀▀▀▀▀▀▀                       ▀▀▀         ▀▀▀                                       ▀▀│
+─ TEAM ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   NAME       ROLE                DOING NOW                                         PROJECT (the one it works in)
+ ● Denver     first mate          working, 1 intern and 2 helpers on jobs           every project
+ z FIN1209    second mate         asleep, 0 jobs listed                             FIN1209
+ ● intern     Denver's intern     working on a one-off job                          BSBA
+ ● intern     FIN1209's intern    working on a one-off job                          FIN1209
+ ◐ helper     Denver's helper     FIN1209 quiz one                                  FIN1209
+ ○ helper     FIN1209's helper    idle: a job with no record                        no project
+ ○ helper     Denver's helper     idle: Drafting posts in a local file              Social Media Marketing
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ opening Denver's chat                                                                                            updates by itself
+===== 4 after tapping the BSBA intern's sprite
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System     Sun 21:00
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀    ▀▀▀▀▀▀▀▀▀   ▀▀▀▀▀▀▀▀▀▀▀▀▀           │ LIVE ACTIVITY real
+                                                         ▀   ▀ ▀ ▀ ▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀           │
+     ▀▀   ▀▀   ▀▀                        ▀▀▀▀▀▀▀ ▀▀▀▀▀▀      ▀ ▀ ▀ ▀     ▀▀▀▀▀▀▀▀▀▀▀            │ 21:00  Denver calls in a helper
+▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀│
+    alumni             tasks        ▀▀▀▀▀▀   ▀▀▀▀▀          plan         memory         ▀▀▀▀▀▀▀ │
+   ▀▀▀                              ▀▀▀▀▀▀▀  ▀▀▀▀▀▀▀                                      ▀ ▀   │
+  ▀   ▀                    ▀▀▀▀▀  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                                   ▀ ▀   │
+                             ▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀   ▀▀▀    ▀▀▀                      ▀ ▀   │
+   ▀▀▀                                    ▀   ▀           ▀▀▀    ▀▀▀                      ▀ ▀   │
+                                          ▀▀▀▀▀         ▀▀▀▀▀▀▀▀▀▀▀▀▀▀                    ▀ ▀   │
+                                         ▀     ▀         ▀▀▀▀▀  ▀▀▀▀▀              ▀▀▀    ▀ ▀   │
+                                         ▀▀▀▀▀▀▀        ▀ ▀▀▀ ▀▀ ▀▀▀ ▀             ▀▀▀          │
+                                         Denver           ▀ ▀    ▀ ▀             ▀▀▀▀▀▀▀▀▀▀▀▀▀▀ │
+   ▀▀▀▀▀▀▀▀▀                             working                                        ystem   │
+                                                                                 ▀ ▀▀▀ ▀check   │
+    ▀▀▀▀▀▀▀z                                                                       ▀ ▀          │
+ ▀▀▀▀▀▀▀▀▀▀▀▀▀                                                                      ▀           │
+ ▀▀▀▀▀▀▀▀▀z▀▀▀   ▀▀▀    ▀▀▀                                                         ▀           │
+     ▀▀▀▀▀       ▀▀▀    ▀▀▀                                                                     │
+               ▀▀▀▀▀▀▀▀▀▀▀▀▀▀                                                       ▀           │
+                ▀▀▀▀▀  ▀▀▀▀▀                                                        ▀           │
+     ▀▀▀▀▀     ▀ ▀▀▀ ▀▀ ▀▀▀ ▀                                                                   │
+    FIN1209      ▀ ▀    ▀ ▀                                                         ▀           │
+    asleep                                                                          ▀         ▀▀│
+ ▀▀▀▀▀▀▀▀                                                                                       │
+ CAPTAIN                    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                  ▀  ▀▀ ▀  ▀  │
+                                          ▀▀▀▀▀▀▀▀▀                                  ▀▀▀        │
+       ▀                            ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                                       │
+                  inbox 0             ▀▀▀▀         ▀▀▀▀                                         │
+          ▀▀▀▀▀▀▀                       ▀▀▀         ▀▀▀                                       ▀▀│
+─ TEAM ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   NAME       ROLE                DOING NOW                                         PROJECT (the one it works in)
+ ● Denver     first mate          working, 1 intern and 2 helpers on jobs           every project
+ z FIN1209    second mate         asleep, 0 jobs listed                             FIN1209
+ ● intern     Denver's intern     working on a one-off job                          BSBA
+ ● intern     FIN1209's intern    working on a one-off job                          FIN1209
+ ◐ helper     Denver's helper     FIN1209 quiz one                                  FIN1209
+ ○ helper     FIN1209's helper    idle: a job with no record                        no project
+ ○ helper     Denver's helper     idle: Drafting posts in a local file              Social Media Marketing
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ opening Denver's intern's chat                                                                                   updates by itself
+===== 5 after tapping a helper whose pane has closed
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System     Sun 21:00
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀    ▀▀▀▀▀▀▀▀▀   ▀▀▀▀▀▀▀▀▀▀▀▀▀           │ LIVE ACTIVITY real
+                                                         ▀   ▀ ▀ ▀ ▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀           │
+     ▀▀   ▀▀   ▀▀                        ▀▀▀▀▀▀▀ ▀▀▀▀▀▀      ▀ ▀ ▀ ▀     ▀▀▀▀▀▀▀▀▀▀▀            │ 21:00  Denver calls in a helper
+▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀│
+    alumni             tasks        ▀▀▀▀     ▀▀▀            plan         memory         ▀▀▀▀▀▀▀ │
+   ▀▀▀                              ▀▀▀▀▀▀▀  ▀▀▀▀▀▀▀                                      ▀ ▀   │
+  ▀   ▀                    ▀▀▀▀▀  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                                   ▀ ▀   │
+                             ▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀   ▀▀▀    ▀▀▀              ▀▀▀     ▀ ▀   │
+   ▀▀▀                                    ▀   ▀           ▀▀▀    ▀▀▀              ▀▀▀     ▀ ▀   │
+                                          ▀▀▀▀▀         ▀▀▀▀▀▀▀▀▀▀▀▀▀▀          ▀▀▀▀▀▀▀   ▀ ▀   │
+                                         ▀     ▀         ▀▀▀▀▀  ▀▀▀▀▀                     ▀ ▀   │
+                                         ▀▀▀▀▀▀▀        ▀ ▀▀▀ ▀▀ ▀▀▀ ▀          ▀▀▀▀▀▀▀         │
+                                         Denver           ▀ ▀    ▀ ▀              ▀▀▀   ▀▀▀▀▀▀▀ │
+   ▀▀▀▀▀▀▀▀▀                             working                                    ▀  system   │
+                                                                                    ▀   check   │
+    ▀▀▀▀▀▀▀z                                                                                    │
+ ▀▀▀▀▀▀▀▀▀z▀▀▀                                                                      ▀           │
+ ▀▀▀▀▀▀▀▀▀▀▀▀▀   ▀▀▀    ▀▀▀                                                         ▀           │
+     ▀▀▀▀▀       ▀▀▀    ▀▀▀                                                                     │
+               ▀▀▀▀▀▀▀▀▀▀▀▀▀▀                                                       ▀           │
+                ▀▀▀▀▀  ▀▀▀▀▀                                                        ▀           │
+     ▀▀▀▀▀     ▀ ▀▀▀ ▀▀ ▀▀▀ ▀                                                                   │
+    FIN1209      ▀ ▀    ▀ ▀                                                         ▀           │
+    asleep                                                                          ▀         ▀▀│
+ ▀▀▀▀▀▀▀▀                                                                                       │
+ CAPTAIN                    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                  ▀  ▀▀ ▀  ▀  │
+                                          ▀▀▀▀▀▀▀▀▀                                  ▀▀▀        │
+       ▀                            ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                                       │
+                  inbox 0             ▀▀▀▀         ▀▀▀▀                                         │
+          ▀▀▀▀▀▀▀                       ▀▀▀         ▀▀▀                                       ▀▀│
+─ TEAM ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   NAME       ROLE                DOING NOW                                         PROJECT (the one it works in)
+ ● Denver     first mate          working, 1 intern and 2 helpers on jobs           every project
+ z FIN1209    second mate         asleep, 0 jobs listed                             FIN1209
+ ● intern     Denver's intern     working on a one-off job                          BSBA
+ ● intern     FIN1209's intern    working on a one-off job                          FIN1209
+ ◐ helper     Denver's helper     FIN1209 quiz one                                  FIN1209
+ ○ helper     FIN1209's helper    idle: a job with no record                        no project
+ ○ helper     Denver's helper     idle: Drafting posts in a local file              Social Media Marketing
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ Denver's helper's chat has closed, so there is nothing to open                                                   updates by itself
+===== 6 Team view
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System     Sun 21:00
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+ 1 second mate    1 working    1 asleep or away    2 interns on jobs    3 helpers with no record                          real crew
+
+                                            ┌──────────────────────────────────────────┐
+                                            │ You, the captain: decisions and merges   │
+                                            │ nothing waits on you                     │
+                                            └─────────────────────┬────────────────────┘
+                                                                  │
+                             ┌────────────────────────────────────┴────────────────────────────────────┐
+                             │  ▀   ▀   Denver                                               ● working │
+                             │  ▀▀ ▀▀   Chief of staff: routes the work and supervises the crew        │
+                             │                                                                         │
+                             │ ▀▀▀▀▀▀▀  owns BSBA, Social Media Marketing, workspace, the setup itself │
+                             │          0 listed                                                       │
+                             └────────────────────────────────────┬────────────────────────────────────┘
+                                                                  ├─ ● working on a one-off job
+                                                                  ├─ ● FIN1209 quiz one
+                                                                  ├─ ○ idle: Drafting posts in a local file
+                                                                  │
+                                     ┌────────────────────────────┴───────────────────────────┐
+                                     │  ▀   ▀   FIN1209                              z asleep │
+                                     │  ▀▀ ▀▀   FIN1209 course                                │
+                                     │                                                        │
+                                     │ ▀▀▀▀▀▀▀  owns FIN1209                                  │
+                                     │          0 listed                                      │
+                                     └────────────────────────────────────────────────────────┘
+                                       ● working on a one-off job
+                                       ○ idle: a job with no record
+
+
+
+─ ABOUT FIN1209 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   Persistent second mate for FIN1209
+   Scope: FIN1209 course
+
+
+
+─ ALUMNI ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   No one has retired yet.
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   tap an agent to open its chat   up/down pick a second mate   q quit                            updates by itself
+===== 7 after tapping the FIN1209 card on the Team view
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System     Sun 21:00
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+ 1 second mate    1 working    1 asleep or away    2 interns on jobs    3 helpers with no record                          real crew
+
+                                            ┌──────────────────────────────────────────┐
+                                            │ You, the captain: decisions and merges   │
+                                            │ nothing waits on you                     │
+                                            └─────────────────────┬────────────────────┘
+                                                                  │
+                             ┌────────────────────────────────────┴────────────────────────────────────┐
+                             │  ▀   ▀   Denver                                               ● working │
+                             │  ▀▀ ▀▀   Chief of staff: routes the work and supervises the crew        │
+                             │                                                                         │
+                             │ ▀▀▀▀▀▀▀  owns BSBA, Social Media Marketing, workspace, the setup itself │
+                             │          0 listed                                                       │
+                             └────────────────────────────────────┬────────────────────────────────────┘
+                                                                  ├─ ● working on a one-off job
+                                                                  ├─ ● FIN1209 quiz one
+                                                                  ├─ ○ idle: Drafting posts in a local file
+                                                                  │
+                                     ┌────────────────────────────┴───────────────────────────┐
+                                     │  ▀   ▀   FIN1209                              z asleep │
+                                     │  ▀▀ ▀▀   FIN1209 course                                │
+                                     │                                                        │
+                                     │ ▀▀▀▀▀▀▀  owns FIN1209                                  │
+                                     │          0 listed                                      │
+                                     └────────────────────────────────────────────────────────┘
+                                       ● working on a one-off job
+                                       ○ idle: a job with no record
+
+
+
+─ ABOUT FIN1209 ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   Persistent second mate for FIN1209
+   Scope: FIN1209 course
+
+
+
+─ ALUMNI ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   No one has retired yet.
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ opening FIN1209's chat                                                                                           updates by itself
+===== 8 the quiz helper's pane closes
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System     Sun 21:01
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀    ▀▀▀▀▀▀▀▀▀   ▀▀▀▀▀▀▀▀▀▀▀▀▀           │ LIVE ACTIVITY real
+                                                         ▀   ▀ ▀ ▀ ▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀           │
+     ▀▀   ▀▀   ▀▀                        ▀▀▀▀▀▀▀ ▀▀▀▀▀▀      ▀ ▀ ▀ ▀     ▀▀▀▀▀▀▀▀▀▀▀            │ 21:01  Denver's helper finished,
+▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀│        goes home
+    alumni             tasks        ▀▀▀▀▀▀▀  ▀▀▀▀▀▀         plan         memory         ▀▀▀▀▀▀▀ │
+   ▀▀▀                              ▀▀▀▀▀▀▀  ▀▀▀▀▀▀▀                                      ▀ ▀   │ 21:00  Denver calls in a helper
+  ▀   ▀                    ▀▀▀▀▀  ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                                   ▀ ▀   │
+                             ▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀   ▀▀▀    ▀▀▀                      ▀ ▀   │
+   ▀▀▀                                    ▀   ▀           ▀▀▀    ▀▀▀                      ▀ ▀   │
+                                          ▀▀▀▀▀         ▀▀▀▀▀▀▀▀▀▀▀▀▀▀                    ▀ ▀   │
+                                         ▀     ▀         ▀▀▀▀▀  ▀▀▀▀▀                     ▀ ▀   │
+                                         ▀▀▀▀▀▀▀        ▀ ▀▀▀ ▀▀ ▀▀▀ ▀            ▀   ▀         │
+                                         Denver           ▀ ▀    ▀ ▀      ▀▀ ▀▀ ▀▀▀▀ ▀▀ ▀▀▀▀▀▀▀ │
+   ▀▀▀▀▀▀▀▀▀                             working                                        ystem   │
+                                                                                 ▀▀▀▀▀▀▀check   │
+    ▀▀▀▀▀▀▀z                                                                        ▀           │
+ ▀▀▀▀▀▀▀▀▀z▀▀▀                                                                      ▀           │
+ ▀▀▀▀▀▀▀▀▀▀▀▀▀   ▀▀▀    ▀▀▀                                                                     │
+     ▀▀▀▀▀       ▀▀▀    ▀▀▀                                                         ▀           │
+               ▀▀▀▀▀▀▀▀▀▀▀▀▀▀                                                       ▀           │
+                ▀▀▀▀▀  ▀▀▀▀▀                                                                    │
+     ▀▀▀▀▀     ▀ ▀▀▀ ▀▀ ▀▀▀ ▀                                                       ▀           │
+    FIN1209      ▀ ▀    ▀ ▀                                                         ▀           │
+    asleep                                                                                    ▀▀│
+ ▀▀▀▀▀▀▀▀                                                                           ▀           │
+ CAPTAIN                    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                  ▀▀  ▀  ▀    │
+                                          ▀▀▀▀▀▀▀▀▀                                  ▀▀▀        │
+       ▀                            ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                                       │
+                  inbox 0             ▀▀▀▀         ▀▀▀▀                                         │
+          ▀▀▀▀▀▀▀                       ▀▀▀         ▀▀▀                                       ▀▀│
+─ TEAM ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   NAME       ROLE                DOING NOW                                         PROJECT (the one it works in)
+ ● Denver     first mate          working, 1 intern and 1 helper on jobs            every project
+ z FIN1209    second mate         asleep, 0 jobs listed                             FIN1209
+ ● intern     Denver's intern     working on a one-off job                          BSBA
+ ● intern     FIN1209's intern    working on a one-off job                          FIN1209
+ ○ helper     FIN1209's helper    idle: a job with no record                        no project
+ ○ helper     Denver's helper     idle: Drafting posts in a local file              Social Media Marketing
+   Interns stand beside their person in charge for one job, then go home. Sleeping agents cost nothing.
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   tap an agent to open its chat   up/down pick one   p pause   q quit                            updates by itself

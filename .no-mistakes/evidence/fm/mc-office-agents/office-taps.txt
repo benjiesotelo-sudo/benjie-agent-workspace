@@ -1,0 +1,22 @@
+== office taps at 132x44
+first-mate-desk                tap(44,8) rc=0 herdr:[agent focus w1:p1] footer: opening Denver's chat updates by itself
+bsba-intern-sprite             tap(59,12) rc=0 herdr:[agent focus w3:p1] footer: opening Denver's intern's chat updates by itself
+fin1209-quiz-helper-sprite     tap(66,12) rc=0 herdr:[agent focus w4:p1] footer: opening Denver's helper's chat updates by itself
+smm-helper-sprite              tap(73,12) rc=0 herdr:[agent focus w5:p1] footer: opening Denver's helper's chat updates by itself
+fin-mate-desk                  tap(6,20) rc=0 herdr:[agent focus w2:p1] footer: opening FIN1209's chat updates by itself
+mate-own-home-intern-sprite    tap(17,22) rc=0 herdr:[agent focus w6:p1] footer: opening FIN1209's intern's chat updates by itself
+mate-helper-sprite             tap(24,22) rc=0 herdr:[agent focus w7:p1] footer: opening FIN1209's helper's chat updates by itself
+empty-floor                    tap(95,12) rc=0 herdr:[] footer: 1-9 switch view tap an agent to open its chat up/down pick one p pause q quit updates by itself
+empty-floor                    tap(30,30) rc=0 herdr:[] footer: 1-9 switch view tap an agent to open its chat up/down pick one p pause q quit updates by itself
+title-bar                      tap(0,0) rc=0 herdr:[] footer: 1-9 switch view tap an agent to open its chat up/down pick one p pause q quit updates by itself
+== office taps at 170x50
+first-mate-desk                tap(44,8) rc=0 herdr:[agent focus w1:p1] footer: opening Denver's chat updates by itself
+bsba-intern-sprite             tap(59,12) rc=0 herdr:[agent focus w3:p1] footer: opening Denver's intern's chat updates by itself
+fin1209-quiz-helper-sprite     tap(66,12) rc=0 herdr:[agent focus w4:p1] footer: opening Denver's helper's chat updates by itself
+smm-helper-sprite              tap(73,12) rc=0 herdr:[agent focus w5:p1] footer: opening Denver's helper's chat updates by itself
+fin-mate-desk                  tap(6,20) rc=0 herdr:[agent focus w2:p1] footer: opening FIN1209's chat updates by itself
+mate-own-home-intern-sprite    tap(17,22) rc=0 herdr:[agent focus w6:p1] footer: opening FIN1209's intern's chat updates by itself
+mate-helper-sprite             tap(24,22) rc=0 herdr:[agent focus w7:p1] footer: opening FIN1209's helper's chat updates by itself
+empty-floor                    tap(95,12) rc=0 herdr:[] footer: 1-9 switch view tap an agent to open its chat up/down pick one p pause q quit updates by itself
+empty-floor                    tap(30,30) rc=0 herdr:[] footer: 1-9 switch view tap an agent to open its chat up/down pick one p pause q quit updates by itself
+title-bar                      tap(0,0) rc=0 herdr:[] footer: 1-9 switch view tap an agent to open its chat up/down pick one p pause q quit updates by itself
