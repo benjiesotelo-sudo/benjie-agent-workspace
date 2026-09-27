@@ -104,7 +104,7 @@ jq -n --arg home "$HOME_DIR" --arg mate "$MATE" --arg w1 "$TMP_ROOT/wt-secret-on
 mcw() {  # <now> <args...>
   local now=$1
   shift
-  PATH="$FAKEBIN:$PATH" FM_HOME="$HOME_DIR" FM_BRIDGE_NOW="$now" FM_MC_HERDR="$FAKEBIN/herdr" "$MCW" "$@"
+  TZ=UTC-8 PATH="$FAKEBIN:$PATH" FM_HOME="$HOME_DIR" FM_BRIDGE_NOW="$now" FM_MC_HERDR="$FAKEBIN/herdr" "$MCW" "$@"
 }
 
 OUT="$TMP_ROOT/page"
