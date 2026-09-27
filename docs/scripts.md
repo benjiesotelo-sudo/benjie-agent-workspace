@@ -22,6 +22,10 @@ The shared no-mistakes gate refusal for fleet lifecycle entrypoints is summarize
 | `fm_bridge.py`           | What the Bridge reads and counts, its `config/bridge.json` settings, and its GET-only server |
 | `fm-mission-control.sh` | Run Mission Control, the live read-only office screen, and keep its Herdr workspace |
 | `fm_mission_control.py`  | What Mission Control reads, how the crew maps onto the office, and how its frames are drawn |
+| `fm-controls.sh`         | Run Controls, the captain's tappable switch screen, and keep its Herdr workspace |
+| `fm_controls.py`         | What the Controls screen shows and what a tap on its switch changes |
+| `fm_merge_switch.py`     | Read and set the merge switch, the two merge allow rules in the home's local Claude settings |
+| `fm-herdr-screen-lib.sh` | Keep one full-screen program running in its own labelled Herdr workspace |
 | `fm-secondmate-reconcile.sh` | Ask each secondmate to reconcile an inventory mismatch through its durable inbox, limited by a per-home cooldown |
 | `fm-update.sh`           | Fast-forward-only self-update of firstmate and local or remote secondmate homes       |
 | `fm-on.sh`               | Execute one tracked Firstmate command in a configured remote secondmate home, using its job worker except for the doctor bootstrap |
