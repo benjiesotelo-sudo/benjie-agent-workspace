@@ -112,8 +112,8 @@ Up and down pick a page, tapping a row picks it, and Page Up, Page Down or the m
 ![The Docs view: reports, decisions and links, with a report open in the reader](mission-control/docs.png)
 
 Important links come first, pinned at the top: the System Map, the Bridge page, the public Mission Control page once it is set up, then your saved links from the Bridge's settings, each with its full address printed so you can tap it from Termius.
-Every report and decision page follows, newest first, each with its kind and project.
-Left and right show only one kind, up and down pick a document, and Page Up, Page Down or the wheel scroll it.
+Every report and decision page follows, newest first, each with its kind and project; the newest one is open when the view first shows.
+Left and right show only one kind, up and down pick a document starting from the one open (up reaches the pinned links), and Page Up, Page Down or the wheel scroll it.
 The reader shows headings, lists and tables as text; a picture shows as a "picture:" line with its caption, because a terminal cannot show images.
 
 ### 9 System

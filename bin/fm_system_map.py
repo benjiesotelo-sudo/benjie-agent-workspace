@@ -75,8 +75,9 @@ icon, both fetched by the page from the pinned packages on cdn.jsdelivr.net
 and drawn in one ink colour; only path and shape elements are copied in.
 
 READ ONLY AND PRIVATE. Nothing here writes a file or changes anything. Every
-string in the map passes scrub(), which removes file paths, web links, email
-addresses and long token-like strings; hook and LaunchAgent commands are never
+shown string in the map passes scrub(), which removes file paths, web links,
+email addresses and long token-like strings; the identifiers the page joins on
+(_IDS) are left whole so two nodes never collapse into one; hook and LaunchAgent commands are never
 shown, only the event and the scripts' own descriptions; .env and credentials
 are never read.
 
