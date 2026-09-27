@@ -1503,6 +1503,27 @@ J3=$(mc "$BIG" frame --agents "$TMP_ROOT/big.json" --size 132x44 --format json)
 [ "$(jq -r '.team[0].name' <<<"$J3")" = "First mate" ] || fail "without the settings file the first mate is First mate"
 pass "seven mates open a second floor with a sign, busiest downstairs"
 
+# Eight mates and no interns overflow the office's team list: the count of the rest stays.
+BIG8="$TMP_ROOT/big8ship"
+mkdir -p "$BIG8/state" "$TMP_ROOT/m8/data" "$TMP_ROOT/m8/state"
+cp -R "$BIG/data" "$BIG/config" "$BIG8/"
+printf '# Backlog\n\n## In flight\n## Queued\n## Done\n' > "$TMP_ROOT/m8/data/backlog.md"
+echo "- m8-mate - Mate number 8 (home: $TMP_ROOT/m8; scope: area 8; projects: p8; added 2026-09-01)" \
+  >> "$BIG8/data/secondmates.md"
+jq -n '{result: {agents: []}}' > "$TMP_ROOT/none.json"
+T8=$(mc "$BIG8" frame --agents "$TMP_ROOT/none.json" --size 132x44) || fail "eight-mate text failed"
+grep -q '^   +2 more' <<<"$T8" || fail "a crowded list with no interns still counts the mates it cannot show"
+grep -q 'none right now' <<<"$T8" && fail "the no-interns row never covers the count"
+
+# The first mate's hidden team lines are counted as what they are.
+meta "$BIG8" b1 "$TMP_ROOT/wt-b1" "$BIG8/projects/beta"
+jq -n --arg home "$BIG8" '{result: {agents: [range(1; 10) as $n | {pane_id: "w5:p\($n)", agent_status: "idle",
+  cwd: ($home + "/scratch"), terminal_title_stripped: "Job \($n)"}]}}' > "$TMP_ROOT/big8-helpers.json"
+TH=$(mc "$BIG8" frame --agents "$TMP_ROOT/big8-helpers.json" --size 132x44 --view team) || fail "team text failed"
+grep -Eq '├─ [0-9]+ helpers? more' <<<"$TH" || fail "hidden helpers are counted as helpers"
+grep -q 'more intern\|interns\? and' <<<"$TH" && fail "no helper is counted as an intern, and no zero count shows"
+pass "a list with no room counts every row it hides, helpers as helpers"
+
 readings "$TMP_ROOT/big-ok.json" '.mates = ([range(1; 8) | {key: "m\(.)-mate", value: 180}] | from_entries)'
 BS=$(mc "$BIG" frame --readings "$TMP_ROOT/big-ok.json" --agents "$TMP_ROOT/big.json" --view system --size 96x37) \
   || fail "seven-mate system frame failed"

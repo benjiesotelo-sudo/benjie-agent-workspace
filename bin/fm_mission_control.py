@@ -1621,6 +1621,7 @@ def _office_screen(cv, ui, scene, renderer, now, healthy, notice):
         if len(rows_out) > last - r + 1:
             cv.put(3, last, "+%d more" % (len(rows_out) - (last - r)), SOFT)
             rows_out = rows_out[:last - r]
+            last -= 1
     for m in rows_out:
         if r > last:
             break
@@ -2211,9 +2212,9 @@ def _intern_line(cv, c, r, i, width):
     cv.put(c + 2, r, clip(i["doing"], width - 2), INK if i["status"] == "work" else QUIET)
 
 
-def _hidden(cv, c0, r0, w, n):
+def _hidden(cv, c0, r0, w, rest):
     """How many of a card's interns found no row, on its bottom border."""
-    s = " %s " % bridge._plural(n, "more intern")
+    s = " %s more " % _interns_words(rest)
     cv.put(c0 + w - 2 - len(s), r0 + TEAM_CARD_H - 1, s, SOFT)
 
 
@@ -2282,10 +2283,10 @@ def _team_screen(cv, ui, scene):
         _intern_line(cv, cx + 3, r, i, C - cx - 5)
         ui.agent_hits.append((r, r + 1, cx + 3, C, i["key"]))
         r += 1
-    rest = len(fm["interns"]) - len(lines)
+    rest = fm["interns"][len(lines):]
     if rest and room > 0:
         cv.put(cx, r, "├─" if mates else "└─", WIRE)
-        cv.put(cx + 3, r, bridge._plural(rest, "more intern"), SOFT)
+        cv.put(cx + 3, r, _interns_words(rest) + " more", SOFT)
         r += 1
     elif rest:
         _hidden(cv, c0, 10, w, rest)
@@ -2320,9 +2321,9 @@ def _team_screen(cv, ui, scene):
             for j, i in enumerate(lines):
                 _intern_line(cv, c0 + 2, top + TEAM_CARD_H + j, i, w - 3)
                 ui.agent_hits.append((top + TEAM_CARD_H + j, top + TEAM_CARD_H + j + 1, c0, c0 + w, i["key"]))
-            rest = len(ins) - len(lines)
+            rest = ins[len(lines):]
             if rest and avail > 0:
-                cv.put(c0 + 2, top + TEAM_CARD_H + len(lines), bridge._plural(rest, "more intern"), SOFT)
+                cv.put(c0 + 2, top + TEAM_CARD_H + len(lines), _interns_words(rest) + " more", SOFT)
             elif rest:
                 _hidden(cv, c0, top, w, rest)
 
