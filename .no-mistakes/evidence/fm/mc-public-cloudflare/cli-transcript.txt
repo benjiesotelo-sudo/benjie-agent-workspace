@@ -1,0 +1,142 @@
+=== 1. no credentials in .env: publish refuses, nothing sent ===
+$ /Users/benjie/.no-mistakes/worktrees/40995176e50b/01M3HY56JX26T8PXKDEA2Z0M20/bin/fm-mission-control-web.sh publish /tmp/mcw-live/page --agents /tmp/mcw-live/agents.json
+fm-mission-control-web: CLOUDFLARE_API_TOKEN is not set in /tmp/mcw-live/home/.env
+[exit 1]
+
+curl calls so far:        0
+
+=== 2. credentials only in the shell: still refused ===
+$ env CLOUDFLARE_API_TOKEN=liveFixtureTOKEN_987654321 CLOUDFLARE_ACCOUNT_ID=fedcba9876543210fedcba9876543210 /Users/benjie/.no-mistakes/worktrees/40995176e50b/01M3HY56JX26T8PXKDEA2Z0M20/bin/fm-mission-control-web.sh publish /tmp/mcw-live/page --agents /tmp/mcw-live/agents.json
+fm-mission-control-web: CLOUDFLARE_API_TOKEN is not set in /tmp/mcw-live/home/.env
+[exit 1]
+
+=== 3. install refused without credentials; no plist written ===
+$ /Users/benjie/.no-mistakes/worktrees/40995176e50b/01M3HY56JX26T8PXKDEA2Z0M20/bin/fm-mission-control-web.sh install /tmp/mcw-live/page
+fm-mission-control-web: no such folder: /tmp/mcw-live/page
+[exit 1]
+
+(no LaunchAgents dir / plist)
+
+=== 4. first publish with credentials in .env ===
+$ /Users/benjie/.no-mistakes/worktrees/40995176e50b/01M3HY56JX26T8PXKDEA2Z0M20/bin/fm-mission-control-web.sh publish /tmp/mcw-live/page --agents /tmp/mcw-live/agents.json
+changed: index.html style.css app.js .nojekyll snapshot.json
+fm-mission-control-web: created the Pages project mc-live-test
+fm-mission-control-web: wrote the snapshot to Workers KV and deployed the page for https://mc-live-test-abc.pages.dev
+[exit 0]
+
+API calls:
+GET /storage/kv/namespaces?per_page=100&page=1
+POST /storage/kv/namespaces
+PUT /storage/kv/namespaces/ns0/values/snapshot.json
+GET /pages/projects/mc-live-test
+POST /pages/projects
+wrangler:
+wrangler pages deploy public --project-name mc-live-test --branch main --commit-dirty=true
+token-in-env: yes
+staged deploy folder:
+./functions/snapshot.json.js
+./public/app.js
+./public/index.html
+./public/style.css
+./wrangler.toml
+wrangler.toml:
+name = "mc-live-test"
+pages_build_output_dir = "public"
+compatibility_date = "2025-09-01"
+
+[[kv_namespaces]]
+binding = "SNAPSHOT"
+id = "ns0"
+
+record:
+namespace=mc-live-test-snapshot:ns0
+snapshot=62ff453f981c51c6620be84b593efda432a234712268dcac504f0b57d7a087a9
+page=82c55fced228c9a6b38dcad73c6c5758148a66ec49ca857830e6fa657a3473f7
+url=https://mc-live-test-abc.pages.dev
+
+=== 5. next scheduled run, nothing changed ===
+$ /Users/benjie/.no-mistakes/worktrees/40995176e50b/01M3HY56JX26T8PXKDEA2Z0M20/bin/fm-mission-control-web.sh publish /tmp/mcw-live/page --agents /tmp/mcw-live/agents.json
+changed: nothing
+fm-mission-control-web: unchanged; nothing to upload
+[exit 0]
+
+API calls:        0  deploys: 1
+
+=== 6. crew changes (a task finishes): only the KV snapshot is rewritten ===
+$ env FM_BRIDGE_NOW=2026-09-28T10:05:00 /Users/benjie/.no-mistakes/worktrees/40995176e50b/01M3HY56JX26T8PXKDEA2Z0M20/bin/fm-mission-control-web.sh publish /tmp/mcw-live/page --agents /tmp/mcw-live/agents.json
+changed: snapshot.json
+fm-mission-control-web: wrote the snapshot to Workers KV for https://mc-live-test-abc.pages.dev
+[exit 0]
+
+API calls:
+PUT /storage/kv/namespaces/ns0/values/snapshot.json
+deploys: 1
+
+=== 7. install + status ===
+$ /Users/benjie/.no-mistakes/worktrees/40995176e50b/01M3HY56JX26T8PXKDEA2Z0M20/bin/fm-mission-control-web.sh install /tmp/mcw-live/page
+fm-mission-control-web: installed; publishes /private/tmp/mcw-live/page every 5 minutes (log: /tmp/mcw-live/state/mission-control-web.log)
+[exit 0]
+
+plist ProgramArguments/StartInterval:
+["\/bin\/bash","\/Users\/benjie\/.no-mistakes\/worktrees\/40995176e50b\/01M3HY56JX26T8PXKDEA2Z0M20\/bin\/fm-mission-control-web.sh","publish","\/private\/tmp\/mcw-live\/page"]
+300
+token occurrences in plist: 0
+$ /Users/benjie/.no-mistakes/worktrees/40995176e50b/01M3HY56JX26T8PXKDEA2Z0M20/bin/fm-mission-control-web.sh status
+schedule: loaded, every 5 minutes (com.firstmate.mission-control-web)
+folder: /private/tmp/mcw-live/page
+snapshot: 2026-09-28T02:05:00Z
+host: Cloudflare Pages project mc-live-test
+address: https://mc-live-test-abc.pages.dev
+last log line: 
+[exit 0]
+
+$ /Users/benjie/.no-mistakes/worktrees/40995176e50b/01M3HY56JX26T8PXKDEA2Z0M20/bin/fm-mission-control-web.sh uninstall
+fm-mission-control-web: uninstalled
+[exit 0]
+
+=== 8. token leak sweep (outside .env and the stand-in bin) ===
+token found nowhere else
+token never on a curl command line
+
+=== 9. unknown host (typo 'cloudfare'): publish and install refuse, no plist ===
+$ /Users/benjie/.no-mistakes/worktrees/40995176e50b/01M3HY56JX26T8PXKDEA2Z0M20/bin/fm-mission-control-web.sh publish /tmp/mcw-live/page --agents /tmp/mcw-live/agents.json
+fm-mission-control-web: public_page.host in config/mission-control.json is "cloudfare"; use "github" or "cloudflare"
+[exit 1]
+
+$ /Users/benjie/.no-mistakes/worktrees/40995176e50b/01M3HY56JX26T8PXKDEA2Z0M20/bin/fm-mission-control-web.sh install /tmp/mcw-live/page
+fm-mission-control-web: public_page.host in config/mission-control.json is "cloudfare"; use "github" or "cloudflare"
+[exit 1]
+
+(eval):42: no matches found: /tmp/mcw-live/agents/*.plist
+(no plist written)
+
+=== 10. invalid project name: refused by name, no API call, no plist ===
+$ /Users/benjie/.no-mistakes/worktrees/40995176e50b/01M3HY56JX26T8PXKDEA2Z0M20/bin/fm-mission-control-web.sh publish /tmp/mcw-live/page --agents /tmp/mcw-live/agents.json
+changed: snapshot.json
+fm-mission-control-web: public_page.project in config/mission-control.json is "My Page"; use lowercase letters, digits and hyphens
+[exit 1]
+
+API calls:        0
+$ /Users/benjie/.no-mistakes/worktrees/40995176e50b/01M3HY56JX26T8PXKDEA2Z0M20/bin/fm-mission-control-web.sh install /tmp/mcw-live/page
+fm-mission-control-web: public_page.project in config/mission-control.json is "My Page"; use lowercase letters, digits and hyphens
+[exit 1]
+
+(eval):49: no matches found: /tmp/mcw-live/agents/*.plist
+(no plist written)
+
+=== 3 (re-driven with an existing folder). install without credentials in .env: refused, no plist ===
+$ /Users/benjie/.no-mistakes/worktrees/40995176e50b/01M3HY56JX26T8PXKDEA2Z0M20/bin/fm-mission-control-web.sh install /tmp/mcw-live/page   (.env removed; token exported in the shell)
+fm-mission-control-web: CLOUDFLARE_API_TOKEN is not set in /tmp/mcw-live/home/.env
+[exit 1]
+(no plist written)
+
+=== 11. Mission Control's page code is improved (app.js changes): next run redeploys the page only ===
+$ <updated checkout>/bin/fm-mission-control-web.sh publish /tmp/mcw-live/page
+changed: app.js snapshot.json
+fm-mission-control-web: wrote the snapshot to Workers KV and deployed the page for https://mc-live-test-abc.pages.dev
+[exit 0]
+API calls:
+PUT /storage/kv/namespaces/ns0/values/snapshot.json
+GET /pages/projects/mc-live-test
+deploys so far: 2
+)();// a later improvement to the page   <- tail of the deployed app.js
