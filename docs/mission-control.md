@@ -50,6 +50,7 @@ Each space reads as the agent it belongs to: the first mate's name, each second 
 Each agent in the agents list shows who it is: the first mate's name, a second mate's name, or "<name>'s intern" after whoever is in charge of the intern (an agent no record claims reads "<name>'s helper").
 Its job shows as a second, dimmed line.
 A space firstmate still opens for a single intern reads "<name>'s intern · <job>", for example "Denver's intern · BSBA Spec revision 2".
+The space firstmate opens its own interns in reads "<name>'s interns", for example "Denver's interns", unless the first mate's own window is in it, so only one space ever reads the first mate's name.
 The names come from `config/mission-control.json` (see Settings below).
 Herdr shows them only with the sidebar settings in [`herdr-config.toml`](herdr-config.toml): add those lines to `~/.config/herdr/config.toml`, run `herdr config check`, then press Ctrl+B then Shift+R.
 Without those settings the sidebar looks as it always has, because the naming step only sets display values.

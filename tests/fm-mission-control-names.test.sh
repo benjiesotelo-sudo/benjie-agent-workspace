@@ -148,7 +148,7 @@ fresh_herdr
 OUT=$(names) || fail "names failed: $OUT"
 
 for pair in "w1|Denver" "w2|Alpha" "w3|Denver's intern · Print the handouts" "w4|Mission Control" \
-  "w5|Controls" "w6|scratch" "w7|gone-job" "w8|Denver" "w9|2ndmate-unknown-mate"; do
+  "w5|Controls" "w6|scratch" "w7|gone-job" "w8|Denver's interns" "w9|2ndmate-unknown-mate"; do
   id=${pair%%|*} want=${pair#*|}
   [ "$(space_name "$id")" = "$want" ] || fail "space $id should show '$want', shows '$(space_name "$id")'"
 done
@@ -175,6 +175,14 @@ grep -Ev '^(workspace report-metadata w[0-9]+ --source mission-control --token n
   "$HX/calls.log" && fail "names made a call other than a display value"
 grep -q 'w6 ' "$HX/calls.log" && fail "a space already showing its name was sent it again"
 pass "names only sets display values: no rename, move, close, create or focus"
+
+fresh_herdr
+jq '(.result.workspaces[] | select(.workspace_id == "w1")).label = "firstmate"' "$HX/spaces.json" > "$HX/s.tmp" \
+  && mv "$HX/s.tmp" "$HX/spaces.json"
+OUT=$(names) || fail "names failed: $OUT"
+[ "$(space_name w1)" = Denver ] || fail "a firstmate space holding the first mate's window should show 'Denver', shows '$(space_name w1)'"
+[ "$(space_name w8)" = "Denver's interns" ] || fail "the other firstmate space should show \"Denver's interns\", shows '$(space_name w8)'"
+pass "only the space holding the first mate's window reads the first mate's name"
 
 # --- again, after a restart, refused ---------------------------------------
 

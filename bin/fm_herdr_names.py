@@ -40,7 +40,8 @@ first_mate_name and names map (fm_mission_control.py's header owns them).
     a space holding the first mate's window reads first_mate_name;
     a space holding a second mate's window, or named 2ndmate-<id> for a
       registered second mate, reads that mate's name;
-    a space named firstmate reads first_mate_name;
+    a space named firstmate that does not hold the first mate's window reads
+      "<first_mate_name>'s interns", so no two spaces read first_mate_name;
     mission-control and controls read Mission Control and Controls;
     any other space reads its own name, so its sidebar line is never blank.
 
@@ -147,7 +148,7 @@ def plan(model, crew, spaces, windows, fm_name):
         elif label.startswith("2ndmate-") and label[len("2ndmate-"):] in mates:
             value = mc.mate_name(model, label[len("2ndmate-"):])
         elif label == "firstmate":
-            value = fm_name
+            value = "%s's interns" % fm_name
         else:
             value = SCREENS.get(label, label)
         value = _one_line(value)
