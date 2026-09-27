@@ -1,0 +1,28 @@
+# Herdr sidebar settings for Mission Control's plain names.
+# Add these lines to ~/.config/herdr/config.toml, run `herdr config check`,
+# then reload with Ctrl+B then Shift+R (or restart Herdr).
+# docs/mission-control.md ("Plain names in Herdr") explains what they show;
+# bin/fm_herdr_names.py sets the `$name` and `$job` values and the window names.
+# Deleting these lines restores Herdr's default sidebar.
+
+[ui]
+# Hide the tab strip in a space that has only one tab open.
+hide_tab_bar_when_single_tab = true
+# Keep agents grouped under their space (Herdr's default, written down).
+agent_panel_sort = "spaces"
+
+[ui.sidebar.spaces]
+# One line per space: its plain name.
+rows = [["state_icon", "$name"]]
+
+[ui.sidebar.agents]
+# Line 1: who it is (the window name). Line 2, dimmed: what it is working on.
+rows = [["state_icon", "pane"], [{ token = "$job", dim = true }]]
+
+# Ctrl+B then Alt+N puts the plain names back by hand, for example right after
+# Herdr restarts and before Mission Control is running again.
+# Change both paths if your firstmate home or repository lives elsewhere.
+[[keys.command]]
+key = "prefix+alt+n"
+type = "shell"
+command = "FM_HOME=/Users/benjie/benjie-agent-workspace /Users/benjie/benjie-agent-workspace/projects/benjie-agent-workspace/bin/fm-mission-control.sh names"

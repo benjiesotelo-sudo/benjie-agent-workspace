@@ -18,6 +18,16 @@
 #   stop                    close that workspace
 #   status                  report whether the workspace exists and whether the
 #                           screen is running in it
+#   names [--dry-run]       once, give Herdr's sidebar plain names: each space
+#                           and agent window reads the first mate's name, a
+#                           second mate's name, "<lead>'s intern" and so on,
+#                           with each agent's job as a display value; prints
+#                           each change (--dry-run prints them without making
+#                           them). The running screen repeats this every few
+#                           seconds.
+#                           bin/fm_herdr_names.py owns what it sets and the
+#                           names it never touches; docs/herdr-config.toml is
+#                           the Herdr settings that show them
 #   frame [--view <v>] [--size <cols>x<rows>] [--agents <file>] [--readings <file>]
 #         [--format text|json|ansi] [--keys <keys>]
 #                           print one frame from the records and a saved
@@ -98,6 +108,10 @@ cmd_run() {
   exec python3 "$PY" run --home "$FM_HOME" --config-dir "$CONFIG" --herdr "$SCREEN_HERDR"
 }
 
+cmd_names() {
+  exec python3 "$SCRIPT_DIR/fm_herdr_names.py" --home "$FM_HOME" --config-dir "$CONFIG" --herdr "$SCREEN_HERDR" "$@"
+}
+
 cmd_frame() {
   exec python3 "$PY" frame --home "$FM_HOME" --config-dir "$CONFIG" --herdr "$SCREEN_HERDR" "$@"
 }
@@ -105,6 +119,7 @@ cmd_frame() {
 case "${1:-}" in
   run) shift; cmd_run ;;
   frame) shift; cmd_frame "$@" ;;
+  names) shift; cmd_names "$@" ;;
   start) shift; screen_start ;;
   stop) shift; screen_stop ;;
   status) shift; screen_status ;;

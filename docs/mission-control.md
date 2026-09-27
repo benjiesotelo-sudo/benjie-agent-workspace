@@ -41,6 +41,26 @@ When Tailscale is not running it listens only on this Mac, and `status` says so.
 Taps work when your terminal reports mouse clicks.
 Each view below lists its own extra keys.
 
+## Plain names in Herdr
+
+While Mission Control runs, it also gives Herdr's sidebar plain names, every few seconds.
+Each space reads as the agent it belongs to: the first mate's name, each second mate's name, Mission Control and Controls.
+Each agent's window is named for who it is: the first mate's name, a second mate's name, or "<name>'s intern" after whoever is in charge of the intern (a window no record claims reads "<name>'s helper").
+Its job shows as a second, dimmed line.
+A space firstmate still opens for a single intern reads "└ <name>'s intern" and that intern's job.
+The names come from `config/mission-control.json` (see Settings below).
+Herdr shows them only with the sidebar settings in [`herdr-config.toml`](herdr-config.toml): add those lines to `~/.config/herdr/config.toml`, run `herdr config check`, then press Ctrl+B then Shift+R.
+Without those settings the sidebar looks as it always has.
+
+To name everything once without the screen, run `bin/fm-mission-control.sh names`; `--dry-run` only lists what it would change.
+Herdr forgets the space names and jobs when Herdr itself restarts, so they come back when Mission Control starts again, or at once with Ctrl+B then Alt+N, which those settings bind to the same command.
+Window names survive a restart.
+
+The naming step only sets display names.
+It never renames a space or a tab, never moves, closes or opens anything, and never touches the crew's records.
+It never renames a window whose name starts with `fm-`, `2ndmate-`, `firstmate` or `└`, because firstmate finds its own work again by those names; helper tabs therefore keep firstmate's short job names such as `fm-bsba-rev2`.
+`bin/fm_herdr_names.py` has the exact rules.
+
 ## The nine views
 
 ### 1 Office
@@ -133,6 +153,6 @@ It is rebuilt from the records when you open or refresh it.
 ## Settings
 
 Both settings files live in this home's `config/` folder and are optional.
-`config/mission-control.json` can set `first_mate_name`, the first mate's name on screen; an edit shows without a restart.
+`config/mission-control.json` can set `first_mate_name`, the first mate's name on screen, and `names`, the name each project (and so each second mate) goes by; an edit shows without a restart, in Herdr's sidebar too.
 `config/bridge.json` sets the Bridge's port, address, first mate name, display names and saved links; the Bridge writes a commented example the first time it runs.
 The full command reference is in the headers of `bin/fm-mission-control.sh` and `bin/fm-bridge.sh`.

@@ -165,7 +165,7 @@ family_for_basename() {
     fm-backend-herdr-eventwait-smoke.test.sh|fm-backend-herdr-presentation-e2e.test.sh|\
     fm-backend-herdr-launcher-workspace-e2e.test.sh|\
     fm-backend-herdr-prune-safety-e2e.test.sh|fm-backend-herdr-respawn-idem-e2e.test.sh|\
-    fm-herdr-session-cleanup-e2e.test.sh|\
+    fm-herdr-session-cleanup-e2e.test.sh|fm-mission-control-names-herdr-e2e.test.sh|\
     fm-backend-herdr-smoke.test.sh|fm-backend-herdr-workspace-per-home-e2e.test.sh|\
     fm-control-herdr-smoke.test.sh)
       printf '%s\n' real-herdr-gated
@@ -221,7 +221,8 @@ family_for_basename() {
       printf '%s\n' afk
       ;;
     fm-bearings-board-render.test.sh|fm-bearings-snapshot.test.sh|\
-    fm-fleet-snapshot-view.test.sh|fm-bridge.test.sh|fm-mission-control.test.sh|fm-controls.test.sh)
+    fm-fleet-snapshot-view.test.sh|fm-bridge.test.sh|fm-mission-control.test.sh|fm-controls.test.sh|\
+    fm-mission-control-names.test.sh)
       printf '%s\n' snapshot-bearings
       ;;
     fm-backend-cmux.test.sh|fm-backend-cmux-smoke.test.sh)
@@ -1019,7 +1020,7 @@ families_for_changed_path() {
       printf '%s\n' live-harness-optin
       ;;
     bin/fm-bearings-snapshot.sh|bin/fm-fleet-snapshot.sh|bin/fm-fleet-view.sh|\
-    bin/fm-bridge.sh|bin/fm_bridge.py|bin/fm-mission-control.sh|bin/fm_mission_control.py|\
+    bin/fm-bridge.sh|bin/fm_bridge.py|bin/fm-mission-control.sh|bin/fm_mission_control.py|bin/fm_herdr_names.py|\
     bin/fm-controls.sh|bin/fm_controls.py|bin/fm_merge_switch.py|bin/fm-herdr-screen-lib.sh)
       printf '%s\n' snapshot-bearings
       ;;

@@ -1,0 +1,287 @@
+#!/usr/bin/env python3
+"""fm_herdr_names.py - Mission Control's naming step: plain names in Herdr's sidebar.
+
+bin/fm-mission-control.sh owns the command surface (`names`), and
+bin/fm_mission_control.py owns who everyone is: this module asks its
+build_crew() for the crew, the same matching the Office uses, and turns it into
+names Herdr shows. The running screen repeats the step every NAMES_EVERY
+seconds through Keeper, because Herdr forgets display values when Herdr itself
+restarts.
+
+WHAT IT CHANGES, and nothing else:
+  a space     the display value `name` (`herdr workspace report-metadata
+              <space> --source mission-control --token name=<value>`), shown
+              by the sidebar's `$name` space token;
+  an agent's window
+              its window name (`herdr pane rename <pane> <name>`), shown by the
+              sidebar's `pane` agent token and kept across Herdr restarts, and
+              the display value `job` (`herdr pane report-metadata <pane>
+              --source mission-control --token job=<value>`), shown by the
+              `$job` agent token.
+A value that already reads right is not sent again. docs/herdr-config.toml is
+the sidebar settings that show these values.
+
+WHAT IT NEVER DOES. It never renames a space or a tab, never moves, closes,
+creates or focuses anything, and never writes a record. It never renames a
+window whose current name starts with fm-, 2ndmate-, firstmate or └ (the names
+firstmate itself uses to find its work again), and never gives a window such a
+name.
+
+THE NAMES. Settings are Mission Control's own: config/mission-control.json's
+first_mate_name and names map (fm_mission_control.py's header owns them).
+  Agent windows: the first mate reads first_mate_name with job "first mate"; a
+    second mate reads its Mission Control name (its first project's display
+    name) with job "second mate"; an intern or helper reads "<lead>'s intern"
+    or "<lead>'s helper" with its job in plain words (its backlog title, else
+    its window title).
+  Spaces, first rule that applies:
+    a firstmate helper space (its name starts with └) reads
+      "└ <lead>'s intern · <job>" for the intern whose window it holds, else
+      "└ <job>" from its own name without the " · p:<code>" suffix;
+    a space holding the first mate's window reads first_mate_name;
+    a space holding a second mate's window, or named 2ndmate-<id> for a
+      registered second mate, reads that mate's name;
+    a space named firstmate reads first_mate_name;
+    mission-control and controls read Mission Control and Controls;
+    any other space reads its own name, so its sidebar line is never blank.
+
+Environment: HERDR_SESSION is the session whose recorded endpoints count (as
+on the Office), default "default"; HERDR_PANE_ID, this screen's own window, is
+never named.
+"""
+
+import json
+import os
+import subprocess
+import sys
+import threading
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import fm_mission_control as mc  # noqa: E402  - the one owner of who everyone is
+
+SOURCE = "mission-control"
+SPACE_TOKEN = "name"
+JOB_TOKEN = "job"
+PROTECTED = ("fm-", "2ndmate-", "firstmate", "└")
+SCREENS = {"mission-control": "Mission Control", "controls": "Controls"}
+HELPER_SUFFIX = " · p:"
+NAMES_EVERY = 5.0
+
+
+def protected(name):
+    """True for a name firstmate relies on, which is never renamed or handed out."""
+    return bool(name) and name.startswith(PROTECTED)
+
+
+def _one_line(text):
+    return " ".join(mc.clean(text or "").split())
+
+
+def _herdr_json(herdr, args):
+    try:
+        proc = subprocess.run(list(herdr) + list(args), capture_output=True, text=True, timeout=5, check=False)
+    except (OSError, subprocess.SubprocessError):
+        return None
+    if proc.returncode != 0:
+        return None
+    try:
+        return json.loads(proc.stdout).get("result") or {}
+    except (ValueError, AttributeError):
+        return None
+
+
+def read_layout(herdr):
+    """(spaces, windows) from `herdr workspace list` and `herdr pane list`, or None."""
+    spaces = _herdr_json(herdr, ["workspace", "list"])
+    windows = _herdr_json(herdr, ["pane", "list"])
+    if spaces is None or windows is None:
+        return None
+    return spaces.get("workspaces") or [], windows.get("panes") or []
+
+
+def _who(member):
+    if member["kind"] == "intern":
+        return member["role"]
+    return member["name"]
+
+
+def _job(member):
+    if member["kind"] == "first":
+        return "first mate"
+    if member["kind"] == "mate":
+        return "second mate"
+    return _one_line(member.get("title")) or "a one-off job"
+
+
+def plan(model, crew, spaces, windows, fm_name):
+    """The changes that make Herdr show plain names, and the windows left alone.
+
+    Each change is {"kind": "space"|"window"|"job", "id", "value", "was"}; a
+    left-alone entry is {"id", "name"} for a window whose name firstmate owns."""
+    by_pane = {w.get("pane_id"): w for w in windows if w.get("pane_id")}
+    in_space = {}
+    changes, left = [], []
+
+    for m in crew:
+        pane = m.get("pane")
+        win = by_pane.get(pane) if pane else None
+        if win is None:
+            continue
+        in_space.setdefault(win.get("workspace_id"), []).append(m)
+        label = win.get("label") or ""
+        who = _one_line(_who(m))
+        if protected(label):
+            left.append({"id": pane, "name": label})
+        elif who and label != who and not protected(who):
+            changes.append({"kind": "window", "id": pane, "value": who, "was": label})
+        job = _job(m)
+        was = (win.get("tokens") or {}).get(JOB_TOKEN)
+        if job and was != job:
+            changes.append({"kind": "job", "id": pane, "value": job, "was": was})
+
+    mates = {m["id"]: m for m in model.get("mates") or []}
+    for s in spaces:
+        sid, label = s.get("workspace_id"), s.get("label") or ""
+        if not sid:
+            continue
+        members = in_space.get(sid, [])
+        kinds = {m["kind"]: m for m in reversed(members)}
+        if label.startswith("└"):
+            intern = kinds.get("intern")
+            if intern:
+                value = "└ %s · %s" % (_one_line(intern["role"]), _job(intern))
+            else:
+                value = label.split(HELPER_SUFFIX, 1)[0]
+        elif "first" in kinds:
+            value = fm_name
+        elif "mate" in kinds:
+            value = kinds["mate"]["name"]
+        elif label.startswith("2ndmate-") and label[len("2ndmate-"):] in mates:
+            value = mc.mate_name(model, label[len("2ndmate-"):])
+        elif label == "firstmate":
+            value = fm_name
+        else:
+            value = SCREENS.get(label, label)
+        value = _one_line(value)
+        was = (s.get("tokens") or {}).get(SPACE_TOKEN)
+        if value and was != value:
+            changes.append({"kind": "space", "id": sid, "value": value, "was": was, "label": label})
+    return changes, left
+
+
+def command(change):
+    """The herdr arguments that make one change."""
+    if change["kind"] == "space":
+        return ["workspace", "report-metadata", change["id"], "--source", SOURCE,
+                "--token", "%s=%s" % (SPACE_TOKEN, change["value"])]
+    if change["kind"] == "window":
+        return ["pane", "rename", change["id"], change["value"]]
+    return ["pane", "report-metadata", change["id"], "--source", SOURCE,
+            "--token", "%s=%s" % (JOB_TOKEN, change["value"])]
+
+
+def describe(change):
+    if change["kind"] == "space":
+        return "space %s (%s) shows %s" % (change["id"], change["label"], change["value"])
+    if change["kind"] == "window":
+        return "window %s is named %s" % (change["id"], change["value"])
+    return "window %s shows job %s" % (change["id"], change["value"])
+
+
+def apply(herdr, changes):
+    """Makes each change; returns the ones Herdr refused."""
+    failed = []
+    for c in changes:
+        try:
+            proc = subprocess.run(list(herdr) + command(c), capture_output=True, timeout=5, check=False)
+            ok = proc.returncode == 0
+        except (OSError, subprocess.SubprocessError):
+            ok = False
+        if not ok:
+            failed.append(c)
+    return failed
+
+
+def crew_for(model, config_dir, agents, home, session, own_pane):
+    settings = mc.read_settings(config_dir)
+    model = mc.with_settings(model, settings)
+    crew = mc.build_crew(model, agents, home, session, own_pane, settings["first_mate_name"])
+    return model, crew, settings["first_mate_name"]
+
+
+def names_once(model, agents, home, config_dir, herdr, session, own_pane):
+    """One pass: read the layout, plan and apply. None when Herdr does not answer."""
+    layout = read_layout(herdr)
+    if layout is None:
+        return None
+    model, crew, fm_name = crew_for(model, config_dir, agents, home, session, own_pane)
+    changes, left = plan(model, crew, layout[0], layout[1], fm_name)
+    return changes, left, apply(herdr, changes)
+
+
+class Keeper:
+    """The running screen's naming step: every NAMES_EVERY seconds, off the render loop.
+
+    source() returns (model, agents) once both have been read, else None.
+    Nothing here prints or raises: the screen owns the terminal."""
+
+    def __init__(self, source, home, config_dir, herdr, session, own_pane):
+        self.source, self.home, self.config_dir = source, home, config_dir
+        self.herdr, self.session, self.own_pane = list(herdr), session, own_pane
+        self.stop = threading.Event()
+
+    def start(self):
+        threading.Thread(target=self._loop, daemon=True).start()
+
+    def _loop(self):
+        while not self.stop.is_set():
+            try:
+                got = self.source()
+                if got is not None:
+                    names_once(got[0], got[1], self.home, self.config_dir, self.herdr, self.session, self.own_pane)
+            except Exception:  # noqa: BLE001 - naming is best effort and must never disturb the screen
+                pass
+            self.stop.wait(NAMES_EVERY)
+
+
+def main(argv):
+    import argparse
+    ap = argparse.ArgumentParser(prog="fm_herdr_names.py")
+    ap.add_argument("--home", required=True)
+    ap.add_argument("--config-dir", required=True)
+    ap.add_argument("--herdr", default="herdr", help="the herdr command, split on spaces")
+    ap.add_argument("--dry-run", action="store_true", help="print the changes without making them")
+    args = ap.parse_args(argv)
+    home = os.path.abspath(args.home)
+    herdr = args.herdr.split()
+    session = os.environ.get("HERDR_SESSION") or "default"
+    own_pane = os.environ.get("HERDR_PANE_ID")
+    try:
+        model = mc.bridge.collect(home, args.config_dir, mc.bridge._now())
+    except RuntimeError as exc:
+        print("names: %s" % exc, file=sys.stderr)
+        return 1
+    agents = mc.read_agents(herdr)
+    layout = read_layout(herdr)
+    if agents is None or layout is None:
+        print("names: Herdr did not answer; run this inside a Herdr session", file=sys.stderr)
+        return 1
+    model, crew, fm_name = crew_for(model, args.config_dir, agents, home, session, own_pane)
+    changes, left = plan(model, crew, layout[0], layout[1], fm_name)
+    for entry in left:
+        print("left alone: window %s is named %s, a name firstmate uses" % (entry["id"], entry["name"]))
+    failed = [] if args.dry_run else apply(herdr, changes)
+    for c in changes:
+        mark = "would set" if args.dry_run else ("refused" if c in failed else "set")
+        print("%s: %s" % (mark, describe(c)))
+    if not changes:
+        print("names: every name already shows")
+    elif args.dry_run:
+        print("names: %d to set (dry run, nothing changed)" % len(changes))
+    else:
+        print("names: %d set, %d refused" % (len(changes) - len(failed), len(failed)))
+    return 1 if failed else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))
