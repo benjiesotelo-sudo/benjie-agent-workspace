@@ -7,11 +7,11 @@
 # plain error on screen, and the frame shows the real state, including an edit
 # made elsewhere. First, every frame format and a live start run against the
 # Mission Control in this tree, whose canvas, terminal and settings reader
-# Controls borrows, so a change there cannot silently break Controls. Then the live screen in a pseudo-terminal: Enter and a tap on
-# the switch turn it over at once, a tap elsewhere does nothing, an outside
-# edit shows by itself, and q and SIGTERM restore the terminal. Then start,
-# status and stop against a fake Herdr, and Mission Control's one read-only
-# System line for the switch.
+# Controls borrows, so a change there cannot silently break Controls. Then the
+# live screen in a pseudo-terminal: Enter and a tap on the switch turn it over
+# at once, a tap elsewhere does nothing, an outside edit shows by itself, and
+# q and SIGTERM restore the terminal. Then start, status and stop against a
+# fake Herdr, and Mission Control's one read-only System line for the switch.
 set -u
 
 # shellcheck source=tests/lib.sh
