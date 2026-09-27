@@ -53,7 +53,7 @@ The names come from `config/mission-control.json` (see Settings below).
 Herdr shows them only with the sidebar settings in [`herdr-config.toml`](herdr-config.toml): add those lines to `~/.config/herdr/config.toml`, run `herdr config check`, then press Ctrl+B then Shift+R.
 Without those settings the sidebar looks as it always has, because the naming step only sets display values.
 
-To name everything once without the screen, run `bin/fm-mission-control.sh names`; `--dry-run` only lists what it would change.
+To name everything once without the screen, run `bin/fm-mission-control.sh names`.
 Herdr forgets display values when Herdr itself restarts, so they come back when Mission Control starts again, or at once with Ctrl+B then Alt+N, which those settings bind to the same command.
 
 The naming step only sets display values; it never renames anything.

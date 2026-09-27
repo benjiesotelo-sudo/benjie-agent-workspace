@@ -236,7 +236,6 @@ def main(argv):
     ap.add_argument("--home", required=True)
     ap.add_argument("--config-dir", required=True)
     ap.add_argument("--herdr", default="herdr", help="the herdr command, split on spaces")
-    ap.add_argument("--dry-run", action="store_true", help="print the changes without making them")
     args = ap.parse_args(argv)
     home = os.path.abspath(args.home)
     herdr = args.herdr.split()
@@ -253,14 +252,11 @@ def main(argv):
         return 1
     model, crew, fm_name = crew_for(model, args.config_dir, agents, home, session, None)
     changes = plan(model, crew, layout[0], layout[1], fm_name)
-    failed = [] if args.dry_run else apply(herdr, changes)
+    failed = apply(herdr, changes)
     for c in changes:
-        mark = "would set" if args.dry_run else ("refused" if c in failed else "set")
-        print("%s: %s" % (mark, describe(c)))
+        print("%s: %s" % ("refused" if c in failed else "set", describe(c)))
     if not changes:
         print("names: every name already shows")
-    elif args.dry_run:
-        print("names: %d to set (dry run, nothing changed)" % len(changes))
     else:
         print("names: %d set, %d refused" % (len(changes) - len(failed), len(failed)))
     return 1 if failed else 0

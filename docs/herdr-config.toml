@@ -8,8 +8,6 @@
 [ui]
 # Hide the tab strip in a space that has only one tab open.
 hide_tab_bar_when_single_tab = true
-# Keep agents grouped under their space (Herdr's default, written down).
-agent_panel_sort = "spaces"
 
 [ui.sidebar.spaces]
 # One line per space: its plain name.

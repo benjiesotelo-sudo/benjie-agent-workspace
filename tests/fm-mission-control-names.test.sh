@@ -7,8 +7,8 @@
 # firstmate's fm-, 2ndmate-, firstmate and └ names all stay) and nothing is
 # moved, closed or created, that the one-off command run from the first mate's
 # own window still finds the first mate there, that a second pass changes
-# nothing, that a restart's lost display values come back, --dry-run, a
-# refused change, and the running screen's Keeper putting lost values back on
+# nothing, that a restart's lost display values come back, a refused
+# change, and the running screen's Keeper putting lost values back on
 # its own while leaving out its own window.
 # Fixtures are the Bridge's, in tests/assets/bridge/.
 set -u
@@ -176,7 +176,7 @@ grep -Ev '^(workspace report-metadata w[0-9]+ --source mission-control --token n
 grep -q 'w6 ' "$HX/calls.log" && fail "a space already showing its name was sent it again"
 pass "names only sets display values: no rename, move, close, create or focus"
 
-# --- again, after a restart, dry run, refused ------------------------------
+# --- again, after a restart, refused ---------------------------------------
 
 : > "$HX/calls.log"
 OUT=$(names) || fail "the second pass failed: $OUT"
@@ -192,11 +192,6 @@ OUT=$(names) || fail "the pass after a restart failed: $OUT"
 pass "after a Herdr restart the lost display values are sent again"
 
 fresh_herdr
-OUT=$(names --dry-run) || fail "names --dry-run failed: $OUT"
-[ ! -s "$HX/calls.log" ] || fail "--dry-run changed something: $(cat "$HX/calls.log")"
-grep -q "would set: space w2 (2ndmate-alpha-mate) shows Alpha" <<<"$OUT" || fail "--dry-run lists the changes: $OUT"
-pass "--dry-run prints the changes and makes none"
-
 touch "$HX/refuse"
 if OUT=$(names 2>&1); then fail "names succeeded although Herdr refused every change"; fi
 grep -q "refused: window w1:p1 shows who Denver" <<<"$OUT" || fail "names reports what Herdr refused: $OUT"

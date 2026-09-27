@@ -18,13 +18,12 @@
 #   stop                    close that workspace
 #   status                  report whether the workspace exists and whether the
 #                           screen is running in it
-#   names [--dry-run]       once, give Herdr's sidebar plain names as display
+#   names                   once, give Herdr's sidebar plain names as display
 #                           values: each space and agent window shows the first
 #                           mate's name, a second mate's name, "<lead>'s
 #                           intern" and so on, with each agent's job; renames
-#                           nothing; prints each change (--dry-run prints them
-#                           without making them). The running screen repeats
-#                           this every few seconds.
+#                           nothing; prints each change. The running screen
+#                           repeats this every few seconds.
 #                           bin/fm_herdr_names.py owns the values it sets;
 #                           docs/herdr-config.toml is the Herdr settings that
 #                           show them
