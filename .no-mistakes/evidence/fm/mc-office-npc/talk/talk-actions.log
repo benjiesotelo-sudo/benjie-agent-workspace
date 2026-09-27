@@ -1,0 +1,11 @@
+3.1s office -> tap:44,8
+5.1s fm-talk-open -> tapon: What else? 
+7.0s fm-what-else -> tapon: Open chat 
+9.0s after-open-chat -> tap:6,20
+11.1s mate-talk -> tapon: Bye 
+13.1s after-bye -> tap:17,22
+15.1s intern-talk -> keys:\x1b
+17.2s after-esc -> tap:44,8
+19.1s fm-talk-again -> tap:30,30
+21.1s after-floor-tap -> quit
+exit 0

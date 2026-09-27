@@ -1,0 +1,6 @@
+3.1s office -> tap:59,12
+5.0s intern-talk -> tapon: Open chat 
+7.1s intern-open-chat -> tap:44,8
+9.0s fm-talk -> tapon: Open chat 
+11.2s fm-closed-open-chat -> quit
+exit 0

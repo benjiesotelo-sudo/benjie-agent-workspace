@@ -1,0 +1,14 @@
+3.0s office -> keys:p
+4.1s paused -> tap:44,8
+6.1s paused-talk -> tapon: Bye 
+8.2s paused-after-bye -> keys:p
+9.1s unpaused -> keys:\x1b[B
+10.0s picked -> keys:\r
+12.0s enter-talk -> keys:\t
+13.1s after-tab -> keys:\x1b[C
+14.1s after-right -> keys:\x1b[D
+15.1s after-left -> keys:\r
+17.1s enter-open-chat -> keys:6
+19.1s team-view -> tapon:Build chapter four
+21.1s team-after-tap -> quit
+exit 0

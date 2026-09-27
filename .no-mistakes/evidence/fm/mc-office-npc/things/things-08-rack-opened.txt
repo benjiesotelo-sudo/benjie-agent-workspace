@@ -1,0 +1,44 @@
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System     Sun 10:00
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+ ● 4 things need a look: crew monitoring, the Bridge page, Mission Control outside its Herdr space,...
+
+┌─ ● THIS MAC ──────────────────────────────────────────────────┐ ┌─ ● CREW MONITORING ───────────────────────────────────────────┐
+│ This Mac: healthy                                             │ │ Monitoring the crew: not running, and work is under way       │
+│ ● Up since Sun 13 Sep 03:21, 7 days                           │ │ ● Away mode is off                                            │
+│ ● Processor load 5.4 on 10 cores                              │ │ ● No notifications waiting for the first mate                 │
+│ ● Memory: 9.5 GB of 16 GB in use                              │ │                                                               │
+│ ● Disk: 35 GB free of 228 GB                                  │ │                                                               │
+│ ● On the tailnet                                              │ │                                                               │
+└───────────────────────────────────────────────────────────────┘ └───────────────────────────────────────────────────────────────┘
+
+┌─ ● CREW ──────────────────────────────────────────────────────┐ ┌─ ● SECOND MATES ──────────────────────────────────────────────┐
+│ Crew: 1 working, 1 asleep, 3 interns out                      │ │ Second mates: all 1 window open                               │
+│ ● Merge switch OFF: every merge waits for you                 │ │ ● Alpha: window open, home changed 1 minute ago               │
+└───────────────────────────────────────────────────────────────┘ └───────────────────────────────────────────────────────────────┘
+
+┌─ ● THE BRIDGE PAGE ───────────────────────────────────────────┐ ┌─ ● MISSION CONTROL ───────────────────────────────────────────┐
+│ The Bridge page: not running                                  │ │ Mission Control: running in this terminal, not in its usual   │
+│                                                               │ │ Herdr space                                                   │
+└───────────────────────────────────────────────────────────────┘ └───────────────────────────────────────────────────────────────┘
+
+┌─ ● GITHUB ────────────────────────────────────────────────────┐ ┌─ ● TOOLS ─────────────────────────────────────────────────────┐
+│ GitHub: signed in, checked 13 seconds ago                     │ │ Tools: 1 of 3 could not be checked                            │
+│                                                               │ │ ● no-mistakes 1.79.0                                          │
+│                                                               │ │ ● herdr: could not be checked                                 │
+│                                                               │ │ ● claude 2.1.283                                              │
+└───────────────────────────────────────────────────────────────┘ └───────────────────────────────────────────────────────────────┘
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   files recheck every 5 s, commands every 5 min   q quit                                         updates by itself

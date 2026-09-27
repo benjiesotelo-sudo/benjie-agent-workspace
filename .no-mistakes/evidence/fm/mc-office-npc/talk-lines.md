@@ -1,0 +1,33 @@
+## first-mate
+- Keeping an eye on the whole crew right now.
+- I've got 1 intern and 1 helper out on jobs for me.
+- One of my interns is on Print the handouts.
+- 3 things wait on you in the inbox. No rush!
+- Finished Chapter three decks on 5 Sep. Felt good!
+- Wrapped up Module one handout on 2 Sep.
+- Ticked off Last month's module on 30 Aug.
+- Fun fact: a first mate is second in command, right after the captain.
+- Second mates sleep between jobs. Honestly, goals.
+- Interns come in for one job, then go home. Very tidy crew.
+- Shipshape means everything in its place. I do my best.
+- A quiet office means the work is flowing. Or everyone's napping.
+## alpha-second-mate
+- Resting between jobs. 2 jobs waiting for me later.
+- I've got 2 interns out on jobs for me.
+- One of my interns is on Build chapter four.
+- One of my interns is on Add a text layer to the chapter PDFs.
+- One thing waits on you in the inbox. No rush!
+- Finished Chapter four notes on 12 Sep. Felt good!
+- Fun fact: the first computer bug was a real moth, found in 1947.
+- Every big project is just a lot of small ones standing in a trench coat.
+- Good notes today save a headache tomorrow.
+- I tidy my desk once a week. The pixels, anyway.
+## alpha-intern
+- Heads down on Build chapter four.
+- Finished Chapter four notes on 12 Sep. Felt good!
+- Wrapped up Chapter three decks on 5 Sep.
+- Ticked off an old chapter on 20 Jul.
+- Fun fact: the first computer bug was a real moth, found in 1947.
+- Every big project is just a lot of small ones standing in a trench coat.
+- Good notes today save a headache tomorrow.
+- I tidy my desk once a week. The pixels, anyway.

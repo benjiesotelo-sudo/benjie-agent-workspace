@@ -1,0 +1,15 @@
+3.1s office -> tap:28,3
+5.2s corkboard-opened -> keys:1
+6.1s back1 -> tap:63,3
+8.1s calendar-opened -> keys:1
+9.1s back2 -> tap:78,3
+11.2s bookshelf-opened -> keys:1
+12.1s back3 -> tap:90,10
+14.1s rack-opened -> keys:1
+15.1s back4 -> tap:12,29
+17.2s inbox-opened -> keys:1
+18.1s back5 -> tap:10,3
+20.1s alumni-opened -> keys:1
+21.1s back6 -> tap:45,26
+23.2s floor-tapped -> quit
+exit 0

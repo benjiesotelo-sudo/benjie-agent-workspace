@@ -1,0 +1,5 @@
+3.1s start -> sh:cp /tmp/mc-live.vLR138/flip.json /tmp/mc-live.vLR138/live.json
+8.2s after-flip -> sh:cp /tmp/mc-live.vLR138/agents2.json /tmp/mc-live.vLR138/live.json
+20.1s after-helper -> snap
+45.2s after-sleep-window -> quit
+exit 0
