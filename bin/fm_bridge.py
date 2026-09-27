@@ -1117,7 +1117,7 @@ def serve(home, config_dir, host, port, give_up_after=0):
             self.send_header("Referrer-Policy", "no-referrer")
             self.send_header("Content-Security-Policy",
                              "default-src 'none'; style-src 'unsafe-inline' https://fonts.googleapis.com; "
-                             "font-src https://fonts.gstatic.com; script-src 'unsafe-inline'; connect-src 'self'; "
+                             "font-src https://fonts.gstatic.com; script-src 'unsafe-inline'; connect-src 'self' https://cdn.jsdelivr.net; "
                              "base-uri 'none'; form-action 'none'; frame-ancestors 'none'")
             self.end_headers()
             if self.command != "HEAD":

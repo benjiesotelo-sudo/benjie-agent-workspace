@@ -886,9 +886,9 @@ O=$(mc "$HOME_DIR" frame --agents "$AGENTS" --view docs --size 170x50) || fail "
 [ "$(jq -c .docs.tags <<<"$MJ")" = '{"All":6,"Report":2,"Decision":2,"Link":2}' ] \
   || fail "the tag row counts each kind, got $(jq -c .docs.tags <<<"$MJ")"
 [ "$(jq -r '[.docs.rows[] | "\(.kind)|\(.title)|\(.project)"] | join(",")' <<<"$MJ")" \
-  = "Report|Scout report: the quiz format in a local file|alpha,Decision|The quiz stays private|alpha,Report|A study with no task|null,Decision|A decision: fix, option (b)|null,Link|Class Drive folder|alpha,Link|Status page|null" ] \
-  || fail "documents run newest first, links last, with plain titles, got $(jq -c .docs.rows <<<"$MJ")"
-for want in '^  All 6   Report 2   Decision 2   Link 2 ' '^▸ Scout report: the quiz format in\.\.\. +19 Sep  ┌' \
+  = "Link|Class Drive folder|alpha,Link|Status page|null,Report|Scout report: the quiz format in a local file|alpha,Decision|The quiz stays private|alpha,Report|A study with no task|null,Decision|A decision: fix, option (b)|null" ] \
+  || fail "saved links are pinned first, then documents newest first, with plain titles, got $(jq -c .docs.rows <<<"$MJ")"
+for want in '^  All 6   Report 2   Decision 2   Link 2 ' '^▸ Scout report: the quiz format in\.\.\. +19 Sep  [┌│]' \
   '^   Report   ■ Alpha  [0-9]+ words' '^  The quiz stays private +18 Sep  │' '^   Decision   ■ Alpha  ' \
   '^   Report   [0-9]+ words' '^  A decision: fix, option \(b\) ' '^   Decision   [0-9]+ words' \
   '^   Link   ■ Alpha  drive\.example\.org' '^   Link   ■ setup  status\.example\.org' \
@@ -991,6 +991,44 @@ grep -Eq '\.png|figures|shots/|<t[dr]|</|<img|<details|<summary|align=|&amp;|not
   && fail "no picture file, HTML tag, entity or comment reaches the Docs reader, got: $(grep -E 'png|<|&amp;|note' <<<"$P")"
 pass "the Docs reader shows a picture as its caption and drops HTML tags and comments"
 
+
+# Important links: the System Map and the Bridge from the Bridge's recorded address, the public page from
+# its repository setting, then the saved links, pinned above the documents with full addresses to tap.
+printf '100.64.0.9 7373 tailscale\n' > "$HOME_DIR/state/bridge.addr"
+cp "$HOME_DIR/config/mission-control.json" "$TMP_ROOT/mc-settings.keep" 2>/dev/null || true
+jq '. + {public_page: {repository: "Octo/crew-office"}}' "$TMP_ROOT/mc-settings.keep" 2>/dev/null \
+  > "$HOME_DIR/config/mission-control.json" || printf '{"public_page": {"repository": "Octo/crew-office"}}\n' \
+  > "$HOME_DIR/config/mission-control.json"
+IL=$(mc "$HOME_DIR" frame --agents "$AGENTS" --view docs --size 170x50 --keys $'\e[A\e[A\e[A\e[A\e[A\e[A') \
+  || fail "docs frame with important links failed"
+grep -Eq '^IMPORTANT LINKS 5 ' <<<"$IL" || fail "the Important links group heads the Docs list: $(sed -n 5,7p <<<"$IL")"
+grep -A1 '^IMPORTANT LINKS' <<<"$IL" | grep -Eq '^(▸ |  )System Map ' || fail "the System Map is the first important link: $(grep -A3 '^IMPORTANT LINKS' <<<"$IL")"
+grep -q '^DOCUMENTS 4 ' <<<"$IL" || fail "the documents follow under their own heading"
+grep -q '│ http://100.64.0.9:7373/system-map ' <<<"$IL" || fail "the System Map's full address is printed to tap"
+grep -q '│ An important link ' <<<"$IL" || fail "a pinned address says it is an important link"
+ILJ=$(mc "$HOME_DIR" frame --agents "$AGENTS" --view docs --size 170x50 --format json) || fail "docs json failed"
+[ "$(jq -r '[.docs.rows[] | select(.kind == "Link") | .title] | join(",")' <<<"$ILJ")" \
+  = "System Map,The Bridge page,Public Mission Control page,Class Drive folder,Status page" ] \
+  || fail "important links run System Map, Bridge, public page, then the saved links: $(jq -c .docs.rows <<<"$ILJ")"
+PUB=$(mc "$HOME_DIR" frame --agents "$AGENTS" --view docs --size 170x50 --keys $'\e[A\e[A\e[A\e[A\e[A\e[A\e[B\e[B')
+grep -q '│ https://octo.github.io/crew-office/ ' <<<"$PUB" || fail "the public page's address comes from its repository setting"
+mv "$TMP_ROOT/mc-settings.keep" "$HOME_DIR/config/mission-control.json" 2>/dev/null || rm -f "$HOME_DIR/config/mission-control.json"
+rm -f "$HOME_DIR/state/bridge.addr"
+pass "the Docs view pins the System Map, the Bridge, the public page and the saved links first"
+
+jq '. + {bridge: {running: true, address: "http://ship.example.ts.net:7373/", local_only: false},
+         system_map: ["You", "  ways in: Chat with Denver", "  Denver (first mate)", "    Alpha (second mate)",
+                      "Shared tools: GitHub CLI"]}' "$TMP_ROOT/ok.json" > "$TMP_ROOT/map.json"
+SM=$(mc "$HOME_DIR" frame --readings "$TMP_ROOT/map.json" --agents "$AGENTS" --view system --size 170x50) \
+  || fail "system frame with the map outline failed"
+for want in '● SYSTEM MAP ' 'Open in Safari' 'http://ship.example.ts.net:7373/system-map' '│ · ways in: Chat with Denver ' \
+  '│ ·· Alpha \(second mate\) ' '│ Shared tools: GitHub CLI '; do
+  grep -Eq "$want" <<<"$SM" || fail "the System view's map card shows: $want"
+done
+jq '. + {system_map: null}' "$TMP_ROOT/ok.json" > "$TMP_ROOT/map-bad.json"
+mc "$HOME_DIR" frame --readings "$TMP_ROOT/map-bad.json" --agents "$AGENTS" --view system --size 170x50 \
+  | grep -q 'The map could not be read' || fail "an unreadable map says so on its card"
+pass "the System view outlines the System Map and says where to open it"
 
 L=$(mc "$HOME_DIR" frame --agents "$AGENTS" --view docs)
 grep -q ' 9 System ' <<<"$L" || fail "the tab bar shows all nine views"
