@@ -1,0 +1,50 @@
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System                                           Sun 23:23 
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                                                                                          
+  All 7   Report 0   Decision 3   Link 4                                                                                                read only, changes happen in chat 
+                                                                                                                                                                          
+IMPORTANT LINKS 4                              ┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+▸ System Map                                   │  Link  System Map                                                                                                       │
+   Link   127.0.0.1:62315                      │ An important link                                                                                                       │
+  The Bridge page                              ├─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+   Link   127.0.0.1:62315                      │ System Map                                                                                                              │
+  Public Mission Control page                  │                                                                                                                         │
+   Link   octo.github.io                       │ The address, to copy or tap:                                                                                            │
+  Repository                                   │ http://127.0.0.1:62315/system-map                                                                                       │
+   Link   ■ Garden Club  github.com            │                                                                                                                         │
+                                               │                                                                                                                         │
+DOCUMENTS 3                                    │                                                                                                                         │
+  Weekly reports on Fridays             today  │                                                                                                                         │
+   Decision   6 words                          │                                                                                                                         │
+  Use Neon for the ladder              26 Sep  │                                                                                                                         │
+   Decision   9 words                          │                                                                                                                         │
+  Keep the planner private             25 Sep  │                                                                                                                         │
+   Decision   11 words                         │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               └─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   left/right pick a kind   up/down pick a page   page up/down or the wheel scroll it   q quit                                          updates by itself 

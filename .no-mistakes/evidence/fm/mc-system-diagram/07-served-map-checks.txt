@@ -1,0 +1,19 @@
+== helper nodes under garden-mate (two long digit-bearing task ids) ==
+intern:garden-mate:fin1209-ch1-materials-audit  label=A one-off job
+intern:garden-mate:fin1209-ch1-term-visuals-part1  label=A one-off job
+intern:garden-mate:m1  label=A one-off job
+== duplicate node ids ==
+0
+== edges from garden-mate to helpers ==
+mate:garden-mate -> intern:garden-mate:fin1209-ch1-materials-audit (flow)
+mate:garden-mate -> intern:garden-mate:fin1209-ch1-term-visuals-part1 (flow)
+mate:garden-mate -> intern:garden-mate:m1 (flow)
+== private strings in served map (expect none) ==
+(none found)
+== path requests ==
+/system-map -> 200
+/system-map.json -> 200
+/system-map/ -> 404
+/system-map.json/x -> 404
+/system-map/../data/backlog.md -> 404
+/data/backlog.md -> 404

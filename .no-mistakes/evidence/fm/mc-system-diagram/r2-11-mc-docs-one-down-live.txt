@@ -1,0 +1,50 @@
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System                                           Sun 23:22 
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                                                                                          
+  All 7   Report 0   Decision 3   Link 4                                                                                                read only, changes happen in chat 
+                                                                                                                                                                          
+IMPORTANT LINKS 4                              ┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+  System Map                                   │  Decision  Use Neon for the ladder                                                                                      │
+   Link   127.0.0.1:62315                      │ Saturday 26 September 2026, 9 words                                                                                     │
+  The Bridge page                              ├─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+   Link   127.0.0.1:62315                      │ Decision: Use Neon for the ladder                                                                                       │
+  Public Mission Control page                  │                                                                                                                         │
+   Link   octo.github.io                       │ Neon it is.                                                                                                             │
+  Repository                                   │                                                                                                                         │
+   Link   ■ Garden Club  github.com            │                                                                                                                         │
+                                               │                                                                                                                         │
+DOCUMENTS 3                                    │                                                                                                                         │
+  Weekly reports on Fridays             today  │                                                                                                                         │
+   Decision   6 words                          │                                                                                                                         │
+▸ Use Neon for the ladder              26 Sep  │                                                                                                                         │
+   Decision   9 words                          │                                                                                                                         │
+  Keep the planner private             25 Sep  │                                                                                                                         │
+   Decision   11 words                         │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               └─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   left/right pick a kind   up/down pick a page   page up/down or the wheel scroll it   q quit                                          updates by itself 

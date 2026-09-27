@@ -1,0 +1,14 @@
+
+  All 6   Report 1   Decision 1   Link 4                                                                                                read only, cha
+
+IMPORTANT LINKS 4                              ┌──────────────────────────────────────────────────────────────────────────────────────────────────────
+▸ System Map                                   │  Link  System Map                                                                                    
+   Link   127.0.0.1:7391                       │ An important link                                                                                    
+  The Bridge page                              ├──────────────────────────────────────────────────────────────────────────────────────────────────────
+   Link   127.0.0.1:7391                       │ System Map                                                                                           
+  Public Mission Control page                  │                                                                                                      
+   Link   octo.github.io                       │ The address, to copy or tap:                                                                         
+  Repository                                   │ http://127.0.0.1:7391/system-map                                                                     
+   Link   ■ Garden Club  github.com            │                                                                                                      
+                                               │                                                                                                      
+DOCUMENTS 2                                    │                                                                                                      

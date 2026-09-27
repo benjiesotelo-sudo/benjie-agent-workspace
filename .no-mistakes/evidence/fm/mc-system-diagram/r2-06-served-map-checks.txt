@@ -1,0 +1,14 @@
+== served /system-map.json at target commit 46c684c: private strings (expect none) ==
+(scan done)
+== node ids unique ==
+63 ids, 63 unique
+== path requests ==
+/system-map -> 200
+/system-map.json -> 200
+/ -> 200
+/system-map/ -> 404
+/system-map.json/x -> 404
+/system-map/../data/backlog.md -> 404
+/data/backlog.md -> 404
+== Bridge page header link ==
+<a href="system-map">System Map: how the crew works</a>

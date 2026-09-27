@@ -1,0 +1,50 @@
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System                                           Sun 23:03
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+  All 6   Report 1   Decision 1   Link 4                                                                                                read only, changes happen in chat
+
+IMPORTANT LINKS 4                              ┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+  System Map                                   │  Decision  Keep the quiz private                                                                                        │
+   Link   127.0.0.1:7391                       │ Friday 25 September 2026, 10 words                                                                                      │
+  The Bridge page                              ├─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+   Link   127.0.0.1:7391                       │ Decision: keep the quiz private                                                                                         │
+  Public Mission Control page                  │                                                                                                                         │
+   Link   octo.github.io                       │ Option (a) keeps it private.                                                                                            │
+  Repository                                   │                                                                                                                         │
+   Link   ■ Garden Club  github.com            │                                                                                                                         │
+                                               │                                                                                                                         │
+DOCUMENTS 2                                    │                                                                                                                         │
+  Scout report: ladder scoring         26 Sep  │                                                                                                                         │
+   Report   11 words                           │                                                                                                                         │
+▸ Keep the quiz private                25 Sep  │                                                                                                                         │
+   Decision   10 words                         │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               │                                                                                                                         │
+                                               └─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   left/right pick a kind   up/down pick a page   page up/down or the wheel scroll it   q quit                                          updates by itself

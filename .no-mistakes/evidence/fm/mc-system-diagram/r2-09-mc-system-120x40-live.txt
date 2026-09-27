@@ -1,0 +1,40 @@
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs    Sun 23:22 
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                                        
+ ● 5 things need a look: the tailnet, second mate Garden Club, second mate bakery, the B...                             
+                                                                                                                        
+┌─ ● THIS MAC ────────────────────────────────────────────┐ ┌─ ● CREW MONITORING ─────────────────────────────────────┐ 
+│ This Mac: something needs a look                        │ │ Monitoring the crew: healthy, last check 4 minutes ago  │ 
+│ ● Up since Sun 20 Sep 16:23, 7 days                     │ │ ● Away mode is off                                      │ 
+│ ● Processor load 4.3 on 10 cores                        │ │ ● No notifications waiting for the first mate           │ 
+│ ● Memory: 9.5 GB of 16 GB in use                        │ │                                                         │ 
+│ ● Disk: 35 GB free of 228 GB                            │ │                                                         │ 
+│ ● Not on the tailnet, so the iPad cannot reach it       │ │                                                         │ 
+└─────────────────────────────────────────────────────────┘ └─────────────────────────────────────────────────────────┘ 
+┌─ ● CREW ────────────────────────────────────────────────┐ ┌─ ● SECOND MATES ────────────────────────────────────────┐ 
+│ Crew: 1 working, 2 asleep, 4 interns out                │ │ Second mates: 2 of 2 windows closed                     │ 
+│ ● Merge switch OFF: every merge waits for you           │ │ ● Garden Club: window closed, home changed 3 minutes    │ 
+│                                                         │ │   ago                                                   │ 
+│                                                         │ │ ● bakery: window closed, home changed 3 minutes ago     │ 
+└─────────────────────────────────────────────────────────┘ └─────────────────────────────────────────────────────────┘ 
+┌─ ● THE BRIDGE PAGE ─────────────────────────────────────┐ ┌─ ● MISSION CONTROL ─────────────────────────────────────┐ 
+│ The Bridge page: running                                │ │ Mission Control could not be checked                    │ 
+│ ● Open it at                                            │ │                                                         │ 
+│ http://127.0.0.1:62315/                                 │ │                                                         │ 
+│ ● Bound to this Mac only, so the iPad cannot reach it   │ │                                                         │ 
+└─────────────────────────────────────────────────────────┘ └─────────────────────────────────────────────────────────┘ 
+┌─ ● GITHUB ──────────────────────────────────────────────┐ ┌─ ● TOOLS ───────────────────────────────────────────────┐ 
+│ GitHub: signed in, checked 12 seconds ago               │ │ Tools: all installed                                    │ 
+│                                                         │ │ ● no-mistakes 1.2.3                                     │ 
+│                                                         │ │ ● herdr 9.9.9                                           │ 
+│                                                         │ │ ● claude 2.1.283                                        │ 
+└─────────────────────────────────────────────────────────┘ └─────────────────────────────────────────────────────────┘ 
+┌─ ● SYSTEM MAP ──────────────────────────────────────────┐                                                             
+│ System Map: how the crew fits together                  │                                                             
+│ ● Open in Safari                                        │                                                             
+│ http://127.0.0.1:62315/system-map                       │                                                             
+│ You                                                     │                                                             
+│ the full map is in Safari                               │                                                             
+└─────────────────────────────────────────────────────────┘                                                             
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 1-9 switch view   files recheck every 5 s, commands every 5 min   q quit                             updates by itself 
