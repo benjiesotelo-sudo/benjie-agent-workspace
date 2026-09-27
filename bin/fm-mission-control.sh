@@ -31,9 +31,9 @@
 #                           Herdr once, and the other views leave the system
 #                           unchecked. <keys> are keys and mouse taps applied
 #                           first, as the terminal sends them, each shown
-#                           settled (q is ignored; answering Open chat runs
-#                           `herdr agent focus` on the agent's pane, as the
-#                           live screen does)
+#                           settled (q is ignored; answering Open chat, or a
+#                           tap on the Team view, runs `herdr agent focus` on
+#                           the agent's pane, as the live screen does)
 #
 # Keys while running: 1-9 switch view, p pauses the animation, q quits,
 # up/down pick an agent in the team list and Enter has it stand up and talk;
@@ -47,16 +47,16 @@
 # week, month or year, t returns to today and v cycles Week, Month and Year;
 # its control bar does the same when tapped, and tapping a month in Year opens
 # it. On the Team view up/down pick a second mate's card instead and Enter
-# has that mate talk. On Memory and Docs up/down pick a page and the
+# moves to that mate's pane. On Memory and Docs up/down pick a page and the
 # reader shows it, Page Up/Page Down scroll the reader, on Docs left/right
 # pick a kind of document, and Enter does nothing. Tapping a tab switches view
 # when the terminal reports mouse clicks; on Memory and Docs tapping a row
 # picks it and the wheel over the reader scrolls it. Tapping an agent in the
-# office (its desk, an intern's sprite or its team row) or on the Team view (a
-# card or an intern's line) has it stand up and say one short line with the
-# answers Open chat, What else? and Bye; Open chat moves your Herdr view to its
-# pane the same way, and a pane that has closed says so in one line in the
-# footer. A tap anywhere else ends the talk. Tapping a thing in the office
+# office (its desk, an intern's sprite or its team row) has it stand up and say
+# one short line with the answers Open chat, What else? and Bye; Open chat moves
+# your Herdr view to its pane the same way, as does tapping a card or an
+# intern's line on the Team view, and a pane that has closed says so in one
+# line in the footer. A tap anywhere else ends the talk. Tapping a thing in the office
 # opens its view: the corkboard Tasks, the calendar Calendar, the bookshelf
 # Memory, the server rack System, the inbox Approvals and the alumni wall Team.
 #

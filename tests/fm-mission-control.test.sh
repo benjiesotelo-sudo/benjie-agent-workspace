@@ -350,6 +350,8 @@ for size in 132x44 170x50; do
   [ "$(jq -r '.talk.said | length' <<<"$K")" = 2 ] || fail "at $size right then Enter is What else?"
   mct "$HOME_DIR" frame --agents "$AGENTS2" --size "$size" --keys "$DOWN$ENTER$ENTER" >/dev/null
   [ "$(focused)" = "agent focus w1:p1" ] || fail "at $size Enter on Open chat opens the chat, got: $(focused)"
+  mct "$HOME_DIR" frame --agents "$AGENTS2" --size "$size" --keys "$DOWN$ENTER"$'\t'"$ENTER" >/dev/null
+  [ "$(focused)" = "agent focus w1:p1" ] || fail "at $size Tab picks no other answer, got: $(focused)"
 
   # An intern with no pane talks too; only Open chat says there is nothing to open.
   T=$(mct "$HOME_DIR" frame --agents "$AGENTS2" --size "$size" --keys "$(tap_at 59 12)") || fail "tap failed"
@@ -362,18 +364,20 @@ for size in 132x44 170x50; do
   grep -q 'tap an agent to talk' <<<"$O" || fail "at $size the office footer says a tap talks"
 
   M=$(mc "$HOME_DIR" frame --agents "$AGENTS2" --size "$size" --view team) || fail "team text failed"
-  grep -q 'tap an agent to talk to it' <<<"$M" || fail "at $size the Team footer says a tap talks"
-  for want in "Chief of staff|fm|w1:p1" "owns Alpha|mate:alpha-mate|w2:p1" \
-    "idle: Quiz one for chapter two|helper:w4:p1|w4:p1" "Build chapter four|intern:main:a1|w3:p1"; do
-    IFS='|' read -r needle key pane <<<"$want"
-    TAP=$(tap_on "$M" "$needle")
-    TJ=$(mct "$HOME_DIR" frame --agents "$AGENTS2" --size "$size" --view team --keys "$TAP" --format json)
-    [ "$(jq -r '"\(.talk.key) \(.talk.view)"' <<<"$TJ")" = "$key team" ] || fail "at $size tapping '$needle' talks to $key"
-    T=$(mct "$HOME_DIR" frame --agents "$AGENTS2" --size "$size" --view team --keys "$TAP") || fail "team talk failed"
-    grep -qF ' What else? ' <<<"$T" || fail "at $size the Team view shows the talk box for '$needle'"
-    mct "$HOME_DIR" frame --agents "$AGENTS2" --size "$size" --view team --keys "$TAP$(tap_on "$T" ' Open chat ')" >/dev/null
-    [ "$(focused)" = "agent focus $pane" ] || fail "at $size Open chat for '$needle' opens $pane's chat, got: $(focused)"
+  grep -q 'tap an agent to open its chat' <<<"$M" || fail "at $size the Team footer says taps open chats"
+  for want in "Chief of staff:w1:p1" "owns Alpha:w2:p1" "idle: Quiz one for chapter two:w4:p1" \
+    "Build chapter four:w3:p1"; do
+    needle=${want%:*:*}
+    pane=${want#"$needle":}
+    TJ=$(mct "$HOME_DIR" frame --agents "$AGENTS2" --size "$size" --view team --keys "$(tap_on "$M" "$needle")" \
+      --format json) || fail "team tap failed"
+    [ "$(focused)" = "agent focus $pane" ] || fail "at $size tapping '$needle' opens $pane's chat, got: $(focused)"
+    [ "$(jq -r .talk <<<"$TJ")" = null ] || fail "at $size a tap on the Team view starts no talk"
   done
+  T=$(mct "$HOME_DIR" frame --agents "$AGENTS2" --size "$size" --view team --keys "$DOWN$ENTER") || fail "team enter failed"
+  [ "$(focused)" = "agent focus w2:p1" ] || fail "at $size Enter on a picked Team card opens its chat, got: $(focused)"
+  grep -q "opening Alpha's chat" <<<"$T" || fail "at $size the Team footer says the chat is opening"
+  grep -qF ' What else? ' <<<"$T" && fail "at $size the Team view shows no talk box"
 done
 
 # A pane that closed since the last look says so in one line, and nothing fails.

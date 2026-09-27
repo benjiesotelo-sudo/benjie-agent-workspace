@@ -8,8 +8,9 @@ the crew maps onto the office, and how frames are drawn and written.
 READ ONLY. Nothing here writes a record, sends a key or a prompt to an agent,
 or starts or stops anything. The one outward call besides the reads is
 `herdr agent focus` when the captain answers "Open chat" in a talk (see
-TALKING), or presses Enter on the Tasks, Projects, Calendar or System view with
-an agent picked in the office; it only moves the captain's own view to that
+TALKING), taps a card or an intern's line on the Team view, or presses Enter on
+a picked Team card or on the Tasks, Projects, Calendar or System view with an
+agent picked in the office; it only moves the captain's own view to that
 agent's pane. A pane Herdr no longer has, or an agent with none, reads as one
 plain line in the footer.
 
@@ -145,17 +146,16 @@ and how many open items its list holds and how many wait on the captain. Live
 interns and helpers branch off the first mate's line or sit under their mate's
 card, one line each; the first mate's all show when they fit beside the mates'
 own, else at least half the rows between, and the rows that do not fit are
-counted instead. Tapping a card or an intern's line starts a talk (TALKING).
+counted instead. Tapping a card or an intern's line opens that agent's chat.
 Up and down pick a mate's card, whose registry description (first sentence)
 and scope show underneath, with raw paths removed. The alumni row reads the
 same retirements as the office's alumni wall, so it too starts empty on every
 run.
 
 TALKING. Tapping an agent in the Office (its desk, an intern's sprite or its
-team row) or on the Team view (a card or an intern's line), or Enter on the
-agent picked there, has it stand up (TALK_RISE ticks: a desk agent rises from
-its chair, an intern lowers its laptop and hops, a Team portrait crouches and
-waves) and say one line in a rounded box beside it, with three answers: "Open
+team row), or Enter on the agent picked there, has it stand up (TALK_RISE
+ticks: a desk agent rises from its chair, an intern lowers its laptop and
+hops) and say one line in a rounded box beside it, with three answers: "Open
 chat" moves the captain's view to its pane and ends the talk, "What else?" has
 it say another line, and "Bye" ends the talk. Left and right pick an answer
 and Enter gives it; Esc, a tap anywhere but the box, another view, or the
@@ -1011,13 +1011,8 @@ class Scene:
     def pose(self, a):
         """How a talking agent is drawn: "half" while it stands up or sits down, then
         "up"; None for everyone else, and for an agent walking or on an errand."""
-        if a.errand or a.state in ("walk", "gone", "retired"):
-            return None
-        return self.talk_pose(a.key)
-
-    def talk_pose(self, key):
         t = self.talk
-        if t is None or t.key != key:
+        if t is None or t.key != a.key or a.errand or a.state in ("walk", "gone", "retired"):
             return None
         if t.closing is not None:
             return "half" if t.closing < TALK_RISE else None
@@ -1821,7 +1816,7 @@ def _chrome(cv, ui, now):
         elif ui.view == "calendar":
             keys = " left/right earlier or later   t today   v week, month or year   1-9 switch view   p pause   q quit "
         elif ui.view == "team":
-            keys = " 1-9 switch view   tap an agent to talk to it   up/down pick a second mate   q quit "
+            keys = " 1-9 switch view   tap an agent to open its chat   up/down pick a second mate   q quit "
         elif ui.view == "system":
             keys = " 1-9 switch view   files recheck every 5 s, commands every 5 min   q quit "
     cv.put(0, R - 1, clip(keys, C - len(tag) - 1), DIM)
@@ -1973,10 +1968,10 @@ TALK_BG = H("#141922")
 
 def _talk_anchor(scene, cols, rows):
     """Where the talking agent is on screen, as (row0, row1, col0, col1): its
-    sprite in the office, else the card or row that was tapped."""
+    sprite in the office, else the team row that was tapped."""
     t = scene.talk
     a = scene.actors.get(t.key)
-    if t.view == "office" and a is not None and scene.pose(a) is not None:
+    if a is not None and scene.pose(a) is not None:
         L = scene.layout
         x, feet = L.home(a.key) if a.member["kind"] != "intern" and a.key in L.desks else (a.x, a.feet)
         return (OY + (feet - 9) // 2, OY + feet // 2 + 1, x, x + 7)
@@ -1994,7 +1989,7 @@ def _talk_box(cv, ui, scene):
         return
     R = cv.R
     # In the office the box stays on the floor, clear of the activity column.
-    C = min(cv.C, OW) if ui.view == "office" else cv.C
+    C = min(cv.C, OW)
     r0, r1, c0, c1 = _talk_anchor(scene, C, R)
     w, h = min(TALK_W, C - 2), TALK_H
     col = H(m["color"])
@@ -2563,12 +2558,10 @@ def _hline(cv, r, c0, c1, drops, up):
         cv.put(c, r, joins.get(frozenset(dirs), "─"), WIRE)
 
 
-def _role_card(cv, c0, r0, w, card, picked, pose=None):
-    """pose is the talk pose: "half" crouches the portrait a pixel, "up" waves."""
+def _role_card(cv, c0, r0, w, card, picked):
     col = H(card["color"])
     _box(cv, c0, r0, w, TEAM_CARD_H, col if picked else mix(col, BG, 0.5))
-    figure(_Pixels(cv, c0 + 2, r0 + 1), 0, 1 if pose == "half" else 0, col, H(card["hair"]),
-           legs=pose != "half", wave=pose == "up")
+    figure(_Pixels(cv, c0 + 2, r0 + 1), 0, 0, col, H(card["hair"]))
     tx, tw = c0 + 11, w - 13
     state, sc = TEAM_STATES[card["state"]]
     cv.put(c0 + w - 2 - len(state), r0 + 1, state, sc)
@@ -2646,7 +2639,7 @@ def _team_screen(cv, ui, scene):
     cv.put(cx, 9, "│", WIRE)
     w = min(C - 4, max(TEAM_CARD_MIN_W, 60, 18 + len(fm["owns"])))
     c0 = cx - w // 2
-    _role_card(cv, c0, 10, w, fm, False, scene.talk_pose(fm["key"]))
+    _role_card(cv, c0, 10, w, fm, False)
     ui.agent_hits = [(10, 10 + TEAM_CARD_H, c0, c0 + w, fm["key"])]
     cv.put(cx, 10, "┴", mix(H(fm["color"]), BG, 0.5))
     bottom = 10 + TEAM_CARD_H - 1
@@ -2699,7 +2692,7 @@ def _team_screen(cv, ui, scene):
         avail = detail_r - 1 - (top + TEAM_CARD_H)
         for k, card in enumerate(shown):
             c0 = left + k * (w + 2)
-            _role_card(cv, c0, top, w, card, first + k == pick, scene.talk_pose(card["key"]))
+            _role_card(cv, c0, top, w, card, first + k == pick)
             ui.agent_hits.append((top, top + TEAM_CARD_H, c0, c0 + w, card["key"]))
             cv.put(drops[k], top, "┴", H(card["color"]) if first + k == pick else mix(H(card["color"]), BG, 0.5))
             ins = card["interns"]
@@ -2750,7 +2743,6 @@ def _team_screen(cv, ui, scene):
         cv.put(c + 3, alumni_r + 1, clip(who["name"], C - c - 4), H(who["color"]), None, True)
         cv.put(c + 3, alumni_r + 2, "retired", AMBER)
         c += need + 3
-    _talk_box(cv, ui, scene)
 
 
 # ---------------------------------------------------------------------------
@@ -5189,7 +5181,7 @@ def _handle_input(data, ui, scene, feed):
             ui.view = "quit"
             return True
         if scene.talk is not None and scene.talk.closing is None and scene.talk.view == ui.view and \
-                tok in (b"\x1b", b"\x1b[C", b"\x1bOC", b"\x1b[D", b"\x1bOD", b"\t", b"\r", b"\n"):
+                tok in (b"\x1b", b"\x1b[C", b"\x1bOC", b"\x1b[D", b"\x1bOD", b"\r", b"\n"):
             t = scene.talk
             if tok == b"\x1b":
                 scene.close_talk()
@@ -5243,8 +5235,7 @@ def _handle_input(data, ui, scene, feed):
                 if i is None:
                     continue
                 ui.selected = cards[1 + i]["key"]
-            if ui.view not in ("office", "team"):
-                # Elsewhere Enter still moves to the agent picked in the office.
+            if ui.view != "office":
                 m_ = next((c for c in scene.crew if c["key"] == ui.selected), None)
                 if m_ is not None:
                     _open_chat(ui, m_, feed)
@@ -5290,8 +5281,9 @@ def _hit(hits, x, y):
 
 def _tap(ui, scene, feed, x, y):
     """A tap in the Office or on the Team view: on an answer it answers; on an
-    agent it starts a talk; on an office thing it opens that thing's view; and
-    anywhere but the talk box it ends the talk that was open."""
+    agent it starts a talk in the Office and opens its chat on the Team view; on
+    an office thing it opens that thing's view; and anywhere but the talk box it
+    ends the talk that was open."""
     talking = ui.talk_box is not None and scene.talk is not None and scene.talk.closing is None
     if talking:
         answer = _hit(ui.talk_hits, x, y)
@@ -5308,7 +5300,10 @@ def _tap(ui, scene, feed, x, y):
     if m is not None:
         if ui.view != "team" or m["kind"] == "mate":
             ui.selected = m["key"]
-        scene.open_talk(m["key"], ui.view, agent[:4])
+        if ui.view == "team":
+            _open_chat(ui, m, feed)
+        else:
+            scene.open_talk(m["key"], ui.view, agent[:4])
         return True
     thing = _hit(ui.object_hits, x, y) if ui.view == "office" else None
     if thing is not None:

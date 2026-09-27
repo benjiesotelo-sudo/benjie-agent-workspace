@@ -33,8 +33,8 @@ When Tailscale is not running it listens only on this Mac, and `status` says so.
 |---|---|
 | `1` to `9`, or tap a tab | Switch view |
 | up and down | Pick the next or previous thing in the view: an agent, a decision, a project card, a second mate or a page; on Tasks, Calendar and System they jump to the Office and pick an agent there |
-| Enter | On the Office and Team views, the picked agent stands up and talks; on Tasks, Projects, Calendar and System it moves your Herdr view to the agent picked in the Office; on Approvals, Memory and Docs it does nothing |
-| Tap an agent | On the Office and Team views, the agent stands up and says one short line, with the answers Open chat, What else? and Bye (see below) |
+| Enter | On the Office view, the picked agent stands up and talks; on Team it moves your Herdr view to the picked second mate's pane; on Tasks, Projects, Calendar and System it does the same for the agent picked in the Office; on Approvals, Memory and Docs it does nothing |
+| Tap an agent | On the Office view, the agent stands up and says one short line, with the answers Open chat, What else? and Bye (see below); on the Team view, move your Herdr view to that agent's pane to open its chat |
 | Tap a thing in the office | Open its view: the corkboard opens Tasks, the calendar Calendar, the bookshelf Memory, the server rack System, the inbox Approvals and the alumni wall Team |
 | `p` | Pause or restart the office animation |
 | `q` | Quit |
@@ -104,8 +104,8 @@ You can also tap Week, Month or Year, the arrows either side of the date, and "b
 The crew as an org chart: you at the top, then the first mate, then a card for each second mate, with each busy intern and helper under its person in charge.
 Each card says whether that agent is working or asleep, which projects it owns, and how many of its jobs wait on you.
 The first mate's card owns every project no second mate has, and the setup itself.
-Up and down pick a second mate, whose description shows underneath, and Enter has that mate talk.
-Tapping a card or an intern's line has that agent talk, the same way as in the Office.
+Up and down pick a second mate, whose description shows underneath, and Enter moves your view to that mate's pane.
+Tapping a card or an intern's line opens that agent's chat.
 The alumni row lists mates that retired while the screen was open.
 
 ### 7 Memory
