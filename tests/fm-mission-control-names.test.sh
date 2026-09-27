@@ -135,7 +135,7 @@ fresh_herdr() {
 
 names() {
   PATH="$FAKEBIN:$PATH" FM_HOME="$HOME_DIR" FM_BRIDGE_NOW=2026-09-20T10:00:00 FM_MC_HERDR="$FAKEBIN/herdr" \
-    HERDR_SESSION=default HERDR_PANE_ID=w1:p1 "$MC" names "$@"
+    HERDR_SESSION=default HERDR_PANE_ID=w1:p1 "$MC" names
 }
 space_name() { jq -r --arg id "$1" '.result.workspaces[] | select(.workspace_id == $id) | .tokens.name // ""' "$HX/spaces.json"; }
 window_name() { jq -r --arg id "$1" '.result.panes[] | select(.pane_id == $id) | .label // ""' "$HX/windows.json"; }
