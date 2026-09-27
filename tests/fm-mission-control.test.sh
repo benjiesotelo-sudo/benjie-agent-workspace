@@ -159,6 +159,156 @@ JP=$(mc "$HOME_DIR" frame --agents "$TMP_ROOT/pane.json" --format json) || fail 
 meta "$HOME_DIR" a1 "$TMP_ROOT/wt-alpha" "$HOME_DIR/projects/alpha"
 pass "workers match by their recorded Herdr pane"
 
+# --- every agent pane shows, with or without a record ------------------------
+
+# A pane no record claims (its task record is gone) still shows, as a helper
+# doing its window title: beside the first mate from this home's folders,
+# beside the mate from the mate's home.
+AGENTS2="$TMP_ROOT/agents2.json"
+jq --arg home "$HOME_DIR" --arg mate "$MATE" '.result.agents += [
+    {pane_id: "w4:p1", agent_status: "idle", cwd: ($home + "/projects/alpha"),
+     terminal_title: "✳ Quiz one for chapter two", terminal_title_stripped: "Quiz one for chapter two"},
+    {pane_id: "w4:p2", agent_status: "working", cwd: ($mate + "/scratch"),
+     terminal_title_stripped: "Sorting \($mate)/data/notes.md"}]' "$AGENTS" > "$AGENTS2"
+HJ=$(mc "$HOME_DIR" frame --agents "$AGENTS2" --format json) || fail "frame with helper panes failed"
+[ "$(jq -r '.actors[] | select(.key == "helper:w4:p1") | .lead' <<<"$HJ")" = fm ] \
+  || fail "a pane with no record stands beside the first mate"
+jq -e '.team[] | select(.role == "Denver'"'"'s helper" and .doing == "idle: Quiz one for chapter two"
+  and .path == "Alpha")' <<<"$HJ" >/dev/null || fail "the helper reads its window title and its project"
+jq -e '.team[] | select(.role == "Alpha'"'"'s helper" and .doing == "Sorting a local file" and .status == "work")' \
+  <<<"$HJ" >/dev/null || fail "a pane in the mate's home is the mate's helper, and its title loses the path"
+for size in 132x44 170x50; do
+  HT=$(mc "$HOME_DIR" frame --agents "$AGENTS2" --size "$size") || fail "helper office text failed at $size"
+  grep -q "Denver's helper .*idle: Quiz one for chapter two" <<<"$HT" || fail "at $size the team list shows the helper"
+  grep -q "Alpha's helper .*Sorting a local file" <<<"$HT" || fail "at $size the team list shows the mate's helper"
+  grep -Eq 'w4:p|✳' <<<"$HT" && fail "at $size no pane id or title glyph reaches the screen"
+  grep -q "$TMP_ROOT" <<<"$HT" && fail "at $size no raw path reaches the screen"
+  HM=$(mc "$HOME_DIR" frame --agents "$AGENTS2" --size "$size" --view team) || fail "helper team frame failed"
+  grep -q '├─ ○ idle: Quiz one for chapter two' <<<"$HM" || fail "at $size the helper branches off the first mate's line"
+  grep -q '2 helpers with no record' <<<"$HM" || fail "at $size the Team view counts the helper"
+  grep -q 'owns beta, the setup itself' <<<"$HM" \
+    || fail "at $size the first mate's card names the projects no second mate owns"
+done
+HC=$(mc "$HOME_DIR" frame --agents "$AGENTS2" --view calendar --size 170x50) || fail "helper calendar frame failed"
+grep -q '● Denver working' <<<"$HC" || fail "the always-running strip shows the first mate"
+pass "a pane with no record shows as a helper, in plain words, on every view"
+
+# The first mate's seven places: four right of its desk, three left; the
+# eighth intern is counted, and the team lists show every one.
+CROWD="$TMP_ROOT/crowdship"
+mkdir -p "$CROWD/data" "$CROWD/state" "$CROWD/config"
+CROWD=$(cd "$CROWD" && pwd)
+cp "$FIX/projects.fixture" "$CROWD/data/projects.md"
+printf '# Backlog\n\n## In flight\n## Queued\n## Done\n' > "$CROWD/data/backlog.md"
+printf '{"names": {"beta": "Beta Outreach"}}\n' > "$CROWD/config/mission-control.json"
+for n in 1 2 3 4 5 6 7 8; do
+  meta "$CROWD" "c$n" "$TMP_ROOT/crowd-wt-$n" "$CROWD/projects/beta"
+done
+jq -n --arg home "$CROWD" '{result: {agents: [{pane_id: "w1:p1", agent_status: "working", cwd: $home}]}}' \
+  > "$TMP_ROOT/crowd.json"
+CJ=$(mc "$CROWD" frame --agents "$TMP_ROOT/crowd.json" --format json) || fail "crowded frame failed"
+[ "$(jq -r '[.actors[] | select(.kind == "intern")] | length' <<<"$CJ")" = 7 ] \
+  || fail "the first mate has seven places for interns"
+[ "$(jq -r '[.actors[] | select(.kind == "intern") | "\(.slot):\(.x):\(.feet)"] | join(" ")' <<<"$CJ")" \
+  = "0:56:24 1:63:24 2:70:24 3:77:24 4:19:24 5:12:24 6:5:24" ] \
+  || fail "four places right of the desk, three left, got $(jq -c '[.actors[] | select(.kind == "intern") | [.slot, .x]]' <<<"$CJ")"
+CT=$(mc "$CROWD" frame --agents "$TMP_ROOT/crowd.json" --size 170x50) || fail "crowded text failed"
+grep -q '+1' <<<"$CT" || fail "the eighth intern is counted beside the desk"
+[ "$(grep -c "First mate's intern" <<<"$CT")" = 8 ] || fail "the team list under the office shows all eight"
+CS=$(mc "$CROWD" frame --agents "$TMP_ROOT/crowd.json" --size 132x44) || fail "crowded small text failed"
+grep -q '^   +2 more' <<<"$CS" || fail "a list with no room for every row counts the rest"
+[ "$(grep -c "First mate's intern" <<<"$CS")" = 6 ] || fail "the crowded list takes the note's rows"
+grep -q 'Interns stand beside' <<<"$CS" && fail "a crowded list gives up the note"
+for size in 132x44 170x50; do
+  CM=$(mc "$CROWD" frame --agents "$TMP_ROOT/crowd.json" --size "$size" --view team) || fail "crowded team failed"
+  [ "$(grep -c '├─ ○\|└─ ○' <<<"$CM")" = 8 ] || fail "at $size the Team view lists all eight interns"
+  grep -Eq 'more (interns?|helpers?)|more:' <<<"$CM" && fail "at $size no intern is folded into a count"
+  grep -q 'owns alpha, Beta Outreach, homeship, the setup itself' <<<"$CM" \
+    || fail "at $size the first mate's card names its projects by their display names"
+done
+pass "the first mate's interns fill seven places, and every one is listed"
+
+# --- tapping an agent opens its chat -----------------------------------------
+
+# A fake herdr logs every call; a pane it no longer has answers not found.
+cat > "$FAKEBIN/herdr-log" <<SH
+#!/usr/bin/env bash
+printf '%s\n' "\$*" >> "$TMP_ROOT/herdr.log"
+[ "\$1 \$2 \$3" = "agent focus w9:gone" ] && exit 1
+exit 0
+SH
+chmod +x "$FAKEBIN/herdr-log"
+mct() {  # <home> <args...> - mc through the logging herdr, with an empty log
+  local home=$1
+  shift
+  : > "$TMP_ROOT/herdr.log"
+  PATH="$FAKEBIN:$PATH" FM_HOME="$home" FM_BRIDGE_NOW=2026-09-20T10:00:00 FM_MC_HERDR="$FAKEBIN/herdr-log" "$MC" "$@"
+}
+tap_on() {  # <frame text> <needle> [dx] - the terminal's press on the needle's first cell plus dx
+  python3 -c '
+import sys
+text, needle, dx = sys.argv[1], sys.argv[2], int(sys.argv[3])
+for i, ln in enumerate(text.split("\n")):
+    j = ln.find(needle)
+    if j >= 0:
+        sys.stdout.write("\x1b[<0;%d;%dM" % (j + 1 + dx, i + 1))
+        break
+else:
+    sys.exit("no %r on the screen" % needle)' "$1" "$2" "${3:-0}"
+}
+tap_at() {  # <col> <row>, zero-based screen cells
+  printf '\e[<0;%d;%dM' $(($1 + 1)) $(($2 + 1))
+}
+focused() {  # the panes Herdr was asked to focus, space separated
+  tr '\n' ' ' < "$TMP_ROOT/herdr.log" | sed 's/ $//'
+}
+for size in 132x44 170x50; do
+  # The office is 96 cells wide at every size: the first mate's desk spans
+  # columns 34-54 and rows 5-16; its first place right (x 56) and first place
+  # left (x 19) hold sprites on rows 9-14; the mate's desk spans columns 1-13
+  # and rows 15-26, and its first intern stands at x 15 on rows 19-24.
+  for want in "44 8:w1:p1" "54 16:w1:p1" "66 12:w4:p1" "6 20:w2:p1" "17 22:w3:p1"; do
+    at=${want%%:*}
+    pane=${want#*:}
+    # shellcheck disable=SC2086
+    T=$(mct "$HOME_DIR" frame --agents "$AGENTS2" --size "$size" --keys "$(tap_at $at)") \
+      || fail "a tap at $at failed at $size"
+    [ "$(focused)" = "agent focus $pane" ] || fail "at $size a tap at $at opens $pane's chat, Herdr got: $(focused)"
+    grep -q "opening .*'s chat" <<<"$T" || fail "at $size the footer says the chat is opening"
+  done
+  T=$(mct "$HOME_DIR" frame --agents "$AGENTS2" --size "$size" --keys "$(tap_at 59 12)") || fail "tap failed"
+  [ -z "$(focused)" ] || fail "at $size an intern with no pane asks Herdr nothing, got: $(focused)"
+  grep -q "Denver's intern has no open chat to show" <<<"$T" || fail "at $size an intern with no pane says so"
+  for none in "95 12" "30 30" "0 0"; do
+    # shellcheck disable=SC2086
+    mct "$HOME_DIR" frame --agents "$AGENTS2" --size "$size" --keys "$(tap_at $none)" >/dev/null || fail "tap failed"
+    [ -z "$(focused)" ] || fail "at $size a tap on the floor at $none opens nothing, got: $(focused)"
+  done
+  O=$(mc "$HOME_DIR" frame --agents "$AGENTS2" --size "$size") || fail "office text failed"
+  mct "$HOME_DIR" frame --agents "$AGENTS2" --size "$size" --keys "$(tap_on "$O" "Denver's helper")" >/dev/null
+  [ "$(focused)" = "agent focus w4:p1" ] || fail "at $size a team list row opens its agent's chat, got: $(focused)"
+  grep -q 'tap an agent to open its chat' <<<"$O" || fail "at $size the office footer says taps open chats"
+
+  M=$(mc "$HOME_DIR" frame --agents "$AGENTS2" --size "$size" --view team) || fail "team text failed"
+  grep -q 'tap an agent to open its chat' <<<"$M" || fail "at $size the Team footer says taps open chats"
+  for want in "Chief of staff:w1:p1" "owns Alpha:w2:p1" "idle: Quiz one for chapter two:w4:p1" \
+    "Build chapter four:w3:p1"; do
+    needle=${want%:*:*}
+    pane=${want#"$needle":}
+    T=$(mct "$HOME_DIR" frame --agents "$AGENTS2" --size "$size" --view team --keys "$(tap_on "$M" "$needle")") \
+      || fail "team tap failed"
+    [ "$(focused)" = "agent focus $pane" ] || fail "at $size tapping '$needle' opens $pane's chat, got: $(focused)"
+  done
+done
+
+# A pane that closed since the last look says so in one line, and nothing fails.
+jq '.result.agents[0].pane_id = "w9:gone"' "$AGENTS2" > "$TMP_ROOT/gone.json"
+T=$(mct "$HOME_DIR" frame --agents "$TMP_ROOT/gone.json" --keys "$(tap_at 44 8)") || fail "a tap on a closed pane failed"
+[ "$(focused)" = "agent focus w9:gone" ] || fail "the closed pane was asked for, got: $(focused)"
+grep -q "Denver's chat has closed, so there is nothing to open" <<<"$T" || fail "a closed pane reads as one plain line"
+grep -q 'w9:gone' <<<"$T" && fail "no pane id reaches the screen"
+pass "tapping an agent in the office or on the Team view opens its chat, and nothing else"
+
 # --- the task board --------------------------------------------------------
 
 B=$(mc "$HOME_DIR" frame --agents "$AGENTS" --view tasks) || fail "tasks frame failed"
@@ -1353,6 +1503,33 @@ J3=$(mc "$BIG" frame --agents "$TMP_ROOT/big.json" --size 132x44 --format json)
 [ "$(jq -r '.team[0].name' <<<"$J3")" = "First mate" ] || fail "without the settings file the first mate is First mate"
 pass "seven mates open a second floor with a sign, busiest downstairs"
 
+# Eight mates and no interns overflow the office's team list: the count of the rest stays.
+BIG8="$TMP_ROOT/big8ship"
+mkdir -p "$BIG8/state" "$TMP_ROOT/m8/data" "$TMP_ROOT/m8/state"
+cp -R "$BIG/data" "$BIG/config" "$BIG8/"
+printf '# Backlog\n\n## In flight\n## Queued\n## Done\n' > "$TMP_ROOT/m8/data/backlog.md"
+echo "- m8-mate - Mate number 8 (home: $TMP_ROOT/m8; scope: area 8; projects: p8; added 2026-09-01)" \
+  >> "$BIG8/data/secondmates.md"
+jq -n '{result: {agents: []}}' > "$TMP_ROOT/none.json"
+T8=$(mc "$BIG8" frame --agents "$TMP_ROOT/none.json" --size 132x44) || fail "eight-mate text failed"
+grep -q '^   +2 more' <<<"$T8" || fail "a crowded list with no interns still counts the mates it cannot show"
+grep -q 'none right now' <<<"$T8" && fail "the no-interns row never covers the count"
+
+# The first mate's hidden team lines are counted as what they are.
+meta "$BIG8" b1 "$TMP_ROOT/wt-b1" "$BIG8/projects/beta"
+jq -n --arg home "$BIG8" '{result: {agents: [range(1; 10) as $n | {pane_id: "w5:p\($n)", agent_status: "idle",
+  cwd: ($home + "/scratch"), terminal_title_stripped: "Job \($n)"}]}}' > "$TMP_ROOT/big8-helpers.json"
+TH=$(mc "$BIG8" frame --agents "$TMP_ROOT/big8-helpers.json" --size 132x44 --view team) || fail "team text failed"
+grep -q '├─ 4 more helpers' <<<"$TH" || fail "hidden helpers are counted as helpers"
+grep -Eq 'more interns?|more:' <<<"$TH" && fail "no helper is counted as an intern"
+for n in 2 3 4 5 6 7; do
+  meta "$BIG8" "b$n" "$TMP_ROOT/wt-b$n" "$BIG8/projects/beta"
+done
+TM=$(mc "$BIG8" frame --agents "$TMP_ROOT/big8-helpers.json" --size 132x44 --view team) || fail "team text failed"
+grep -q '├─ 10 more: 1 intern and 9 helpers' <<<"$TM" || fail "a mixed count names interns and helpers"
+grep -Eq '(^|[^0-9])0 (interns?|helpers?)' <<<"$TH$TM" && fail "no zero count shows"
+pass "a list with no room counts every row it hides, helpers as helpers"
+
 readings "$TMP_ROOT/big-ok.json" '.mates = ([range(1; 8) | {key: "m\(.)-mate", value: 180}] | from_entries)'
 BS=$(mc "$BIG" frame --readings "$TMP_ROOT/big-ok.json" --agents "$TMP_ROOT/big.json" --view system --size 96x37) \
   || fail "seven-mate system frame failed"
@@ -1371,6 +1548,7 @@ cat > "$FAKEBIN/herdr-list" <<SH
 #!/usr/bin/env bash
 [ -e "$TMP_ROOT/herdr-down" ] && exit 1
 [ "\$1 \$2" = "agent list" ] && exec cat "\$DRIVE_AGENTS"
+[ "\$1 \$2" = "agent focus" ] && printf '%s\n' "\$3" >> "$TMP_ROOT/live-focus.log"
 exit 0
 SH
 chmod +x "$FAKEBIN/herdr-list"
@@ -1491,7 +1669,7 @@ screen "$TMP_ROOT/ap" 3 | grep -q 'asked 2 Sep, 18 days ago, sits with Denver, p
 screen "$TMP_ROOT/ap" 4 | grep -q 'sits with Alpha, project Alpha' || fail "down crosses into the next agent and stops at the end"
 screen "$TMP_ROOT/ap" 5 | grep -Eq '^ ▸ .*Approve the module outline' || fail "up moves back"
 screen "$TMP_ROOT/ap" 6 | grep -Eq '^ ▸ .*Approve the module outline' || fail "enter leaves the view and the pick alone"
-screen "$TMP_ROOT/ap" 6 | grep -q 'moving your view' && fail "enter on Approvals moves no pane"
+screen "$TMP_ROOT/ap" 6 | grep -q "opening .*'s chat" && fail "enter on Approvals moves no pane"
 pass "up and down read each decision on the live Approvals view, and no key acts on one"
 
 # A captain item filed while the screen runs reads "<name> asks you <title>".
@@ -1571,6 +1749,18 @@ screen "$TMP_ROOT/late" 2 | grep -Eq 'Alpha (finished|asks you|calls in an inter
   && fail "a mate's first readable records are history, not news"
 pass "a second mate home first read late adds no invented events"
 
+# A pane no record claims comes and goes as a helper in the activity feed, never as an intern.
+LIVE_AGENTS="$TMP_ROOT/live-agents.json"
+cp "$AGENTS" "$LIVE_AGENTS"
+code=$(DRIVE_AGENTS="$LIVE_AGENTS" drive "$TMP_ROOT/helpers" \
+  "2=SH:cp $AGENTS2 $LIVE_AGENTS,7=SH:cp $AGENTS $LIVE_AGENTS,12=q") || fail "the pty driver failed"
+[ "$code" = 0 ] || fail "the helper run quits cleanly, got exit $code"
+screen "$TMP_ROOT/helpers" 2 | grep -q 'Denver calls in a helper' || fail "a new helper arrives as a helper"
+screen "$TMP_ROOT/helpers" 3 | grep -q "Denver's helper finished," || fail "a closed helper leaves as a helper"
+screen "$TMP_ROOT/helpers" 3 | grep -Eq 'Denver calls in an intern|Denver.s intern finished' \
+  && fail "the feed never calls a helper an intern"
+pass "helpers come and go by name in the activity feed"
+
 # Herdr stops answering after one good read: the notice says what is shown.
 code=$(drive "$TMP_ROOT/down" "1=SH:touch $TMP_ROOT/herdr-down,6=q") || fail "the pty driver failed"
 rm -f "$TMP_ROOT/herdr-down"
@@ -1622,7 +1812,21 @@ for want in 2:P1 3:P2 4:P3 5:P2; do
   screen "$TMP_ROOT/pick" "$n" | grep -q "Mate number ${who#P}" || fail "screen $n shows $who's charter"
 done
 screen "$TMP_ROOT/pick" 2 | grep -q '4 more ▸' || fail "cards beyond the pane's width are counted"
+# Tapping the first mate's card opens its chat and leaves the picked mate picked.
+TB=$(mc "$BIG" frame --agents "$TMP_ROOT/big.json" --size 132x44 --view team) || fail "big team frame failed"
+TB=$(mct "$BIG" frame --agents "$TMP_ROOT/big.json" --size 132x44 --view team \
+  --keys "$DOWN$DOWN$(tap_on "$TB" "Chief of staff")") || fail "big team tap failed"
+grep -q 'ABOUT P3' <<<"$TB" || fail "a tap on the first mate's card keeps P3 picked"
 pass "up and down pick a second mate on the Team view"
+
+# On the live screen a tap on the first mate's desk moves the captain's view
+# to its pane, and the footer says so.
+: > "$TMP_ROOT/live-focus.log"
+code=$(drive "$TMP_ROOT/livetap" "3=$(printf '\e[<0;45;9M'),5=q") || fail "the pty driver failed"
+[ "$code" = 0 ] || fail "the tap run quits cleanly, got exit $code"
+[ "$(cat "$TMP_ROOT/live-focus.log")" = w1:p1 ] || fail "a live tap focuses the first mate's pane, got: $(cat "$TMP_ROOT/live-focus.log")"
+screen "$TMP_ROOT/livetap" 2 | grep -q "opening Denver's chat" || fail "the live footer says the chat is opening"
+pass "a tap on the live office opens that agent's chat"
 
 # A pane that stops working keeps its desk lit for SLEEP_AFTER seconds, and
 # the team list agrees with the desk.
