@@ -1,0 +1,10 @@
+not ok - frame --format text with settings failed: Traceback (most recent call last):
+  File "/Users/benjie/.no-mistakes/worktrees/40995176e50b/01M3H9TZC7KPB01X1WTAZNAE7C/bin/fm_controls.py", line 350, in <module>
+    sys.exit(main(sys.argv[1:]))
+  File "/Users/benjie/.no-mistakes/worktrees/40995176e50b/01M3H9TZC7KPB01X1WTAZNAE7C/bin/fm_controls.py", line 345, in main
+    sys.stdout.write(frame(home, args.config_dir, int(m.group(1)), int(m.group(2)), args.format) + "\n")
+  File "/Users/benjie/.no-mistakes/worktrees/40995176e50b/01M3H9TZC7KPB01X1WTAZNAE7C/bin/fm_controls.py", line 316, in frame
+    sw, name = ms.read(home), who(config_dir)
+  File "/Users/benjie/.no-mistakes/worktrees/40995176e50b/01M3H9TZC7KPB01X1WTAZNAE7C/bin/fm_controls.py", line 73, in who
+    name = mc.first_mate_name(config_dir)
+AttributeError: module 'fm_mission_control' has no attribute 'first_mate_name'
