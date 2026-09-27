@@ -1010,6 +1010,14 @@ ILJ=$(mc "$HOME_DIR" frame --agents "$AGENTS" --view docs --size 170x50 --format
 [ "$(jq -r '[.docs.rows[] | select(.kind == "Link") | .title] | join(",")' <<<"$ILJ")" \
   = "System Map,The Bridge page,Public Mission Control page,Class Drive folder,Status page" ] \
   || fail "important links run System Map, Bridge, public page, then the saved links: $(jq -c .docs.rows <<<"$ILJ")"
+DOC1=$(jq -r '[.docs.rows[] | select(.kind != "Link") | .title][0]' <<<"$ILJ")
+DOC2=$(jq -r '[.docs.rows[] | select(.kind != "Link") | .title][1]' <<<"$ILJ")
+OPEN=$(mc "$HOME_DIR" frame --agents "$AGENTS" --view docs --size 170x50) || fail "docs frame failed"
+grep '^▸' <<<"$OPEN" | grep -qF "▸ ${DOC1:0:20}" || fail "Docs opens on the newest document, $DOC1: $(grep '^▸' <<<"$OPEN")"
+DOWN=$(mc "$HOME_DIR" frame --agents "$AGENTS" --view docs --size 170x50 --keys $'\e[B') || fail "docs down failed"
+grep '^▸' <<<"$DOWN" | grep -qF "▸ ${DOC2:0:20}" || fail "one Down moves from the newest document to $DOC2: $(grep '^▸' <<<"$DOWN")"
+UP=$(mc "$HOME_DIR" frame --agents "$AGENTS" --view docs --size 170x50 --keys $'\e[A') || fail "docs up failed"
+grep -q '^▸ Status page ' <<<"$UP" || fail "one Up moves from the newest document to the last important link: $(grep '^▸' <<<"$UP")"
 PUB=$(mc "$HOME_DIR" frame --agents "$AGENTS" --view docs --size 170x50 --keys $'\e[A\e[A\e[A\e[A\e[A\e[A\e[B\e[B')
 grep -q '│ https://octo.github.io/crew-office/ ' <<<"$PUB" || fail "the public page's address comes from its repository setting"
 mv "$TMP_ROOT/mc-settings.keep" "$HOME_DIR/config/mission-control.json" 2>/dev/null || rm -f "$HOME_DIR/config/mission-control.json"

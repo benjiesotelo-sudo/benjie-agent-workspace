@@ -1488,6 +1488,7 @@ class UI:
         self.scroll = 0         # Memory and Docs: the reader's first line on scroll_key's page
         self.scroll_key = None
         self.page_keys = []     # Memory and Docs: the rows as last drawn, for up/down
+        self.page_pick = None   # Memory and Docs: the row highlighted as last drawn, where up/down starts
         self.list_hits = {}     # screen row -> row key, for taps on the list
         self.reader_box = None
         self.reader_page = 10
@@ -3099,7 +3100,7 @@ def _memory_screen(cv, ui, scene, now):
         cv.put(3, 5, "Nothing is remembered yet.", SOFT, None, True)
         cv.put(3, 7, "Lessons, notes about you and the days' work show up here once they are written down.", DIMMER)
         return
-    pick = _pick_page(ui, pages)
+    pick = ui.page_pick = _pick_page(ui, pages)
     list_w, rc = _shelf_layout(C)
     rows = []
     if longs:
@@ -3163,7 +3164,8 @@ def _docs_screen(cv, ui, scene, now):
         return
     rest = [p for p in shown if not p.get("pinned")]
     # The pinned links head the list, but the reader opens on the newest document until one is picked.
-    pick = _pick_page(ui, shown if ui.pages.get(ui.view) in {p["key"] for p in shown} else (rest or shown))
+    pick = ui.page_pick = _pick_page(ui, shown if ui.pages.get(ui.view) in {p["key"] for p in shown}
+                                     else (rest or shown))
     list_w, rc = _shelf_layout(C)
     for p in shown:
         p["line2"] = _doc_facts(model, colors, p)
@@ -4777,7 +4779,7 @@ def _pick_row(ui, key):
     """Memory and Docs: pick a row; the reader starts at its top."""
     if key is None or ui.pages.get(ui.view) == key:
         return False
-    ui.pages[ui.view] = key
+    ui.pages[ui.view] = ui.page_pick = key
     return True
 
 
@@ -4785,8 +4787,7 @@ def _step_row(ui, down):
     keys = ui.page_keys
     if not keys:
         return False
-    cur = ui.pages.get(ui.view)
-    i = keys.index(cur) if cur in keys else 0
+    i = keys.index(ui.page_pick) if ui.page_pick in keys else 0
     return _pick_row(ui, keys[max(0, min(len(keys) - 1, i + (1 if down else -1)))])
 
 

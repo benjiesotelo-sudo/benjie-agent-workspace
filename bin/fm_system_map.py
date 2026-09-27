@@ -5,7 +5,7 @@ The Bridge (bin/fm_bridge.py) serves it at /system-map (the page) and
 /system-map.json (the map), and bin/fm-bridge.sh owns the command surface and
 the address. This module owns what the map reads, which nodes and lines it
 draws, the guided tour, and the page that draws them in the browser.
-Mission Control's System and Docs views reuse outline() and page_address().
+Mission Control's System and Docs views reuse outline() and important_links().
 
 THE SHAPE. Top to bottom, like an automation graph: the captain and every way
 work arrives or wakes the crew; the first mate, with where results show beside
@@ -262,9 +262,13 @@ def scrub(text, secrets=()):
     return re.sub(r"\s{2,}", " ", text).strip()
 
 
+_IDS = frozenset({"id", "from", "to", "owner", "users_ids", "lane", "side", "agents", "node", "key", "step",
+                  "project", "zone"})
+
+
 def _scrub_all(value, secrets):
     if isinstance(value, dict):
-        return {k: _scrub_all(v, secrets) for k, v in value.items()}
+        return {k: v if k in _IDS else _scrub_all(v, secrets) for k, v in value.items()}
     if isinstance(value, list):
         return [_scrub_all(v, secrets) for v in value]
     return scrub(value, secrets)
@@ -503,11 +507,6 @@ class _Probes:
 
 
 PROBES = _Probes()
-
-
-# ---------------------------------------------------------------------------
-# Building the map
-# ---------------------------------------------------------------------------
 
 
 # ---------------------------------------------------------------------------

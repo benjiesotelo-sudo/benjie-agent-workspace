@@ -360,7 +360,18 @@ cat > "$HOME_DIR/config/watched-tools.json" <<'EOF'
 {"tools": [{"name": "Sprinkler", "command": "sprinkler"}, {"name": "Weather", "command": "no-such-weather-tool"},
            {"name": "Mystery"}]}
 EOF
+for task in fin1209-ch1-materials-audit fin1209-ch1-term-visuals-part1; do
+  mkdir -p "$TMP_ROOT/$task-worktree"
+  sed -e "s|m1|$task|" -e "s|kind=scout|kind=ship|" "$MATE/state/m1.meta" > "$MATE/state/$task.meta"
+done
 GROWN=$(NM_BROKEN=1 map) || fail "the grown map did not build"
+rm -f "$MATE"/state/fin1209-*.meta
+for task in fin1209-ch1-materials-audit fin1209-ch1-term-visuals-part1; do
+  [ "$(node "$GROWN" "intern:garden-mate:$task" .owner)" = mate:garden-mate ] \
+    || fail "a helper with a long task id keeps its own node: $task"
+  [ "$(edge "$GROWN" mate:garden-mate "intern:garden-mate:$task")" = flow ] || fail "its mate's line reaches $task"
+done
+[ "$(jq '[.nodes[].id] | length == (unique | length)' <<<"$GROWN")" = true ] || fail "no two nodes share an id"
 has "$GROWN" mate:beta-mate || fail "adding a second mate adds its node"
 has "$GROWN" model:mate:beta-mate || fail "the new mate gets its own model"
 [ "$(edge "$GROWN" mate:beta-mate project:bakery)" = own ] || fail "the new mate owns its project"
