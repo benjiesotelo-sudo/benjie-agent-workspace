@@ -29,7 +29,10 @@ and the time moves once so the page still shows it is alive.
 WHAT THE SNAPSHOT MAY CONTAIN. It is built by allow-list: public_snapshot()
 constructs every field from the list below and copies nothing else from the
 records, so a field added to a record later never reaches the page.
-  agents    the first mate (config first_mate_name), each second mate named by
+  timing    the schema number, generated_at, today's date, every_minutes and
+            heartbeat_minutes, so the page can say how long ago it was
+            updated and mark the time late only after the heartbeat has passed.
+  agents   the first mate (config first_mate_name), each second mate named by
             its first project's public name ("Second mate N" with none), and
             each live worker as "helper for <project>", or "helper for a
             one-off job" when its project is not registered; state working or
