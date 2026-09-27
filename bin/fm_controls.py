@@ -70,7 +70,7 @@ class UI:
 
 
 def who(config_dir):
-    name = mc.first_mate_name(config_dir)
+    name = mc.read_settings(config_dir)["first_mate_name"]
     return "the first mate" if name == "First mate" else name
 
 

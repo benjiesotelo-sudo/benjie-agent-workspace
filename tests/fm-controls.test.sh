@@ -5,7 +5,9 @@
 # removes exactly them, repeated turns change nothing, a missing settings file
 # is created and kept out of git, a malformed one is left byte for byte with a
 # plain error on screen, and the frame shows the real state, including an edit
-# made elsewhere. Then the live screen in a pseudo-terminal: Enter and a tap on
+# made elsewhere. First, every frame format and a live start run against the
+# Mission Control in this tree, whose canvas, terminal and settings reader
+# Controls borrows, so a change there cannot silently break Controls. Then the live screen in a pseudo-terminal: Enter and a tap on
 # the switch turn it over at once, a tap elsewhere does nothing, an outside
 # edit shows by itself, and q and SIGTERM restore the terminal. Then start,
 # status and stop against a fake Herdr, and Mission Control's one read-only
@@ -50,6 +52,55 @@ mtime() {  # <file> - its modification time in nanoseconds
 frame_state() {
   ct frame --format json | jq -r '.state // "none"'
 }
+
+# --- Controls against the current Mission Control ----------------------------
+
+# Controls borrows its canvas, terminal and settings reader from
+# bin/fm_mission_control.py, so every frame format and a live start must work
+# against the Mission Control in this tree, with and without its settings file.
+for cfg in with without; do
+  [ "$cfg" = without ] && mv "$HOME_DIR/config/mission-control.json" "$TMP_ROOT/mc.saved"
+  for fmt in text json ansi; do
+    out=$(ct frame --format "$fmt" --size 80x30 2>&1) || fail "frame --format $fmt $cfg settings failed: $out"
+    grep -q 'merge green pull requests on the workspace' <<<"$out" || fail "frame --format $fmt $cfg settings shows the switch"
+  done
+  [ "$cfg" = with ] && { ct frame | grep -q 'Let Denver merge' || fail "the settings' first mate name is used"; }
+  [ "$cfg" = without ] && { ct frame | grep -q 'Let the first mate merge' || fail "no settings reads the first mate"; }
+done
+mv "$TMP_ROOT/mc.saved" "$HOME_DIR/config/mission-control.json"
+out=$(FM_HOME="$HOME_DIR" python3 - "$CT" <<'PY2'
+import os, pty, sys, time, select, struct, fcntl, termios, signal
+pid, fd = pty.fork()
+if pid == 0:
+    os.execvp(sys.argv[1], [sys.argv[1], "run"])
+fcntl.ioctl(fd, termios.TIOCSWINSZ, struct.pack("HHHH", 30, 100, 0, 0))
+raw, t0 = b"", time.time()
+while time.time() - t0 < 10 and b"CONTROLS" not in raw:
+    if select.select([fd], [], [], 0.1)[0]:
+        try:
+            raw += os.read(fd, 1 << 16)
+        except OSError:
+            break
+os.write(fd, b"q")
+t1 = time.time()
+while time.time() - t1 < 5:
+    got, status = os.waitpid(pid, os.WNOHANG)
+    if got:
+        break
+    if select.select([fd], [], [], 0.1)[0]:
+        try:
+            raw += os.read(fd, 1 << 16)
+        except OSError:
+            pass
+else:
+    os.kill(pid, signal.SIGKILL)
+    _, status = os.waitpid(pid, 0)
+print("drawn" if b"CONTROLS" in raw else "not drawn", os.WEXITSTATUS(status) if os.WIFEXITED(status) else -1)
+sys.stdout.write(raw.decode("utf-8", "replace")[-400:] if b"Traceback" in raw else "")
+PY2
+) || fail "the live start driver failed: $out"
+[ "$(head -1 <<<"$out")" = "drawn 0" ] || fail "the live screen starts, draws and quits cleanly against Mission Control: $out"
+pass "Controls runs its frames and live screen against the current Mission Control"
 
 # --- the switch's file ------------------------------------------------------
 
