@@ -1,0 +1,50 @@
+ok - desks come from the crew and states come from the agent list
+ok - every worker is an intern beside the right person in charge
+ok - the office text layer: inbox, labels, team list and activity in plain words
+ok - workers match by their recorded Herdr pane
+ok - a pane with no record shows as a helper, in plain words, on every view
+ok - the first mate's interns fill seven places, and every one is listed
+ok - tapping an agent in the office or on the Team view opens its chat, and nothing else
+ok - the Tasks view shows four columns with the Bridge's counts
+ok - the Projects view shows one card per project with status, person in charge, counts and decisions
+ok - the Approvals view groups what waits on the captain by agent, oldest first, in plain words
+ok - the Team view draws the crew as an org chart in plain words
+ok - a remote mate's card says it works on another machine
+ok - a row of three or more cards clips no card line
+ok - healthy readings: green cards, all systems normal, sizes in GB, the rack says ok
+ok - the load, three cards a row at most and the Bridge address each match what the card says
+ok - a stale watcher is amber then red, names itself on the overall line, and turns the rack to check
+ok - a missing or failing command shows could not be checked, never a crash
+ok - a screen running outside its Herdr space says so in amber, never not running
+ok - one second mate down is red and named on the overall line
+ok - before the first reads the view is grey and calm
+ok - the Memory view lists long-term pages and a journal built only from dated records
+ok - the Docs view lists reports, decisions and links with kinds, counts, project tags and a Markdown reader
+ok - decision titles keep real words, an empty table renders, and only the vertical wheel scrolls
+ok - the Docs reader shows a picture as its caption and drops HTML tags and comments
+ok - the Docs view pins the System Map, the Bridge, the public page and the saved links first
+ok - the System view gives the System Map's address, its dot following the Bridge's reading
+ok - the tab bar shows all nine views and a too-small pane gets one line
+ok - the Calendar shows the week's completions, due dates and what always runs
+ok - Month and Year show whole months, marked days and today, and every control works by key and by tap
+ok - the names map renames every project in every view, and second mates by their project
+ok - without a names map projects and second mates keep the repository names
+ok - seven mates open a second floor with a sign, busiest downstairs
+ok - a list with no room counts every row it hides, helpers as helpers
+ok - the System view announces the cards below on a row of its own
+ok - the Approvals view is calm when nothing waits on the captain
+ok - up and down read each decision on the live Approvals view, and no key acts on one
+ok - the live screen switches views, quits on q and SIGTERM, and restores the terminal
+ok - up and down pick a project card on the live screen
+ok - the live Memory and Docs views pick, filter, tap and scroll
+ok - a second mate home that cannot be read keeps its last good read
+ok - a second mate home first read late adds no invented events
+ok - helpers come and go by name in the activity feed
+ok - a Herdr outage keeps the last states and says so
+ok - the live Calendar moves by month, returns to today, and changes mode by key and by tap
+ok - a mate that leaves the registry from upstairs goes on the alumni wall
+ok - up and down pick a second mate on the Team view
+ok - a tap on the live office opens that agent's chat
+ok - an idle pane falls asleep after SLEEP_AFTER seconds, on the desk and the team list alike
+ok - fm-mission-control.sh parses
+bash tests/fm-mission-control.test.sh  85.46s user 80.82s system 69% cpu 3:59.27 total

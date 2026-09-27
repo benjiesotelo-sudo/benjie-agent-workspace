@@ -1,0 +1,12 @@
+ok - every agent, trigger, project, tool and pipeline step comes from the records, settings and tools
+ok - hooks, the watcher, GitHub results, login items and schedules each wake the first mate
+ok - each agent has its own model and memory, and captions come from each node's own source
+ok - a tool only one agent uses hangs under it, and shared tools are drawn once with temporary lines
+ok - lines, glow and each helper's place on the lane follow who is working
+ok - the tour walks one request through the real nodes
+ok - the important links Mission Control pins come from the Bridge's address and the public page's setting
+ok - a parked gate, CI, green checks and a running validation each find their step
+ok - adding an agent, a dependency or a tool adds a node, and a missing source says could not read
+ok - a missing rule book or unreadable hook settings say could not read
+ok - no paths, links, email addresses, tokens or hook commands reach the map
+ok - the Bridge serves the System Map page and its map, and nothing else new
