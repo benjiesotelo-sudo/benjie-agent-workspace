@@ -1722,6 +1722,18 @@ screen "$TMP_ROOT/late" 2 | grep -Eq 'Alpha (finished|asks you|calls in an inter
   && fail "a mate's first readable records are history, not news"
 pass "a second mate home first read late adds no invented events"
 
+# A pane no record claims comes and goes as a helper in the activity feed, never as an intern.
+LIVE_AGENTS="$TMP_ROOT/live-agents.json"
+cp "$AGENTS" "$LIVE_AGENTS"
+code=$(DRIVE_AGENTS="$LIVE_AGENTS" drive "$TMP_ROOT/helpers" \
+  "2=SH:cp $AGENTS2 $LIVE_AGENTS,7=SH:cp $AGENTS $LIVE_AGENTS,12=q") || fail "the pty driver failed"
+[ "$code" = 0 ] || fail "the helper run quits cleanly, got exit $code"
+screen "$TMP_ROOT/helpers" 2 | grep -q 'Denver calls in a helper' || fail "a new helper arrives as a helper"
+screen "$TMP_ROOT/helpers" 3 | grep -q "Denver's helper finished," || fail "a closed helper leaves as a helper"
+screen "$TMP_ROOT/helpers" 3 | grep -Eq 'Denver calls in an intern|Denver.s intern finished' \
+  && fail "the feed never calls a helper an intern"
+pass "helpers come and go by name in the activity feed"
+
 # Herdr stops answering after one good read: the notice says what is shown.
 code=$(drive "$TMP_ROOT/down" "1=SH:touch $TMP_ROOT/herdr-down,6=q") || fail "the pty driver failed"
 rm -f "$TMP_ROOT/herdr-down"

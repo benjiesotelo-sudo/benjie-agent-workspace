@@ -877,7 +877,7 @@ class Scene:
                     del self.actors[key]
                     continue
                 lead = self._member(a.member["lead"])
-                self.log("%s's intern" % (lead["name"] if lead else "the"), "finished, goes home",
+                self.log("%s's %s" % (lead["name"] if lead else "the", a.member["name"]), "finished, goes home",
                          a.member["color"])
                 a.member = dict(a.member, leaving=True)
                 self.walk(a, self.intern_route_out(a), lambda k=key: self.actors.pop(k, None))
@@ -913,7 +913,8 @@ class Scene:
                     a.x, a.feet = self.door()
                     self.walk(a, self.intern_route_in(a), lambda a=a: self.settle(a))
                     lead = self._member(i["lead"])
-                    self.log(lead["name"], "calls in an intern", lead["color"])
+                    self.log(lead["name"], "calls in %s %s" % ("an" if i["name"] == "intern" else "a", i["name"]),
+                             lead["color"])
                 continue
             a.member = i
             a.rest = want
@@ -4279,6 +4280,7 @@ def compose(scene, renderer, ui, cols, rows, now, records_ok=True, notice=None, 
     readings are SystemProbe's; the office's rack sign and the System view share
     the health system_cards() makes of them."""
     cv = Canvas(cols, rows)
+    ui.agent_hits = []
     need_r = min_rows(60)
     if cols < MIN_COLS or rows < need_r:
         msg = "Make this pane bigger: Mission Control needs %d x %d, this pane is %d x %d." % (
@@ -4286,7 +4288,6 @@ def compose(scene, renderer, ui, cols, rows, now, records_ok=True, notice=None, 
         cv.put(0, 0, clip(msg, cols), AMBER)
         return cv, True
     _chrome(cv, ui, now)
-    ui.agent_hits = []
     if scene.model is None:
         cv.put(2, 4, notice or "Reading the ship's records...", SOFT)
         return cv, False
