@@ -1,10 +1,11 @@
 # Mission Control and the Bridge
 
-Mission Control and the Bridge are two ways to watch the whole crew at a glance.
+Mission Control and the Bridge are ways to watch the whole crew at a glance.
 Mission Control is a live screen in a terminal pane, drawn as a pixel-art office with nine views.
 The Bridge is a web page with five tabs that you can open on an iPad or phone over Tailscale.
-Both only read the crew's records.
-Nothing on either one changes a record, answers a decision, or sends anything to an agent; decisions are still answered in chat with the first mate.
+The public page is a copy of Mission Control that anyone can open on the web, with everything private left out.
+All of them only read the crew's records.
+Nothing on any of them changes a record, answers a decision, or sends anything to an agent; decisions are still answered in chat with the first mate.
 
 The pictures on this page come from a made-up demo crew (a garden club, a bakery and a chess league) at 170 columns by 50 rows.
 Your own screen shows your own projects and crew in the same layout.
@@ -149,9 +150,38 @@ Files are rechecked every 5 seconds and commands every 5 minutes; anything that 
 The Bridge has five tabs: Bridge (one card per project), Board (the task columns), Team & Office, Memory, and Documents.
 It is rebuilt from the records when you open or refresh it.
 
+## The public page
+
+![The public page: the office, the live activity column and the team list, as a visitor sees it](mission-control/public.png)
+
+The public page looks like Mission Control's screen: the same tab bar, office, live activity column and team list.
+Office, Projects, Calendar and Team are open to anyone.
+Tasks, Approvals, Memory, Docs and System stay in the tab bar with a lock; opening one shows a padlock over blurred shapes, and nothing from those views is ever written into the page.
+In the office the corkboard, bookshelf, server rack and inbox carry the same lock, and the wall calendar opens the Calendar.
+Tapping someone makes them stand up and say one line, like a character in a game: what they are doing, a count from their projects, or a fun fact.
+Its Open chat button is locked, because only you talk to the crew.
+
+The page shows only public facts: the first mate's name, each second mate by its project's name, helpers as "helper for" a project (or "helper for a one-off job" when the project is not registered), roles built only from those names (such as "second mate for" a project), working or asleep, project names and colours, how many items are waiting on you, in flight and done, how many were done or are due on each calendar day, and plain events such as "joins the crew", "calls in a helper for" a project or "finishes a job"; never falling asleep or waking up, which the office already shows.
+It never shows task titles, notes, paths, links, email addresses, repository names, the second mates' registered scopes or anything from the crew's memory, reports or decisions.
+A project whose repository has no name in `config/mission-control.json` shows as "Project 1", "Project 2" and so on.
+
+The page is a snapshot rather than a live view, so this Mac is never reachable from the internet.
+A small job rebuilds it every 5 minutes and pushes it to a GitHub Pages repository only when something changed; the office keeps moving in the visitor's browser in between, so the Mac does no work between runs.
+The page says how long ago it was updated.
+Because every run rebuilds the page from the current code, improvements to Mission Control reach the public page on its next run.
+
+To set it up once:
+
+1. Create a public GitHub repository for the page, for example `your-name/mission-control`, turn on GitHub Pages for its default branch and root folder, and clone it somewhere outside this home.
+2. Add `"public_page": {"repository": "your-name/mission-control"}` to `config/mission-control.json`, and optionally `"every_minutes"` (5 by default; a larger number saves more power).
+3. Run `bin/fm-mission-control-web.sh publish <the clone>` once to check it pushes, then `bin/fm-mission-control-web.sh install <the clone>` to run it on schedule.
+
+`bin/fm-mission-control-web.sh status` shows the schedule and when the page last changed, and `uninstall` stops it.
+Run `install` again after changing `every_minutes`.
+
 ## Settings
 
-Both settings files live in this home's `config/` folder and are optional.
-`config/mission-control.json` can set `first_mate_name`, the first mate's name on screen, and `names`, the name each project (and so each second mate) goes by; an edit shows without a restart, in Herdr's sidebar too.
+The settings files live in this home's `config/` folder and are optional.
+`config/mission-control.json` can set `first_mate_name`, the first mate's name on screen, `names`, the project names every view shows (and so the name each second mate goes by), and `public_page` for the public page; an edit shows without a restart, in Herdr's sidebar too.
 `config/bridge.json` sets the Bridge's port, address, first mate name, display names and saved links; the Bridge writes a commented example the first time it runs.
-The full command reference is in the headers of `bin/fm-mission-control.sh` and `bin/fm-bridge.sh`.
+The full command reference is in the headers of `bin/fm-mission-control.sh`, `bin/fm-mission-control-web.sh` and `bin/fm-bridge.sh`.
