@@ -465,8 +465,14 @@ grep -q 'token in the environment' "$TMP_ROOT/wrangler.log" || fail "wrangler ge
 grep -q 'account in the environment' "$TMP_ROOT/wrangler.log" || fail "wrangler gets the account id in its environment"
 [ "$(cd "$TMP_ROOT/staged" && find . -type f | sort | tr '\n' ' ')" = "./functions/snapshot.json.js ./public/app.js ./public/index.html ./public/style.css ./wrangler.toml " ] \
   || fail "only the page code and its function are deployed, never the snapshot, got $(cd "$TMP_ROOT/staged" && find . -type f | sort | tr '\n' ' ')"
-grep -q '^binding = "SNAPSHOT"$' "$TMP_ROOT/staged/wrangler.toml" || fail "the deploy binds a namespace to the function"
-grep -q '^id = "ns1"$' "$TMP_ROOT/staged/wrangler.toml" || fail "the bound namespace is the snapshot's"
+if python3 -c 'import tomllib' 2>/dev/null; then
+  KV_BINDINGS=$(python3 -c 'import json, sys, tomllib; print(json.dumps(tomllib.load(open(sys.argv[1], "rb")).get("kv_namespaces"), sort_keys=True))' \
+    "$TMP_ROOT/staged/wrangler.toml") || fail "wrangler.toml parses as TOML"
+  [ "$KV_BINDINGS" = '[{"binding": "SNAPSHOT", "id": "ns1"}]' ] \
+    || fail "the deploy binds exactly the snapshot's namespace to the function as SNAPSHOT, got $KV_BINDINGS"
+else
+  echo "skip: python3 has no tomllib; wrangler.toml bindings not checked"
+fi
 cmp -s "$TMP_ROOT/staged/public/app.js" "$ROOT/bin/mission-control-web/app.js" || fail "the deployed page is the tracked page"
 [ "$(kv ns1)" = "$(cat "$CF/snapshot.json")" ] || fail "Workers KV holds the built snapshot"
 kv ns1 | grep -qi secret && fail "the snapshot in Workers KV is the redacted one"

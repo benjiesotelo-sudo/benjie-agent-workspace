@@ -74,6 +74,8 @@
 set -eu
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=bin/fm-x-lib.sh
+. "$SCRIPT_DIR/fm-x-lib.sh"
 FM_ROOT="${FM_ROOT_OVERRIDE:-$(cd "$SCRIPT_DIR/.." && pwd)}"
 FM_HOME="${FM_HOME:-${FM_ROOT_OVERRIDE:-$FM_ROOT}}"
 FM_HOME="$(cd "$FM_HOME" && pwd)"
@@ -191,22 +193,14 @@ publish_github() {  # <built dir>
 # the log or a file.
 
 cf_credentials() {  # sets CF_TOKEN and CF_ACCOUNT from the home's .env
-  CF_TOKEN=$(env_value CLOUDFLARE_API_TOKEN)
-  CF_ACCOUNT=$(env_value CLOUDFLARE_ACCOUNT_ID)
+  CF_TOKEN=$(fmx_env_get CLOUDFLARE_API_TOKEN "$FM_HOME/.env")
+  CF_ACCOUNT=$(fmx_env_get CLOUDFLARE_ACCOUNT_ID "$FM_HOME/.env")
   [ -n "$CF_TOKEN" ] || die "CLOUDFLARE_API_TOKEN is not set in $FM_HOME/.env"
   [ -n "$CF_ACCOUNT" ] || die "CLOUDFLARE_ACCOUNT_ID is not set in $FM_HOME/.env"
   printf '%s' "$CF_TOKEN" | grep -Eq '^[A-Za-z0-9_-]+$' \
     || die "CLOUDFLARE_API_TOKEN in $FM_HOME/.env does not look like an API token"
   printf '%s' "$CF_ACCOUNT" | grep -Eq '^[0-9a-fA-F]{32}$' \
     || die "CLOUDFLARE_ACCOUNT_ID in $FM_HOME/.env does not look like an account id"
-}
-
-env_value() {  # <name> - its last assignment in the home's .env
-  local name=$1
-  if [ -f "$FM_HOME/.env" ]; then
-    sed -n -E "s/^[[:space:]]*(export[[:space:]]+)?${name}[[:space:]]*=[[:space:]]*//p" "$FM_HOME/.env" | tail -n 1 \
-      | sed -E -e 's/[[:space:]]+$//' -e 's/^"(.*)"$/\1/' -e "s/^'(.*)'\$/\1/" | tr -d '\n'
-  fi
 }
 
 cf_api() {  # <method> <path under the account> <response file> [curl args...] - prints the HTTP status
