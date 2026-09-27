@@ -71,8 +71,9 @@ SETTINGS. config/mission-control.json `public_page` (optional object):
                      publish pushes to; publish pushes only from a checkout
                      whose origin is it.
   project            host cloudflare: the Cloudflare Pages project name
-                     (default "mission-control"); its Workers KV namespace is
-                     "<project>-snapshot".
+                     (default "mission-control"; lowercase letters, digits and
+                     hyphens, else publish and install refuse it); its Workers
+                     KV namespace is "<project>-snapshot".
   every_minutes      the build cadence the schedule uses and the page states
                      (default 5, at least 1).
   heartbeat_minutes  how long an unchanged snapshot keeps its time (default 60,
@@ -116,7 +117,8 @@ def read_public_settings(config_dir):
         host = host.strip().lower()
         out["host"] = host if re.match(r"^[a-z0-9_-]{1,32}$", host) else "invalid"
     project = raw.get("project")
-    if isinstance(project, str) and re.match(r"^[a-z0-9][a-z0-9-]{0,57}$", project.strip()):
+    if isinstance(project, str) and project.strip():
+        # Passed through as written so publish refuses an invalid name by name.
         out["project"] = project.strip()
     repo = raw.get("repository")
     if isinstance(repo, str) and re.match(r"^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$", repo.strip()):

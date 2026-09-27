@@ -447,8 +447,12 @@ CF="$TMP_ROOT/cf-page"
 R=$(mcw 2026-09-18T12:00:00 publish "$CF" --agents "$AGENTS" 2>&1) && fail "publish without Cloudflare credentials fails"
 grep -q "CLOUDFLARE_API_TOKEN is not set in $HOME_DIR/.env" <<<"$R" || fail "the refusal names the missing key and where it is read from, got: $R"
 [ -f "$TMP_ROOT/curl.log" ] && fail "nothing is sent without credentials"
+R=$(CLOUDFLARE_API_TOKEN="$CF_TOKEN_FIXTURE" CLOUDFLARE_ACCOUNT_ID="$CF_ACCOUNT_FIXTURE" \
+  mcw 2026-09-18T12:00:00 publish "$CF" --agents "$AGENTS" 2>&1) && fail "credentials only in the caller's environment are not used"
+grep -q "CLOUDFLARE_API_TOKEN is not set in $HOME_DIR/.env" <<<"$R" || fail "the shell's credentials never stand in for the home's .env, got: $R"
+[ -f "$TMP_ROOT/curl.log" ] && fail "nothing is sent with credentials only in the shell"
 printf 'OTHER=1\nexport CLOUDFLARE_API_TOKEN="%s"\nCLOUDFLARE_ACCOUNT_ID=%s\n' "$CF_TOKEN_FIXTURE" "$CF_ACCOUNT_FIXTURE" > "$HOME_DIR/.env"
-pass "publish to Cloudflare refuses to run until the home's .env holds the credentials"
+pass "publish to Cloudflare refuses to run until the home's .env, and not the shell, holds the credentials"
 
 R=$(mcw 2026-09-18T12:00:00 publish "$CF" --agents "$AGENTS" 2>&1) || fail "first Cloudflare publish failed: $R"
 [ "$(calls)" = "GET /storage/kv/namespaces?per_page=100&page=1,POST /storage/kv/namespaces,PUT /storage/kv/namespaces/ns1/values/snapshot.json,GET /pages/projects/mission-control,POST /pages/projects," ] \
@@ -523,7 +527,30 @@ mv "$HOME_DIR/.env.off" "$HOME_DIR/.env"
 printf '{"public_page": {"host": "netlify"}}\n' > "$HOME_DIR/config/mission-control.json"
 R=$(mcw 2026-09-18T12:30:00 publish "$CF" --agents "$AGENTS" 2>&1) && fail "an unknown host is refused"
 grep -q 'public_page.host in config/mission-control.json is "netlify"' <<<"$R" || fail "the refusal names the host, got: $R"
-pass "install schedules the Cloudflare publish once the credentials are set, and an unknown host is refused"
+R=$(PATH="$FAKEBIN:$PATH" FM_HOME="$HOME_DIR" FM_MCW_AGENT_DIR="$AGENT_DIR" "$MCW" install "$CF" 2>&1) && fail "install with an unknown host is refused"
+grep -q 'public_page.host in config/mission-control.json is "netlify"' <<<"$R" || fail "the install refusal names the host, got: $R"
+[ -e "$PL" ] && fail "an install refused for its host writes no schedule"
+pass "install schedules the Cloudflare publish once the credentials are set, and an unknown host is refused by publish and install"
+
+cf_config My_Page
+: > "$TMP_ROOT/curl.log"
+R=$(mcw 2026-09-18T12:35:00 publish "$CF" --agents "$AGENTS" 2>&1) && fail "an invalid project is refused"
+grep -q 'public_page.project in config/mission-control.json is "My_Page"' <<<"$R" || fail "the refusal names the project, got: $R"
+[ -s "$TMP_ROOT/curl.log" ] && fail "nothing is sent for an invalid project, got $(calls)"
+R=$(PATH="$FAKEBIN:$PATH" FM_HOME="$HOME_DIR" FM_MCW_AGENT_DIR="$AGENT_DIR" "$MCW" install "$CF" 2>&1) && fail "install with an invalid project is refused"
+grep -q 'public_page.project in config/mission-control.json is "My_Page"' <<<"$R" || fail "the install refusal names the project, got: $R"
+[ -e "$PL" ] && fail "an install refused for its project writes no schedule"
+pass "an invalid Pages project is refused by name, never replaced by the default"
+
+jq '.projects["mission-control-live"] = {name: "mission-control-live", subdomain: "mission-control-live.pages.dev", production_branch: "production"}' \
+  "$CF_STATE" > "$CF_STATE.new" && mv "$CF_STATE.new" "$CF_STATE"
+cf_config mission-control-live
+: > "$TMP_ROOT/wrangler.log"
+R=$(mcw 2026-09-18T12:40:00 publish "$CF" --agents "$AGENTS" 2>&1) || fail "publish to an existing project failed: $R"
+grep -q '^wrangler pages deploy public --project-name mission-control-live --branch production ' "$TMP_ROOT/wrangler.log" \
+  || fail "wrangler deploys to the existing project's production branch, got $(cat "$TMP_ROOT/wrangler.log")"
+grep -q 'https://mission-control-live.pages.dev' <<<"$R" || fail "the existing project's address is reported, got: $R"
+pass "an existing Pages project is deployed to its own production branch"
 
 bash -n "$MCW" || fail "fm-mission-control-web.sh has a syntax error"
 pass "fm-mission-control-web.sh parses"

@@ -162,7 +162,7 @@ The page's code is deployed again only when the code itself changed, such as aft
 To set it up once:
 
 1. Create a Cloudflare API token with the Cloudflare Pages Edit and Workers KV Storage Edit permissions.
-2. Add it and your account ID to this home's `.env` as `CLOUDFLARE_API_TOKEN=...` and `CLOUDFLARE_ACCOUNT_ID=...`; the token is never printed, logged or written anywhere else.
+2. Add it and your account ID to this home's `.env` as `CLOUDFLARE_API_TOKEN=...` and `CLOUDFLARE_ACCOUNT_ID=...`; they are read only from there, never from your shell, so a manual run and the scheduled job use the same ones, and the token is never printed, logged or written anywhere else.
 3. Install [wrangler](https://developers.cloudflare.com/workers/wrangler/install-and-update/), Cloudflare's command-line tool, which deploys the page's code.
 4. Add `"public_page": {"host": "cloudflare", "project": "mission-control"}` to `config/mission-control.json`, and optionally `"every_minutes"` (5 by default; a larger number saves more power).
 5. Run `bin/fm-mission-control-web.sh publish <a folder>` once, with a folder outside this home that the job keeps between runs.

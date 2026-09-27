@@ -32,9 +32,10 @@
 #                           and the Pages Function in
 #                           bin/mission-control-web/functions/ that serves
 #                           /snapshot.json from KV) to the Pages project
-#                           public_page.project with wrangler only when that
-#                           code changed, since Pages limits deploys a month.
-#                           The namespace and project are created when absent.
+#                           public_page.project with wrangler, to the project's
+#                           production branch, only when that code changed,
+#                           since Pages limits deploys a month. The namespace
+#                           and project are created when absent.
 #                           <dir>/.cloudflare-published records what Cloudflare
 #                           holds and the page's address, so an upload that
 #                           failed is retried on the next run; delete it to
@@ -42,8 +43,9 @@
 #   install <dir>           write ~/Library/LaunchAgents/com.firstmate.mission-control-web.plist,
 #                           which runs `publish <dir>` every public_page.every_minutes
 #                           minutes and at login, and load it with
-#                           `launchctl bootstrap gui/<uid>`; for cloudflare it
-#                           first checks the credentials are set
+#                           `launchctl bootstrap gui/<uid>`; it first refuses
+#                           an unknown host and, for cloudflare, an invalid
+#                           project or missing credentials
 #   uninstall               `launchctl bootout` the job and remove the plist
 #   status                  report whether the job is loaded, its folder, the
 #                           snapshot's time, where it is published (the page's
@@ -61,9 +63,10 @@
 # Mission Control reaches the public page on its next build with no other step.
 #
 # Cloudflare credentials: CLOUDFLARE_API_TOKEN (Pages Edit and Workers KV
-# Edit) and CLOUDFLARE_ACCOUNT_ID, from the environment or else the home's
-# .env. The token reaches curl on standard input and wrangler in its
-# environment only; it is never printed, logged or written to a file.
+# Edit) and CLOUDFLARE_ACCOUNT_ID, read only from the home's .env, the same
+# file the scheduled job reads. The token reaches curl on standard input and
+# wrangler in its environment only; it is never printed, logged or written to a
+# file.
 #
 # Environment: FM_HOME selects the home whose crew is shown. FM_MC_HERDR
 # replaces the herdr command, as for Mission Control. FM_MCW_AGENT_DIR
@@ -142,6 +145,14 @@ known_host() {  # prints public_page.host, refusing one publish does not know
   esac
 }
 
+known_project() {  # prints public_page.project, refusing a name Cloudflare Pages does not accept
+  local project
+  project=$(setting project)
+  [[ "$project" =~ ^[a-z0-9][a-z0-9-]{0,57}$ ]] \
+    || die "public_page.project in config/mission-control.json is \"$project\"; use lowercase letters, digits and hyphens"
+  printf '%s\n' "$project"
+}
+
 publish_github() {  # <built dir>
   local dir=$1 repo top origin files=() f ahead
   repo=$(setting repository)
@@ -179,7 +190,7 @@ publish_github() {  # <built dir>
 # on its standard input and wrangler in its environment, never a command line,
 # the log or a file.
 
-cf_credentials() {  # sets CF_TOKEN and CF_ACCOUNT from the environment, else the home's .env
+cf_credentials() {  # sets CF_TOKEN and CF_ACCOUNT from the home's .env
   CF_TOKEN=$(env_value CLOUDFLARE_API_TOKEN)
   CF_ACCOUNT=$(env_value CLOUDFLARE_ACCOUNT_ID)
   [ -n "$CF_TOKEN" ] || die "CLOUDFLARE_API_TOKEN is not set in $FM_HOME/.env"
@@ -190,11 +201,9 @@ cf_credentials() {  # sets CF_TOKEN and CF_ACCOUNT from the environment, else th
     || die "CLOUDFLARE_ACCOUNT_ID in $FM_HOME/.env does not look like an account id"
 }
 
-env_value() {  # <name> - the variable when set, else its last assignment in the home's .env
+env_value() {  # <name> - its last assignment in the home's .env
   local name=$1
-  if [ -n "${!name:-}" ]; then
-    printf '%s' "${!name}"
-  elif [ -f "$FM_HOME/.env" ]; then
+  if [ -f "$FM_HOME/.env" ]; then
     sed -n -E "s/^[[:space:]]*(export[[:space:]]+)?${name}[[:space:]]*=[[:space:]]*//p" "$FM_HOME/.env" | tail -n 1 \
       | sed -E -e 's/[[:space:]]+$//' -e 's/^"(.*)"$/\1/' -e "s/^'(.*)'\$/\1/" | tr -d '\n'
   fi
@@ -262,8 +271,8 @@ digest() {  # <file>... - one sha256 over the files' names and bytes
 }
 
 publish_cloudflare() {  # <built dir> - after cf_credentials
-  local dir=$1 project title ns code stage page snap f url done_=()
-  project=$(setting project)
+  local dir=$1 project title ns code stage page snap f url branch done_=()
+  project=$(known_project)
   title="$project-snapshot"
   WORK=$(mktemp -d "${TMPDIR:-/tmp}/fm-mcw.XXXXXX")
   # shellcheck disable=SC2064 # WORK is fixed for this run.
@@ -308,9 +317,11 @@ EOF
   page=$(digest "$stage/wrangler.toml" "$stage/functions/$CF_KEY.js" "${CF_PAGE_FILES[@]/#/$stage/public/}")
   if [ "$page" != "$(record_get "$dir" page)" ]; then
     cf_project "$project"
+    branch=$(jq -r '.result.production_branch // empty' "$WORK/project.json")
+    [ -n "$branch" ] || die "the Pages project $project names no production branch"
     if ! (cd "$stage" && CLOUDFLARE_API_TOKEN="$CF_TOKEN" CLOUDFLARE_ACCOUNT_ID="$CF_ACCOUNT" \
         WRANGLER_SEND_METRICS=false wrangler pages deploy public --project-name "$project" \
-        --branch main --commit-dirty=true) > "$WORK/deploy.log" 2>&1; then
+        --branch "$branch" --commit-dirty=true) > "$WORK/deploy.log" 2>&1; then
       tail -n 5 "$WORK/deploy.log" >&2
       die "wrangler could not deploy the page to the Pages project $project"
     fi
@@ -337,11 +348,15 @@ agent_loaded() {
 }
 
 cmd_install() {  # <dir>
-  local dir=${1:-} every uid
+  local dir=${1:-} every uid host
   [ -n "$dir" ] || die "install needs the folder to publish"
   [ -d "$dir" ] || die "no such folder: $dir"
   dir="$(cd "$dir" && pwd -P)"
-  [ "$(known_host)" != cloudflare ] || cf_credentials
+  host=$(known_host)
+  if [ "$host" = cloudflare ]; then
+    known_project >/dev/null
+    cf_credentials
+  fi
   every=$(setting every_minutes)
   uid=$(id -u)
   mkdir -p "$AGENT_DIR" "$STATE"
