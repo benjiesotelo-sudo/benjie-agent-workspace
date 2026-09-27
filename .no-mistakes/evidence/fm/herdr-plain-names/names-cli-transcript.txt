@@ -1,0 +1,65 @@
+## names layout before (space/tab/window names)
+space w1 benjie-agent-workspace
+space w2 2ndmate-alpha-mate
+space w3 └ q1 · p:urXKPBo5LgWV2rrMCPavcQ
+space w4 captains-scratch
+tab w1:t1 1
+tab w2:t1 1
+tab w2:t2 fm-a1
+tab w3:t1 1
+tab w4:t1 1
+window w1:p1 
+window w2:p1 
+window w2:p2 
+window w3:p1 
+window w4:p1 my notes
+
+## $ HERDR_PANE_ID=w1:p1 FM_HOME=... bin/fm-mission-control.sh names   # run from the first mate's own window
+set: window w1:p1 shows who Denver
+set: window w1:p1 shows job first mate
+set: window w2:p1 shows who Alpha
+set: window w2:p1 shows job second mate
+set: window w2:p2 shows who Alpha's intern
+set: window w2:p2 shows job Build chapter four
+set: window w3:p1 shows who Denver's intern
+set: window w3:p1 shows job Print the handouts
+set: space w1 (benjie-agent-workspace) shows Denver
+set: space w2 (2ndmate-alpha-mate) shows Alpha
+set: space w3 (└ q1 · p:urXKPBo5LgWV2rrMCPavcQ) shows Denver's intern · Print the handouts
+set: space w4 (captains-scratch) shows captains-scratch
+names: 12 set, 0 refused
+exit=0
+
+## display values Herdr now holds
+space  benjie-agent-workspace  ->  name=Denver
+space  2ndmate-alpha-mate  ->  name=Alpha
+space  └ q1 · p:urXKPBo5LgWV2rrMCPavcQ  ->  name=Denver's intern · Print the handouts
+space  captains-scratch  ->  name=captains-scratch
+window w1:p1 ()  ->  who=Denver  job=first mate
+window w2:p1 ()  ->  who=Alpha  job=second mate
+window w2:p2 ()  ->  who=Alpha's intern  job=Build chapter four
+window w3:p1 ()  ->  who=Denver's intern  job=Print the handouts
+window w4:p1 (my notes)  ->  who=  job=
+
+## names layout after
+space w1 benjie-agent-workspace
+space w2 2ndmate-alpha-mate
+space w3 └ q1 · p:urXKPBo5LgWV2rrMCPavcQ
+space w4 captains-scratch
+tab w1:t1 1
+tab w2:t1 1
+tab w2:t2 fm-a1
+tab w3:t1 1
+tab w4:t1 1
+window w1:p1 
+window w2:p1 
+window w2:p2 
+window w3:p1 
+window w4:p1 my notes
+
+## diff before/after names (empty = nothing renamed, moved or closed)
+(no difference)
+
+## $ bin/fm-mission-control.sh names   # second run
+names: every name already shows
+exit=0
