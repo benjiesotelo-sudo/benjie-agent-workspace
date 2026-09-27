@@ -31,12 +31,13 @@ constructs every field from the list below and copies nothing else from the
 records, so a field added to a record later never reaches the page.
   agents    the first mate (config first_mate_name), each second mate named by
             its first project's public name ("Second mate N" with none), and
-            each live worker as "helper for <project>"; state working or asleep;
-            one activity line built only from a fixed phrase and project names
-            ("working on <project>"); the shirt and hair colours; the person in
-            charge of a helper; a role built only from those names ("first
-            mate", "second mate for <projects>", "helper for <project>"),
-            never from a registered scope or charter.
+            each live worker as "helper for <project>", or "helper for a
+            one-off job" when its project is not registered; state working or
+            asleep; one activity line built only from a fixed phrase and
+            project names ("working on <project>"); the shirt and hair colours;
+            the person in charge of a helper; a role built only from those
+            names ("first mate", "second mate for <projects>", "helper for
+            <project>"), never from a registered scope or charter.
   projects  public name, colour, status (active, parked or quiet), person in
             charge, and four counts: waiting on the captain, in flight, done
             this week (Sunday to Saturday) and done this month.
@@ -45,11 +46,12 @@ records, so a field added to a record later never reaches the page.
             next month.
   office    how many items wait on the captain, in total.
   events    the live activity column: the last EVENTS_KEPT plain state changes,
-            each a time, an agent's public name and a fixed phrase ("wakes up",
-            "falls asleep", "calls in a helper for <project>", "a helper for
-            <project> goes home", "joins the crew", "<project> finishes a job"),
-            found by comparing this build's snapshot with the previous one in
-            the folder, so an unchanged crew adds none.
+            each a time, an agent's public name and a fixed phrase ("joins the
+            crew", "calls in a helper for <project>", "helper for <project>
+            goes home", "<project> finishes a job"), found by comparing this
+            build's snapshot with the previous one in the folder, so an
+            unchanged crew adds none. Falling asleep and waking up are never
+            events; the office shows who is asleep.
 A project's public name is its entry in the names map, else the Bridge's
 display name when that differs from the repository name, else "Project N" in
 registry order; this home's own repository is "setup" unless the names map
@@ -153,11 +155,12 @@ def public_snapshot(model, crew, settings, pub, now):
     pkey[None] = "p0"
     registered = {p.lower(): p for p in order}
 
+    def base(raw):
+        return os.path.basename(os.path.normpath(str(raw))).lower() if raw is not None else None
+
     def proj(raw):
         """A raw project reference (a name, a path's last part, or None) -> registered name or None."""
-        if raw is None:
-            return None
-        return registered.get(os.path.basename(os.path.normpath(str(raw))).lower())
+        return registered.get(base(raw))
 
     mates = model.get("mates") or []
     akey = {}
@@ -198,14 +201,17 @@ def public_snapshot(model, crew, settings, pub, now):
     for c in crew:
         if c["kind"] != "intern":
             continue
-        p = proj(c.get("project")) if c.get("project") != model["ship"] else None
-        where = names[p] if p else names[None]
         lead = akey.get(c["lead"])
         if lead is None:
             continue
+        p = proj(c.get("project"))
+        if p or (model["ship"] and base(c.get("project")) == model["ship"].lower()):
+            where, keys = names[p], [pkey[p]]
+        else:
+            where, keys = "a one-off job", []
         add(c, kind="helper", name="helper for %s" % where, role="helper for %s" % where,
             activity=("working on %s" if c["status"] == "work" else "between steps on %s") % where,
-            projects=[pkey[p]], lead=lead)
+            projects=keys, lead=lead)
 
     week0 = _week_start(today)
     month = model["today"][:7]
@@ -252,6 +258,7 @@ def public_snapshot(model, crew, settings, pub, now):
         "schema": SCHEMA,
         "generated_at": now.astimezone(_dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "every_minutes": pub["every_minutes"],
+        "heartbeat_minutes": pub["heartbeat_minutes"],
         "today": today.isoformat(),
         "office": {"inbox": sum(1 for it in model["items"] if it["bucket"] == "waiting")},
         "agents": agents,
@@ -285,11 +292,8 @@ def events(old, new, now):
 
     was, now_ = people(old), people(new)
     for k, a in now_.items():
-        b = was.get(k)
-        if b is None:
+        if k not in was:
             fresh.append((a["name"], "joins the crew"))
-        elif b.get("state") != a.get("state"):
-            fresh.append((a["name"], "wakes up" if a.get("state") == "working" else "falls asleep"))
     h_was, h_now = helpers(old), helpers(new)
     for (lead, name), n in h_now.items():
         for _ in range(n - h_was.get((lead, name), 0)):

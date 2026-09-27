@@ -80,7 +80,8 @@
     const every = Math.max(1, num(snap.every_minutes) || 5);
     u.append("checked every " + plural(every, "minute") + " · updated ");
     u.append(el("b", "", a ? a.text : "at an unknown time"));
-    u.classList.toggle("stale", !a || a.m > Math.max(90, every * 3));
+    const heartbeat = Math.max(every, num(snap.heartbeat_minutes) || 60);
+    u.classList.toggle("stale", !a || a.m > heartbeat + Math.max(30, every * 3));
   }
 
   function load() {

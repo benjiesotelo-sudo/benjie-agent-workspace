@@ -88,6 +88,7 @@ meta() {  # <home> <id> <worktree> <project>
 }
 meta "$HOME_DIR" zz-secret-a "$TMP_ROOT/wt-secret-one" "$HOME_DIR/projects/secretrepo-orchard"
 meta "$HOME_DIR" zz-secret-q1 "$TMP_ROOT/wt-secret-two" "$HOME_DIR/projects/secretrepo-bakery"
+meta "$HOME_DIR" zz-secret-s1 "$TMP_ROOT/wt-secret-three" "$HOME_DIR"
 for tool in tmux herdr; do
   printf '#!/usr/bin/env bash\nexit 1\n' > "$FAKEBIN/$tool"
   chmod +x "$FAKEBIN/$tool"
@@ -97,7 +98,8 @@ jq -n --arg home "$HOME_DIR" --arg mate "$MATE" --arg w1 "$TMP_ROOT/wt-secret-on
   {result: {type: "agent_list", agents: [
     {pane_id: "secretpane:1", agent_status: "working", cwd: $home},
     {pane_id: "secretpane:2", agent_status: "working", cwd: $mate},
-    {pane_id: "secretpane:3", agent_status: "working", cwd: "/secret/elsewhere", foreground_cwd: $w1}]}}' > "$AGENTS"
+    {pane_id: "secretpane:3", agent_status: "working", cwd: "/secret/elsewhere", foreground_cwd: $w1},
+    {pane_id: "secretpane:4", agent_status: "working", cwd: "/secret/unlisted/secretrepo-unlisted"}]}}' > "$AGENTS"
 
 mcw() {  # <now> <args...>
   local now=$1
@@ -122,7 +124,7 @@ pass "a home full of private titles, notes, paths, emails, links, ids, repositor
 
 SNAP=$(cat "$OUT/snapshot.json")
 q() { jq -r "$1" <<<"$SNAP"; }
-[ "$(q '[keys[]] | join(",")')" = "agents,calendar,events,every_minutes,generated_at,office,projects,schema,today" ] \
+[ "$(q '[keys[]] | join(",")')" = "agents,calendar,events,every_minutes,generated_at,heartbeat_minutes,office,projects,schema,today" ] \
   || fail "the snapshot's top level is exactly the allow-list, got $(q '[keys[]] | join(",")')"
 [ "$(q '[.agents[] | keys[]] | unique | join(",")')" = "activity,color,hair,key,kind,lead,name,projects,role,state" ] \
   || fail "an agent carries only the allow-listed fields, got $(q '[.agents[] | keys[]] | unique | join(",")')"
@@ -138,17 +140,22 @@ pass "the snapshot's shape is exactly the allow-list, with positional keys"
 # --- what the snapshot says -------------------------------------------------
 [ "$(q .schema)" = fm-mission-control-public.v1 ] || fail "the snapshot names its schema"
 [ "$(q .every_minutes)" = 7 ] || fail "the page states the configured cadence"
+[ "$(q .heartbeat_minutes)" = 60 ] || fail "the page states how long an unchanged snapshot keeps its time"
 [ "$(q .today)" = 2026-09-18 ] || fail "today is the home's local date"
 [ "$(q '.events | length')" = 0 ] || fail "a first build has no activity to report"
-[ "$(q '.agents | map(.name) | join("|")')" = "Denver|Orchard|helper for Orchard|helper for Project 2" ] \
+[ "$(q '.agents | map(.name) | join("|")')" = "Denver|Orchard|helper for Orchard|helper for Project 2|helper for setup|helper for a one-off job" ] \
   || fail "the first mate by name, the second mate by its project's public name, helpers by project, got $(q '.agents | map(.name) | join("|")')"
-[ "$(q '.agents | map(.role) | join("|")')" = "first mate|second mate for Orchard|helper for Orchard|helper for Project 2" ] \
+[ "$(q '.agents | map(.role) | join("|")')" = "first mate|second mate for Orchard|helper for Orchard|helper for Project 2|helper for setup|helper for a one-off job" ] \
   || fail "every role is built only from public names, never a scope, got $(q '.agents | map(.role) | join("|")')"
 grep -q 'University\|clients' "$OUT/snapshot.json" && fail "a scope naming an institution never reaches the page"
 [ "$(q '.agents[1].activity')" = "working on Orchard" ] || fail "a working mate's activity is built from its project's name"
 [ "$(q '.agents[2].lead')" = "$(q '.agents[1].key')" ] || fail "the orchard helper stands with the orchard mate"
 [ "$(q '.agents[3].lead')" = "$(q '.agents[0].key')" ] || fail "a helper on an unowned project stands with the first mate"
 [ "$(q '.agents[3].activity')" = "between steps on Project 2" ] || fail "a helper with no working pane is between steps"
+[ "$(q '.agents[4] | "\(.projects | join(",")) \(.activity)"')" = "p0 between steps on setup" ] \
+  || fail "a helper on this home's own repository works on the setup, got $(q '.agents[4]')"
+[ "$(q '.agents[5] | "\(.projects | length) \(.activity) \(.lead)"')" = "0 working on a one-off job $(q '.agents[0].key')" ] \
+  || fail "a helper with no registered project works on a one-off job, never the setup, got $(q '.agents[5]')"
 [ "$(q '.projects | map(.name) | join("|")')" = "Orchard|Project 2|The setup itself" ] \
   || fail "a project without a public name is numbered, never named by its repository, got $(q '.projects | map(.name) | join("|")')"
 [ "$(q '.projects[0] | "\(.status) \(.counts.waiting) \(.counts.in_flight) \(.counts.done_week) \(.counts.done_month)"')" = "active 2 1 2 2" ] \
@@ -163,18 +170,61 @@ grep -q 'University\|clients' "$OUT/snapshot.json" && fail "a scope naming an in
 pass "the snapshot names the crew publicly and counts the right items per project and per day"
 
 # --- locked views are never rendered ----------------------------------------
+# The built index.html is the page a visitor loads; parse it into its tabs,
+# views, controls and the Open chat button rather than matching its text.
+PAGE=$(python3 - "$OUT/index.html" <<'PY'
+import json, sys
+from html.parser import HTMLParser
+class Page(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.stack, self.tabs, self.views, self.controls, self.chat = [], [], [], [], None
+    def handle_startendtag(self, tag, attrs):
+        self.record(tag, dict(attrs))
+    def handle_starttag(self, tag, attrs):
+        a = self.record(tag, dict(attrs))
+        if tag not in ("area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "source", "wbr"):
+            self.stack.append((tag, a))
+    def record(self, tag, a):
+        if tag == "svg" and self.stack and self.stack[-1][0] == "button" and "lock" in (a.get("class") or "").split():
+            self.stack[-1][1]["lock"] = True
+        if tag in ("form", "input", "textarea", "select", "a"):
+            self.controls.append(tag)
+        if tag == "section" and "view" in (a.get("class") or "").split():
+            self.views.append(a.get("id"))
+        if tag != "button":
+            return a
+        b = {"view": a.get("data-view"), "locked": a.get("data-locked") == "true", "lock": False,
+             "id": a.get("id"), "class": (a.get("class") or "").split(), "disabled": a.get("aria-disabled")}
+        if any(t == "nav" and x.get("id") == "tabs" for t, x in self.stack):
+            self.tabs.append(b)
+        if b["id"] == "talk-chat":
+            self.chat = b
+        return b
+    def handle_endtag(self, tag):
+        if any(t == tag for t, _ in self.stack):
+            while self.stack.pop()[0] != tag:
+                pass
+p = Page()
+with open(sys.argv[1], encoding="utf-8") as fh:
+    p.feed(fh.read())
+print(json.dumps({"tabs": p.tabs, "views": p.views, "controls": p.controls, "chat": p.chat}))
+PY
+) || fail "the built page parses"
+pg() { jq -r "$1" <<<"$PAGE"; }
+[ "$(pg '.tabs | map(.view) | join(",")')" = "office,tasks,approvals,projects,calendar,team,memory,docs,system" ] \
+  || fail "the tab bar holds all nine tabs in order, got $(pg '.tabs | map(.view) | join(",")')"
+[ "$(pg '[.tabs[] | select(.locked and .lock) | .view] | join(",")')" = "tasks,approvals,memory,docs,system" ] \
+  || fail "exactly Tasks, Approvals, Memory, Docs and System are locked and show a lock, got $(pg '[.tabs[] | select(.locked) | .view] | join(",")')"
+[ "$(pg '[.tabs[] | select(.locked != .lock)] | length')" = 0 ] || fail "a tab shows a lock exactly when it is locked"
+[ "$(pg '.views | join(",")')" = "view-office,view-projects,view-calendar,view-team,view-locked" ] \
+  || fail "only Office, Projects, Calendar and Team render, and a locked tab opens the lock view, got $(pg '.views | join(",")')"
 for v in tasks approvals memory docs system; do
-  grep -q "data-view=\"$v\" data-locked=\"true\"" "$OUT/index.html" || fail "the $v tab shows in the tab bar with a lock"
-  grep -q "id=\"view-$v\"" "$OUT/index.html" && fail "the $v view is not rendered at all"
   [ "$(q "has(\"$v\")")" = false ] || fail "the snapshot holds nothing for $v"
 done
-for v in office projects calendar team; do
-  grep -q "id=\"view-$v\"" "$OUT/index.html" || fail "the $v view is rendered"
-done
-grep -q 'id="view-locked"' "$OUT/index.html" || fail "a locked tab opens the shaded lock view"
-grep -qi '<form\|<input\|<textarea\|<a ' "$OUT/index.html" && fail "the public page has no form, link or control of any kind"
-grep -q 'id="talk-chat" class="locked" aria-disabled="true"' "$OUT/index.html" \
-  || fail "a tapped agent's Open chat button shows locked"
+[ "$(pg '.controls | length')" = 0 ] || fail "the public page has no form, link or control of any kind, got $(pg '.controls')"
+[ "$(pg '.chat | "\(.class | index("locked") != null) \(.disabled) \(.lock)"')" = "true true true" ] \
+  || fail "a tapped agent's Open chat button is locked and disabled, got $(pg .chat)"
 pass "Tasks, Approvals, Memory, Docs and System are locked tabs with nothing behind them, Open chat is locked, and Office, Projects, Calendar and Team render"
 
 # --- an unchanged crew leaves the folder unchanged ---------------------------
@@ -190,17 +240,22 @@ pass "an unchanged crew keeps the whole folder byte for byte until the heartbeat
 # --- live activity: plain state changes only --------------------------------
 EVT="$TMP_ROOT/events-page"
 cp -R "$OUT" "$EVT"
-jq '(.result.agents[] | select(.pane_id == "secretpane:2") | .agent_status) = "idle"' "$AGENTS" > "$TMP_ROOT/agents2.json"
+jq '(.result.agents[] | select(.pane_id == "secretpane:2") | .agent_status) = "idle"
+  | .result.agents |= map(select(.pane_id != "secretpane:4"))' "$AGENTS" > "$TMP_ROOT/agents2.json"
 printf -- '- [x] zz-secret-e1 - Secret event title (repo: secretrepo-orchard) (kind: ship) (done 2026-09-18)\n' >> "$HOME_DIR/data/backlog.md"
 mcw 2026-09-18T10:30:00 build "$EVT" --agents "$TMP_ROOT/agents2.json" >/dev/null || fail "event build failed"
 E=$(jq -c '[.events[] | "\(.who) \(.what)"]' "$EVT/snapshot.json")
-[ "$E" = '["Orchard falls asleep","Orchard finishes a job"]' ] || fail "a state change and a finished job read as plain events, got $E"
+[ "$(jq -r '.agents[1].state' "$EVT/snapshot.json")" = asleep ] || fail "the orchard mate fell asleep"
+[ "$E" = '["Helper for a one-off job goes home","Orchard finishes a job"]' ] \
+  || fail "a helper leaving and a finished job read as plain events, and falling asleep is no event, got $E"
 [ "$(jq -r '[.events[] | keys | join(",")] | unique | join("|")' "$EVT/snapshot.json")" = "at,what,who" ] || fail "an event is only a time, a name and a phrase"
 [ "$(jq -r '.events[0].at' "$EVT/snapshot.json")" = "2026-09-18T02:30:00Z" ] || fail "an event carries the build's time"
 grep -qi secret "$EVT/snapshot.json" && fail "an event never carries a task title"
 mcw 2026-09-18T10:35:00 build "$EVT" --agents "$AGENTS" >/dev/null || fail "second event build failed"
-[ "$(jq -r '.events[0] | "\(.who) \(.what)"' "$EVT/snapshot.json")" = "Orchard wakes up" ] || fail "waking up is the newest event"
-[ "$(jq -r '.events | length' "$EVT/snapshot.json")" = 3 ] || fail "earlier events are kept"
+[ "$(jq -r '.agents[1].state' "$EVT/snapshot.json")" = working ] || fail "the orchard mate woke up"
+E=$(jq -c '[.events[] | "\(.who) \(.what)"]' "$EVT/snapshot.json")
+[ "$E" = '["Denver calls in a helper for a one-off job","Helper for a one-off job goes home","Orchard finishes a job"]' ] \
+  || fail "a new helper is the newest event, waking up is no event, and earlier events are kept, got $E"
 sed -i.bak '/zz-secret-e1/d' "$HOME_DIR/data/backlog.md"
 pass "the live activity lists plain state changes with public names, newest first, never a title"
 
@@ -262,14 +317,29 @@ printf '%s\n' "\$*" >> "$TMP_ROOT/launchctl.log"
 case "\$1" in print) exit 1 ;; esac
 exit 0
 EOF
-printf '#!/usr/bin/env bash\nexit 0\n' > "$FAKEBIN/plutil"
-chmod +x "$FAKEBIN/launchctl" "$FAKEBIN/plutil"
+chmod +x "$FAKEBIN/launchctl"
+if ! command -v plutil >/dev/null 2>&1; then
+  cat > "$FAKEBIN/plutil" <<'PY'
+#!/usr/bin/env python3
+import plistlib, sys
+args = sys.argv[1:]
+with open(args[-1], "rb") as fh:
+    value = plistlib.load(fh)
+if args[0] == "-extract":
+    for part in args[1].split("."):
+        value = value[int(part)] if isinstance(value, list) else value[part]
+    print(value)
+PY
+  chmod +x "$FAKEBIN/plutil"
+fi
 AGENT_DIR="$TMP_ROOT/agents-dir"
 R=$(PATH="$FAKEBIN:$PATH" FM_HOME="$HOME_DIR" FM_MCW_AGENT_DIR="$AGENT_DIR" "$MCW" install "$PAGES") || fail "install failed: $R"
 PL="$AGENT_DIR/com.firstmate.mission-control-web.plist"
-grep -q '<key>StartInterval</key><integer>420</integer>' "$PL" || fail "the schedule runs every every_minutes minutes"
-grep -q '<string>publish</string>' "$PL" || fail "the schedule runs publish"
-grep -qF "<string>$(cd "$PAGES" && pwd -P)</string>" "$PL" || fail "the schedule publishes the given folder"
+plx() { PATH="$FAKEBIN:$PATH" plutil -extract "$1" raw -o - "$PL"; }
+[ "$(plx StartInterval)" = 420 ] || fail "the schedule runs every every_minutes minutes, got $(plx StartInterval)"
+[ "$(plx ProgramArguments.1)" = "$ROOT/bin/fm-mission-control-web.sh" ] || fail "the schedule runs this script by absolute path"
+[ "$(plx ProgramArguments.2)" = publish ] || fail "the schedule runs publish"
+[ "$(plx ProgramArguments.3)" = "$(cd "$PAGES" && pwd -P)" ] || fail "the schedule publishes the given folder"
 grep -q "bootstrap gui/" "$TMP_ROOT/launchctl.log" || fail "install loads the job"
 R=$(PATH="$FAKEBIN:$PATH" FM_HOME="$HOME_DIR" FM_MCW_AGENT_DIR="$AGENT_DIR" "$MCW" uninstall) || fail "uninstall failed: $R"
 [ -e "$PL" ] && fail "uninstall removes the plist"
