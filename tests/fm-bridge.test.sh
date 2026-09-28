@@ -236,6 +236,66 @@ code=$(curl -s -o /dev/null -w '%{http_code}' -X POST "http://127.0.0.1:$PORT/")
 [ "$code" = 501 ] || fail "POST must be refused, got $code"
 pass "the server serves only the page and the health check"
 
+# --- a slow render never holds a request ------------------------------------
+# A render that waited on a slow snapshot held the page request until iPad
+# Safari gave up on the Bridge.
+
+SLOWCFG="$TMP_ROOT/slow-config"
+mkdir -p "$SLOWCFG"
+printf '{"render_reuse_seconds": 1}\n' > "$SLOWCFG/bridge.json"
+slow=$(PATH="$FAKEBIN:$PATH" FM_BRIDGE_TAILSCALE="$FAKEBIN/tailscale-down" PYTHONPATH="$ROOT/bin" \
+  python3 - "$HOME_DIR" "$SLOWCFG" 2>"$TMP_ROOT/slow.log" <<'PY'
+import os, re, socket, sys, threading, time, urllib.request
+import fm_bridge as b
+real, gate, calls = b.build_page, threading.Event(), []
+def build_page(home, config_dir):
+    calls.append(1)
+    n = len(calls)
+    if n == 2:
+        gate.wait(20)
+    page, ok = real(home, config_dir)
+    return page.replace("<h1>The Bridge</h1>", "<h1>The Bridge</h1><i>render %d</i>" % n), ok
+b.build_page = build_page
+s = socket.socket(); s.bind(("127.0.0.1", 0)); port = s.getsockname()[1]; s.close()
+out, sys.stdout = sys.stdout, open(os.devnull, "w")
+threading.Thread(target=b.serve, args=(sys.argv[1], sys.argv[2], "127.0.0.1", port), daemon=True).start()
+def get():
+    for _ in range(80):
+        try:
+            t = time.monotonic()
+            with urllib.request.urlopen("http://127.0.0.1:%d/" % port, timeout=15) as r:
+                page = r.read().decode()
+                return {"render": int(re.search(r"<i>render (\d+)</i>", page).group(1)),
+                        "stale": r.headers.get("X-Bridge-Stale"), "refresh": r.headers.get("Refresh"),
+                        "banner": "The latest records are being read now" in page,
+                        "quick": time.monotonic() - t < 2}
+        except OSError:
+            time.sleep(0.1)
+lines = []
+first = get()
+lines.append("first render %(render)d stale %(stale)s refresh %(refresh)s banner %(banner)s" % first)
+time.sleep(1.2)
+then = get()
+lines.append("then render %(render)d stale %(stale)s refresh %(refresh)s banner %(banner)s quick %(quick)s" % then)
+again = get()
+lines.append("again render %d quick %s renders %d" % (again["render"], again["quick"], len(calls)))
+gate.set()
+for _ in range(100):
+    after = get()
+    if after["stale"] is None:
+        break
+    time.sleep(0.1)
+lines.append("after newer %s stale %s banner %s" % (after["render"] > 1, after["stale"], after["banner"]))
+out.write("\n".join(lines) + "\n")
+PY
+) || fail "the slow render server should run: $slow $(cat "$TMP_ROOT/slow.log")"
+[ "$slow" = 'first render 1 stale None refresh None banner False
+then render 1 stale yes refresh 5 banner True quick True
+again render 1 quick True renders 2
+after newer True stale None banner False' ] \
+  || fail "an old page is answered at once, marked not current and reloading, while one rebuild runs behind it: $slow"
+pass "a slow render never holds the page request"
+
 # --- LaunchAgent -----------------------------------------------------------
 # A stand-in launchctl runs the plist's program with only the plist's own
 # environment, the way launchd does, so the proof that the job wrote its

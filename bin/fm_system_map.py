@@ -69,7 +69,9 @@ delivery step from the snapshot's current state (a parked gate names its
 step; "ci running" is ci; green checks wait at merge; a run still validating
 lights the checks as a group), and the page fetches the map every REFRESH
 seconds. The Bridge answers from the last finished map and rebuilds it in the
-background (Cache), so a slow build never holds a request; when a fetch fails
+background (Cache), so a slow build never holds a request; a map older than
+the reuse window comes marked stale, and the page draws it as not yet live,
+keeps it out of What changed, and fetches again in a few seconds. When a fetch fails
 the page names the step that failed: reaching the Bridge, the Bridge's own
 answer, reading the data, or drawing it.
 
@@ -1683,12 +1685,14 @@ var retry=null;
 function say(t){document.getElementById('stamp').textContent=t;}
 function why(e){return fit(e&&e.message?(e.name&&e.name!=='Error'?e.name+': ':'')+e.message:e,140);}
 function load(){
-  var step='reach',code=0;clearTimeout(retry);
+  var step='reach',code=0,stale=false;clearTimeout(retry);
   fetch('system-map.json',{cache:'no-store'}).then(function(r){
-    if(r.ok){step='read';return r.json();}
+    if(r.ok){step='read';stale=r.headers.get('X-Bridge-Stale')==='yes';return r.json();}
     step='serve';code=r.status;return r.text().then(function(t){throw new Error(t.trim().split('\n')[0]||'no reason given');});
   }).then(function(d){
-    step='draw';data=d;say(d.stamp);draw();changes();notices();
+    step='draw';data=d;
+    say(stale?d.stamp+', not yet live: the Bridge is reading the latest records; trying again in a few seconds':d.stamp);
+    draw();if(!stale)changes();notices();if(stale)retry=setTimeout(load,5000);
     if(tourAt>=0)showHop(tourAt);
     if(selected){if(byId[selected])open(selected);else closeSheet();}
   }).catch(function(e){
@@ -1778,59 +1782,16 @@ def page():
     return PAGE % {"style": STYLE, "script": SCRIPT.replace("REFRESH_MS", str(REFRESH * 1000))}
 
 
-class Cache:
+class Cache(bridge.Cache):
     """The latest map, answered at once and rebuilt behind the request.
 
-    A build reads every record and can take many seconds. Waiting on it made
-    iPad Safari give up on system-map.json, so once one map exists a request
-    gets it immediately and, when it is older than `reuse` seconds, starts one
-    background rebuild whose result the next request gets. Only before the
-    first map exists does a request wait, at most `wait` seconds; get() then
-    returns None and pending() says whether a build is still running. A
-    failed rebuild keeps the last good map.
+    A build reads every record and can take many seconds; waiting on it made
+    iPad Safari give up on system-map.json. See bin/fm_bridge.py Cache for
+    the states get() answers with.
     """
 
     def __init__(self, home, config_dir, reuse, wait=8.0):
-        self.home, self.config_dir, self.reuse, self.wait = home, config_dir, reuse, wait
-        self.lock = threading.Lock()
-        self.body, self.at, self.building = None, 0.0, None
-
-    def _rebuild(self, done):
-        try:
-            body = json.dumps(build(self.home, self.config_dir))
-        except Exception:  # noqa: BLE001 - the page says it could not read, never a traceback
-            body = None
-        with self.lock:
-            if body is not None:
-                self.body, self.at = body, time.monotonic()
-            self.building = None
-        done.set()
-
-    def _start(self):
-        if self.building is None:
-            self.building = threading.Event()
-            threading.Thread(target=self._rebuild, args=(self.building,), daemon=True).start()
-        return self.building
-
-    def warm(self):
-        """Start the first build now so the first visitor need not wait for it."""
-        with self.lock:
-            self._start()
-
-    def pending(self):
-        with self.lock:
-            return self.building is not None
-
-    def get(self):
-        with self.lock:
-            if self.body is not None and time.monotonic() - self.at <= self.reuse:
-                return self.body
-            done = self._start()
-            if self.body is not None:
-                return self.body
-        done.wait(self.wait)
-        with self.lock:
-            return self.body
+        super().__init__(lambda: (json.dumps(build(home, config_dir)), True), reuse, wait)
 
 
 def main(argv):
