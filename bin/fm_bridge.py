@@ -1102,6 +1102,7 @@ def serve(home, config_dir, host, port, give_up_after=0):
     cache = _Cache(home, config_dir, reuse)
     import fm_system_map as system_map
     map_cache = system_map.Cache(home, config_dir, reuse)
+    map_cache.warm()
 
     class Handler(BaseHTTPRequestHandler):
         server_version = "Bridge"
@@ -1134,7 +1135,8 @@ def serve(home, config_dir, host, port, give_up_after=0):
             elif path == "/system-map.json":
                 body = map_cache.get()
                 if body is None:
-                    self._send(503, "the map could not be read\n", "text/plain; charset=utf-8")
+                    self._send(503, "the map is still being drawn\n" if map_cache.pending()
+                               else "the map could not be read\n", "text/plain; charset=utf-8")
                 else:
                     self._send(200, body, "application/json; charset=utf-8")
             else:

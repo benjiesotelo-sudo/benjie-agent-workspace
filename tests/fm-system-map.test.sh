@@ -417,6 +417,61 @@ PY
   || fail "scrub keeps plain words and slash commands only: $scrubbed"
 pass "no paths, links, email addresses, tokens or hook commands reach the map"
 
+# --- a slow build never holds a request -------------------------------------
+# A cold build once took long enough that iPad Safari gave up on
+# system-map.json and the page said it could not reach the map.
+
+cached=$(PYTHONPATH="$ROOT/bin" python3 - <<'PY'
+import threading, time
+import fm_system_map as m
+gate, calls = threading.Event(), []
+def build(home, config_dir):
+    calls.append(1)
+    if len(calls) == 2:
+        gate.wait(10)
+    if len(calls) == 4:
+        raise RuntimeError("records moved")
+    return {"n": len(calls)}
+m.build = build
+c = m.Cache("home", "config", reuse=-1, wait=5)  # every map is already stale
+out = ["first " + c.get()]
+t = time.monotonic()
+out.append("stale " + c.get())
+out.append("quick %s pending %s" % (time.monotonic() - t < 1, c.pending()))
+gate.set()
+while c.pending():
+    time.sleep(0.01)
+out.append("rebuilt " + c.get())
+while c.pending():
+    time.sleep(0.01)
+c.get()
+while c.pending():
+    time.sleep(0.01)
+out.append("after a failed rebuild " + c.get())
+slow = threading.Event()
+m.build = lambda home, config_dir: slow.wait(10) and {"n": 0}
+c = m.Cache("home", "config", reuse=15, wait=0.2)
+t = time.monotonic()
+out.append("none yet %s quick %s pending %s" % (c.get(), time.monotonic() - t < 1, c.pending()))
+slow.set()
+def fail(home, config_dir):
+    raise RuntimeError("no records")
+m.build = fail
+c = m.Cache("home", "config", reuse=15, wait=5)
+out.append("unreadable %s pending %s" % (c.get(), c.pending()))
+print("\n".join(out))
+PY
+) || fail "the map cache should run: $cached"
+[ "$cached" = 'first {"n": 1}
+stale {"n": 1}
+quick True pending True
+rebuilt {"n": 2}
+after a failed rebuild {"n": 3}
+none yet None quick True pending True
+unreadable None pending False' ] \
+  || fail "a stale map is answered at once and rebuilt behind the request, the first request waits only briefly, and a failed rebuild keeps the last map: $cached"
+pass "a slow map build never holds a request"
+
 # --- the Bridge serves the page and the map ---------------------------------
 
 PORT=$(python3 -c 'import socket; s=socket.socket(); s.bind(("127.0.0.1", 0)); print(s.getsockname()[1])')
@@ -433,6 +488,9 @@ code=$(curl -s -D "$TMP_ROOT/page.head" -o "$TMP_ROOT/page.html" -w '%{http_code
 [ "$code" = 200 ] || fail "GET /system-map should answer 200, got $code"
 grep -q '<title>System Map</title>' "$TMP_ROOT/page.html" || fail "GET /system-map serves the page"
 grep -q 'How a request travels' "$TMP_ROOT/page.html" || fail "the page offers the guided tour"
+for said in 'could not reach the Bridge for the map data' 'the map data arrived but could not be drawn'; do
+  grep -q "$said" "$TMP_ROOT/page.html" || fail "the page tells an unreachable map apart from one it could not draw: $said"
+done
 grep -qi "connect-src 'self' https://cdn.jsdelivr.net" "$TMP_ROOT/page.head" \
   || fail "the page may fetch its map from the same server and its icons from jsdelivr"
 code=$(curl -s -o "$TMP_ROOT/served.json" -w '%{http_code}' "http://127.0.0.1:$PORT/system-map.json")

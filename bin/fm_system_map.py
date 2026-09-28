@@ -68,7 +68,10 @@ LIVE. A working agent glows, lines carrying work move, each helper knows its
 delivery step from the snapshot's current state (a parked gate names its
 step; "ci running" is ci; green checks wait at merge; a run still validating
 lights the checks as a group), and the page fetches the map every REFRESH
-seconds.
+seconds. The Bridge answers from the last finished map and rebuilds it in the
+background (Cache), so a slow build never holds a request; when a fetch fails
+the page names the step that failed: reaching the Bridge, the Bridge's own
+answer, reading the data, or drawing it.
 
 ICONS. Real products carry their Simple Icons logo and concepts a Lucide line
 icon, both fetched by the page from the pinned packages on cdn.jsdelivr.net
@@ -1676,12 +1679,26 @@ function changes(){
   try{localStorage.setItem(key,JSON.stringify({at:Date.now(),nodes:now}));}catch(e){}
 }
 function notices(){var n=document.getElementById('notices');n.innerHTML='';(data.notices||[]).forEach(function(t){var d=document.createElement('div');d.className='notice';d.textContent=t;n.appendChild(d);});}
+var retry=null;
+function say(t){document.getElementById('stamp').textContent=t;}
+function why(e){return fit(e&&e.message?(e.name&&e.name!=='Error'?e.name+': ':'')+e.message:e,140);}
 function load(){
-  fetch('system-map.json',{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error(r.status);return r.json();}).then(function(d){
-    data=d;document.getElementById('stamp').textContent=d.stamp;draw();changes();notices();
+  var step='reach',code=0;clearTimeout(retry);
+  fetch('system-map.json',{cache:'no-store'}).then(function(r){
+    if(r.ok){step='read';return r.json();}
+    step='serve';code=r.status;return r.text().then(function(t){throw new Error(t.trim().split('\n')[0]||'no reason given');});
+  }).then(function(d){
+    step='draw';data=d;say(d.stamp);draw();changes();notices();
     if(tourAt>=0)showHop(tourAt);
     if(selected){if(byId[selected])open(selected);else closeSheet();}
-  }).catch(function(){document.getElementById('stamp').textContent='could not reach the map; trying again in a minute';});
+  }).catch(function(e){
+    if(step==='serve'&&code===503&&/still being drawn/.test(e.message)){
+      say('the Bridge is still drawing the map; trying again in a few seconds');retry=setTimeout(load,5000);return;}
+    say((step==='reach'?'could not reach the Bridge for the map data':
+      step==='serve'?'the Bridge could not give the map (HTTP '+code+')':
+      step==='read'?'the map data arrived damaged':'the map data arrived but could not be drawn')+
+      ' ('+why(e)+'); trying again in a minute');
+  });
 }
 document.getElementById('tour-btn').addEventListener('click',function(){tour(true);});
 document.getElementById('tour-close').addEventListener('click',function(){tour(false);});
@@ -1762,21 +1779,57 @@ def page():
 
 
 class Cache:
-    """One map build shared by concurrent requests, reused for `reuse` seconds."""
+    """The latest map, answered at once and rebuilt behind the request.
 
-    def __init__(self, home, config_dir, reuse):
-        self.home, self.config_dir, self.reuse = home, config_dir, reuse
+    A build reads every record and can take many seconds. Waiting on it made
+    iPad Safari give up on system-map.json, so once one map exists a request
+    gets it immediately and, when it is older than `reuse` seconds, starts one
+    background rebuild whose result the next request gets. Only before the
+    first map exists does a request wait, at most `wait` seconds; get() then
+    returns None and pending() says whether a build is still running. A
+    failed rebuild keeps the last good map.
+    """
+
+    def __init__(self, home, config_dir, reuse, wait=8.0):
+        self.home, self.config_dir, self.reuse, self.wait = home, config_dir, reuse, wait
         self.lock = threading.Lock()
-        self.body, self.at = None, 0.0
+        self.body, self.at, self.building = None, 0.0, None
+
+    def _rebuild(self, done):
+        try:
+            body = json.dumps(build(self.home, self.config_dir))
+        except Exception:  # noqa: BLE001 - the page says it could not read, never a traceback
+            body = None
+        with self.lock:
+            if body is not None:
+                self.body, self.at = body, time.monotonic()
+            self.building = None
+        done.set()
+
+    def _start(self):
+        if self.building is None:
+            self.building = threading.Event()
+            threading.Thread(target=self._rebuild, args=(self.building,), daemon=True).start()
+        return self.building
+
+    def warm(self):
+        """Start the first build now so the first visitor need not wait for it."""
+        with self.lock:
+            self._start()
+
+    def pending(self):
+        with self.lock:
+            return self.building is not None
 
     def get(self):
         with self.lock:
-            if self.body is None or time.monotonic() - self.at > self.reuse:
-                try:
-                    body = json.dumps(build(self.home, self.config_dir))
-                except Exception:  # noqa: BLE001 - the page says it could not read, never a traceback
-                    return None
-                self.body, self.at = body, time.monotonic()
+            if self.body is not None and time.monotonic() - self.at <= self.reuse:
+                return self.body
+            done = self._start()
+            if self.body is not None:
+                return self.body
+        done.wait(self.wait)
+        with self.lock:
             return self.body
 
 
