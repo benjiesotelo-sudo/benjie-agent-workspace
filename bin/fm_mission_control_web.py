@@ -2,7 +2,7 @@
 """fm_mission_control_web.py - Mission Control's public page: one static snapshot folder.
 
 bin/fm-mission-control-web.sh is the operator entry point and owns the command
-surface, publishing to a Pages checkout and the schedule; this module owns what
+surface, publishing (a GitHub Pages checkout or Cloudflare) and the schedule; this module owns what
 the public snapshot may contain and writes the folder.
 
 ONE-SHOT. Each build reads the home once, writes the folder, and exits; nothing
@@ -64,8 +64,16 @@ emails, scopes, charters, data/captain.md, data/learnings.md, reports
 or decision pages into the snapshot.
 
 SETTINGS. config/mission-control.json `public_page` (optional object):
-  repository         "owner/name" of the Pages repository that publish pushes
-                     to; publish pushes only from a checkout whose origin is it.
+  host               where publish sends the page: "github" (the default), a
+                     GitHub Pages checkout, or "cloudflare", a Cloudflare Pages
+                     project with the snapshot in Workers KV.
+  repository         host github: "owner/name" of the Pages repository that
+                     publish pushes to; publish pushes only from a checkout
+                     whose origin is it.
+  project            host cloudflare: the Cloudflare Pages project name
+                     (default "mission-control"; lowercase letters, digits and
+                     hyphens, else publish and install refuse it); its Workers
+                     KV namespace is "<project>-snapshot".
   every_minutes      the build cadence the schedule uses and the page states
                      (default 5, at least 1).
   heartbeat_minutes  how long an unchanged snapshot keeps its time (default 60,
@@ -87,7 +95,8 @@ ASSETS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "mission-contr
 STATIC = ("index.html", "style.css", "app.js")
 SNAPSHOT = "snapshot.json"
 FILES = STATIC + (SNAPSHOT, ".nojekyll")
-DEFAULTS = {"repository": "", "every_minutes": 5, "heartbeat_minutes": 60}
+DEFAULTS = {"host": "github", "repository": "", "project": "mission-control",
+            "every_minutes": 5, "heartbeat_minutes": 60}
 MAX_MATES_SHOWN = 12
 EVENTS_KEPT = 20
 
@@ -102,6 +111,15 @@ def read_public_settings(config_dir):
     raw = cfg.get("public_page") if isinstance(cfg, dict) else None
     raw = raw if isinstance(raw, dict) else {}
     out = dict(DEFAULTS)
+    host = raw.get("host")
+    if isinstance(host, str) and host.strip():
+        # An unknown host is passed through so publish refuses it by name.
+        host = host.strip().lower()
+        out["host"] = host if re.match(r"^[a-z0-9_-]{1,32}$", host) else "invalid"
+    project = raw.get("project")
+    if isinstance(project, str) and project.strip():
+        # Passed through as written so publish refuses an invalid name by name.
+        out["project"] = project.strip()
     repo = raw.get("repository")
     if isinstance(repo, str) and re.match(r"^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$", repo.strip()):
         out["repository"] = repo.strip()
@@ -400,7 +418,7 @@ def main(argv):
     import argparse
     ap = argparse.ArgumentParser(prog="fm_mission_control_web.py")
     ap.add_argument("command", choices=["build", "setting", "files"])
-    ap.add_argument("key", nargs="?", help="setting: repository, every_minutes or heartbeat_minutes")
+    ap.add_argument("key", nargs="?", help="setting: host, repository, project, every_minutes or heartbeat_minutes")
     ap.add_argument("--home")
     ap.add_argument("--config-dir")
     ap.add_argument("--out", help="build: the folder to write")
