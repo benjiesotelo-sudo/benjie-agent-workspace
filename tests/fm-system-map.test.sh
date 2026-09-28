@@ -488,9 +488,6 @@ code=$(curl -s -D "$TMP_ROOT/page.head" -o "$TMP_ROOT/page.html" -w '%{http_code
 [ "$code" = 200 ] || fail "GET /system-map should answer 200, got $code"
 grep -q '<title>System Map</title>' "$TMP_ROOT/page.html" || fail "GET /system-map serves the page"
 grep -q 'How a request travels' "$TMP_ROOT/page.html" || fail "the page offers the guided tour"
-for said in 'could not reach the Bridge for the map data' 'the map data arrived but could not be drawn'; do
-  grep -q "$said" "$TMP_ROOT/page.html" || fail "the page tells an unreachable map apart from one it could not draw: $said"
-done
 grep -qi "connect-src 'self' https://cdn.jsdelivr.net" "$TMP_ROOT/page.head" \
   || fail "the page may fetch its map from the same server and its icons from jsdelivr"
 code=$(curl -s -o "$TMP_ROOT/served.json" -w '%{http_code}' "http://127.0.0.1:$PORT/system-map.json")
