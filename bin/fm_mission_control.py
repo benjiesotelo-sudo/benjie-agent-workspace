@@ -199,8 +199,9 @@ five minutes and red past fifteen while work is under way, amber at most
 during the first mate's own turn; away mode; queued wake notifications), the
 crew's counts with the merge switch Controls sets (bin/fm_merge_switch.py,
 only read here), each second mate's window and last home change, the Bridge and
-Mission Control (their own `status` commands), the GitHub sign-in, and tool
-versions. SystemProbe reads files every SYSTEM_FAST seconds and runs the
+Mission Control (their own `status` commands), the GitHub sign-in, tool
+versions, the System Map's address, and the public page's address when the home
+has one (bin/fm_system_map.py public_page(), file reads only). SystemProbe reads files every SYSTEM_FAST seconds and runs the
 commands every SYSTEM_SLOW seconds, each read-only with a timeout, in threads
 off the render loop; a command that is missing or fails reads "could not be
 checked". The office's rack sign shows the same health: " ok ", or "check" in
@@ -3714,7 +3715,17 @@ def read_fast(home, mates):
         "supervision_needed": bool(sources) or "x-watch.check.sh" in names or any(n.endswith(".meta") for n in names),
         "away": ".afk" in names, "queued": queued, "mates": changed,
         "merge_switch": {k: v for k, v in merge_switch.read(home).items() if k in ("state", "error")},
+        "public_page": _public_page(home),
     }
+
+
+def _public_page(home):
+    """bin/fm_system_map.py public_page() for this home: file reads only, None when it cannot tell."""
+    try:
+        import fm_system_map
+        return fm_system_map.public_page(home)
+    except Exception:  # noqa: BLE001 - an unreadable setting shows no public page card
+        return None
 
 
 def _screen_status(argv, env):
@@ -4035,6 +4046,14 @@ def system_cards(r, crew, model, now, records_ok=True, agents_ok=True):
              [("green", "Open in Safari"), (None, r["bridge"]["address"].rstrip("/") + "/system-map")])
     else:
         card("System Map", "amber", "System Map: opens once the Bridge page answers")
+
+    # The public page: where anyone can see it, only when this home publishes one.
+    pub = r.get("public_page")
+    if pub and pub.get("address"):
+        card("Public page", "green", "Public page: what anyone can see",
+             [("green", "Open in Safari"), (None, pub["address"])])
+    elif pub:
+        card("Public page", "amber", "Public page: not published yet")
 
     looks = [x for c in cards for x in c["looks"]]
     if looks:
