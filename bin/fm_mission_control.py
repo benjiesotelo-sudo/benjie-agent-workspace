@@ -6,13 +6,16 @@ surface and the Herdr workspace; this module owns what the screen reads, how
 the crew maps onto the office, and how frames are drawn and written.
 
 READ ONLY. Nothing here writes a record, sends a key or a prompt to an agent,
-or starts or stops anything. The one outward call besides the reads is
-`herdr agent focus` when the captain answers "Open chat" in a talk (see
+or starts or stops anything. Besides the reads there are two outward calls.
+One is `herdr agent focus` when the captain answers "Open chat" in a talk (see
 TALKING), taps a card or an intern's line on the Team view, or presses Enter on
 a picked Team card or on the Tasks, Projects, Calendar or System view with an
 agent picked in the office; it only moves the captain's own view to that
 agent's pane. A pane Herdr no longer has, or an agent with none, reads as one
-plain line in the footer.
+plain line in the footer. The other is the naming step: the running screen
+keeps plain names in Herdr's sidebar through bin/fm_herdr_names.py, whose
+header owns exactly which display values it sets and that it never renames
+anything.
 
 WHAT IT READS.
   Records   bin/fm_bridge.py collect(), the Bridge's single reader: backlog
@@ -5061,6 +5064,12 @@ def run(home, config_dir, herdr):
     next_frame = time.monotonic()
     feed.start()
     probe.start()
+    import fm_herdr_names as names  # noqa: E402  - imported here: it imports this module
+
+    def named():
+        _g, model_, agents_, _me, _ae, _at, read_ = feed.snapshot()
+        return (model_, agents_) if model_ is not None and read_ else None
+    names.Keeper(named, home, config_dir, herdr, session, own_pane).start()
     term.enter()
     try:
         while not flags["quit"]:

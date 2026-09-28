@@ -23,6 +23,7 @@ The shared no-mistakes gate refusal for fleet lifecycle entrypoints is summarize
 | `fm_system_map.py`       | What the System Map reads, which boxes and lines it draws, its guided tour, and its page |
 | `fm-mission-control.sh` | Run Mission Control, the live read-only office screen, and keep its Herdr workspace |
 | `fm_mission_control.py`  | What Mission Control reads, how the crew maps onto the office, and how its frames are drawn |
+| `fm_herdr_names.py`      | Mission Control's naming step: the plain names and jobs it shows in Herdr's sidebar as display values, never renaming anything |
 | `fm-mission-control-web.sh` | Build Mission Control's public snapshot page, publish it to Cloudflare Pages and Workers KV or a GitHub Pages checkout, and schedule that publish |
 | `fm_mission_control_web.py` | What the public page's snapshot may contain and how its folder is written; its page files, and the Cloudflare Pages Function that serves the snapshot, live in `bin/mission-control-web/` |
 | `fm-controls.sh`         | Run Controls, the captain's tappable switch screen, and keep its Herdr workspace |
