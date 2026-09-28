@@ -1919,26 +1919,26 @@ def _chrome(cv, ui, now):
     elif ui.talking:
         keys = " left/right pick an answer   enter or a tap answers   esc or a tap elsewhere says bye   q quit "
     elif ui.view == "approvals":
-        keys = " 1-9 switch view   up/down read each decision   answers happen in chat, not here   q quit "
+        keys = " 0-9 switch view   up/down read each decision   answers happen in chat, not here   q quit "
     elif ui.view == "controls":
         keys = " 0-9 switch view   tap the switch or Enter: %s   q quit " % (
             ui.controls.tap() if ui.controls is not None else "change nothing")
     elif ui.view in ("memory", "docs"):
-        keys = " 1-9 switch view   up/down pick a page   page up/down or the wheel scroll it   q quit "
+        keys = " 0-9 switch view   up/down pick a page   page up/down or the wheel scroll it   q quit "
         if ui.view == "docs":
-            keys = " 1-9 switch view   left/right pick a kind" + keys[16:]
+            keys = " 0-9 switch view   left/right pick a kind" + keys[16:]
     else:
-        keys = " 1-9 switch view   up/down pick an agent   enter talk to it   p pause   q quit "
+        keys = " 0-9 switch view   up/down pick an agent   enter talk to it   p pause   q quit "
         if ui.view == "office":
-            keys = " 1-9 switch view   tap an agent to talk, or a board, shelf or inbox to open it   p pause   q quit "
+            keys = " 0-9 switch view   tap an agent or a thing to talk   p pause   q quit "
         elif ui.view == "projects":
-            keys = " 1-9 switch view   up/down pick a project   p pause   q quit "
+            keys = " 0-9 switch view   up/down pick a project   p pause   q quit "
         elif ui.view == "calendar":
-            keys = " left/right earlier or later   t today   v week, month or year   1-9 switch view   p pause   q quit "
+            keys = " left/right earlier or later   t today   v week, month or year   0-9 switch view   p pause   q quit "
         elif ui.view == "team":
-            keys = " 1-9 switch view   tap an agent to open its chat   up/down pick a second mate   q quit "
+            keys = " 0-9 switch view   tap an agent to open its chat   up/down pick a second mate   q quit "
         elif ui.view == "system":
-            keys = " 1-9 switch view   files recheck every 5 s, commands every 5 min   q quit "
+            keys = " 0-9 switch view   files recheck every 5 s, commands every 5 min   q quit "
     cv.put(0, R - 1, clip(keys, C - len(tag) - 1), DIM)
     cv.put(C - len(tag), R - 1, tag, BG if ui.paused else GREEN, AMBER if ui.paused else None, True)
 

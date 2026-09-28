@@ -363,7 +363,7 @@ for size in 132x44 170x50; do
   O=$(mc "$HOME_DIR" frame --agents "$AGENTS2" --size "$size") || fail "office text failed"
   mct "$HOME_DIR" frame --agents "$AGENTS2" --size "$size" --keys "$(tap_on "$O" "Denver's helper")" --format json \
     | jq -e '.talk.key == "helper:w4:p1"' >/dev/null || fail "at $size a team list row starts a talk"
-  grep -q 'tap an agent to talk' <<<"$O" || fail "at $size the office footer says a tap talks"
+  grep -q 'tap an agent or a thing to talk' <<<"$O" || fail "at $size the office footer says a tap talks"
 
   M=$(mc "$HOME_DIR" frame --agents "$AGENTS2" --size "$size" --view team) || fail "team text failed"
   grep -q 'tap an agent to open its chat' <<<"$M" || fail "at $size the Team footer says taps open chats"
