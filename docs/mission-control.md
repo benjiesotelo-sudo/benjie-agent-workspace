@@ -121,8 +121,9 @@ Up and down pick a page, tapping a row picks it, and Page Up, Page Down or the m
 
 ![The Docs view: reports, decisions and links, with a report open in the reader](mission-control/docs.png)
 
-Every report and decision page, newest first, then your saved links, each with its kind and project.
-Left and right show only one kind, up and down pick a document, and Page Up, Page Down or the wheel scroll it.
+Important links come first, pinned at the top: the System Map, the Bridge page, the public Mission Control page once it is set up, then your saved links from the Bridge's settings, each with its full address printed so you can tap it from Termius.
+Every report and decision page follows, newest first, each with its kind and project; the newest one is open when the view first shows.
+Left and right show only one kind, up and down pick a document starting from the one open (up reaches the pinned links), and Page Up, Page Down or the wheel scroll it.
 The reader shows headings, lists and tables as text; a picture shows as a "picture:" line with its caption, because a terminal cannot show images.
 
 ### 9 System
@@ -132,6 +133,7 @@ The reader shows headings, lists and tables as text; a picture shows as a "pictu
 The health of this Mac and of the crew's plumbing, one card each, with a green, amber, red or grey dot.
 The line at the top reads "All systems normal" or names what needs a look.
 Files are rechecked every 5 seconds and commands every 5 minutes; anything that cannot be read says "could not be checked" rather than guessing.
+The System Map card gives the map's full address to open in Safari, taken from the Bridge page's reading, since the Bridge serves it.
 
 ## The Bridge
 
@@ -139,6 +141,19 @@ Files are rechecked every 5 seconds and commands every 5 minutes; anything that 
 
 The Bridge has five tabs: Bridge (one card per project), Board (the task columns), Team & Office, Memory, and Documents.
 It is rebuilt from the records when you open or refresh it.
+
+### The System Map
+
+![The System Map on an iPad-sized screen, top to bottom: you and everything that wakes the crew, the first mate with where results show, each second mate with its own model, memory, projects and tools, the shared toolbox and the delivery lane](mission-control/system-map.png)
+
+The System Map is a live diagram of how the whole crew works, at `/system-map` on the Bridge's address; the link sits in the Bridge's header.
+It reads top to bottom: you and everything that brings work in or wakes the crew (chat, Termius, quick notes, the hooks that run at set moments, the watcher, GitHub results, login items and schedules); the first mate, with where results show beside it; each second mate side by side, with its own model, memory, projects and the tools only it uses hanging beneath it, and its helpers at work; the shared toolbox; and the delivery lane every change travels.
+A tool two or more agents use is drawn once in the shared toolbox; tap an agent to light up the lines to the shared tools it uses, or tap a shared tool to see every agent that uses it.
+Nothing on it is drawn by hand: every box comes from the crew's records, their settings, their projects' own files and the tools installed on this Mac, so a new second mate, project, dependency, hook, schedule, tool, check or playbook appears by itself, and a box whose source cannot be read says "could not read".
+Products show their own logo and everything else a plain line icon.
+Whoever is working right now glows, the lines their work flows along move, and each helper sits on its step of the delivery lane; the map refreshes every minute.
+Tap any box for a card saying what it is, what it does in the workflow, who uses it and what it is doing now.
+"How a request travels" walks one request from you to the merge, one sentence per step, and "What changed" lists what was added or removed since you last opened the map on that device.
 
 ## The public page
 

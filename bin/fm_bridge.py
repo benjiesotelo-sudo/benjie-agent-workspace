@@ -39,8 +39,9 @@ mate's single project when it has exactly one. Everything else, and the
 project named like this home's own directory (the firstmate repository
 itself), belongs to "The ship itself".
 
-SERVING. GET / renders the page, GET /healthz answers ok, every other path is
-404 and no request input selects a file. A render younger than
+SERVING. GET / renders the page, GET /healthz answers ok, GET /system-map
+and /system-map.json serve the System Map (bin/fm_system_map.py owns it), every
+other path is 404 and no request input selects a file. A render younger than
 render_reuse_seconds (config, default 15) is reused, so a reload does not pay
 for a second snapshot; concurrent requests share one render.
 """
@@ -985,7 +986,7 @@ PAGE = HEAD + """<body>
       <h1>The Bridge</h1>
       <span class="sub">where every project stands, on one page</span>
     </div>
-    <div class="meta"><b>%(stamp)s</b><br>rendered from the live records, refreshes on open</div>
+    <div class="meta"><b>%(stamp)s</b><br>rendered from the live records, refreshes on open<br><a href="system-map">System Map: how the crew works</a></div>
   </header>
 
   <nav class="tabs" role="tablist" aria-label="Bridge views">
@@ -1099,6 +1100,8 @@ def serve(home, config_dir, host, port, give_up_after=0):
     except (TypeError, ValueError):
         reuse = 15
     cache = _Cache(home, config_dir, reuse)
+    import fm_system_map as system_map
+    map_cache = system_map.Cache(home, config_dir, reuse)
 
     class Handler(BaseHTTPRequestHandler):
         server_version = "Bridge"
@@ -1114,7 +1117,7 @@ def serve(home, config_dir, host, port, give_up_after=0):
             self.send_header("Referrer-Policy", "no-referrer")
             self.send_header("Content-Security-Policy",
                              "default-src 'none'; style-src 'unsafe-inline' https://fonts.googleapis.com; "
-                             "font-src https://fonts.gstatic.com; script-src 'unsafe-inline'; "
+                             "font-src https://fonts.gstatic.com; script-src 'unsafe-inline'; connect-src 'self' https://cdn.jsdelivr.net; "
                              "base-uri 'none'; form-action 'none'; frame-ancestors 'none'")
             self.end_headers()
             if self.command != "HEAD":
@@ -1126,6 +1129,14 @@ def serve(home, config_dir, host, port, give_up_after=0):
                 self._send(200, cache.get(), "text/html; charset=utf-8")
             elif path == "/healthz":
                 self._send(200, "ok\n", "text/plain; charset=utf-8")
+            elif path == "/system-map":
+                self._send(200, system_map.page(), "text/html; charset=utf-8")
+            elif path == "/system-map.json":
+                body = map_cache.get()
+                if body is None:
+                    self._send(503, "the map could not be read\n", "text/plain; charset=utf-8")
+                else:
+                    self._send(200, body, "application/json; charset=utf-8")
             else:
                 self._send(404, "not found\n", "text/plain; charset=utf-8")
 

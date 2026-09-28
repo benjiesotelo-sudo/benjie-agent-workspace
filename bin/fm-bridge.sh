@@ -4,11 +4,14 @@
 # The Bridge is one page with five tabs (Bridge, Board, Team & Office, Memory,
 # Documents), rendered fresh from this home's records by bin/fm_bridge.py, which
 # owns what is read, how it is counted, and the HTTP server. Nothing on the page
-# can change anything: the server answers GET / with the page and GET /healthz
-# with "ok", and every other path with 404; no request input selects a file.
+# can change anything: the server answers GET / with the page, GET /healthz
+# with "ok", GET /system-map and /system-map.json with the System Map (a live
+# diagram of how the crew works, owned by bin/fm_system_map.py), and every
+# other path with 404; no request input selects a file.
 #
 # Commands:
 #   render                  write the page to stdout (tests, a quick look)
+#   system-map              write the System Map's data to stdout as JSON
 #   start [--foreground] [--bind <addr>] [--port <n>] [--retry-fallback]
 #                           serve the page; without --foreground it detaches,
 #                           records its pid in state/bridge.pid, and logs to
@@ -131,6 +134,10 @@ healthy() {  # <host> <port>
 
 cmd_render() {
   py render --home "$FM_HOME" --config-dir "$CONFIG"
+}
+
+cmd_system_map() {
+  python3 "$SCRIPT_DIR/fm_system_map.py" json --home "$FM_HOME" --config-dir "$CONFIG"
 }
 
 cmd_start() {
@@ -305,6 +312,7 @@ cmd_uninstall() {
 
 case "${1:-}" in
   render) shift; cmd_render "$@" ;;
+  system-map) shift; cmd_system_map ;;
   start) shift; cmd_start "$@" ;;
   stop) shift; cmd_stop ;;
   status) shift; cmd_status ;;
