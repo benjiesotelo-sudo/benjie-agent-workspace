@@ -176,17 +176,37 @@ It never shows task titles, notes, paths, links, email addresses, repository nam
 A project whose repository has no name in `config/mission-control.json` shows as "Project 1", "Project 2" and so on.
 
 The page is a snapshot rather than a live view, so this Mac is never reachable from the internet.
-A small job rebuilds it every 5 minutes and pushes it to a GitHub Pages repository only when something changed; the office keeps moving in the visitor's browser in between, so the Mac does no work between runs.
+A small job rebuilds it every 5 minutes and sends it to the web only when something changed; the office keeps moving in the visitor's browser in between, so the Mac does no work between runs.
 The page says how long ago it was updated.
 Because every run rebuilds the page from the current code, improvements to Mission Control reach the public page on its next run.
 
+The page can live on Cloudflare or on GitHub Pages.
+
+### On Cloudflare
+
+The page's code lives on Cloudflare Pages, and the snapshot lives in Workers KV, where a small Pages Function serves it to the page at `/snapshot.json`.
+Each run writes the snapshot to Workers KV only when it changed, which stays well inside the free tier's daily writes at 5 minutes.
+The page's code is deployed again only when the code itself changed, such as after a Mission Control update, because Pages limits how many deploys a project gets each month.
+
 To set it up once:
 
+1. Create a Cloudflare API token with the Cloudflare Pages Edit and Workers KV Storage Edit permissions.
+2. Add it and your account ID to this home's `.env` as `CLOUDFLARE_API_TOKEN=...` and `CLOUDFLARE_ACCOUNT_ID=...`; they are read only from there, never from your shell, so a manual run and the scheduled job use the same ones, and the token is never printed, logged or written anywhere else.
+3. Install [wrangler](https://developers.cloudflare.com/workers/wrangler/install-and-update/), Cloudflare's command-line tool, which deploys the page's code.
+4. Add `"public_page": {"host": "cloudflare", "project": "mission-control"}` to `config/mission-control.json`, and optionally `"every_minutes"` (5 by default; a larger number saves more power).
+5. Run `bin/fm-mission-control-web.sh publish <a folder>` once, with a folder outside this home that the job keeps between runs.
+   The first run creates the Pages project and a Workers KV namespace named after it (`mission-control-snapshot`) when they do not exist, and prints the page's address, such as `https://mission-control-xyz.pages.dev`.
+6. Run `bin/fm-mission-control-web.sh install <the same folder>` to run it on schedule.
+
+### On GitHub Pages
+
 1. Create a public GitHub repository for the page, for example `your-name/mission-control`, turn on GitHub Pages for its default branch and root folder, and clone it somewhere outside this home.
-2. Add `"public_page": {"repository": "your-name/mission-control"}` to `config/mission-control.json`, and optionally `"every_minutes"` (5 by default; a larger number saves more power).
+2. Add `"public_page": {"repository": "your-name/mission-control"}` to `config/mission-control.json`, and optionally `"every_minutes"`.
 3. Run `bin/fm-mission-control-web.sh publish <the clone>` once to check it pushes, then `bin/fm-mission-control-web.sh install <the clone>` to run it on schedule.
 
-`bin/fm-mission-control-web.sh status` shows the schedule and when the page last changed, and `uninstall` stops it.
+Each run commits and pushes the page's files only when they changed.
+
+`bin/fm-mission-control-web.sh status` shows the schedule, when the page last changed and where it is published, and `uninstall` stops it.
 Run `install` again after changing `every_minutes`.
 
 ## Settings
