@@ -56,7 +56,8 @@ Herdr shows them only with the sidebar settings in [`herdr-config.toml`](herdr-c
 Without those settings the sidebar looks as it always has, because the naming step only sets display values.
 
 To name everything once without the screen, run `bin/fm-mission-control.sh names`.
-Herdr forgets display values when Herdr itself restarts, so they come back when Mission Control starts again, or at once with Ctrl+B then Alt+N, which those settings bind to the same command.
+Herdr forgets display values when Herdr itself restarts.
+After a Herdr restart, and for an agent that appears while Mission Control is not running, the sidebar shows only the status icons until Mission Control starts again or you press Ctrl+B then Alt+N, which those settings bind to the same command.
 
 The naming step only sets display values; it never renames anything.
 Every space, tab and window keeps the name it has, so a window you named yourself keeps your name, and firstmate's own names (`fm-`, `2ndmate-`, `firstmate`, `└`) stay as firstmate set them; helper tabs therefore keep firstmate's short job names such as `fm-bsba-rev2`.

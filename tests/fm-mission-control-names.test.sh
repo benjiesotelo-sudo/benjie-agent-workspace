@@ -7,7 +7,8 @@
 # firstmate's fm-, 2ndmate-, firstmate and └ names all stay) and nothing is
 # moved, closed or created, that the one-off command run from the first mate's
 # own window still finds the first mate there, that a second pass changes
-# nothing, that a restart's lost display values come back, a refused
+# nothing, that older firstmate/<job> and 2ndmate-<id>/<job> helper spaces
+# read like └ ones, that a restart's lost display values come back, a refused
 # change, and the running screen's Keeper putting lost values back on
 # its own while leaving out its own window.
 # Fixtures are the Bridge's, in tests/assets/bridge/.
@@ -183,6 +184,17 @@ OUT=$(names) || fail "names failed: $OUT"
 [ "$(space_name w1)" = Denver ] || fail "a firstmate space holding the first mate's window should show 'Denver', shows '$(space_name w1)'"
 [ "$(space_name w8)" = "Denver's interns" ] || fail "the other firstmate space should show \"Denver's interns\", shows '$(space_name w8)'"
 pass "only the space holding the first mate's window reads the first mate's name"
+
+fresh_herdr
+jq '(.result.workspaces[] | select(.workspace_id == "w3")).label = "firstmate/q1 · p:urXKPBo5LgWV2rrMCPavcQ"
+    | (.result.workspaces[] | select(.workspace_id == "w7")).label = "2ndmate-alpha-mate/gone-job · p:BBSs2qp1b2ZGaqvRB5eeXg"' \
+  "$HX/spaces.json" > "$HX/s.tmp" && mv "$HX/s.tmp" "$HX/spaces.json"
+OUT=$(names) || fail "names failed: $OUT"
+[ "$(space_name w3)" = "Denver's intern · Print the handouts" ] \
+  || fail "an older firstmate/<job> helper space should show its intern and job, shows '$(space_name w3)'"
+[ "$(space_name w7)" = gone-job ] \
+  || fail "an older 2ndmate-<id>/<job> helper space should show its job, shows '$(space_name w7)'"
+pass "older firstmate/<job> and 2ndmate-<id>/<job> helper spaces read like └ ones"
 
 # --- again, after a restart, refused ---------------------------------------
 
