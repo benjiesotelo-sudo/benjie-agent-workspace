@@ -1,0 +1,19 @@
+== cold start: every records read takes 12 s (injected delay) ==
+--- this change GET /system-map.json
+status=503 time=8.099653s bytes=29
+the map is still being drawn 
+--- this change GET /system-map.json
+status=503 time=8.143321s bytes=29
+the map is still being drawn 
+--- this change GET /
+status=200 time=0.001341s bytes=15791
+<!doctype html> <html lang="en"> <head> <meta charset="utf-8"> <meta name="viewp
+--- base eca0db8 GET /system-map.json
+status=200 time=25.964524s bytes=35701
+{"generated": "2026-09-28T12:53:35+08:00", "stamp": "Monday 28 September, 12:53 
+--- base eca0db8 GET /system-map.json
+status=200 time=0.000553s bytes=35701
+{"generated": "2026-09-28T12:53:35+08:00", "stamp": "Monday 28 September, 12:53 
+--- base eca0db8 GET /
+status=200 time=12.580289s bytes=15791
+<!doctype html> <html lang="en"> <head> <meta charset="utf-8"> <meta name="viewp

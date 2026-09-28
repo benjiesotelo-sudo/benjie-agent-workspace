@@ -1,0 +1,101 @@
+# Live Bridge transcripts (fixture home, injected slow/failing records read; this change unless marked base)
+
+## Map: cold start -> drawn (iPad-emulated Chrome, 1024x1366 touch, iPad Safari UA)
+server started 12:55:00; each records read takes 10 s (map build ~20 s)
+12:55:01  result: "\"loading | map nodes drawn: 0\""
+12:55:10  result: "\"the Bridge is still drawing the map; trying again in a few seconds | map nodes drawn: 0\""
+12:55:15  result: "\"the Bridge is still drawing the map; trying again in a few seconds | map nodes drawn: 0\""
+12:55:20  result: "\"the Bridge is still drawing the map; trying again in a few seconds | map nodes drawn: 0\""
+12:55:24  result: "\"the Bridge is still drawing the map; trying again in a few seconds | map nodes drawn: 0\""
+12:55:28  result: "\"Monday 28 September, 12:55 pm | map nodes drawn: 57\""
+
+## Map: stale -> live
+map is now older than the 15 s current window; reloading the page
+12:55:42  result: "\"Monday 28 September, 12:55 pm, not yet live: the Bridge is reading the latest records; trying again in a few seconds | map nodes drawn: 57 | What changed: undefined\""
+12:55:47  result: "\"Monday 28 September, 12:55 pm, not yet live: the Bridge is reading the latest records; trying again in a few seconds | map nodes drawn: 57 | What changed: undefined\""
+12:55:51  result: "\"Monday 28 September, 12:55 pm, not yet live: the Bridge is reading the latest records; trying again in a few seconds | map nodes drawn: 57 | What changed: undefined\""
+12:55:56  result: "\"Monday 28 September, 12:55 pm, not yet live: the Bridge is reading the latest records; trying again in a few seconds | map nodes drawn: 57 | What changed: undefined\""
+12:56:00  result: "\"Monday 28 September, 12:55 pm, not yet live: the Bridge is reading the latest records; trying again in a few seconds | map nodes drawn: 57 | What changed: undefined\""
+12:56:05  result: "\"Monday 28 September, 12:55 pm, not yet live: the Bridge is reading the latest records; trying again in a few seconds | map nodes drawn: 57 | What changed: undefined\""
+12:56:09  result: "\"Monday 28 September, 12:55 pm | map nodes drawn: 57 | What changed: undefined\""
+HTTP/1.0 200 OK
+Content-Security-Policy: default-src 'none'; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; script-src 'unsafe-inline'; connect-src 'self' https://cdn.jsdelivr.net; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
+
+## Map: rebuild fails
+records now unreadable (collect raises 'records moved'); map older than 15 s; reloading
+12:56:30  result: "\"Monday 28 September, 12:55 pm, not yet live: the Bridge is reading the latest records; trying again in a few seconds | map nodes drawn: 57\""
+12:56:35  result: "\"Monday 28 September, 12:55 pm, not yet live: the Bridge is reading the latest records; trying again in a few seconds | map nodes drawn: 57\""
+12:56:39  result: "\"Monday 28 September, 12:55 pm, not yet live: the Bridge is reading the latest records; trying again in a few seconds | map nodes drawn: 57\""
+12:56:44  result: "\"Monday 28 September, 12:55 pm, not yet live: the Bridge is reading the latest records; trying again in a few seconds | map nodes drawn: 57\""
+HTTP/1.0 200 OK
+X-Bridge-Stale: failed
+time=0.000682s
+12:56:53  result: "\"Monday 28 September, 12:55 pm, not live: reading the latest records failed; trying again in a minute | map nodes drawn: 57\""
+
+## Bridge page: stale -> failed
+--- Bridge page /, records unreadable, page older than 15 s
+HTTP/1.0 200 OK
+X-Bridge-Stale: yes
+Refresh: 5
+time=0.000779s
+12:57:10  result: "\"This is the Bridge as last read. The latest records are being read now, and this page reloads itself in a few seconds.\""
+12:57:15  result: "\"This is the Bridge as last read. The latest records are being read now, and this page reloads itself in a few seconds.\""
+12:57:19  result: "\"This is the Bridge as last read. The latest records are being read now, and this page reloads itself in a few seconds.\""
+12:57:24  result: "\"This is the Bridge as last read. Reading the latest records failed. Records moved. Try again in a minute.\""
+12:57:28  result: "\"This is the Bridge as last read. Reading the latest records failed. Records moved. Try again in a minute.\""
+HTTP/1.0 200 OK
+X-Bridge-Stale: failed
+time=0.000570s
+
+## Bridge page: recovery
+--- records readable again; reload the Bridge page
+12:57:36  result: "\"This is the Bridge as last read. Reading the latest records failed. Records moved. Try again in a minute.\""
+12:57:41  result: "\"This is the Bridge as last read. Reading the latest records failed. Records moved. Try again in a minute.\""
+12:57:45  result: "\"This is the Bridge as last read. Reading the latest records failed. Records moved. Try again in a minute.\""
+12:57:50  result: "\"This is the Bridge as last read. Reading the latest records failed. Records moved. Try again in a minute.\""
+12:57:54  result: "\"This is the Bridge as last read. Reading the latest records failed. Records moved. Try again in a minute.\""
+12:57:59  result: "\"This is the Bridge as last read. Reading the latest records failed. Records moved. Try again in a minute.\""
+HTTP/1.0 200 OK
+time=0.001292s
+12:58:05 manual reload: result: "\"This is the Bridge as last read. The latest records are being read now, and this page reloads itself in a few seconds.\""
+12:58:16 (page reloads itself): result: "\"http://127.0.0.1:7401/ This is the Bridge as last read. The latest records are being read now, and this page reloads itself in a few seconds.\""
+12:58:22 (page reloads itself): result: "\"http://127.0.0.1:7401/ (no banner: current page)\""
+12:58:27 (page reloads itself): result: "\"http://127.0.0.1:7401/ (no banner: current page)\""
+
+## Bridge page: cold start
+--- fresh server, each records read takes 20 s; open the Bridge page at once
+HTTP/1.0 200 OK
+X-Bridge-Stale: yes
+Refresh: 5
+time=8.143407s
+class="banner" style="margin-top:16px">The Bridge is still reading the records. This page reloads itself in a few seconds.
+12:59:01 result: "\"The Bridge | Nothing is waiting on you right now. 1 worker is under way.\""
+12:59:07 result: "\"The Bridge | Nothing is waiting on you right now. 1 worker is under way.\""
+12:59:12 result: "\"The Bridge | Nothing is waiting on you right now. 1 worker is under way.\""
+
+## render_reuse_seconds 0
+--- render_reuse_seconds: 0, each records read takes 2 s
+12:59:37 GET /                HTTP/1.0 200 OK time=0.000997s 
+12:59:37 GET /system-map.json HTTP/1.0 200 OK time=0.000622s 
+12:59:40 GET /                HTTP/1.0 200 OK time=0.001187s 
+12:59:40 GET /system-map.json HTTP/1.0 200 OK time=0.000676s 
+(wait 16 s: bodies now older than the 15 s floor)
+12:59:56 GET /                HTTP/1.0 200 OK X-Bridge-Stale: yes Refresh: 5 time=0.001481s 
+12:59:56 GET /system-map.json HTTP/1.0 200 OK X-Bridge-Stale: yes Refresh: 5 time=0.000662s 
+(the 5 s reload the stale answer asked for)
+13:00:01 GET /                HTTP/1.0 200 OK time=0.000622s 
+13:00:01 GET /system-map.json HTTP/1.0 200 OK time=0.000583s 
+13:00:06 GET /                HTTP/1.0 200 OK time=0.001409s 
+13:00:06 GET /system-map.json HTTP/1.0 200 OK time=0.000594s 
+
+## Map: failure step named
+--- records unreadable from the start (no map ever built)
+HTTP/1.0 503 Service Unavailable
+the map could not be read
+time=1.071246s
+13:00:38  result: "\"the Bridge could not give the map (HTTP 503) (the map could not be read); trying again in a minute\""
+--- records readable again, then the Bridge stops (page left open)
+13:00:43  result: "\"Monday 28 September, 1:00 pm\""
+13:00:46  result: "\"Monday 28 September, 1:00 pm\""
+result: "\"Monday 28 September, 1:00 pm\""
+13:01:40  result: "\"could not reach the Bridge for the map data (TypeError: Failed to fetch); trying again in a minute\""
