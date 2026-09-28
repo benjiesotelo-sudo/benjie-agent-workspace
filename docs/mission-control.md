@@ -162,6 +162,7 @@ The System Map card gives the map's full address to open in Safari, taken from t
 
 The Bridge has five tabs: Bridge (one card per project), Board (the task columns), Team & Office, Memory, and Documents.
 It is rebuilt from the records when you open or refresh it.
+While a rebuild is still reading them, the page answers at once with the last reading, says so at the top and reloads itself in a few seconds; if the latest reading failed, it says what failed instead.
 
 ### The System Map
 
@@ -173,6 +174,7 @@ A tool two or more agents use is drawn once in the shared toolbox; tap an agent 
 Nothing on it is drawn by hand: every box comes from the crew's records, their settings, their projects' own files and the tools installed on this Mac, so a new second mate, project, dependency, hook, schedule, tool, check or playbook appears by itself, and a box whose source cannot be read says "could not read".
 Products show their own logo and everything else a plain line icon.
 Whoever is working right now glows, the lines their work flows along move, and each helper sits on its step of the delivery lane; the map refreshes every minute.
+While the Bridge is still reading the latest records, its status line says the map is not yet live and it tries again in a few seconds; if the latest reading failed it says so, and if the map cannot be fetched it names the step that failed.
 Tap any box for a card saying what it is, what it does in the workflow, who uses it and what it is doing now.
 "How a request travels" walks one request from you to the merge, one sentence per step, and "What changed" lists what was added or removed since you last opened the map on that device.
 
