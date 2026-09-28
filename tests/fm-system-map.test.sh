@@ -417,6 +417,84 @@ PY
   || fail "scrub keeps plain words and slash commands only: $scrubbed"
 pass "no paths, links, email addresses, tokens or hook commands reach the map"
 
+# --- a slow build never holds a request -------------------------------------
+# A cold build once took long enough that iPad Safari gave up on
+# system-map.json and the page said it could not reach the map.
+
+cached=$(PYTHONPATH="$ROOT/bin" python3 - <<'PY'
+import threading, time
+import fm_system_map as m
+gate, calls = threading.Event(), []
+def build(home, config_dir):
+    calls.append(1)
+    if len(calls) == 2:
+        gate.wait(10)
+    if len(calls) == 4:
+        raise RuntimeError("records moved")
+    return {"n": len(calls)}
+def settle(c):
+    while c.building is not None:
+        time.sleep(0.01)
+m.build = build
+floor, m.bridge.CURRENT_FLOOR = m.bridge.CURRENT_FLOOR, -1
+c = m.Cache("home", "config", reuse=-1, wait=5)  # every map is already stale
+out = ["first %s %s %s" % c.get()]
+t = time.monotonic()
+out.append("then %s %s %s" % c.get())
+out.append("quick %s rebuilding %s" % (time.monotonic() - t < 1, c.building is not None))
+gate.set()
+settle(c)
+out.append("rebuilt %s %s %s" % c.get())
+settle(c)
+c.get()
+settle(c)
+out.append("after a failed rebuild %s %s %s" % c.get())
+settle(c)
+out.append("retried %s %s %s" % c.get())
+settle(c)
+m.bridge.CURRENT_FLOOR = floor
+c = m.Cache("home", "config", reuse=0, wait=5)
+out.append("fresh %s %s %s" % c.get())
+out.append("reload %s %s %s" % c.get())
+slow = threading.Event()
+m.build = lambda home, config_dir: slow.wait(10) and {"n": 0}
+c = m.Cache("home", "config", reuse=15, wait=0.2)
+t = time.monotonic()
+out.append("none yet %s %s %s quick %s" % (c.get() + (time.monotonic() - t < 1,)))
+slow.set()
+def fail(home, config_dir):
+    raise RuntimeError("no records")
+m.build = fail
+c = m.Cache("home", "config", reuse=15, wait=5)
+out.append("unreadable %s %s %s" % c.get())
+m.build = lambda home, config_dir: {"n": "back"}
+out.append("cold retry %s %s %s" % c.get())
+m.build = fail
+c = m.Cache("home", "config", reuse=15, wait=5)
+c.get()
+held = threading.Event()
+m.build = lambda home, config_dir: held.wait(10) and {"n": 0}
+c.wait = 0.2
+out.append("cold retry running %s %s %s" % c.get())
+held.set()
+print("\n".join(out))
+PY
+) || fail "the map cache should run: $cached"
+[ "$cached" = 'first {"n": 1} current None
+then {"n": 1} stale None
+quick True rebuilding True
+rebuilt {"n": 2} stale None
+after a failed rebuild {"n": 3} failed The records could not be read. Try again in a minute.
+retried {"n": 5} stale None
+fresh {"n": 7} current None
+reload {"n": 7} current None
+none yet None drawing None quick True
+unreadable None failed The records could not be read. Try again in a minute.
+cold retry {"n": "back"} current None
+cold retry running None drawing None' ] \
+  || fail "a stale map is answered at once and rebuilt behind the request, a failed rebuild keeps the last map and says it failed, a just-built map is current even with reuse 0, and with no map yet a request waits briefly for its own retry: $cached"
+pass "a slow map build never holds a request"
+
 # --- the Bridge serves the page and the map ---------------------------------
 
 PORT=$(python3 -c 'import socket; s=socket.socket(); s.bind(("127.0.0.1", 0)); print(s.getsockname()[1])')

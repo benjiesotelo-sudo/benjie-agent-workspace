@@ -68,7 +68,14 @@ LIVE. A working agent glows, lines carrying work move, each helper knows its
 delivery step from the snapshot's current state (a parked gate names its
 step; "ci running" is ci; green checks wait at merge; a run still validating
 lights the checks as a group), and the page fetches the map every REFRESH
-seconds.
+seconds. The Bridge answers from the last finished map and rebuilds it in the
+background (Cache), so a slow build never holds a request; a map older than
+the reuse window comes marked stale, and the page draws it as not yet live,
+keeps it out of What changed, and fetches again in a few seconds; one kept
+because the latest read failed comes marked failed, and the page says so and
+tries again at the next minute. When a fetch fails
+the page names the step that failed: reaching the Bridge, the Bridge's own
+answer, reading the data, or drawing it.
 
 ICONS. Real products carry their Simple Icons logo and concepts a Lucide line
 icon, both fetched by the page from the pinned packages on cdn.jsdelivr.net
@@ -1676,12 +1683,29 @@ function changes(){
   try{localStorage.setItem(key,JSON.stringify({at:Date.now(),nodes:now}));}catch(e){}
 }
 function notices(){var n=document.getElementById('notices');n.innerHTML='';(data.notices||[]).forEach(function(t){var d=document.createElement('div');d.className='notice';d.textContent=t;n.appendChild(d);});}
+var retry=null;
+function say(t){document.getElementById('stamp').textContent=t;}
+function why(e){return fit(e&&e.message?(e.name&&e.name!=='Error'?e.name+': ':'')+e.message:e,140);}
 function load(){
-  fetch('system-map.json',{cache:'no-store'}).then(function(r){if(!r.ok)throw new Error(r.status);return r.json();}).then(function(d){
-    data=d;document.getElementById('stamp').textContent=d.stamp;draw();changes();notices();
+  var step='reach',code=0,stale=null;clearTimeout(retry);
+  fetch('system-map.json',{cache:'no-store'}).then(function(r){
+    if(r.ok){step='read';stale=r.headers.get('X-Bridge-Stale');return r.json();}
+    step='serve';code=r.status;return r.text().then(function(t){throw new Error(t.trim().split('\n')[0]||'no reason given');});
+  }).then(function(d){
+    step='draw';data=d;
+    say(stale==='yes'?d.stamp+', not yet live: the Bridge is reading the latest records; trying again in a few seconds':
+      stale?d.stamp+', not live: reading the latest records failed; trying again in a minute':d.stamp);
+    draw();if(!stale)changes();notices();if(stale==='yes')retry=setTimeout(load,5000);
     if(tourAt>=0)showHop(tourAt);
     if(selected){if(byId[selected])open(selected);else closeSheet();}
-  }).catch(function(){document.getElementById('stamp').textContent='could not reach the map; trying again in a minute';});
+  }).catch(function(e){
+    if(step==='serve'&&code===503&&/still being drawn/.test(e.message)){
+      say('the Bridge is still drawing the map; trying again in a few seconds');retry=setTimeout(load,5000);return;}
+    say((step==='reach'?'could not reach the Bridge for the map data':
+      step==='serve'?'the Bridge could not give the map (HTTP '+code+')':
+      step==='read'?'the map data arrived damaged':'the map data arrived but could not be drawn')+
+      ' ('+why(e)+'); trying again in a minute');
+  });
 }
 document.getElementById('tour-btn').addEventListener('click',function(){tour(true);});
 document.getElementById('tour-close').addEventListener('click',function(){tour(false);});
@@ -1761,23 +1785,16 @@ def page():
     return PAGE % {"style": STYLE, "script": SCRIPT.replace("REFRESH_MS", str(REFRESH * 1000))}
 
 
-class Cache:
-    """One map build shared by concurrent requests, reused for `reuse` seconds."""
+class Cache(bridge.Cache):
+    """The latest map, answered at once and rebuilt behind the request.
 
-    def __init__(self, home, config_dir, reuse):
-        self.home, self.config_dir, self.reuse = home, config_dir, reuse
-        self.lock = threading.Lock()
-        self.body, self.at = None, 0.0
+    A build reads every record and can take many seconds; waiting on it made
+    iPad Safari give up on system-map.json. See bin/fm_bridge.py Cache for
+    the states get() answers with.
+    """
 
-    def get(self):
-        with self.lock:
-            if self.body is None or time.monotonic() - self.at > self.reuse:
-                try:
-                    body = json.dumps(build(self.home, self.config_dir))
-                except Exception:  # noqa: BLE001 - the page says it could not read, never a traceback
-                    return None
-                self.body, self.at = body, time.monotonic()
-            return self.body
+    def __init__(self, home, config_dir, reuse, wait=8.0):
+        super().__init__(lambda: (json.dumps(build(home, config_dir)), None), reuse, wait)
 
 
 def main(argv):
