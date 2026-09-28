@@ -467,6 +467,16 @@ def fail(home, config_dir):
 m.build = fail
 c = m.Cache("home", "config", reuse=15, wait=5)
 out.append("unreadable %s %s %s" % c.get())
+m.build = lambda home, config_dir: {"n": "back"}
+out.append("cold retry %s %s %s" % c.get())
+m.build = fail
+c = m.Cache("home", "config", reuse=15, wait=5)
+c.get()
+held = threading.Event()
+m.build = lambda home, config_dir: held.wait(10) and {"n": 0}
+c.wait = 0.2
+out.append("cold retry running %s %s %s" % c.get())
+held.set()
 print("\n".join(out))
 PY
 ) || fail "the map cache should run: $cached"
@@ -479,8 +489,10 @@ retried {"n": 5} stale None
 fresh {"n": 7} current None
 reload {"n": 7} current None
 none yet None drawing None quick True
-unreadable None failed The records could not be read. Try again in a minute.' ] \
-  || fail "a stale map is answered at once and rebuilt behind the request, a failed rebuild keeps the last map and says it failed, a just-built map is current even with reuse 0, and the first request waits only briefly: $cached"
+unreadable None failed The records could not be read. Try again in a minute.
+cold retry {"n": "back"} current None
+cold retry running None drawing None' ] \
+  || fail "a stale map is answered at once and rebuilt behind the request, a failed rebuild keeps the last map and says it failed, a just-built map is current even with reuse 0, and with no map yet a request waits briefly for its own retry: $cached"
 pass "a slow map build never holds a request"
 
 # --- the Bridge serves the page and the map ---------------------------------

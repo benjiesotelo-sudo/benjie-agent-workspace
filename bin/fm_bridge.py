@@ -1097,10 +1097,10 @@ class Cache:
     returns (body, state, what failed). A good body younger than `reuse` (or
     CURRENT_FLOOR) seconds is "current". Otherwise the request starts one
     background rebuild, whose result a later request gets, and is answered at
-    once: "failed" with the last good body (or None) and what failed when the
-    latest build failed, else "stale" with the last good body. Before any
-    build has finished a request waits at most `wait` seconds for it:
-    "current", "failed", or "drawing" while it still runs.
+    once with the last good body: "failed" with what failed when the latest
+    build failed, else "stale". While no good body exists a request waits at
+    most `wait` seconds for the build it started or joined: "current",
+    "failed" when that build failed, or "drawing" while it still runs.
     """
 
     def __init__(self, make, reuse, wait=8.0):
@@ -1136,7 +1136,7 @@ class Cache:
             if self.body is not None and time.monotonic() - self.at <= max(self.reuse, CURRENT_FLOOR):
                 return self.body, "current", None
             done = self._start()
-            if self.failed is not None:
+            if self.body is not None and self.failed is not None:
                 return self.body, "failed", self.failed
             if self.body is not None:
                 return self.body, "stale", None
@@ -1144,7 +1144,7 @@ class Cache:
         with self.lock:
             if self.body is not None:
                 return self.body, "current", None
-            if self.failed is not None:
+            if done.is_set():
                 return None, "failed", self.failed
             return None, "drawing", None
 
