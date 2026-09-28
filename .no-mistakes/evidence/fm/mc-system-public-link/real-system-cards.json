@@ -1,0 +1,35 @@
+{
+  "overall": "1 thing needs a look: the merge switch",
+  "cards": [
+    {
+      "title": "System Map",
+      "dot": "green",
+      "head": "System Map: how the crew fits together",
+      "lines": [
+        {
+          "dot": "green",
+          "text": "Open in Safari"
+        },
+        {
+          "dot": null,
+          "text": "http://benjamins-mac-mini-2.tail2ec559.ts.net:7373/system-map"
+        }
+      ]
+    },
+    {
+      "title": "Public page",
+      "dot": "green",
+      "head": "Public page: what anyone can see",
+      "lines": [
+        {
+          "dot": "green",
+          "text": "Open in Safari"
+        },
+        {
+          "dot": null,
+          "text": "https://mission-control-1su.pages.dev/"
+        }
+      ]
+    }
+  ]
+}

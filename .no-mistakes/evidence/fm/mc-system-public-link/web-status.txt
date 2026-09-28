@@ -1,0 +1,6 @@
+schedule: loaded, every 5 minutes (com.firstmate.mission-control-web)
+folder: /Users/benjie/.mission-control-web
+snapshot: 2026-09-28T14:15:33Z
+host: Cloudflare Pages project mission-control
+address: https://mission-control-1su.pages.dev
+last log line: fm-mission-control-web: wrote the snapshot to Workers KV for https://mission-control-1su.pages.dev

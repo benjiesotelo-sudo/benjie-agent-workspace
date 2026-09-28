@@ -1,0 +1,21 @@
+### A. home with no public_page -> no Public page card
+[]
+### B. cloudflare, no publish job yet -> amber not published yet
+[{"dot":"amber","head":"Public page: not published yet","lines":[]}]
+    overall: 4 things need a look: Herdr's agent list, the Bridge page, Mission Control, herdr
+### C. cloudflare, own job published twice -> last recorded address, green
+[{"dot":"green","head":"Public page: what anyone can see","lines":[{"dot":"green","text":"Open in Safari"},{"dot":null,"text":"https://mission-control-1su.pages.dev/"}]}]
+### D. adversarial: publish job belongs to another home -> not shown as this home's link
+[{"dot":"amber","head":"Public page: not published yet","lines":[]}]
+### E. adversarial: recorded url is javascript: -> never shown
+[{"dot":"amber","head":"Public page: not published yet","lines":[]}]
+### F. adversarial: recorded url is plain http -> never shown
+[{"dot":"amber","head":"Public page: not published yet","lines":[]}]
+### G. adversarial: recorded url with path/query junk -> never shown
+[{"dot":"amber","head":"Public page: not published yet","lines":[]}]
+### H. GitHub Pages host -> github.io address from repository
+[{"dot":"green","head":"Public page: what anyone can see","lines":[{"dot":"green","text":"Open in Safari"},{"dot":null,"text":"https://benjiesotelo-sudo.github.io/mission-control-public/"}]}]
+### I. malformed repository -> amber not published yet
+[{"dot":"amber","head":"Public page: not published yet","lines":[]}]
+### J. unreadable settings JSON -> no card, view still draws
+[]
