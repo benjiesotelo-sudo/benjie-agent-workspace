@@ -436,46 +436,51 @@ def settle(c):
     while c.building is not None:
         time.sleep(0.01)
 m.build = build
+floor, m.bridge.CURRENT_FLOOR = m.bridge.CURRENT_FLOOR, -1
 c = m.Cache("home", "config", reuse=-1, wait=5)  # every map is already stale
-out = ["first %s %s" % c.get()]
+out = ["first %s %s %s" % c.get()]
 t = time.monotonic()
-out.append("then %s %s" % c.get())
+out.append("then %s %s %s" % c.get())
 out.append("quick %s rebuilding %s" % (time.monotonic() - t < 1, c.building is not None))
 gate.set()
 settle(c)
-out.append("rebuilt %s %s" % c.get())
+out.append("rebuilt %s %s %s" % c.get())
 settle(c)
 c.get()
 settle(c)
-out.append("after a failed rebuild %s %s" % c.get())
+out.append("after a failed rebuild %s %s %s" % c.get())
 settle(c)
-c = m.Cache("home", "config", reuse=15, wait=5)
-out.append("fresh %s %s" % c.get())
-out.append("reused %s %s" % c.get())
+out.append("retried %s %s %s" % c.get())
+settle(c)
+m.bridge.CURRENT_FLOOR = floor
+c = m.Cache("home", "config", reuse=0, wait=5)
+out.append("fresh %s %s %s" % c.get())
+out.append("reload %s %s %s" % c.get())
 slow = threading.Event()
 m.build = lambda home, config_dir: slow.wait(10) and {"n": 0}
 c = m.Cache("home", "config", reuse=15, wait=0.2)
 t = time.monotonic()
-out.append("none yet %s %s quick %s" % (c.get() + (time.monotonic() - t < 1,)))
+out.append("none yet %s %s %s quick %s" % (c.get() + (time.monotonic() - t < 1,)))
 slow.set()
 def fail(home, config_dir):
     raise RuntimeError("no records")
 m.build = fail
 c = m.Cache("home", "config", reuse=15, wait=5)
-out.append("unreadable %s %s" % c.get())
+out.append("unreadable %s %s %s" % c.get())
 print("\n".join(out))
 PY
 ) || fail "the map cache should run: $cached"
-[ "$cached" = 'first {"n": 1} current
-then {"n": 1} stale
+[ "$cached" = 'first {"n": 1} current None
+then {"n": 1} stale None
 quick True rebuilding True
-rebuilt {"n": 2} stale
-after a failed rebuild {"n": 3} stale
-fresh {"n": 6} current
-reused {"n": 6} current
-none yet None drawing quick True
-unreadable None failed' ] \
-  || fail "a stale map is answered at once, marked stale and rebuilt behind the request, the first request waits only briefly, and a failed rebuild keeps the last map: $cached"
+rebuilt {"n": 2} stale None
+after a failed rebuild {"n": 3} failed The records could not be read. Try again in a minute.
+retried {"n": 5} stale None
+fresh {"n": 7} current None
+reload {"n": 7} current None
+none yet None drawing None quick True
+unreadable None failed The records could not be read. Try again in a minute.' ] \
+  || fail "a stale map is answered at once and rebuilt behind the request, a failed rebuild keeps the last map and says it failed, a just-built map is current even with reuse 0, and the first request waits only briefly: $cached"
 pass "a slow map build never holds a request"
 
 # --- the Bridge serves the page and the map ---------------------------------

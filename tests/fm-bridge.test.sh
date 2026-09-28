@@ -247,15 +247,20 @@ slow=$(PATH="$FAKEBIN:$PATH" FM_BRIDGE_TAILSCALE="$FAKEBIN/tailscale-down" PYTHO
   python3 - "$HOME_DIR" "$SLOWCFG" 2>"$TMP_ROOT/slow.log" <<'PY'
 import os, re, socket, sys, threading, time, urllib.request
 import fm_bridge as b
-real, gate, calls = b.build_page, threading.Event(), []
+real, gate, broken, calls = b.build_page, threading.Event(), threading.Event(), []
 def build_page(home, config_dir):
     calls.append(1)
     n = len(calls)
     if n == 2:
         gate.wait(20)
-    page, ok = real(home, config_dir)
-    return page.replace("<h1>The Bridge</h1>", "<h1>The Bridge</h1><i>render %d</i>" % n), ok
-b.build_page = build_page
+    page, failed = real(home, config_dir)
+    return page and page.replace("<h1>The Bridge</h1>", "<h1>The Bridge</h1><i>render %d</i>" % n), failed
+real_collect = b.collect
+def collect(*args):
+    if broken.is_set():
+        raise RuntimeError("records moved")
+    return real_collect(*args)
+b.build_page, b.collect, b.CURRENT_FLOOR = build_page, collect, 0
 s = socket.socket(); s.bind(("127.0.0.1", 0)); port = s.getsockname()[1]; s.close()
 out, sys.stdout = sys.stdout, open(os.devnull, "w")
 threading.Thread(target=b.serve, args=(sys.argv[1], sys.argv[2], "127.0.0.1", port), daemon=True).start()
@@ -268,6 +273,7 @@ def get():
                 return {"render": int(re.search(r"<i>render (\d+)</i>", page).group(1)),
                         "stale": r.headers.get("X-Bridge-Stale"), "refresh": r.headers.get("Refresh"),
                         "banner": "The latest records are being read now" in page,
+                        "failed": "Reading the latest records failed. Records moved. Try again in a minute." in page,
                         "quick": time.monotonic() - t < 2}
         except OSError:
             time.sleep(0.1)
@@ -286,14 +292,24 @@ for _ in range(100):
         break
     time.sleep(0.1)
 lines.append("after newer %s stale %s banner %s" % (after["render"] > 1, after["stale"], after["banner"]))
+broken.set()
+time.sleep(1.2)
+for _ in range(100):
+    failing = get()
+    if failing["stale"] == "failed":
+        break
+    time.sleep(0.1)
+lines.append("failing kept %s refresh %s banner %s says %s" % (
+    failing["render"] == after["render"], failing["refresh"], failing["banner"], failing["failed"]))
 out.write("\n".join(lines) + "\n")
 PY
 ) || fail "the slow render server should run: $slow $(cat "$TMP_ROOT/slow.log")"
 [ "$slow" = 'first render 1 stale None refresh None banner False
 then render 1 stale yes refresh 5 banner True quick True
 again render 1 quick True renders 2
-after newer True stale None banner False' ] \
-  || fail "an old page is answered at once, marked not current and reloading, while one rebuild runs behind it: $slow"
+after newer True stale None banner False
+failing kept True refresh None banner False says True' ] \
+  || fail "an old page is answered at once, marked not current and reloading, while one rebuild runs behind it, and a failed rebuild keeps the last page and names the failure without reloading: $slow"
 pass "a slow render never holds the page request"
 
 # --- LaunchAgent -----------------------------------------------------------

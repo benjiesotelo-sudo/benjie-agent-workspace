@@ -47,6 +47,8 @@ for a second snapshot; concurrent requests share one render. An older render is
 answered at once while one rebuild runs behind it (Cache), marked not current
 (an X-Bridge-Stale: yes header, and on the page a banner and a Refresh header
 that reloads it in a few seconds), so a slow snapshot never holds a request.
+When the latest rebuild failed the last good render is answered with
+X-Bridge-Stale: failed and a banner naming what failed, and no Refresh.
 """
 
 import datetime as _dt
@@ -1072,26 +1074,33 @@ def _now():
 
 
 def build_page(home, config_dir):
+    """(page, None), or (None, what failed) when the records could not be read."""
     now = _now()
     try:
-        return render(collect(home, config_dir, now)), True
+        return render(collect(home, config_dir, now)), None
     except Exception as exc:  # noqa: BLE001 - the page says what failed, never a traceback
         msg = str(exc) if isinstance(exc, RuntimeError) else "The records could not be read."
         msg = msg[:1].upper() + msg[1:] + "." if not msg.endswith(".") else msg
-        return render_error(now, msg + " Try again in a minute."), False
+        return None, msg + " Try again in a minute."
+
+
+# A body younger than this is current whatever the reuse setting says, so the
+# reload a stale answer asks for (in 5 seconds) gets the rebuilt body.
+CURRENT_FLOOR = 15
 
 
 class Cache:
     """The latest build, answered at once and rebuilt behind the request.
 
-    make() returns (body, ok) and can take many seconds; waiting on it made
-    iPad Safari give up on the Bridge. get() returns (body, state). Once a
-    good body exists a request gets it at once: "current" while it is younger
-    than `reuse` seconds, else "stale" while one background rebuild runs
-    whose result the next request gets; a failed rebuild keeps the last good
-    body. Before one exists a request waits at most `wait` seconds for the
-    build: "current" with the new body, "failed" with the failed build's
-    body, or "drawing" while it still runs.
+    make() returns (body, None) or (None, what failed) and can take many
+    seconds; waiting on it made iPad Safari give up on the Bridge. get()
+    returns (body, state, what failed). A good body younger than `reuse` (or
+    CURRENT_FLOOR) seconds is "current". Otherwise the request starts one
+    background rebuild, whose result a later request gets, and is answered at
+    once: "failed" with the last good body (or None) and what failed when the
+    latest build failed, else "stale" with the last good body. Before any
+    build has finished a request waits at most `wait` seconds for it:
+    "current", "failed", or "drawing" while it still runs.
     """
 
     def __init__(self, make, reuse, wait=8.0):
@@ -1101,14 +1110,13 @@ class Cache:
 
     def _rebuild(self, done):
         try:
-            body, ok = self.make()
+            body, failed = self.make()
         except Exception:  # noqa: BLE001 - the page says it could not read, never a traceback
-            body, ok = None, False
+            body, failed = None, "The records could not be read. Try again in a minute."
         with self.lock:
-            if ok:
-                self.body, self.at, self.failed = body, time.monotonic(), None
-            else:
-                self.failed = body
+            if failed is None:
+                self.body, self.at = body, time.monotonic()
+            self.failed = failed
             self.building = None
         done.set()
 
@@ -1125,24 +1133,26 @@ class Cache:
 
     def get(self):
         with self.lock:
-            if self.body is not None:
-                if time.monotonic() - self.at <= self.reuse:
-                    return self.body, "current"
-                self._start()
-                return self.body, "stale"
+            if self.body is not None and time.monotonic() - self.at <= max(self.reuse, CURRENT_FLOOR):
+                return self.body, "current", None
             done = self._start()
+            if self.failed is not None:
+                return self.body, "failed", self.failed
+            if self.body is not None:
+                return self.body, "stale", None
         done.wait(self.wait)
         with self.lock:
             if self.body is not None:
-                return self.body, "current"
-            return self.failed, "drawing" if self.building is not None else "failed"
+                return self.body, "current", None
+            if self.failed is not None:
+                return None, "failed", self.failed
+            return None, "drawing", None
 
 
-def not_current(page):
-    """The last page, saying it is not yet current; the Refresh header reloads it."""
+def as_last_read(page, message):
+    """The last good page with a banner saying it is not current and why."""
     return page.replace('<div class="wrap">', '<div class="wrap">\n  <div class="banner">This is the Bridge '
-                        'as last read. The latest records are being read now, and this page reloads itself in '
-                        'a few seconds.</div>', 1)
+                        'as last read. %s</div>' % e(message), 1)
 
 
 def serve(home, config_dir, host, port, give_up_after=0):
@@ -1161,12 +1171,13 @@ def serve(home, config_dir, host, port, give_up_after=0):
         server_version = "Bridge"
         sys_version = ""
 
-        def _send(self, code, body, ctype, stale=False):
+        def _send(self, code, body, ctype, stale=None):
             data = body.encode("utf-8")
             self.send_response(code)
             self.send_header("Content-Type", ctype)
             if stale:
-                self.send_header("X-Bridge-Stale", "yes")
+                self.send_header("X-Bridge-Stale", stale)
+            if stale == "yes":
                 self.send_header("Refresh", "5")
             self.send_header("Content-Length", str(len(data)))
             self.send_header("Cache-Control", "no-store")
@@ -1183,25 +1194,32 @@ def serve(home, config_dir, host, port, give_up_after=0):
         def do_GET(self):
             path = urlsplit(self.path).path
             if path == "/":
-                page, state = cache.get()
+                page, state, failed = cache.get()
+                mark = {"stale": "yes", "drawing": "yes", "failed": "failed"}.get(state)
                 if state == "drawing":
                     page = render_error(_now(), "The Bridge is still reading the records. This page reloads "
                                         "itself in a few seconds.")
                 elif state == "stale":
-                    page = not_current(page)
-                self._send(200, page, "text/html; charset=utf-8", state in ("stale", "drawing"))
+                    page = as_last_read(page, "The latest records are being read now, and this page reloads "
+                                        "itself in a few seconds.")
+                elif state == "failed" and page is None:
+                    page, mark = render_error(_now(), failed), None
+                elif state == "failed":
+                    page = as_last_read(page, "Reading the latest records failed. " + failed)
+                self._send(200, page, "text/html; charset=utf-8", mark)
             elif path == "/healthz":
                 self._send(200, "ok\n", "text/plain; charset=utf-8")
             elif path == "/system-map":
                 self._send(200, system_map.page(), "text/html; charset=utf-8")
             elif path == "/system-map.json":
-                body, state = map_cache.get()
+                body, state, _ = map_cache.get()
                 if state == "drawing":
                     self._send(503, "the map is still being drawn\n", "text/plain; charset=utf-8")
-                elif state == "failed":
+                elif body is None:
                     self._send(503, "the map could not be read\n", "text/plain; charset=utf-8")
                 else:
-                    self._send(200, body, "application/json; charset=utf-8", state == "stale")
+                    self._send(200, body, "application/json; charset=utf-8",
+                               {"stale": "yes", "failed": "failed"}.get(state))
             else:
                 self._send(404, "not found\n", "text/plain; charset=utf-8")
 
@@ -1249,9 +1267,9 @@ def main(argv):
         print(cfg.get(args.key, DEFAULTS[args.key]))
         return 0
     if args.command == "render":
-        page, ok = build_page(args.home, args.config_dir)
-        sys.stdout.write(page)
-        return 0 if ok else 1
+        page, failed = build_page(args.home, args.config_dir)
+        sys.stdout.write(page if failed is None else render_error(_now(), failed))
+        return 0 if failed is None else 1
     serve(args.home, args.config_dir, args.host, args.port, args.give_up_after)
     return 0
 

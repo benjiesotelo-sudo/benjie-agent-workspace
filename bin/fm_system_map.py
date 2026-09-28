@@ -71,7 +71,9 @@ lights the checks as a group), and the page fetches the map every REFRESH
 seconds. The Bridge answers from the last finished map and rebuilds it in the
 background (Cache), so a slow build never holds a request; a map older than
 the reuse window comes marked stale, and the page draws it as not yet live,
-keeps it out of What changed, and fetches again in a few seconds. When a fetch fails
+keeps it out of What changed, and fetches again in a few seconds; one kept
+because the latest read failed comes marked failed, and the page says so and
+tries again at the next minute. When a fetch fails
 the page names the step that failed: reaching the Bridge, the Bridge's own
 answer, reading the data, or drawing it.
 
@@ -1685,14 +1687,15 @@ var retry=null;
 function say(t){document.getElementById('stamp').textContent=t;}
 function why(e){return fit(e&&e.message?(e.name&&e.name!=='Error'?e.name+': ':'')+e.message:e,140);}
 function load(){
-  var step='reach',code=0,stale=false;clearTimeout(retry);
+  var step='reach',code=0,stale=null;clearTimeout(retry);
   fetch('system-map.json',{cache:'no-store'}).then(function(r){
-    if(r.ok){step='read';stale=r.headers.get('X-Bridge-Stale')==='yes';return r.json();}
+    if(r.ok){step='read';stale=r.headers.get('X-Bridge-Stale');return r.json();}
     step='serve';code=r.status;return r.text().then(function(t){throw new Error(t.trim().split('\n')[0]||'no reason given');});
   }).then(function(d){
     step='draw';data=d;
-    say(stale?d.stamp+', not yet live: the Bridge is reading the latest records; trying again in a few seconds':d.stamp);
-    draw();if(!stale)changes();notices();if(stale)retry=setTimeout(load,5000);
+    say(stale==='yes'?d.stamp+', not yet live: the Bridge is reading the latest records; trying again in a few seconds':
+      stale?d.stamp+', not live: reading the latest records failed; trying again in a minute':d.stamp);
+    draw();if(!stale)changes();notices();if(stale==='yes')retry=setTimeout(load,5000);
     if(tourAt>=0)showHop(tourAt);
     if(selected){if(byId[selected])open(selected);else closeSheet();}
   }).catch(function(e){
@@ -1791,7 +1794,7 @@ class Cache(bridge.Cache):
     """
 
     def __init__(self, home, config_dir, reuse, wait=8.0):
-        super().__init__(lambda: (json.dumps(build(home, config_dir)), True), reuse, wait)
+        super().__init__(lambda: (json.dumps(build(home, config_dir)), None), reuse, wait)
 
 
 def main(argv):
