@@ -1,0 +1,22 @@
+w1 space benjie-agent-workspace
+w1:p1 window 
+w1:p2 window my notes
+w1:t1 tab 1
+w1:t2 tab scratch
+w2 space 2ndmate-alpha-mate
+w2:p1 window 
+w2:p2 window fm-a1
+w2:t1 tab 1
+w2:t2 tab fm-a1
+w3 space └ q1 · p:urXKPBo5LgWV2rrMCPavcQ
+w3:p1 window 
+w3:t1 tab 1
+w4 space firstmate/q9 · p:abcdefghijklmnopqrstuv
+w4:p1 window 
+w4:t1 tab 1
+w5 space firstmate
+w5:p1 window 
+w5:t1 tab 1
+w6 space controls
+w6:p1 window 
+w6:t1 tab 1

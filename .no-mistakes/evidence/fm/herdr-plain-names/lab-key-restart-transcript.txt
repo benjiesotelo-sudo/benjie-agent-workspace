@@ -1,0 +1,9 @@
+lab key config passes herdr config check
+names: 6 set, 0 refused
+before restart: [{"label":"benjie-agent-workspace","name":"Denver"},{"label":"2ndmate-alpha-mate","name":"Alpha"}]
+after lab Herdr restart: [{"label":"benjie-agent-workspace","name":null},{"label":"2ndmate-alpha-mate","name":null}]
+pressing Ctrl+B then Alt+N in an attached client...
+after the key: [{"label":"benjie-agent-workspace","name":null},{"label":"2ndmate-alpha-mate","name":null}]
+windows: [{"pane_id":"w1:p1","who":null,"job":null},{"pane_id":"w2:p1","who":null,"job":null}]
+--- output of the names command the key ran ---
+(no key.log: the key did not run)

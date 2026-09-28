@@ -1,0 +1,40 @@
+$ FM_HOME=<lab home> FM_MC_HERDR="fm-herdr-lab.sh run <lab>" bin/fm-mission-control.sh names
+set: window w1:p1 shows who Denver
+set: window w1:p1 shows job first mate
+set: window w2:p1 shows who Alpha
+set: window w2:p1 shows job second mate
+set: window w2:p2 shows who Alpha's intern
+set: window w2:p2 shows job Build chapter four
+set: window w3:p1 shows who Denver's intern
+set: window w3:p1 shows job Print the handouts
+set: space w1 (benjie-agent-workspace) shows Denver
+set: space w2 (2ndmate-alpha-mate) shows Alpha
+set: space w3 (└ q1 · p:urXKPBo5LgWV2rrMCPavcQ) shows Denver's intern · Print the handouts
+set: space w4 (firstmate/q9 · p:abcdefghijklmnopqrstuv) shows q9
+set: space w5 (firstmate) shows Denver's interns
+set: space w6 (controls) shows Controls
+names: 14 set, 0 refused
+(exit 0)
+
+$ bin/fm-mission-control.sh names   # second pass
+names: every name already shows
+(exit 0)
+
+== display values now ==
+space  benjie-agent-workspace  ->  name=Denver
+space  2ndmate-alpha-mate  ->  name=Alpha
+space  └ q1 · p:urXKPBo5LgWV2rrMCPavcQ  ->  name=Denver's intern · Print the handouts
+space  firstmate/q9 · p:abcdefghijklmnopqrstuv  ->  name=q9
+space  firstmate  ->  name=Denver's interns
+space  controls  ->  name=Controls
+window w1:p1 label=  ->  who=Denver | job=first mate
+window w1:p2 label=my notes  ->  who=<none> | job=<none>
+window w2:p1 label=  ->  who=Alpha | job=second mate
+window w2:p2 label=fm-a1  ->  who=Alpha's intern | job=Build chapter four
+window w3:p1 label=  ->  who=Denver's intern | job=Print the handouts
+window w4:p1 label=  ->  who=<none> | job=<none>
+window w5:p1 label=  ->  who=<none> | job=<none>
+window w6:p1 label=  ->  who=<none> | job=<none>
+
+== every space/tab/window id and name unchanged (nothing renamed, moved, closed or created) ==
+screenshots captured
