@@ -2,7 +2,7 @@
 # fm-mission-control-web.sh - Mission Control's public page, a static snapshot anyone can open.
 #
 # The public page shows the Office, Calendar, Projects and Team views to any
-# visitor; the Tasks, Approvals, Memory, Docs and System tabs show a lock and are
+# visitor; the Tasks, Approvals, Memory, Docs, System and Controls tabs show a lock and are
 # never written into the page. It is built from this home's records by
 # bin/fm_mission_control_web.py, which owns what the snapshot may contain (an
 # allow-list: public names, working or asleep, per-project counts, per-day

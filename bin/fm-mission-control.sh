@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# fm-mission-control.sh - Mission Control, the crew as a live read-only office.
+# fm-mission-control.sh - Mission Control, the crew as a live office, read-only but for the merge switch.
 #
 # Mission Control draws the whole crew as an animated pixel-art office, plus a
 # task board, a card per project, the decisions waiting on the captain, a
