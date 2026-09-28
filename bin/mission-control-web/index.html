@@ -21,6 +21,7 @@
     <button type="button" data-view="memory" data-locked="true">7 Memory<svg class="lock" viewBox="0 0 12 14" aria-label="locked"><path d="M3 6V4a3 3 0 0 1 6 0v2" fill="none" stroke="currentColor" stroke-width="1.6"/><rect x="1" y="6" width="10" height="7.5" rx="1.5" fill="currentColor"/></svg></button>
     <button type="button" data-view="docs" data-locked="true">8 Docs<svg class="lock" viewBox="0 0 12 14" aria-label="locked"><path d="M3 6V4a3 3 0 0 1 6 0v2" fill="none" stroke="currentColor" stroke-width="1.6"/><rect x="1" y="6" width="10" height="7.5" rx="1.5" fill="currentColor"/></svg></button>
     <button type="button" data-view="system" data-locked="true">9 System<svg class="lock" viewBox="0 0 12 14" aria-label="locked"><path d="M3 6V4a3 3 0 0 1 6 0v2" fill="none" stroke="currentColor" stroke-width="1.6"/><rect x="1" y="6" width="10" height="7.5" rx="1.5" fill="currentColor"/></svg></button>
+    <button type="button" data-view="controls" data-locked="true">0 Controls<svg class="lock" viewBox="0 0 12 14" aria-label="locked"><path d="M3 6V4a3 3 0 0 1 6 0v2" fill="none" stroke="currentColor" stroke-width="1.6"/><rect x="1" y="6" width="10" height="7.5" rx="1.5" fill="currentColor"/></svg></button>
     <span class="clock" id="clock"></span>
   </nav>
 
@@ -38,6 +39,17 @@
               <button type="button" id="talk-nice">Nice!</button>
               <button type="button" id="talk-more">What else?</button>
               <button type="button" id="talk-chat" class="locked" aria-disabled="true">Open chat<svg class="lock" viewBox="0 0 12 14" aria-label="locked"><path d="M3 6V4a3 3 0 0 1 6 0v2" fill="none" stroke="currentColor" stroke-width="1.6"/><rect x="1" y="6" width="10" height="7.5" rx="1.5" fill="currentColor"/></svg></button>
+            </div>
+          </div>
+          <div class="talk" id="thing" role="dialog" aria-labelledby="thing-name" hidden>
+            <div class="bubble">
+              <div class="who" id="thing-name"></div>
+              <p id="thing-line"></p>
+            </div>
+            <div class="choices">
+              <button type="button" id="thing-open"><span id="thing-open-label">Open</span><svg class="lock" id="thing-lock" viewBox="0 0 12 14" aria-label="locked" hidden><path d="M3 6V4a3 3 0 0 1 6 0v2" fill="none" stroke="currentColor" stroke-width="1.6"/><rect x="1" y="6" width="10" height="7.5" rx="1.5" fill="currentColor"/></svg></button>
+              <button type="button" id="thing-more">What else?</button>
+              <button type="button" id="thing-bye">Bye</button>
             </div>
           </div>
         </div>
@@ -87,7 +99,7 @@
   </main>
 
   <footer class="bar keys">
-    <span>1-9 switch view &nbsp; tap someone to say hello &nbsp; p pause &nbsp; read only</span>
+    <span>0-9 switch view &nbsp; tap someone or something to say hello &nbsp; p pause &nbsp; read only</span>
     <span class="updated" id="updated">loading</span>
   </footer>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>

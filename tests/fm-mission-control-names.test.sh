@@ -149,11 +149,11 @@ fresh_herdr
 OUT=$(names) || fail "names failed: $OUT"
 
 for pair in "w1|Denver" "w2|Alpha" "w3|Denver's intern · Print the handouts" "w4|Mission Control" \
-  "w5|Controls" "w6|scratch" "w7|gone-job" "w8|Denver's interns" "w9|2ndmate-unknown-mate"; do
+  "w5|controls" "w6|scratch" "w7|gone-job" "w8|Denver's interns" "w9|2ndmate-unknown-mate"; do
   id=${pair%%|*} want=${pair#*|}
   [ "$(space_name "$id")" = "$want" ] || fail "space $id should show '$want', shows '$(space_name "$id")'"
 done
-pass "every space shows its plain name: the first mate's, a mate's, a helper space's intern and job, the screens'"
+pass "every space shows its plain name: the first mate's, a mate's, a helper space's intern and job, Mission Control's, and a left-over controls space its own"
 
 for triple in "w1:p1|Denver|first mate" "w2:p1|Alpha|second mate" "w2:p2|Alpha's intern|Build chapter four" \
   "w3:p1|Denver's intern|Print the handouts"; do

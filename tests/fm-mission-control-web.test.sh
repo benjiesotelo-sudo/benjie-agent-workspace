@@ -3,7 +3,8 @@
 # over bin/fm_mission_control_web.py): a fixture home whose records are full of
 # private strings builds a folder that contains none of them; the snapshot holds
 # exactly the allow-listed fields with the right counts, public names and
-# positional keys; the locked views are never written into the page; publish
+# positional keys; the office's things say only public counts; the locked
+# views, the Controls tab's switch included, are never written into the page; publish
 # commits and pushes only when the folder changed, keeps an unchanged snapshot's
 # time until the heartbeat, retries a commit it could not push, leaves a plain
 # folder alone and refuses a checkout of another repository; install writes a
@@ -95,6 +96,11 @@ for tool in tmux herdr; do
   printf '#!/usr/bin/env bash\nexit 1\n' > "$FAKEBIN/$tool"
   chmod +x "$FAKEBIN/$tool"
 done
+# The merge switch is ON in this home; the page never carries it.
+mkdir -p "$HOME_DIR/.claude"
+printf '{"permissions": {"allow": ["Bash(bin/fm-pr-merge.sh *)", "Bash(%s/bin/fm-pr-merge.sh *)"]}}\n' "$HOME_DIR" \
+  > "$HOME_DIR/.claude/settings.local.json"
+printf '{"state": "on", "at": 1790000000}\n' > "$HOME_DIR/state/merge-switch.json"
 AGENTS="$TMP_ROOT/agents.json"
 jq -n --arg home "$HOME_DIR" --arg mate "$MATE" --arg w1 "$TMP_ROOT/wt-secret-one" '
   {result: {type: "agent_list", agents: [
@@ -122,11 +128,12 @@ HITS=$(grep -ril 'secret' "$OUT" || true)
 for needle in '@' 'http' 'example.' '/Users' "$TMP_ROOT" 'zz-' 'octo/' 'repo'; do
   grep -qF -- "$needle" "$OUT/snapshot.json" && fail "the snapshot carries no emails, links, paths, ids or repository names: $needle"
 done
-pass "a home full of private titles, notes, paths, emails, links, ids, repository names and charters leaves none of them on the page"
+grep -Eqi 'merge|switch|permission|allow|1790000000' "$OUT/snapshot.json" && fail "the snapshot never carries the merge switch"
+pass "a home full of private titles, notes, paths, emails, links, ids, repository names, charters and a merge switch leaves none of them on the page"
 
 SNAP=$(cat "$OUT/snapshot.json")
 q() { jq -r "$1" <<<"$SNAP"; }
-[ "$(q '[keys[]] | join(",")')" = "agents,calendar,events,every_minutes,generated_at,heartbeat_minutes,office,projects,schema,today" ] \
+[ "$(q '[keys[]] | join(",")')" = "agents,calendar,events,every_minutes,generated_at,heartbeat_minutes,office,projects,schema,things,today" ] \
   || fail "the snapshot's top level is exactly the allow-list, got $(q '[keys[]] | join(",")')"
 [ "$(q '[.agents[] | keys[]] | unique | join(",")')" = "activity,color,hair,key,kind,lead,name,projects,role,state" ] \
   || fail "an agent carries only the allow-listed fields, got $(q '[.agents[] | keys[]] | unique | join(",")')"
@@ -135,6 +142,7 @@ q() { jq -r "$1" <<<"$SNAP"; }
 [ "$(q '[.projects[].counts | keys[]] | unique | join(",")')" = "done_month,done_week,in_flight,waiting" ] \
   || fail "a project's counts are waiting, in flight, done this week and done this month"
 [ "$(q '[.calendar.days[] | keys[]] | unique | join(",")')" = "date,done,due" ] || fail "a calendar day is only its date and counts"
+[ "$(q '[.things[] | keys[]] | unique | join(",")')" = "lines,name,view" ] || fail "an office thing is only its view, name and lines"
 [ "$(q '[.agents[].key, .projects[].key] | map(test("^[ap][0-9]+$")) | all')" = true ] || fail "every key is a position, never a record id"
 [ "$(q '[.agents[].state] | map(. == "working" or . == "asleep") | all')" = true ] || fail "a state is working or asleep"
 pass "the snapshot's shape is exactly the allow-list, with positional keys"
@@ -171,6 +179,23 @@ grep -q 'University\|clients' "$OUT/snapshot.json" && fail "a scope naming an in
 [ "$(q '.calendar | "\(.from) \(.to)"')" = "2026-07-01 2026-10-31" ] || fail "the calendar spans two months back to the end of next month"
 pass "the snapshot names the crew publicly and counts the right items per project and per day"
 
+# --- what the office's things say -------------------------------------------
+[ "$(q '.things | map("\(.view)=\(.name)") | join(",")')" = \
+  "tasks=Corkboard,calendar=Wall calendar,memory=Bookshelf,system=Server rack,approvals=Inbox,team=Alumni wall" ] \
+  || fail "every tappable thing in the office has its box, got $(q '.things | map(.view) | join(",")')"
+thing() { q ".things[] | select(.view == \"$1\") | .lines | join(\"|\")"; }
+[ "$(thing tasks)" = "The task board: 3 waiting on the captain, 1 in flight.|4 jobs done this month across the crew.|Only the captain can open the board." ] \
+  || fail "the corkboard counts what waits and what is in flight, got $(thing tasks)"
+[ "$(thing calendar)" = "The wall calendar: 4 jobs done this month.|2 jobs due later this month.|Day by day, it shows what's done and what's due." ] \
+  || fail "the wall calendar counts this month, got $(thing calendar)"
+[ "$(thing approvals)" = "The inbox: 3 things wait on the captain.|Only the captain answers them." ] \
+  || fail "the inbox counts what waits on the captain, got $(thing approvals)"
+[ "$(thing team)" = "The alumni wall, for mates who have retired.|The crew today: Denver, 1 second mate and 4 helpers." ] \
+  || fail "the alumni wall counts the crew by public names only, got $(thing team)"
+[ "$(q '[.things[].lines[] | length <= 80] | all')" = true ] || fail "every line a thing says is short"
+[ "$(q '[.things[] | .lines | length >= 2 and length <= 3] | all')" = true ] || fail "a thing says two or three lines"
+pass "each office thing says one short public line about itself, with a What else? line or two"
+
 # --- locked views are never rendered ----------------------------------------
 # The built index.html is the page a visitor loads; parse it into its tabs,
 # views, controls and the Open chat button rather than matching its text.
@@ -180,7 +205,7 @@ from html.parser import HTMLParser
 class Page(HTMLParser):
     def __init__(self):
         super().__init__()
-        self.stack, self.tabs, self.views, self.controls, self.chat = [], [], [], [], None
+        self.stack, self.tabs, self.views, self.controls, self.chat, self.thing = [], [], [], [], None, []
     def handle_startendtag(self, tag, attrs):
         self.record(tag, dict(attrs))
     def handle_starttag(self, tag, attrs):
@@ -189,7 +214,7 @@ class Page(HTMLParser):
             self.stack.append((tag, a))
     def record(self, tag, a):
         if tag == "svg" and self.stack and self.stack[-1][0] == "button" and "lock" in (a.get("class") or "").split():
-            self.stack[-1][1]["lock"] = True
+            self.stack[-1][1]["lock"] = "hidden" if "hidden" in a else True
         if tag in ("form", "input", "textarea", "select", "a"):
             self.controls.append(tag)
         if tag == "section" and "view" in (a.get("class") or "").split():
@@ -202,6 +227,8 @@ class Page(HTMLParser):
             self.tabs.append(b)
         if b["id"] == "talk-chat":
             self.chat = b
+        if any(x.get("id") == "thing" for t, x in self.stack):
+            self.thing.append(b)
         return b
     def handle_endtag(self, tag):
         if any(t == tag for t, _ in self.stack):
@@ -210,24 +237,26 @@ class Page(HTMLParser):
 p = Page()
 with open(sys.argv[1], encoding="utf-8") as fh:
     p.feed(fh.read())
-print(json.dumps({"tabs": p.tabs, "views": p.views, "controls": p.controls, "chat": p.chat}))
+print(json.dumps({"tabs": p.tabs, "views": p.views, "controls": p.controls, "chat": p.chat, "thing": p.thing}))
 PY
 ) || fail "the built page parses"
 pg() { jq -r "$1" <<<"$PAGE"; }
-[ "$(pg '.tabs | map(.view) | join(",")')" = "office,tasks,approvals,projects,calendar,team,memory,docs,system" ] \
-  || fail "the tab bar holds all nine tabs in order, got $(pg '.tabs | map(.view) | join(",")')"
-[ "$(pg '[.tabs[] | select(.locked and .lock) | .view] | join(",")')" = "tasks,approvals,memory,docs,system" ] \
-  || fail "exactly Tasks, Approvals, Memory, Docs and System are locked and show a lock, got $(pg '[.tabs[] | select(.locked) | .view] | join(",")')"
+[ "$(pg '.tabs | map(.view) | join(",")')" = "office,tasks,approvals,projects,calendar,team,memory,docs,system,controls" ] \
+  || fail "the tab bar holds all ten tabs in order, got $(pg '.tabs | map(.view) | join(",")')"
+[ "$(pg '[.tabs[] | select(.locked and .lock == true) | .view] | join(",")')" = "tasks,approvals,memory,docs,system,controls" ] \
+  || fail "exactly Tasks, Approvals, Memory, Docs, System and Controls are locked and show a lock, got $(pg '[.tabs[] | select(.locked) | .view] | join(",")')"
 [ "$(pg '[.tabs[] | select(.locked != .lock)] | length')" = 0 ] || fail "a tab shows a lock exactly when it is locked"
 [ "$(pg '.views | join(",")')" = "view-office,view-projects,view-calendar,view-team,view-locked" ] \
   || fail "only Office, Projects, Calendar and Team render, and a locked tab opens the lock view, got $(pg '.views | join(",")')"
-for v in tasks approvals memory docs system; do
+for v in tasks approvals memory docs system controls; do
   [ "$(q "has(\"$v\")")" = false ] || fail "the snapshot holds nothing for $v"
 done
 [ "$(pg '.controls | length')" = 0 ] || fail "the public page has no form, link or control of any kind, got $(pg '.controls')"
 [ "$(pg '.chat | "\(.class | index("locked") != null) \(.disabled) \(.lock)"')" = "true true true" ] \
   || fail "a tapped agent's Open chat button is locked and disabled, got $(pg .chat)"
-pass "Tasks, Approvals, Memory, Docs and System are locked tabs with nothing behind them, Open chat is locked, and Office, Projects, Calendar and Team render"
+[ "$(pg '.thing | map("\(.id):\(.lock)") | join(",")')" = "thing-open:hidden,thing-more:false,thing-bye:false" ] \
+  || fail "a tapped thing's box has an Open button carrying a lock for owner-only views, What else? and Bye, got $(pg .thing)"
+pass "Tasks, Approvals, Memory, Docs, System and Controls are locked tabs with nothing behind them, Open chat is locked, and Office, Projects, Calendar and Team render"
 
 # --- an unchanged crew leaves the folder unchanged ---------------------------
 BEFORE=$(cat "$OUT/snapshot.json")

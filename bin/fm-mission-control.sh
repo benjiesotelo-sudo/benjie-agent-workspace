@@ -4,11 +4,13 @@
 # Mission Control draws the whole crew as an animated pixel-art office, plus a
 # task board, a card per project, the decisions waiting on the captain, a
 # week, month and year calendar, the crew as an org chart, a reader for the
-# crew's memory and documents, and the health of the machine and the crew's
-# plumbing, in one terminal pane; bin/fm_mission_control.py owns what it
-# reads, how the crew maps onto the office, and how frames are drawn. It is
-# read-only: it never writes a record, never sends keys or prompts to an
-# agent, and never starts or stops one.
+# crew's memory and documents, the health of the machine and the crew's
+# plumbing, and the captain's merge switch on a Controls tab, in one terminal
+# pane; bin/fm_mission_control.py owns what it reads, how the crew maps onto
+# the office, and how frames are drawn. It never writes a record, never sends
+# keys or prompts to an agent, and never starts or stops one; the one thing it
+# changes is the merge switch, when the captain turns it over on the Controls
+# tab (bin/fm_controls.py and bin/fm_merge_switch.py own that write).
 #
 # Commands:
 #   run                     draw the screen in this terminal until q
@@ -34,7 +36,8 @@
 #                           or without --agents from asking Herdr once;
 #                           --agents again adds a later look at the crew;
 #                           <v> is office, tasks, approvals, projects,
-#                           calendar, team, memory, docs, or system.
+#                           calendar, team, memory, docs, system, or
+#                           controls.
 #                           --readings is a saved set of System readings;
 #                           without it the system view reads this machine and
 #                           Herdr once, and the other views leave the system
@@ -42,9 +45,12 @@
 #                           first, as the terminal sends them, each shown
 #                           settled (q is ignored; answering Open chat, or a
 #                           tap on the Team view, runs `herdr agent focus` on
-#                           the agent's pane, as the live screen does)
+#                           the agent's pane, and Enter or a tap on the switch
+#                           on the Controls tab turns it over, as the live
+#                           screen does)
 #
-# Keys while running: 1-9 switch view, p pauses the animation, q quits,
+# Keys while running: 1-9 and 0 switch view (0 is Controls), p pauses the
+# animation, q quits,
 # up/down pick an agent in the team list and Enter has it stand up and talk;
 # on the Tasks, Projects, Calendar and System views Enter moves your Herdr view to the
 # agent picked in the office (`herdr agent focus`, navigation only). While an
@@ -65,9 +71,12 @@
 # one short line with the answers Open chat, What else? and Bye; Open chat moves
 # your Herdr view to its pane the same way, as does tapping a card or an
 # intern's line on the Team view, and a pane that has closed says so in one
-# line in the footer. A tap anywhere else ends the talk. Tapping a thing in the office
-# opens its view: the corkboard Tasks, the calendar Calendar, the bookshelf
-# Memory, the server rack System, the inbox Approvals and the alumni wall Team.
+# line in the footer. A tap anywhere else ends the talk. Tapping a thing in the
+# office opens the same box, with one short line saying what it is and the
+# answers Open <view>, What else? and Bye: the corkboard opens Tasks, the
+# calendar Calendar, the bookshelf Memory, the server rack System, the inbox
+# Approvals and the alumni wall Team. On the Controls tab a tap on the switch,
+# Enter or space turns it over.
 #
 # start, stop and status keep the mission-control workspace through
 # bin/fm-herdr-screen-lib.sh, whose header owns how a workspace is created,

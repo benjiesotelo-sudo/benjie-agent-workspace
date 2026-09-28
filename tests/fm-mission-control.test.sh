@@ -4,13 +4,15 @@
 # saved `herdr agent list`, asserting desks, working and asleep states, interns
 # beside the right person in charge, the second-floor sign at seven mates, the
 # inbox count, a tapped agent standing up to talk (its lines from its records,
-# its answers, and what ends a talk), the office things opening their views,
+# its answers, and what ends a talk), the office things saying what they are
+# in the same box and opening their views,
 # the activity column keeping sleep and wake out, the task columns, the project cards, the Approvals groups, the
 # calendar's week, month and year (completions, due dates, what always runs,
 # the tappable control bar), the Team org chart, the Memory and Docs lists
 # with their Markdown reader, the System view's dots, overall line and
 # office rack sign from saved readings, and the names map renaming projects
-# and second mates in every view; then the live screen in a
+# and second mates in every view, and the Controls tab turning the merge
+# switch over; then the live screen in a
 # pseudo-terminal, which must redraw only what changed, pick project cards
 # with up/down, pick, filter and scroll Memory and Docs pages, and restore the
 # terminal on q and on SIGTERM. The record parsers themselves are covered by
@@ -427,25 +429,89 @@ for at in "6 20" "17 22"; do
 done
 pass "an agent's lines are its work now, its recent finishes and a fun fact for its project"
 
-# The things in the office open their views: the corkboard Tasks, the
-# calendar, the bookshelf Memory, the rack System, the inbox Approvals and the
-# alumni wall Team; the bare floor opens nothing.
+# The things in the office talk too: a tap opens a box beside the thing with
+# one short line saying what it is and the answers Open <view>, What else?
+# and Bye; Open opens the corkboard's Tasks, the calendar's Calendar, the
+# bookshelf's Memory, the rack's System, the inbox's Approvals and the alumni
+# wall's Team. The bare floor opens nothing.
 for size in 132x44 170x50; do
-  for want in "10 3|team" "28 3|tasks" "63 3|calendar" "78 3|memory" "90 10|system" "12 29|approvals" \
-    "20 30|approvals" "45 26|office"; do
-    IFS='|' read -r at view <<<"$want"
+  for want in "10 3|team|Alumni wall|Team" "28 3|tasks|Corkboard|Tasks" "63 3|calendar|Wall calendar|Calendar" \
+    "78 3|memory|Bookshelf|Memory" "90 10|system|Server rack|System" "12 29|approvals|Inbox|Approvals" \
+    "20 30|approvals|Inbox|Approvals"; do
+    IFS='|' read -r at view name tab <<<"$want"
     # shellcheck disable=SC2086
     V=$(mct "$HOME_DIR" frame --agents "$AGENTS2" --size "$size" --keys "$(tap_at $at)" --format json) \
       || fail "a tap at $at failed"
-    [ "$(jq -r .view <<<"$V")" = "$view" ] || fail "at $size a tap at $at opens $view, got $(jq -r .view <<<"$V")"
+    [ "$(jq -r '"\(.view) \(.talk.thing) \(.talk.answers | join(","))"' <<<"$V")" = "office $view Open $tab,What else?,Bye" ] \
+      || fail "at $size a tap at $at opens the $view thing's box, got $(jq -c '[.view, .talk]' <<<"$V")"
+    [ "$(jq -r '.talk.line == .talk.lines[0] and .talk.kinds[0] == "what"' <<<"$V")" = true ] \
+      || fail "at $size the $view thing first says what it is, got $(jq -r .talk.line <<<"$V")"
     [ -z "$(focused)" ] || fail "at $size a tap on a thing moves no pane"
+    # shellcheck disable=SC2086
+    T=$(mct "$HOME_DIR" frame --agents "$AGENTS2" --size "$size" --keys "$(tap_at $at)") || fail "thing text failed"
+    grep -q "$name" <<<"$T" || fail "at $size the box names the $name"
+    grep -q " Open $tab " <<<"$T" || fail "at $size the box shows Open $tab"
+    # shellcheck disable=SC2086
+    O=$(mct "$HOME_DIR" frame --agents "$AGENTS2" --size "$size" --keys "$(tap_at $at)$(tap_on "$T" " Open $tab ")" \
+      --format json) || fail "open answer failed"
+    [ "$(jq -r '"\(.view) \(.talk)"' <<<"$O")" = "$view null" ] || fail "at $size Open $tab opens $view and closes the box"
   done
-  B=$(mct "$HOME_DIR" frame --agents "$AGENTS2" --size "$size" --keys "$(tap_at 28 3)") || fail "corkboard tap failed"
-  grep -q 'WAITING ON YOU' <<<"$B" || fail "at $size the corkboard opens the task board"
+  F=$(mct "$HOME_DIR" frame --agents "$AGENTS2" --size "$size" --keys "$(tap_at 45 26)" --format json)
+  [ "$(jq -r '"\(.view) \(.talk)"' <<<"$F")" = "office null" ] || fail "at $size the bare floor opens nothing"
+  T=$(mct "$HOME_DIR" frame --agents "$AGENTS2" --size "$size" --keys "$(tap_at 28 3)") || fail "corkboard tap failed"
+  B=$(mct "$HOME_DIR" frame --agents "$AGENTS2" --size "$size" --keys "$(tap_at 28 3)$ENTER") || fail "corkboard enter failed"
+  grep -q 'WAITING ON YOU' <<<"$B" || fail "at $size Enter on the corkboard's first answer opens the task board"
+  W=$(mct "$HOME_DIR" frame --agents "$AGENTS2" --size "$size" --keys "$(tap_at 28 3)$(tap_on "$T" ' What else? ')" \
+    --format json)
+  [ "$(jq -r '"\(.view) \(.talk.line == .talk.lines[1]) \(.talk.answer)"' <<<"$W")" = "office true What else?" ] \
+    || fail "at $size What else? has the thing say its next line, got $(jq -c .talk <<<"$W")"
+  for end in "$(tap_on "$T" ' Bye ')" "$ESC" "$(tap_at 45 26)"; do
+    E=$(mct "$HOME_DIR" frame --agents "$AGENTS2" --size "$size" --keys "$(tap_at 28 3)$end" --format json)
+    [ "$(jq -r '"\(.view) \(.talk)"' <<<"$E")" = "office null" ] || fail "at $size Bye, Esc or a tap elsewhere closes the box"
+  done
+  E=$(mct "$HOME_DIR" frame --agents "$AGENTS2" --size "$size" --keys "$(tap_at 28 3)$(tap_at 28 3)" --format json)
+  [ "$(jq -r .talk.thing <<<"$E")" = tasks ] || fail "at $size a second tap on the same thing keeps its box"
+  E=$(mct "$HOME_DIR" frame --agents "$AGENTS2" --size "$size" --keys "$(tap_at 28 3)$(tap_at 12 29)" --format json)
+  [ "$(jq -r .talk.thing <<<"$E")" = approvals ] || fail "at $size a tap on another thing opens its box instead"
+  E=$(mct "$HOME_DIR" frame --agents "$AGENTS2" --size "$size" --keys "$(tap_at 28 3)$(tap_at 6 20)" --format json)
+  [ "$(jq -r '"\(.talk.key) \(.talk.thing)"' <<<"$E")" = "mate:alpha-mate null" ] \
+    || fail "at $size a tap on an agent talks to them instead"
   V=$(mct "$HOME_DIR" frame --agents "$AGENTS2" --size "$size" --view team --keys "$(tap_at 10 3)" --format json)
-  [ "$(jq -r .view <<<"$V")" = team ] || fail "at $size the office's things take no taps on the Team view"
+  [ "$(jq -r '"\(.view) \(.talk)"' <<<"$V")" = "team null" ] || fail "at $size the office's things take no taps on the Team view"
 done
-pass "each thing in the office opens its view when tapped"
+pass "each thing in the office says what it is in a box, and its Open answer opens its view"
+
+# What each thing says comes only from what its own view shows.
+thing_lines() {  # <tap col> <tap row> - every line the tapped thing may say, one per line
+  # shellcheck disable=SC2046
+  mc "$HOME_DIR" frame --agents "$AGENTS2" --readings "$1" --keys "$(tap_at "$2" "$3")" --format json | jq -r '.talk.lines[]'
+}
+jq -n '{}' > "$TMP_ROOT/no-readings.json"
+L=$(thing_lines "$TMP_ROOT/no-readings.json" 28 3)
+[ "$L" = $'The task board: 4 waiting on you, 1 in flight.\n5 jobs queued, 3 jobs done this month.\nEvery job pinned up in four columns, oldest first.' ] \
+  || fail "the corkboard counts the task board's columns, got: $L"
+L=$(thing_lines "$TMP_ROOT/no-readings.json" 12 29)
+[ "$L" = $'The inbox: 4 decisions wait on you.\nThe oldest has waited 22 days.\nYou answer them in chat, never here.' ] \
+  || fail "the inbox counts what waits on you and the oldest one's age, got: $L"
+L=$(thing_lines "$TMP_ROOT/no-readings.json" 63 3)
+head -1 <<<"$L" | grep -qx 'The wall calendar. Today is Sunday 20 September.' || fail "the calendar says today, got: $L"
+L=$(thing_lines "$TMP_ROOT/no-readings.json" 78 3)
+sed -n 2p <<<"$L" | grep -Eqx '[0-9]+ pages? of long-term memory, [0-9]+ days? in the journal.' \
+  || fail "the bookshelf counts its pages, got: $L"
+L=$(thing_lines "$TMP_ROOT/no-readings.json" 10 3)
+[ "$L" = $'The alumni wall. No one has retired while I\'ve watched.\nThe crew: Denver, 1 second mate and 5 interns.\nRetired mates\' photos go up here, one frame each.' ] \
+  || fail "the alumni wall counts who retired and the crew, got: $L"
+L=$(thing_lines "$TMP_ROOT/no-readings.json" 90 10)
+head -1 <<<"$L" | grep -q '^The server rack: ' || fail "the server rack says the System view's overall line, got: $L"
+ALL=$(for at in "10 3" "28 3" "63 3" "78 3" "90 10" "12 29"; do
+  # shellcheck disable=SC2086
+  thing_lines "$TMP_ROOT/no-readings.json" $at
+done)
+while IFS= read -r ln; do
+  [ "${#ln}" -le 80 ] || fail "a thing's line is short: $ln"
+done <<<"$ALL"
+grep -Eqi 'handout|chapter|module|deck|/|zz-|\.md' <<<"$ALL" && fail "a thing never says a task title or a path: $ALL"
+pass "each thing's lines come only from its view: counts, today, pages, the overall health and the crew"
 
 # Waking up and falling asleep stay on the desks: a burst of flips between
 # looks adds nothing to the activity column, while real events still show.
@@ -1210,6 +1276,54 @@ S=$(mc "$HOME_DIR" frame --agents "$AGENTS" --size 80x24)
 [ "$(printf '%s\n' "$S" | grep -c .)" = 1 ] || fail "a too-small pane gets exactly one line"
 grep -q 'Make this pane bigger' <<<"$S" || fail "a too-small pane asks for more room"
 pass "the tab bar shows all nine views and a too-small pane gets one line"
+
+# --- the Controls tab ---------------------------------------------------------
+# The one place in Mission Control that changes anything: the merge switch,
+# turned over on a tap, Enter or space, in a copy of the home.
+CH="$TMP_ROOT/controls-home"
+cp -R "$HOME_DIR" "$CH"
+CH=$(cd "$CH" && pwd)
+CSET="$CH/.claude/settings.local.json"
+for size in 132x44 170x50; do
+  head -1 <<<"$(mc "$CH" frame --agents "$AGENTS" --size "$size")" | grep -q ' 9 System .* 0 Controls ' \
+    || fail "at $size the tab bar shows all ten views, Controls last"
+done
+[ "$(mc "$CH" frame --agents "$AGENTS" --keys 0 --format json | jq -r .view)" = controls ] || fail "key 0 opens Controls"
+T=$(mc "$CH" frame --agents "$AGENTS" --size 170x50)
+C=$(mc "$CH" frame --agents "$AGENTS" --keys "$(tap_on "$T" ' 0 Controls ')" --size 170x50 --format json)
+[ "$(jq -r .view <<<"$C")" = controls ] || fail "tapping the Controls tab opens it"
+T=$(mc "$CH" frame --agents "$AGENTS" --view controls) || fail "the Controls tab failed"
+grep -q 'Let Denver merge green pull requests on the workspace: OFF' <<<"$T" || fail "Controls shows the switch OFF"
+grep -q 'once every check passes and there are no conflicts' <<<"$T" || fail "Controls says what ON allows, in Controls' own words"
+grep -q 'Never changed yet; it starts OFF.' <<<"$T" || fail "Controls says when the switch last changed"
+grep -q 'tap the switch or Enter: turn it on' <<<"$T" || fail "the footer says what a tap does"
+[ ! -e "$CSET" ] || fail "showing Controls writes nothing"
+for view in office tasks approvals projects calendar team memory docs system; do
+  mc "$CH" frame --agents "$AGENTS" --view "$view" --keys "$ENTER $ENTER" >/dev/null || fail "keys on $view failed"
+done
+[ ! -e "$CSET" ] || fail "Enter and space change nothing on any other view"
+C=$(mc "$CH" frame --agents "$AGENTS" --view controls --keys "$ENTER") || fail "Enter on Controls failed"
+grep -q 'Turned ON: Denver may now merge green pull requests on the workspace.' <<<"$C" || fail "Enter turns it ON and says so"
+[ "$(jq -r '.permissions.allow | length' "$CSET")" = 2 ] || fail "ON writes the switch's two rules through its owner"
+[ "$(mc "$CH" frame --agents "$AGENTS" --view controls --format json | jq -r .controls.state)" = on ] \
+  || fail "Controls reads the switch back ON"
+T=$(mc "$CH" frame --agents "$AGENTS" --view controls)
+grep -q 'workspace: ON' <<<"$T" || fail "Controls shows ON"
+[ "$(mc "$CH" frame --agents "$AGENTS" --view controls --keys "$(tap_on "$T" 'the switch is')" --format json \
+  | jq -r .controls.state)" = off ] || fail "a tap on the switch turns it OFF"
+[ "$(jq -r '.permissions.allow | length' "$CSET")" = 0 ] || fail "OFF removes the two rules"
+[ "$(mc "$CH" frame --agents "$AGENTS" --view controls --keys "$(tap_on "$T" 'LAST CHANGED')" --format json \
+  | jq -r .controls.state)" = off ] || fail "a tap beside the switch changes nothing"
+[ "$(mc "$CH" frame --agents "$AGENTS" --view controls --keys ' ' --format json | jq -r .controls.state)" = on ] \
+  || fail "space turns it over too"
+PYTHONPATH="$ROOT/bin" python3 -c 'import sys, fm_merge_switch as m; m.switch(sys.argv[1], False)' "$CH"
+grep -q 'workspace: OFF' <<<"$(mc "$CH" frame --agents "$AGENTS" --view controls)" \
+  || fail "a change made elsewhere shows on Controls"
+printf '{not json' > "$CSET"
+C=$(mc "$CH" frame --agents "$AGENTS" --view controls --keys "$ENTER") || fail "Enter on a bad file failed"
+grep -q 'CANNOT BE READ' <<<"$C" || fail "an unreadable settings file shows plainly"
+[ "$(cat "$CSET")" = '{not json' ] || fail "a tap on an unreadable file leaves it untouched"
+pass "the Controls tab shows the merge switch in Controls' words and is the one place a tap or Enter changes it"
 
 # --- the calendar ----------------------------------------------------------
 
@@ -2055,6 +2169,21 @@ screen "$TMP_ROOT/pausetap" 4 | grep -qF ' What else? ' && fail "a paused Bye en
 screen "$TMP_ROOT/pausetap" 4 | grep -q 'talking' && fail "after a paused Bye the desk no longer reads talking"
 screen "$TMP_ROOT/pausetap" 4 | grep -q 'working' || fail "after a paused Bye the first mate is back at work"
 pass "a paused office still ends a talk on Bye"
+
+# On the live screen a tap on the corkboard opens its box and Open Tasks the
+# board; key 0 then opens Controls, where Enter turns the switch over.
+rm -f "$CSET"
+OPENT=$(tap_on "$(mc "$CH" frame --agents "$AGENTS" --keys "$(tap_at 28 3)")" ' Open Tasks ')
+code=$(DRIVE_HOME="$CH" drive "$TMP_ROOT/livething" "3=$(tap_at 28 3),5=$OPENT,7=0,9=$ENTER,11=q") \
+  || fail "the pty driver failed"
+[ "$code" = 0 ] || fail "the thing and Controls run quits cleanly, got exit $code"
+screen "$TMP_ROOT/livething" 2 | grep -q 'The task board: ' || fail "a live tap on the corkboard opens its box"
+screen "$TMP_ROOT/livething" 3 | grep -q 'WAITING ON YOU' || fail "the live Open Tasks opens the task board"
+screen "$TMP_ROOT/livething" 4 | grep -q 'merge green pull requests on the workspace: OFF' || fail "key 0 opens Controls live"
+screen "$TMP_ROOT/livething" 5 | grep -q 'Turned ON: Denver' || fail "Enter turns the switch over live and says so"
+screen "$TMP_ROOT/livething" 5 | grep -q 'workspace: ON' || fail "the live Controls tab reads the switch back ON"
+[ "$(jq -r '.permissions.allow | length' "$CSET")" = 2 ] || fail "the live turn writes the switch through its owner"
+pass "live, a thing's box opens its view and Controls turns the switch over on Enter"
 
 # A pane that stops working keeps its desk lit for SLEEP_AFTER seconds, and
 # the team list agrees with the desk.

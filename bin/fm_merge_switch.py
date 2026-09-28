@@ -8,8 +8,9 @@ The switch is two Claude Code allow rules in the home's untracked
 
 ON is both rules present, OFF is neither, and "partly on" is exactly one, which
 still lets one spelling of the merge command through. bin/fm_controls.py is the
-one place that changes it, when the captain taps the switch; Mission Control's
-System view only reads it.
+one place that changes it, when the captain taps the switch on Mission
+Control's Controls tab or on the Controls screen; Mission Control's System view
+only reads it.
 
 READ. read() parses the file each time it is called. A missing file is OFF. A
 file that is not valid JSON, or whose top level, permissions or

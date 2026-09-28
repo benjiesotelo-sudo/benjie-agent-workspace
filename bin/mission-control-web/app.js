@@ -29,8 +29,9 @@
 
   // ---------- views and locks ----------
   const PUBLIC = ["office", "projects", "calendar", "team"];
-  const LOCKED = { tasks: "Tasks", approvals: "Approvals", memory: "Memory", docs: "Docs", system: "System" };
-  const ORDER = ["office", "tasks", "approvals", "projects", "calendar", "team", "memory", "docs", "system"];
+  const LOCKED = { tasks: "Tasks", approvals: "Approvals", memory: "Memory", docs: "Docs", system: "System", controls: "Controls" };
+  const ORDER = ["office", "tasks", "approvals", "projects", "calendar", "team", "memory", "docs", "system", "controls"];
+  const TITLES = { office: "Office", projects: "Projects", calendar: "Calendar", team: "Team" };
   let view = "office";
   const toast = $("toast");
   function note(text) {
@@ -48,6 +49,7 @@
     $("view-locked").hidden = !LOCKED[v];
     if (LOCKED[v]) drawLocked(v);
     endTalk();
+    endThing();
     if (!fromHash && location.hash !== "#" + v) history.replaceState(null, "", "#" + v);
     drawView();
     running();
@@ -540,11 +542,12 @@
 
   // ---------- the office: taps ----------
   const OBJECTS = [
-    { r: () => [22, 0, 14, 10], go: () => setView("tasks") },
-    { r: () => [60, 0, 9, 10], go: () => setView("calendar") },
-    { r: () => [72, 0, 13, 10], go: () => setView("memory") },
-    { r: () => [87, 8, 8, 20], go: () => setView("system") },
-    { r: () => [10, 54 + band, 18, 7], go: () => setView("approvals") },
+    { r: () => [3, 0, 16, 10], go: () => showThing("team") },
+    { r: () => [22, 0, 14, 10], go: () => showThing("tasks") },
+    { r: () => [60, 0, 9, 10], go: () => showThing("calendar") },
+    { r: () => [72, 0, 13, 10], go: () => showThing("memory") },
+    { r: () => [87, 8, 8, 20], go: () => showThing("system") },
+    { r: () => [10, 54 + band, 18, 7], go: () => showThing("approvals") },
     { r: () => [1, 49 + band, 8, 11], go: () => note("The captain's door. Only the captain can talk to the crew.") },
   ];
   const inside = (x, y, [rx, ry, rw, rh]) => x >= rx && x < rx + rw && y >= ry && y < ry + rh;
@@ -566,8 +569,8 @@
   cv.addEventListener("click", (e) => {
     if (!snap) return;
     const h = hit(e);
-    if (!h) { endTalk(); return; }
-    if (h.who) showTalk(h.who.data, h.who); else { endTalk(); h.obj.go(); }
+    if (!h) { endTalk(); endThing(); return; }
+    if (h.who) { endThing(); showTalk(h.who.data, h.who); } else { endTalk(); h.obj.go(); }
   });
   cv.addEventListener("mousemove", (e) => { cv.style.cursor = snap && hit(e) ? "pointer" : "default"; });
 
@@ -663,6 +666,51 @@
     if (!talk.hidden && !talk.contains(e.target) && e.target !== cv && !e.target.closest("#roster")) endTalk();
   });
 
+  // ---------- talking to a thing in the office ----------
+  // A tapped thing says what it is in a box like an agent's, with lines the snapshot
+  // built from public counts only (bin/fm_mission_control_web.py public_things()).
+  // Its Open button opens its view, or is locked when the view is the captain's.
+  const thing = $("thing");
+  const THING_COLOURS = { tasks: "#c9a36b", calendar: "#d0493f", memory: "#e6b422", system: "#35d07f", approvals: "#ffb454", team: "#c9a45b" };
+  let thingStep = 0;
+  function showThing(v) {
+    const t = ((snap && snap.things) || []).find((x) => x && x.view === v);
+    const lines = t && Array.isArray(t.lines) ? t.lines.map(str).filter(Boolean) : [];
+    if (!lines.length) { endThing(); return; }
+    thingStep = 0;
+    const nm = $("thing-name");
+    nm.textContent = str(t.name);
+    nm.style.color = THING_COLOURS[v] || "#d9e0e8";
+    $("thing-line").textContent = lines[0];
+    const locked = !!LOCKED[v];
+    const open = $("thing-open");
+    $("thing-open-label").textContent = "Open " + (LOCKED[v] || TITLES[v] || v);
+    open.classList.toggle("locked", locked);
+    if (locked) open.setAttribute("aria-disabled", "true"); else open.removeAttribute("aria-disabled");
+    $("thing-lock").toggleAttribute("hidden", !locked);
+    thing.dataset.view = v;
+    thing.dataset.lines = JSON.stringify(lines);
+    thing.hidden = false;
+    $("thing-bye").focus({ preventScroll: true });
+  }
+  function endThing() {
+    thing.hidden = true;
+  }
+  $("thing-bye").addEventListener("click", endThing);
+  $("thing-more").addEventListener("click", () => {
+    const lines = JSON.parse(thing.dataset.lines || "[]");
+    if (lines.length) $("thing-line").textContent = lines[++thingStep % lines.length];
+  });
+  $("thing-open").addEventListener("click", () => {
+    const v = thing.dataset.view;
+    if (LOCKED[v]) { note("\u{1F512} Only the captain can open this."); return; }
+    endThing();
+    setView(v);
+  });
+  document.addEventListener("click", (e) => {
+    if (!thing.hidden && !thing.contains(e.target) && e.target !== cv) endThing();
+  });
+
   // ---------- running and pausing ----------
   let timer = null;
   function running() {
@@ -673,9 +721,9 @@
   function togglePause() { paused = !paused; running(); render(); }
   document.addEventListener("keydown", (e) => {
     if (e.target && /INPUT|TEXTAREA/.test(e.target.tagName)) return;
-    if (e.key >= "1" && e.key <= "9") setView(ORDER[Number(e.key) - 1]);
+    if (e.key >= "0" && e.key <= "9") setView(ORDER[(Number(e.key) + 9) % 10]);
     else if (e.key === "p" && view === "office") togglePause();
-    else if (e.key === "Escape") endTalk();
+    else if (e.key === "Escape") { endTalk(); endThing(); }
   });
 
   // ---------- live activity and the team list ----------
@@ -743,6 +791,7 @@
     memory: [2, [1, 6, 1, 1, 1, 4]],
     docs: [2, [1, 1, 1, 6, 1, 1, 3]],
     system: [3, [4, 4, 3, 4, 4, 3]],
+    controls: [1, [2, 5, 1, 3, 1, 3]],
   };
   const PADLOCK = [
     "...#######...",

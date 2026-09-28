@@ -47,7 +47,7 @@ first_mate_name and names map (fm_mission_control.py's header owns them).
       registered second mate, reads that mate's name;
     a space named firstmate that does not hold the first mate's window reads
       "<first_mate_name>'s interns", so no two spaces read first_mate_name;
-    mission-control and controls read Mission Control and Controls;
+    mission-control reads Mission Control;
     any other space reads its own name.
 
 Environment: HERDR_SESSION is the session whose recorded endpoints count (as
@@ -70,7 +70,7 @@ SOURCE = "mission-control"
 SPACE_TOKEN = "name"
 WHO_TOKEN = "who"
 JOB_TOKEN = "job"
-SCREENS = {"mission-control": "Mission Control", "controls": "Controls"}
+SCREENS = {"mission-control": "Mission Control"}
 HELPER_SUFFIX = " · p:"
 OLD_HELPER = re.compile(r"^(?:firstmate|2ndmate-[^/]+)/(.+ · p:.*)$")
 NAMES_EVERY = 5.0

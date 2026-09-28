@@ -21,13 +21,13 @@ The shared no-mistakes gate refusal for fleet lifecycle entrypoints is summarize
 | `fm-bridge.sh`           | Serve the Bridge, a read-only fleet page for the captain's iPad over Tailscale, with its live System Map, and install or remove its LaunchAgent |
 | `fm_bridge.py`           | What the Bridge reads and counts, its `config/bridge.json` settings, and its GET-only server |
 | `fm_system_map.py`       | What the System Map reads, which boxes and lines it draws, its guided tour, and its page |
-| `fm-mission-control.sh` | Run Mission Control, the live read-only office screen, and keep its Herdr workspace |
+| `fm-mission-control.sh` | Run Mission Control, the live office screen with the captain's merge switch on its Controls tab, and keep its Herdr workspace |
 | `fm_mission_control.py`  | What Mission Control reads, how the crew maps onto the office, and how its frames are drawn |
 | `fm_herdr_names.py`      | Mission Control's naming step: the plain names and jobs it shows in Herdr's sidebar as display values, never renaming anything |
 | `fm-mission-control-web.sh` | Build Mission Control's public snapshot page, publish it to Cloudflare Pages and Workers KV or a GitHub Pages checkout, and schedule that publish |
 | `fm_mission_control_web.py` | What the public page's snapshot may contain and how its folder is written; its page files, and the Cloudflare Pages Function that serves the snapshot, live in `bin/mission-control-web/` |
-| `fm-controls.sh`         | Run Controls, the captain's tappable switch screen, and keep its Herdr workspace |
-| `fm_controls.py`         | What the Controls screen shows and what a tap on its switch changes |
+| `fm-controls.sh`         | Run Controls, the captain's merge switch, on a screen of its own; it is also Mission Control's Controls tab |
+| `fm_controls.py`         | What Controls shows, on its own screen and on Mission Control's tab, and what a tap on its switch changes |
 | `fm_merge_switch.py`     | Read and set the merge switch, the two merge allow rules in the home's local Claude settings |
 | `fm-herdr-screen-lib.sh` | Keep one full-screen program running in its own labelled Herdr workspace |
 | `fm-secondmate-reconcile.sh` | Ask each secondmate to reconcile an inventory mismatch through its durable inbox, limited by a per-home cooldown |
