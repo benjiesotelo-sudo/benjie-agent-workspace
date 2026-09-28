@@ -1222,6 +1222,14 @@ jq -r '.system.cards[] | select(.title == "Public page") | .head' <<<"$PJ" | gre
 jq -r .system.overall <<<"$PJ" | grep -q 'All systems normal' || fail "an unpublished public page is not a fault"
 pass "the System view gives the public page's address beside the System Map's, only when the home has one"
 
+LONG=https://octo-example-crew.github.io/mission-control-public-office/
+readings "$TMP_ROOT/pub-long.json" '.public_page = {address: "'"$LONG"'"}'
+PN=$(mc "$HOME_DIR" frame --readings "$TMP_ROOT/pub-long.json" --agents "$AGENTS" --view system --size 96x60) \
+  || fail "narrow system frame failed"
+grep -qF "│ $LONG " <<<"$PN" || fail "a long public address stays one unbroken line in a narrow pane: $PN"
+grep -q '● SYSTEM MAP ' <<<"$PN" || fail "the other cards still show beside a full-width address card"
+pass "a public address too long for a narrow card gets a full-width card and is never broken"
+
 L=$(mc "$HOME_DIR" frame --agents "$AGENTS" --view docs)
 grep -q ' 9 System ' <<<"$L" || fail "the tab bar shows all nine views"
 S=$(mc "$HOME_DIR" frame --agents "$AGENTS" --size 80x24)

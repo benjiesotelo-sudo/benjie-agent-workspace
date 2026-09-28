@@ -4077,28 +4077,43 @@ def _system_screen(cv, health):
     if C - len(pill) - 1 > len(health["overall"]) + 6:
         cv.put(C - len(pill) - 1, 3, pill, BG, GREEN, True)
     per_row = min(3, max(2, (C - 1) // (SYS_CARD_W + 1)))
-    w = (C - 1 - (per_row - 1)) // per_row
-    tw = w - 6
-    laid = []
-    for c in health["cards"]:
+    narrow = (C - 1 - (per_row - 1)) // per_row
+
+    def lay(c, w):
         body = [(INK, None, ln, 2) for ln in wrap(clean(c["head"]), w - 4)]
         for d, text in c["lines"]:
-            if d is None:       # an address, flush with the dots so it fits whole
-                body += [(SOFT, None, ln, 2) for ln in wrap(clean(text), w - 4)]
+            if d is None:       # an address, flush with the dots and never broken, so it can be tapped whole
+                body.append((SOFT, None, clean(text), 2))
                 continue
-            for j, ln in enumerate(wrap(clean(text), tw)):
+            for j, ln in enumerate(wrap(clean(text), w - 6)):
                 body.append((SOFT, DOTS[d] if j == 0 else None, ln, 4))
-        laid.append((c, body))
+        return body
+
+    # Cards fill rows of per_row; a card with an address too long for a narrow
+    # card takes a row of its own at full width, so the address stays one line.
+    rows, row = [], []           # rows of (card width, [(card, body)])
+    for c in health["cards"]:
+        if any(d is None and len(clean(t)) > narrow - 4 for d, t in c["lines"]):
+            if row:
+                rows.append((narrow, row))
+            rows.append((C - 1, [(c, lay(c, C - 1))]))
+            row = []
+            continue
+        row.append((c, lay(c, narrow)))
+        if len(row) == per_row:
+            rows.append((narrow, row))
+            row = []
+    if row:
+        rows.append((narrow, row))
     r0 = 5
     last = R - 3
-    heights = [2 + max(len(b) for _, b in laid[i:i + per_row]) for i in range(0, len(laid), per_row)]
+    heights = [2 + max(len(b) for _, b in row) for _, row in rows]
     gap = 1 if r0 + sum(heights) + len(heights) - 2 <= last else 0
-    for i in range(0, len(laid), per_row):
-        row = laid[i:i + per_row]
-        h = heights[i // per_row]
-        if r0 + h - 1 > (last if i + per_row >= len(laid) else last - 1):
+    for i, (w, row) in enumerate(rows):
+        h = heights[i]
+        if r0 + h - 1 > (last if i == len(rows) - 1 else last - 1):
             cv.put(1, last, "%s more below; make this pane taller to see them" %
-                   bridge._plural(len(laid) - i, "card"), DIM)
+                   bridge._plural(sum(len(r) for _, r in rows[i:]), "card"), DIM)
             return
         for j, (c, body) in enumerate(row):
             c0 = j * (w + 1)
