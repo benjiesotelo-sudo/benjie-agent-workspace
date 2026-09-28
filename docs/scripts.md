@@ -18,8 +18,9 @@ The shared no-mistakes gate refusal for fleet lifecycle entrypoints is summarize
 | `fm-fleet-view.sh`       | Render the fleet snapshot as a human Markdown view                                   |
 | `fm-bearings-snapshot.sh` | Project the fleet snapshot to the compact TOON bearings view; local-only unless `--include-prs` |
 | `fm-bearings-board.sh`   | Build and arm the stable interactive `/bearings lavish` fleet board                  |
-| `fm-bridge.sh`           | Serve the Bridge, a read-only fleet page for the captain's iPad over Tailscale, and install or remove its LaunchAgent |
+| `fm-bridge.sh`           | Serve the Bridge, a read-only fleet page for the captain's iPad over Tailscale, with its live System Map, and install or remove its LaunchAgent |
 | `fm_bridge.py`           | What the Bridge reads and counts, its `config/bridge.json` settings, and its GET-only server |
+| `fm_system_map.py`       | What the System Map reads, which boxes and lines it draws, its guided tour, and its page |
 | `fm-mission-control.sh` | Run Mission Control, the live read-only office screen, and keep its Herdr workspace |
 | `fm_mission_control.py`  | What Mission Control reads, how the crew maps onto the office, and how its frames are drawn |
 | `fm_herdr_names.py`      | Mission Control's naming step: the plain names and jobs it shows in Herdr's sidebar as display values, never renaming anything |

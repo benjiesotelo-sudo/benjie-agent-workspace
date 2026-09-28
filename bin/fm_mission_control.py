@@ -1763,6 +1763,7 @@ class UI:
         self.scroll = 0         # Memory and Docs: the reader's first line on scroll_key's page
         self.scroll_key = None
         self.page_keys = []     # Memory and Docs: the rows as last drawn, for up/down
+        self.page_pick = None   # Memory and Docs: the row highlighted as last drawn, where up/down starts
         self.list_hits = {}     # screen row -> row key, for taps on the list
         self.reader_box = None
         self.reader_page = 10
@@ -3007,18 +3008,32 @@ def docs_pages(model):
                       "has_project": rec is not None,
                       "project": bridge.project_of(rec, mate, by_key, model["ship"]) if rec else None})
     pages.sort(key=lambda p: -p["stamp"])
+    # Important links, pinned first: the System Map, the Bridge and the public page, then the saved links.
+    pinned = [{"key": "pin:%d" % i, "kind": "Link", "title": title, "url": clean(url), "project": None,
+               "has_project": False, "stamp": None, "text": None, "pinned": True}
+              for i, (title, url) in enumerate(_important_links(model))]
     for i, link in enumerate(model["links"]):
         label = clean(link.get("label") or "link").strip() or "link"
         pname = link.get("project") or None
         if pname and pname.lower() in by_key:
             pname = by_key[pname.lower()]["name"]
-        pages.append({"key": "link:%d" % i, "kind": "Link", "title": label[:1].upper() + label[1:],
-                      "url": clean(link["url"]), "project": pname, "has_project": True,
-                      "stamp": None, "text": None})
+        pinned.append({"key": "link:%d" % i, "kind": "Link", "title": label[:1].upper() + label[1:],
+                       "url": clean(link["url"]), "project": pname, "has_project": True,
+                       "stamp": None, "text": None, "pinned": True})
     for p in pages:
         if p["text"] is not None:
             p["words"] = _word_count(p["text"])
-    return pages
+    return pinned + pages
+
+
+def _important_links(model):
+    """[(title, address)] from bin/fm_system_map.py important_links() for this home, or [] when it cannot tell."""
+    home = ((model.get("snapshots") or {}).get("main") or {}).get("fm_home")
+    try:
+        import fm_system_map
+        return fm_system_map.important_links(home) if home else []
+    except Exception:  # noqa: BLE001 - no pinned addresses rather than no Docs view
+        return []
 
 
 class Shelf:
@@ -3459,7 +3474,7 @@ def _memory_screen(cv, ui, scene, now):
         cv.put(3, 5, "Nothing is remembered yet.", SOFT, None, True)
         cv.put(3, 7, "Lessons, notes about you and the days' work show up here once they are written down.", DIMMER)
         return
-    pick = _pick_page(ui, pages)
+    pick = ui.page_pick = _pick_page(ui, pages)
     list_w, rc = _shelf_layout(C)
     rows = []
     if longs:
@@ -3521,19 +3536,26 @@ def _docs_screen(cv, ui, scene, now):
         cv.put(3, 5, "No documents of this kind yet." if pages else "No documents yet.", SOFT, None, True)
         cv.put(3, 7, "Finished investigations, decision pages and your saved links show up here.", DIMMER)
         return
-    pick = _pick_page(ui, shown)
+    rest = [p for p in shown if not p.get("pinned")]
+    # The pinned links head the list, but the reader opens on the newest document until one is picked.
+    pick = ui.page_pick = _pick_page(ui, shown if ui.pages.get(ui.view) in {p["key"] for p in shown}
+                                     else (rest or shown))
     list_w, rc = _shelf_layout(C)
     for p in shown:
         p["line2"] = _doc_facts(model, colors, p)
         p["day"] = bridge._day(_dt.datetime.fromtimestamp(p["stamp"]).strftime("%Y-%m-%d"), model["today"]) \
             if p["stamp"] else ""
-    _page_list(cv, ui, [("item", p) for p in shown], pick, 0, 5, list_w, R - 7)
+    pins = [p for p in shown if p.get("pinned")]
+    rows = ([("group", ("Important links", len(pins), False))] + [("item", p) for p in pins] +
+            ([("group", ("Documents", len(rest), False))] if rest else [])) if pins else []
+    _page_list(cv, ui, rows + [("item", p) for p in rest], pick, 0, 5, list_w, R - 7)
     page = next(p for p in shown if p["key"] == pick)
     facts = []
     if page["has_project"]:
         facts.append(project_phrase(model, page["project"]))
     if page["kind"] == "Link":
-        head = "A saved link" + (" for %s" % facts[0] if facts else "")
+        head = ("An important link" if page["key"].startswith("pin:") else "A saved link") + \
+            (" for %s" % facts[0] if facts else "")
         lines = [[(page["title"], INK, True)], []]
         if facts:
             lines += [[(facts[0][:1].upper() + facts[0][1:], SOFT, False)], []]
@@ -4002,6 +4024,17 @@ def system_cards(r, crew, model, now, records_ok=True, agents_ok=True):
         missing = sum(1 for ln in lines if ln[0] != "green")
         card("Tools", "green", "Tools: all installed" if not missing else
              "Tools: %d of %d could not be checked" % (missing, len(lines)), lines)
+
+    # The System Map: where to open it, from the Bridge page's reading, since the Bridge serves it.
+    if "bridge" not in r:
+        card("System Map", "grey", "System Map: %s" % unread)
+    elif r.get("bridge") is None:
+        card("System Map", "amber", "System Map: its address could not be checked")
+    elif (r["bridge"] or {}).get("running") and r["bridge"].get("address"):
+        card("System Map", "green", "System Map: how the crew fits together",
+             [("green", "Open in Safari"), (None, r["bridge"]["address"].rstrip("/") + "/system-map")])
+    else:
+        card("System Map", "amber", "System Map: opens once the Bridge page answers")
 
     looks = [x for c in cards for x in c["looks"]]
     if looks:
@@ -5128,7 +5161,7 @@ def _pick_row(ui, key):
     """Memory and Docs: pick a row; the reader starts at its top."""
     if key is None or ui.pages.get(ui.view) == key:
         return False
-    ui.pages[ui.view] = key
+    ui.pages[ui.view] = ui.page_pick = key
     return True
 
 
@@ -5136,8 +5169,7 @@ def _step_row(ui, down):
     keys = ui.page_keys
     if not keys:
         return False
-    cur = ui.pages.get(ui.view)
-    i = keys.index(cur) if cur in keys else 0
+    i = keys.index(ui.page_pick) if ui.page_pick in keys else 0
     return _pick_row(ui, keys[max(0, min(len(keys) - 1, i + (1 if down else -1)))])
 
 

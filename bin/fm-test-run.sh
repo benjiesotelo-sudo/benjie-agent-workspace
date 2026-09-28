@@ -222,7 +222,7 @@ family_for_basename() {
       ;;
     fm-bearings-board-render.test.sh|fm-bearings-snapshot.test.sh|\
     fm-fleet-snapshot-view.test.sh|fm-bridge.test.sh|fm-mission-control.test.sh|fm-mission-control-web.test.sh|\
-    fm-controls.test.sh|fm-mission-control-names.test.sh)
+    fm-controls.test.sh|fm-system-map.test.sh|fm-mission-control-names.test.sh)
       printf '%s\n' snapshot-bearings
       ;;
     fm-backend-cmux.test.sh|fm-backend-cmux-smoke.test.sh)
