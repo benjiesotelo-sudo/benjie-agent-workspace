@@ -1,0 +1,50 @@
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System   0 Controls                              Mon 23:02 
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀   ▀▀▀▀▀▀▀▀▀▀▀▀▀▀  ╭──────────────────────────────────────────╮▀▀▀           │ LIVE ACTIVITY real                                                      
+                       ▀▀ ▀▀ ▀▀ ▀▀   ◂│ Corkboard                                │▀▀▀           │                                                                         
+     ▀▀   ▀▀   ▀▀                     │ 5 jobs queued, 3 jobs done this month.   │▀▀            │ 12 Sep Alpha finished Chapter four notes                                
+▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀│                                          │▀▀▀▀▀▀▀▀▀▀▀▀▀▀│                                                                         
+    alumni             tasks        ▀▀│                                          │      ▀▀▀▀▀▀▀ │ 5 Sep  Denver finished Chapter three decks                              
+   ▀▀▀                              ▀▀│  Open Tasks    What else?    Bye         │        ▀ ▀   │                                                                         
+  ▀   ▀                    ▀▀▀▀▀  ▀▀▀▀╰──────────────────────────────────────────╯        ▀ ▀   │ 2 Sep  Denver finished Module one handout                               
+                             ▀    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀   ▀▀▀                             ▀ ▀   │                                                                         
+   ▀▀▀                                    ▀   ▀           ▀▀▀                             ▀ ▀   │                                                                         
+                                          ▀▀▀▀▀         ▀▀▀▀▀▀▀                           ▀ ▀   │                                                                         
+                                         ▀     ▀         ▀▀▀▀▀                            ▀ ▀   │                                                                         
+                                         ▀▀▀▀▀▀▀        ▀ ▀▀▀ ▀                                 │                                                                         
+                                         Denver           ▀ ▀                           ▀▀▀▀▀▀▀ │                                                                         
+   ▀▀▀▀▀▀▀▀▀                             working                                       system   │                                                                         
+                                                                                        check   │                                                                         
+    ▀▀▀▀▀▀▀ Z                                                                                   │                                                                         
+ ▀▀▀▀▀▀▀▀▀▀▀▀▀                                                                                  │                                                                         
+ ▀▀▀▀▀▀▀▀▀▀z▀▀   ▀▀▀    ▀▀▀                                                                     │                                                                         
+     ▀▀▀▀▀       ▀▀▀    ▀▀▀                                                                     │                                                                         
+               ▀▀▀▀▀▀▀▀▀▀▀▀▀▀                                                                   │                                                                         
+                ▀▀▀▀▀  ▀▀▀▀▀                                                                    │                                                                         
+     ▀▀▀▀▀     ▀ ▀▀▀ ▀▀ ▀▀▀ ▀                                                                   │                                                                         
+     Alpha       ▀ ▀    ▀ ▀                                                                     │                                                                         
+    asleep                                                                                    ▀▀│                                                                         
+ ▀▀▀▀▀▀▀▀                                                                                       │                                                                         
+ CAPTAIN                    ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                  ▀   ▀       │                                                                         
+                                          ▀▀▀▀▀▀▀▀▀                                  ▀▀▀        │                                                                         
+       ▀                            ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀                                       │                                                                         
+                  inbox 4             ▀▀▀▀         ▀▀▀▀                                         │                                                                         
+          ▀▀▀▀▀▀▀                       ▀▀▀         ▀▀▀                                       ▀▀│                                                                         
+─ TEAM ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   NAME       ROLE                DOING NOW                                                                               PROJECT (the one it works in)                   
+ ● Denver     first mate          working, 1 intern on jobs, 3 waiting on you                                             every project                                   
+ z Alpha      second mate         asleep, 2 jobs listed, 1 waiting on you                                                 Alpha                                           
+ ● intern     Alpha's intern      Build chapter four                                                                      Alpha                                           
+ ○ intern     Denver's intern     state not readable: Print the handouts                                                  beta                                            
+ ○ intern     Alpha's intern      state not readable: Add a text layer to the chapter PDFs                                elsewhere                                       
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+   Interns stand beside their person in charge for one job, then go home. Sleeping agents cost nothing.                                                                   
+                                                                                                                                                                          
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ left/right pick an answer   enter or a tap answers   esc or a tap elsewhere says bye   q quit                                                          updates by itself 

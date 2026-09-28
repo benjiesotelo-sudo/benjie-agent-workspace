@@ -1,0 +1,11 @@
+ok - every space shows its plain name: the first mate's, a mate's, a helper space's intern and job, Mission Control's, and a left-over controls space its own
+ok - every agent window shows who it is and its job, the first mate's own window included
+ok - every window keeps its own name: the captain's and firstmate's names stay
+ok - names only sets display values: no rename, move, close, create or focus
+ok - only the space holding the first mate's window reads the first mate's name
+ok - older firstmate/<job> and 2ndmate-<id>/<job> helper spaces read like └ ones
+ok - a second pass changes nothing
+ok - after a Herdr restart the lost display values are sent again
+ok - a change Herdr refuses is reported and names exits non-zero
+ok - the running screen's Keeper names everything but its own window and puts lost display values back on its own
+bash tests/$t.test.sh  2.94s user 3.17s system 113% cpu 5.384 total

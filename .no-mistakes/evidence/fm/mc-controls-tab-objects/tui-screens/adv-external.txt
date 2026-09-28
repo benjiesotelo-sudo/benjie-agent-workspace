@@ -1,0 +1,50 @@
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System   0 Controls                              Mon 23:04 
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                                                                                          
+  Let Denver merge green pull requests on the workspace: ON                                                                                                               
+                                                                                                                                                                          
+  ┌──────────────────────────────────────────────────────────────┐                                                                                                        
+  │                     the switch is                            │                                                                                                        
+  │                     ON                                       │                                                                                                        
+  │                     tap to turn it off                       │                                                                                                        
+  └──────────────────────────────────────────────────────────────┘                                                                                                        
+                                                                                                                                                                          
+  WHAT ON ALLOWS                                                                                                                                                          
+  Denver may merge pull requests on the workspace once every check passes and there are no conflicts; other projects still wait for you.                                  
+                                                                                                                                                                          
+  LAST CHANGED                                                                                                                                                            
+  Turned ON here Mon 28 Sep at 23:04 (4 seconds ago).                                                                                                                     
+                                                                                                                                                                          
+  RIGHT NOW                                                                                                                                                               
+  Denver may merge green pull requests on the workspace without asking you.                                                                                               
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ 0-9 switch view   tap the switch or Enter: turn it off   q quit                                                                                        updates by itself 

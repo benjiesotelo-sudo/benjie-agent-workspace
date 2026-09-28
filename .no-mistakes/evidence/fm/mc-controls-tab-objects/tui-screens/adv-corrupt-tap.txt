@@ -1,0 +1,50 @@
+ MISSION CONTROL   1 Office   2 Tasks   3 Approvals   4 Projects   5 Calendar   6 Team   7 Memory   8 Docs   9 System   0 Controls                              Mon 23:04 
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                                                                                          
+  Let Denver merge green pull requests on the workspace: CANNOT BE READ                                                                                                   
+                                                                                                                                                                          
+  ┌──────────────────────────────────────────────────────────────┐                                                                                                        
+  │                     the switch is                            │                                                                                                        
+  │          ?          CANNOT BE READ                           │                                                                                                        
+  │                     a tap changes nothing                    │                                                                                                        
+  └──────────────────────────────────────────────────────────────┘                                                                                                        
+                                                                                                                                                                          
+  WHAT ON ALLOWS                                                                                                                                                          
+  Denver may merge pull requests on the workspace once every check passes and there are no conflicts; other projects still wait for you.                                  
+                                                                                                                                                                          
+  LAST CHANGED                                                                                                                                                            
+  Not known while the settings file cannot be read.                                                                                                                       
+                                                                                                                                                                          
+  RIGHT NOW                                                                                                                                                               
+  The settings file is not valid JSON (line 1, column 2). Nothing was changed; fix or remove .claude/settings.local.json in the home and this screen reads it again by    
+  itself.                                                                                                                                                                 
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+                                                                                                                                                                          
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ Nothing changed: the settings file is not valid JSON (line 1, column 2).                                                                               updates by itself 

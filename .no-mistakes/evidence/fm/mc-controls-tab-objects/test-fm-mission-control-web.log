@@ -1,0 +1,22 @@
+ok - build writes one self-contained folder: the page, its style and script, and one data file
+ok - a home full of private titles, notes, paths, emails, links, ids, repository names, charters and a merge switch leaves none of them on the page
+ok - the snapshot's shape is exactly the allow-list, with positional keys
+ok - the snapshot names the crew publicly and counts the right items per project and per day
+ok - each office thing says one short public line about itself, with a What else? line or two
+ok - Tasks, Approvals, Memory, Docs, System and Controls are locked tabs with nothing behind them, Open chat is locked, and Office, Projects, Calendar and Team render
+ok - an unchanged crew keeps the whole folder byte for byte until the heartbeat
+ok - the live activity lists plain state changes with public names, newest first, never a title
+ok - publish commits and pushes only the page's files, only when they changed, and retries an unpushed commit
+ok - publish refuses another repository's checkout and only builds a plain folder
+ok - install schedules publish at the configured cadence and uninstall removes it
+ok - publish to Cloudflare refuses to run until the home's .env, and not the shell, holds the credentials
+skip: python3 has no tomllib; wrangler.toml bindings not checked
+ok - the first Cloudflare publish creates the namespace and project, writes the snapshot to KV and deploys only the page code
+ok - a scheduled run writes the snapshot to KV only when it changed and never redeploys unchanged page code
+ok - a failed KV write or deploy is retried on the next run, and only what failed is sent again
+ok - the token reaches curl on standard input and wrangler in its environment, and is never printed, written or put on a command line
+ok - install schedules the Cloudflare publish once the credentials are set, and an unknown host is refused by publish and install
+ok - an invalid Pages project is refused by name, never replaced by the default
+ok - an existing Pages project is deployed to its own production branch
+ok - fm-mission-control-web.sh parses
+bash tests/$t.test.sh  10.32s user 8.98s system 103% cpu 18.672 total
