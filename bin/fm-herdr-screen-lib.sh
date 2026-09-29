@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # fm-herdr-screen-lib.sh - keep one full-screen program running in its own
-# labelled Herdr workspace; sourced by fm-mission-control.sh and fm-controls.sh.
+# labelled Herdr workspace; sourced by fm-mission-control.sh, and by
+# fm-controls.sh for stop and status only.
 #
 # The caller sets, before calling any function:
 #   SCREEN_NAME    its script name without .sh, the prefix of every message
@@ -9,8 +10,8 @@
 #                  while the screen runs in a pane
 #   SCREEN_HERDR   the herdr command, split on spaces
 #   FM_HOME        the new workspace's working directory
-# and defines screen_run_command, which prints the shell command typed into
-# the pane.
+# and, to use screen_start, defines screen_run_command, which prints the
+# shell command typed into the pane.
 #
 # screen_start ensures one workspace labelled SCREEN_LABEL whose pane runs the
 # screen; idempotent, never a second copy. It creates the workspace with

@@ -1,23 +1,25 @@
 #!/usr/bin/env python3
 """fm_controls.py - Controls: the captain's switches, one tap each.
 
-bin/fm-controls.sh is the operator entry point and owns the command surface
-and the Herdr workspace; this module owns what the screen shows and what a
-tap changes.
+Mission Control's Controls tab (bin/fm_mission_control.py) and the screen of
+its own that bin/fm-controls.sh runs both show this switch; this module owns
+what they show (draw()) and what a tap changes (Switch.turn()), and
+bin/fm-controls.sh owns the stand-alone command surface.
 
 ONE SWITCH. "Let <first mate> merge green pull requests on the workspace",
 ON or OFF, is the merge switch bin/fm_merge_switch.py owns: that module's
 header is the one statement of which rules the switch writes, where, and how.
-This screen is the only thing that changes it, and only when the captain taps
+This module is the only thing that changes it, and only when the captain taps
 the switch card or presses Enter (or space); it asks for no confirmation,
 since either way can be undone with the next tap, and shows the new state at
 once. A switch that reads partly on turns OFF with a tap. When the settings
 file cannot be read the switch shows why and a tap changes nothing.
 
-ALWAYS THE REAL STATE. The screen reads the settings file back after every
+ALWAYS THE REAL STATE. Switch reads the settings file back after every
 change it makes, whenever the file, the switch's "last changed" record or
-config/mission-control.json changes (checked every POLL seconds), and at least
-every REREAD seconds, so an edit made anywhere else shows within a second.
+config/mission-control.json changes (checked every POLL seconds here, every
+frame on Mission Control's tab), and at least every REREAD seconds, so an edit
+made anywhere else shows within a second.
 Under the switch it says in plain words what ON allows, when the switch last
 changed (here, with the time, or elsewhere, with the settings file's own
 modification time) and what the current state means, in that order so the
@@ -117,23 +119,19 @@ def changed(sw, now):
     return "Never changed yet; it starts OFF."
 
 
-def compose(sw, name, ui, cols, rows, now):
-    """One frame of the Controls screen; ui.hit is set to the switch card."""
-    cv = mc.Canvas(cols, rows)
-    ui.hit = None
-    if cols < MIN_COLS or rows < MIN_ROWS:
-        cv.put(0, 0, mc.clip("Make this pane bigger: Controls needs %d x %d, this pane is %d x %d." % (
-            MIN_COLS, MIN_ROWS, cols, rows), cols), mc.AMBER)
-        return cv
-    C, R = cols, rows
-    cv.put(0, 0, " CONTROLS ", mc.BG, mc.H("#2fbf71"), True)
-    clk = time.strftime("%a %H:%M ", time.localtime(now))
-    cv.put(C - len(clk), 0, clk, mc.DIM)
-    cv.put(0, 1, "─" * C, mc.LINE)
-    cv.put(0, R - 2, "─" * C, mc.LINE)
-    last = R - 3
+def tap_word(sw):
+    """What a tap on the switch or Enter does now, for a footer."""
+    return "change nothing" if sw["error"] else "turn it on" if sw["state"] == "off" else "turn it off"
+
+
+def draw(cv, sw, name, top, last, now):
+    """The switch under its label, then what ON allows, when it last changed and
+    what it means now, from row top down to row last at most; returns the switch
+    card as (row0, row1, col0, col1), the one place a tap turns it over. This
+    screen and Mission Control's Controls tab both draw it."""
+    C = cv.C
     word, colour, track, right, tap = LOOKS[sw["state"] if not sw["error"] else None]
-    r = 3
+    r = top
     lines = mc.wrap(mc.clean("%s: %s" % (label(name), word)), C - 4)
     for ln in lines:
         cv.put(2, r, ln, mc.INK, None, True)
@@ -146,7 +144,7 @@ def compose(sw, name, ui, cols, rows, now):
     w = min(C - 4, 64)
     c0, r0 = 2, r
     mc._box(cv, c0, r0, w, CARD_H, colour if sw["error"] or sw["state"] == "partial" else CARD_LINE)
-    ui.hit = (r0, r0 + CARD_H, c0, c0 + w)
+    hit = (r0, r0 + CARD_H, c0, c0 + w)
     tc = c0 + 3
     for k in range(3):
         cv.put(tc, r0 + 1 + k, " " * TRACK_W, colour, track)
@@ -183,12 +181,28 @@ def compose(sw, name, ui, cols, rows, now):
     section("WHAT ON ALLOWS", allows(name))
     section("LAST CHANGED", changed(sw, now))
     section("RIGHT NOW", meaning(sw, name), mc.AMBER if sw["error"] or sw["state"] == "partial" else mc.INK)
+    return hit
+
+
+def compose(sw, name, ui, cols, rows, now):
+    """One frame of the Controls screen; ui.hit is set to the switch card."""
+    cv = mc.Canvas(cols, rows)
+    ui.hit = None
+    if cols < MIN_COLS or rows < MIN_ROWS:
+        cv.put(0, 0, mc.clip("Make this pane bigger: Controls needs %d x %d, this pane is %d x %d." % (
+            MIN_COLS, MIN_ROWS, cols, rows), cols), mc.AMBER)
+        return cv
+    C, R = cols, rows
+    cv.put(0, 0, " CONTROLS ", mc.BG, mc.H("#2fbf71"), True)
+    clk = time.strftime("%a %H:%M ", time.localtime(now))
+    cv.put(C - len(clk), 0, clk, mc.DIM)
+    cv.put(0, 1, "─" * C, mc.LINE)
+    cv.put(0, R - 2, "─" * C, mc.LINE)
+    ui.hit = draw(cv, sw, name, 3, R - 3, now)
     if ui.toast and time.monotonic() < ui.toast_until:
         cv.put(0, R - 1, mc.clip(" " + ui.toast, C), mc.INK, None, True)
     else:
-        keys = " tap the switch or Enter: %s   q quit " % (
-            "change nothing" if sw["error"] else "turn it on" if sw["state"] == "off" else "turn it off")
-        cv.put(0, R - 1, mc.clip(keys, C), mc.DIM)
+        cv.put(0, R - 1, mc.clip(" tap the switch or Enter: %s   q quit " % tap_word(sw), C), mc.DIM)
     return cv
 
 
@@ -221,6 +235,37 @@ def _stamp(home, config_dir):
         except OSError:
             out.append(None)
     return out
+
+
+class Switch:
+    """The switch as last read, with the first mate's name: fresh() rereads it when
+    the settings file, the "last changed" record or config/mission-control.json
+    changes, and at least every REREAD seconds; turn() is the one write."""
+
+    def __init__(self, home, config_dir):
+        self.home, self.config_dir = home, config_dir
+        self.sw, self.name = ms.read(home), who(config_dir)
+        self.stamp, self.read_at = _stamp(home, config_dir), time.monotonic()
+
+    def fresh(self):
+        """Reread when something changed or REREAD passed; True when it reread."""
+        now_s = _stamp(self.home, self.config_dir)
+        if now_s == self.stamp and time.monotonic() - self.read_at < REREAD:
+            return False
+        self.sw, self.name = ms.read(self.home), who(self.config_dir)
+        self.stamp, self.read_at = now_s, time.monotonic()
+        return True
+
+    def tap(self):
+        return tap_word(self.sw)
+
+    def draw(self, cv, top, last, now):
+        return draw(cv, self.sw, self.name, top, last, now)
+
+    def turn(self, ui):
+        """Turn the switch over, saying what happened in ui.toast."""
+        self.sw = flip(self.home, self.sw, self.name, ui)
+        self.stamp, self.read_at = _stamp(self.home, self.config_dir), time.monotonic()
 
 
 def _taps(data, ui):
@@ -268,8 +313,7 @@ def run(home, config_dir):
     signal.signal(signal.SIGWINCH, poke("resize"))
     if os.path.lexists(ms.settings_path(home)):
         ms.ensure_ignored(home)
-    sw, name = ms.read(home), who(config_dir)
-    stamp, read_at = _stamp(home, config_dir), time.monotonic()
+    switch = Switch(home, config_dir)
     prev, shown, size = None, None, term.size()
     term.enter()
     try:
@@ -288,19 +332,14 @@ def run(home, config_dir):
                 if quit_:
                     break
                 for _ in range(n):
-                    sw = flip(home, sw, name, ui)
-                if n:
-                    stamp, read_at = _stamp(home, config_dir), time.monotonic()
+                    switch.turn(ui)
             if flags["resize"]:
                 flags["resize"] = False
                 size = term.size()
                 prev = None
                 term.write("\x1b[0m\x1b[2J")
-            now_s = _stamp(home, config_dir)
-            if now_s != stamp or time.monotonic() - read_at >= REREAD:
-                sw, name = ms.read(home), who(config_dir)
-                stamp, read_at = now_s, time.monotonic()
-            cells = compose(sw, name, ui, size[0], size[1], time.time()).cells()
+            switch.fresh()
+            cells = compose(switch.sw, switch.name, ui, size[0], size[1], time.time()).cells()
             if cells == shown:
                 continue
             out = enc.diff(prev if prev is not None and len(prev) == len(cells) else None, cells, size[0])

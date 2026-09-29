@@ -10,8 +10,10 @@
 # Controls borrows, so a change there cannot silently break Controls. Then the
 # live screen in a pseudo-terminal: Enter and a tap on the switch turn it over
 # at once, a tap elsewhere does nothing, an outside edit shows by itself, and
-# q and SIGTERM restore the terminal. Then start, status and stop against a
-# fake Herdr, and Mission Control's one read-only System line for the switch.
+# q and SIGTERM restore the terminal. Then, against a fake Herdr, that neither
+# Controls nor Mission Control's start opens a controls workspace any more
+# while status and stop still handle one left from before, and Mission
+# Control's read-only System line for the switch.
 set -u
 
 # shellcheck source=tests/lib.sh
@@ -323,7 +325,7 @@ screen "$TMP_ROOT/bad" 2 | grep -q 'Nothing changed: the settings file is not va
 cmp -s "$SETTINGS" "$TMP_ROOT/bad.saved" || fail "Enter leaves a malformed file byte for byte"
 pass "a malformed file stays untouched on the live screen, and SIGTERM restores the terminal"
 
-# --- start, status and stop -------------------------------------------------
+# --- no workspace of its own; status and stop for a left-over one -----------
 
 # A fake Herdr holding one workspace in a file: its pane is at the prompt
 # until `pane run` types the screen's command into it.
@@ -351,15 +353,24 @@ SH
 chmod +x "$FAKE"
 hd_ct() { FM_HOME="$HOME_DIR" FM_CONTROLS_HERDR="$FAKE" "$CT" "$@"; }
 [ "$(hd_ct status)" = "running: no (controls workspace not found)" ] || fail "status with no workspace"
-[ "$(hd_ct start)" = "fm-controls: running in workspace w9 (pane w9:p1)" ] || fail "start creates and runs the screen"
-grep -q "fm-controls.sh' run" "$WS.run" || fail "start types the run command: $(cat "$WS.run")"
-grep -q "FM_HOME='$HOME_DIR'" "$WS.run" || fail "start passes the home into the pane"
-[ "$(hd_ct start)" = "fm-controls: already running in workspace w9 (pane w9:p1)" ] || fail "start twice is a no-op"
-[ "$(grep -c 'workspace create' "$TMP_ROOT/herdr.log")" = 1 ] || fail "start never makes a second workspace"
-[ "$(hd_ct status)" = "running: yes, workspace w9, pane w9:p1" ] || fail "status sees the running screen"
-[ "$(hd_ct stop)" = "fm-controls: closed workspace w9" ] || fail "stop closes the workspace"
+: > "$TMP_ROOT/herdr.log"
+hd_ct start >/dev/null 2>&1 && fail "fm-controls.sh has no start any more"
+[ ! -e "$WS" ] || fail "fm-controls.sh start opens no workspace"
+grep -q 'workspace create' "$TMP_ROOT/herdr.log" && fail "fm-controls.sh start asks Herdr for nothing"
+# Mission Control's start opens its own workspace and never a controls one.
+FM_HOME="$HOME_DIR" FM_MC_HERDR="$FAKE" "$MC" start >/dev/null 2>&1 || true
+grep -q 'workspace create.*--label mission-control' "$TMP_ROOT/herdr.log" \
+  || fail "Mission Control's start opens its own workspace: $(cat "$TMP_ROOT/herdr.log")"
+grep 'workspace create' "$TMP_ROOT/herdr.log" | grep -q -- '--label controls' \
+  && fail "Mission Control's start never opens a controls workspace"
+rm -f "$WS" "$WS.run"
+# A controls workspace left from before still reads and closes.
+touch "$WS"
+printf 'run' > "$WS.run"
+[ "$(hd_ct status)" = "running: yes, workspace w9, pane w9:p1" ] || fail "status sees a left-over screen"
+[ "$(hd_ct stop)" = "fm-controls: closed workspace w9" ] || fail "stop closes the left-over workspace"
 [ "$(hd_ct stop)" = "fm-controls: not running (no controls workspace)" ] || fail "stop twice says not running"
-pass "start keeps exactly one controls workspace running the screen; status and stop agree"
+pass "Controls opens no workspace of its own, Mission Control's start opens none for it, and a left-over one still reads and closes"
 
 # --- Mission Control's read-only line ----------------------------------------
 

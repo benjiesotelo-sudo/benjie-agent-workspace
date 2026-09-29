@@ -48,6 +48,10 @@ records, so a field added to a record later never reaches the page.
             due, from the first day of the month two months back to the end of
             next month.
   office    how many items wait on the captain, in total.
+  things    what each tappable thing in the office says in its box: its view,
+            its name and two or three short lines built only by public_things()
+            from the fields above (counts, the first mate's name, how many
+            second mates and helpers) and fixed phrases.
   events    the live activity column: the last EVENTS_KEPT plain state changes,
             each a time, an agent's public name and a fixed phrase ("joins the
             crew", "calls in a helper for <project>", "helper for <project>
@@ -275,7 +279,7 @@ def public_snapshot(model, crew, settings, pub, now):
         if done or due:
             days.append({"date": day.isoformat(), "done": done, "due": due})
 
-    return {
+    snap = {
         "schema": SCHEMA,
         "generated_at": now.astimezone(_dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "every_minutes": pub["every_minutes"],
@@ -286,6 +290,37 @@ def public_snapshot(model, crew, settings, pub, now):
         "projects": projects,
         "calendar": {"from": first.isoformat(), "to": last.isoformat(), "days": days},
     }
+    snap["things"] = public_things(snap)
+    return snap
+
+
+def public_things(snap):
+    """What each office thing says on the public page, built only from the public
+    snapshot's own fields; the page shows a locked view's Open button locked."""
+    today = snap["today"]
+    total = lambda k: sum(p["counts"][k] for p in snap["projects"])  # noqa: E731
+    due = sum(n for d in snap["calendar"]["days"] if today <= d["date"] and d["date"][:7] == today[:7]
+              for n in d["due"].values())
+    inbox = snap["office"]["inbox"]
+    kinds = [a["kind"] for a in snap["agents"]]
+    first = snap["agents"][0]["name"] if snap["agents"] else "the first mate"
+    plural = bridge._plural
+    lines = {
+        "tasks": ["The task board: %d waiting on the captain, %d in flight." % (inbox, total("in_flight")),
+                  "%s done this month across the crew." % plural(total("done_month"), "job"),
+                  "Only the captain can open the board."],
+        "calendar": ["The wall calendar: %s done this month." % plural(total("done_month"), "job"),
+                     "%s due later this month." % plural(due, "job") if due else "Nothing else due this month.",
+                     "Day by day, it shows what's done and what's due."],
+        "memory": ["The bookshelf: the crew's memory and its docs.", "Only the captain reads these."],
+        "system": ["The server rack keeps the crew's tools humming.", "Only the captain can look inside."],
+        "approvals": ["The inbox: %s on the captain." % ("one thing waits" if inbox == 1 else "%d things wait" % inbox)
+                      if inbox else "The inbox is empty right now.", "Only the captain answers them."],
+        "team": ["The alumni wall, for mates who have retired.",
+                 "The crew today: %s, %s and %s." % (first, plural(kinds.count("mate"), "second mate"),
+                                                     plural(kinds.count("helper"), "helper"))],
+    }
+    return [{"view": v, "name": name, "lines": lines[v]} for v, (name, _) in mc.THINGS.items()]
 
 
 def events(old, new, now):

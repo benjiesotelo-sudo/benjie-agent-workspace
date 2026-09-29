@@ -47,7 +47,8 @@ what cannot be read says "could not read", and nothing is invented.
                 mate; the bracketed posture says how their work ships.
   Tools         the first mate uses every CLI in CLI_TOOLS found on PATH, every
                 tool in config/watched-tools.json, Controls (its merge switch
-                from bin/fm_merge_switch.py read()) and the playbooks in the
+                from bin/fm_merge_switch.py read(), set on Mission Control's
+                Controls tab) and the playbooks in the
                 home's .agents/skills. Every local second mate is a firstmate
                 home too, so it uses the backlog tool, Herdr and the
                 playbooks, plus GitHub when one of its projects lives there
@@ -983,8 +984,9 @@ def build(home, config_dir, now=None, probes=None):
     use("fm", "tool:controls", "Controls", "line:sliders-horizontal",
         script_caption(os.path.join(CODE_ROOT, "bin", "fm-controls.sh")) or COULD_NOT_READ,
         "Holds your merge switch: whether %s may merge green pull requests itself." % fm,
-        ("The merge switch is %s%s." % (word, "; the screen is open" if screens.get("controls") else ""))
-        if word else "Could not read the merge switch.", "the Controls screen and its switch",
+        ("The merge switch is %s%s." % (word, "; Mission Control is open" if screens.get("mission-control")
+                                         else "; the Controls screen is open" if screens.get("controls") else ""))
+        if word else "Could not read the merge switch.", "Mission Control's Controls tab and its switch",
         status="idle" if word else "unreadable")
     skills = skill_entries(home)
     playbook_words = ("Step-by-step procedures an agent follows in particular situations.",
@@ -1228,7 +1230,7 @@ def build(home, config_dir, now=None, probes=None):
         merge_role = "You approve every merge, because your Controls switch is off; %s then merges it." % fm
     elif sw == "partial":
         merge_role = ("Your Controls switch is only partly on, so %s asks you before merging; "
-                      "tap it once on Controls to set it cleanly." % fm)
+                      "tap it once on Mission Control's Controls tab to set it cleanly." % fm)
     else:
         merge_role = "Could not read the merge switch, so %s asks you before merging." % fm
     lane = []

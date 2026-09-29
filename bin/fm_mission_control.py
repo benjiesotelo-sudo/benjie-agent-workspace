@@ -5,8 +5,10 @@ bin/fm-mission-control.sh is the operator entry point and owns the command
 surface and the Herdr workspace; this module owns what the screen reads, how
 the crew maps onto the office, and how frames are drawn and written.
 
-READ ONLY. Nothing here writes a record, sends a key or a prompt to an agent,
-or starts or stops anything. Besides the reads there are two outward calls.
+READ ONLY, BUT FOR ONE SWITCH. Nothing here writes a record, sends a key or a
+prompt to an agent, or starts or stops anything. The one change it makes is on
+the Controls tab (see CONTROLS), where the captain turns the merge switch over.
+Besides the reads there are two outward calls.
 One is `herdr agent focus` when the captain answers "Open chat" in a talk (see
 TALKING), taps a card or an intern's line on the Team view, or presses Enter on
 a picked Team card or on the Tasks, Projects, Calendar or System view with an
@@ -87,9 +89,9 @@ has seven places, four right of its desk and three left; a mate has two, or
 three at the end of a row; "+N" beside the last place counts the rest, and the
 team list under the office shows every one, or counts the rows it has no room
 for. Tapping a desk or a standing sprite starts a talk (see TALKING). The
-things in the office open their views when tapped: the alumni wall Team, the
-corkboard Tasks, the wall calendar Calendar, the bookshelf Memory, the server
-rack System, and the inbox Approvals. The alumni wall shows mates this screen
+things in the office talk too, and each opens its view: the alumni wall Team,
+the corkboard Tasks, the wall calendar Calendar, the bookshelf Memory, the
+server rack System, and the inbox Approvals. The alumni wall shows mates this screen
 watched leave the registry; retirement leaves no durable record (fm-teardown.sh
 removes the route and the home), so the wall starts empty on every run.
 
@@ -172,6 +174,24 @@ the first topic its projects' names, registry description or scope mention
 (the crew for the first mate, the office otherwise). pick_line() picks a kind
 at random, then a line, and says every line once before any repeats. frame
 shows each key's outcome settled, standing up or sat back down.
+Tapping a thing in the office opens the same box beside it, named for the
+thing, with the answers "Open <view>" (opens its view and ends the talk),
+"What else?" and "Bye", taken the same ways. thing_lines() owns what a thing
+says, in order: one short line saying what it is, then the lines What else?
+goes through, each drawn only from what its own view shows (the task board's
+counts, today and its entries on the calendar, how many memory pages and
+journal days, the System view's overall line, how many decisions wait and the
+oldest one's age, the alumni and the crew's size), never a title or a path.
+
+CONTROLS. The Controls tab (key 0) is the merge switch, drawn and turned over
+by bin/fm_controls.py, whose header owns its wording and what a turn does, and
+written only through bin/fm_merge_switch.py. A tap on the switch card, Enter
+or space turns it over at once, with no confirmation; the footer says what
+happened. Enter and space turn it only when the last frame drew the switch, so
+a pane too small to show it changes nothing, and the tab is drawn before the
+records are read since it needs none of them. It rereads the switch whenever its files change, so an edit made
+anywhere else shows by itself. frame applies these keys as the live screen
+does, so a frame given Enter on this tab turns the switch over.
 
 MEMORY AND DOCS. Both are a list on the left and one reader on the right; the
 reader renders Markdown to terminal lines (render_markdown) and never runs or
@@ -197,8 +217,8 @@ amber or red dot (grey until first read): this Mac (up time, load, memory,
 free disk, the tailnet), crew monitoring (the watcher's beat age, amber past
 five minutes and red past fifteen while work is under way, amber at most
 during the first mate's own turn; away mode; queued wake notifications), the
-crew's counts with the merge switch Controls sets (bin/fm_merge_switch.py,
-only read here), each second mate's window and last home change, the Bridge and
+crew's counts with the merge switch the Controls tab sets (see CONTROLS),
+each second mate's window and last home change, the Bridge and
 Mission Control (their own `status` commands), the GitHub sign-in, tool
 versions, the System Map's address, and the public page's address when the home
 has one (bin/fm_system_map.py public_page(), file reads only). SystemProbe reads files every SYSTEM_FAST seconds and runs the
@@ -293,9 +313,11 @@ MIN_COLS = OW
 FEED_COL = OW + 2
 FEED_MIN_WIDTH = 24
 
-TABS = ["Office", "Tasks", "Approvals", "Projects", "Calendar", "Team", "Memory", "Docs", "System"]
+TABS = ["Office", "Tasks", "Approvals", "Projects", "Calendar", "Team", "Memory", "Docs", "System", "Controls"]
+SHORT_TABS = ["Office", "Tasks", "Asks", "Proj", "Cal", "Team", "Mem", "Docs", "Sys", "Ctrl"]  # when TABS do not fit
 VIEWS = ["office", "tasks"] + [t.lower() for t in TABS[2:]]
-READY = ("office", "tasks", "approvals", "projects", "calendar", "team", "memory", "docs", "system")
+READY = ("office", "tasks", "approvals", "projects", "calendar", "team", "memory", "docs", "system", "controls")
+TAB_KEYS = "1234567890"  # the key for each tab, in order: 0 is Controls
 COLUMNS = (("waiting", "WAITING ON YOU", AMBER), ("queued", "QUEUED", INK),
            ("in_flight", "IN FLIGHT", GREEN), ("done", "DONE THIS MONTH", DIM))
 SHIP_TAG = "setup"
@@ -859,6 +881,79 @@ def pick_line(lines, said, rng):
     return rng.choice([ln for ln in fresh if ln["kind"] == kind])["text"]
 
 
+# The office's things when tapped: the name on the box and its colour, by the view it opens.
+THINGS = {
+    "tasks": ("Corkboard", "#c9a36b"), "calendar": ("Wall calendar", "#d0493f"),
+    "memory": ("Bookshelf", "#e6b422"), "system": ("Server rack", "#35d07f"),
+    "approvals": ("Inbox", "#ffb454"), "team": ("Alumni wall", "#c9a45b"),
+}
+
+
+def thing_answers(view):
+    return ("Open %s" % TABS[VIEWS.index(view)], "What else?", "Bye")
+
+
+def _short(text):
+    """text within TALK_MAX, ending at a word."""
+    text = " ".join(clean(text).split())
+    return text if len(text) <= TALK_MAX else text[:TALK_MAX - 3].rsplit(" ", 1)[0].rstrip(" ,;:") + "..."
+
+
+def thing_lines(view, scene, health, now):
+    """What a tapped thing in the office says, as {"kind", "text"}: first one short
+    line saying what it is, then the lines What else? goes through, each drawn only
+    from what its own view shows, in plain words with no titles, ids or paths."""
+    model, crew = scene.model, scene.crew
+    if view == "tasks":
+        n = {k: len(v) for k, v in board(model).items()}
+        lines = ["The task board: %d waiting on you, %d in flight." % (n["waiting"], n["in_flight"]),
+                 "%s queued, %s done this month." % (bridge._plural(n["queued"], "job"),
+                                                     bridge._plural(n["done"], "job")),
+                 "Every job pinned up in four columns, oldest first."]
+    elif view == "calendar":
+        today = bridge._parse_day(model["today"])
+        day = calendar(model, [today])[today] if today else []
+        done = sum(1 for it in day if it["mark"] == "done")
+        due = len(day) - done
+        lines = ["The wall calendar. Today is %s." % ("%s %d %s" % (today.strftime("%A"), today.day,
+                                                                    today.strftime("%B")) if today else "unknown"),
+                 "%s finished today, %s due." % (bridge._plural(done, "job"), due) if day
+                 else "Nothing finished or due today yet.",
+                 "Week, month or year: it shows what's done and what's due."]
+    elif view == "memory":
+        pages = memory_pages(model, _fm_name(scene), now)
+        kept = sum(1 for p in pages if p["group"] == "Long-term memory")
+        lines = ["The bookshelf: the crew's memory and a daily journal.",
+                 "%s of long-term memory, %s in the journal." % (bridge._plural(kept, "page"),
+                                                                bridge._plural(len(pages) - kept, "day")),
+                 "What the crew knows about you, and each day's work."]
+    elif view == "system":
+        overall = (health or {}).get("overall") or "not checked yet"
+        head, _sep, looks = overall.partition(": ")
+        lines = ["The server rack: %s." % (head[:1].lower() + head[1:]),
+                 "Needs a look: %s." % looks if looks else "Its sign reads ok while everything is healthy.",
+                 "Files are rechecked every 5 seconds, commands every 5 minutes."]
+    elif view == "approvals":
+        groups = approvals(model, crew)
+        n = sum(len(g["items"]) for g in groups)
+        oldest = max((_age(it["since"], model["today"])[1] for g in groups for it in g["items"]), default=0)
+        lines = ["The inbox: %s on you." % ("one decision waits" if n == 1 else "%d decisions wait" % n) if n
+                 else "The inbox is empty. Nothing waits on you.",
+                 "The oldest has waited %s." % bridge._plural(oldest, "day") if oldest
+                 else "Nothing in it has waited more than a day.",
+                 "You answer them in chat, never here."]
+    else:  # team: the alumni wall
+        gone = len(scene.alumni)
+        mates = sum(1 for m in crew if m["kind"] == "mate")
+        interns = sum(1 for m in crew if m["kind"] == "intern")
+        lines = ["The alumni wall: %s of retired mates." % bridge._plural(gone, "photo") if gone
+                 else "The alumni wall. No one has retired while I've watched.",
+                 "The crew: %s, %s and %s." % (_fm_name(scene), bridge._plural(mates, "second mate"),
+                                                bridge._plural(interns, "intern")),
+                 "Retired mates' photos go up here, one frame each."]
+    return [{"kind": "what" if i == 0 else "more", "text": _short(t)} for i, t in enumerate(lines)]
+
+
 # ---------------------------------------------------------------------------
 # Layout: desks from the crew
 # ---------------------------------------------------------------------------
@@ -944,11 +1039,13 @@ TALK_RISE = 3       # ticks an agent takes to stand up, and again to sit back do
 
 
 class Talk:
-    """The agent the captain tapped: on which view, what it has said, which answer is
-    highlighted, and how far it has stood up (t) or sat back down (closing)."""
+    """The agent or office thing the captain tapped: on which view, what it has said,
+    which answer is highlighted, and how far an agent has stood up (t) or sat back
+    down (closing). A thing (the view it opens) says its lines in order."""
 
-    def __init__(self, key, view, rect, lines):
+    def __init__(self, key, view, rect, lines, answers=TALK_ANSWERS, thing=None):
         self.key, self.view, self.rect, self.lines = key, view, rect, lines
+        self.answers, self.thing = answers, thing
         self.said = []
         self.line = ""
         self.pick = 0
@@ -956,7 +1053,10 @@ class Talk:
         self.closing = None
 
     def next_line(self, rng):
-        self.line = pick_line(self.lines, self.said, rng)
+        if self.thing is not None:
+            self.line = self.lines[len(self.said) % len(self.lines)]["text"]
+        else:
+            self.line = pick_line(self.lines, self.said, rng)
         self.said.append(self.line)
 
 
@@ -996,6 +1096,12 @@ class Scene:
         if m is None or self.model is None:
             return False
         self.talk = Talk(key, view, rect, npc_lines(self.model, m, self.crew))
+        self.talk.next_line(self.rng)
+        return True
+
+    def open_thing(self, view, rect, lines):
+        """A tapped office thing: its box beside it, saying what it is."""
+        self.talk = Talk("thing:" + view, "office", rect, lines, thing_answers(view), view)
         self.talk.next_line(self.rng)
         return True
 
@@ -1781,23 +1887,31 @@ class UI:
         self.talk_box = None    # (row0, row1, col0, col1) of the talk box and its answers
         self.talking = False    # a talk box is open on this view
         self.services = []      # Calendar: read_services()
+        self.controls = None    # Controls: bin/fm_controls.py's Switch for this home
+        self.switch_hit = None  # Controls: (row0, row1, col0, col1) of the switch card
+        self.health = None      # system_cards() as last drawn, for the server rack's line
 
 
 def _chrome(cv, ui, now):
     C, R = cv.C, cv.R
-    cv.put(0, 0, " MISSION CONTROL ", BG, H("#2fbf71"), True)
-    clk = now.strftime("%a %H:%M ")
-    c = 18
-    ui.tab_hits = []
-    limit = C - len(clk) - 1
-    for i, t in enumerate(TABS):
-        s = " %d %s " % (i + 1, t)
-        if c + len(s) > limit:
+    # The widest tab bar that shows every tab: a gap between tabs, then none and the
+    # clock's trailing space dropped, then the badge shortened, then the same with
+    # every tab's short label, which fits down to MIN_COLS.
+    for names, title, gap, clk in [(n,) + step for n in (TABS, SHORT_TABS) for step in (
+            (" MISSION CONTROL ", 1, now.strftime("%a %H:%M ")),
+            (" MISSION CONTROL ", 0, now.strftime("%a %H:%M")),
+            (" MC ", 0, now.strftime("%a %H:%M")))]:
+        tabs = [" %s %s " % (TAB_KEYS[i], t) for i, t in enumerate(names)]
+        if len(title) + 1 + sum(len(s) for s in tabs) + gap * (len(tabs) - 1) <= C - len(clk) - 1:
             break
+    cv.put(0, 0, title, BG, H("#2fbf71"), True)
+    c = len(title) + 1
+    ui.tab_hits = []
+    for i, s in enumerate(tabs):
         on = VIEWS[i] == ui.view
         cv.put(c, 0, s, BG if on else (INK if VIEWS[i] in READY else LABEL), INK if on else None, on)
         ui.tab_hits.append((c, c + len(s), i))
-        c += len(s) + 1
+        c += len(s) + gap
     cv.put(C - len(clk), 0, clk, DIM)
     cv.put(0, 1, "─" * C, LINE)
     cv.put(0, R - 2, "─" * C, LINE)
@@ -1807,23 +1921,26 @@ def _chrome(cv, ui, now):
     elif ui.talking:
         keys = " left/right pick an answer   enter or a tap answers   esc or a tap elsewhere says bye   q quit "
     elif ui.view == "approvals":
-        keys = " 1-9 switch view   up/down read each decision   answers happen in chat, not here   q quit "
+        keys = " 0-9 switch view   up/down read each decision   answers happen in chat, not here   q quit "
+    elif ui.view == "controls":
+        keys = " 0-9 switch view   tap the switch or Enter: %s   q quit " % (
+            ui.controls.tap() if ui.controls is not None else "change nothing")
     elif ui.view in ("memory", "docs"):
-        keys = " 1-9 switch view   up/down pick a page   page up/down or the wheel scroll it   q quit "
+        keys = " 0-9 switch view   up/down pick a page   page up/down or the wheel scroll it   q quit "
         if ui.view == "docs":
-            keys = " 1-9 switch view   left/right pick a kind" + keys[16:]
+            keys = " 0-9 switch view   left/right pick a kind" + keys[16:]
     else:
-        keys = " 1-9 switch view   up/down pick an agent   enter talk to it   p pause   q quit "
+        keys = " 0-9 switch view   up/down pick an agent   enter talk to it   p pause   q quit "
         if ui.view == "office":
-            keys = " 1-9 switch view   tap an agent to talk, or a board, shelf or inbox to open it   p pause   q quit "
+            keys = " 0-9 switch view   tap an agent or a thing to talk   p pause   q quit "
         elif ui.view == "projects":
-            keys = " 1-9 switch view   up/down pick a project   p pause   q quit "
+            keys = " 0-9 switch view   up/down pick a project   p pause   q quit "
         elif ui.view == "calendar":
-            keys = " left/right earlier or later   t today   v week, month or year   1-9 switch view   p pause   q quit "
+            keys = " left/right earlier or later   t today   v week, month or year   0-9 switch view   p pause   q quit "
         elif ui.view == "team":
-            keys = " 1-9 switch view   tap an agent to open its chat   up/down pick a second mate   q quit "
+            keys = " 0-9 switch view   tap an agent to open its chat   up/down pick a second mate   q quit "
         elif ui.view == "system":
-            keys = " 1-9 switch view   files recheck every 5 s, commands every 5 min   q quit "
+            keys = " 0-9 switch view   files recheck every 5 s, commands every 5 min   q quit "
     cv.put(0, R - 1, clip(keys, C - len(tag) - 1), DIM)
     cv.put(C - len(tag), R - 1, tag, BG if ui.paused else GREEN, AMBER if ui.paused else None, True)
 
@@ -1976,7 +2093,7 @@ def _talk_anchor(scene, cols, rows):
     sprite in the office, else the team row that was tapped."""
     t = scene.talk
     a = scene.actors.get(t.key)
-    if a is not None and scene.pose(a) is not None:
+    if t.thing is None and a is not None and scene.pose(a) is not None:
         L = scene.layout
         x, feet = L.home(a.key) if a.member["kind"] != "intern" and a.key in L.desks else (a.x, a.feet)
         return (OY + (feet - 9) // 2, OY + feet // 2 + 1, x, x + 7)
@@ -1984,12 +2101,15 @@ def _talk_anchor(scene, cols, rows):
 
 
 def _talk_box(cv, ui, scene):
-    """The tapped agent's line in a rounded box beside it, and the answers under it."""
+    """The tapped agent's or thing's line in a rounded box beside it, and the answers under it."""
     ui.talk_hits, ui.talk_box = [], None
     t = scene.talk
     if t is None or t.closing is not None or t.view != ui.view:
         return
-    m = scene._member(t.key)
+    if t.thing is not None:
+        m = {"name": THINGS[t.thing][0], "color": THINGS[t.thing][1], "kind": "thing", "path": ""}
+    else:
+        m = scene._member(t.key)
     if m is None:
         return
     R = cv.R
@@ -2016,7 +2136,7 @@ def _talk_box(cv, ui, scene):
     cv.put(bc, br + h - 1, "╰" + "─" * (w - 2) + "╯", col, TALK_BG)
     name = m["name"] if m["kind"] != "intern" else m["role"]
     cv.put(bc + 2, br + 1, clip(name, w - 4), col, TALK_BG, True)
-    role = {"first": "first mate", "mate": "second mate"}.get(m["kind"], m.get("path") or "")
+    role = {"first": "first mate", "mate": "second mate", "thing": ""}.get(m["kind"], m.get("path") or "")
     if role and len(name) + 3 + len(role) <= w - 4:
         cv.put(bc + 2 + len(name) + 1, br + 1, "· " + role, DIM, TALK_BG)
     lines = wrap(t.line, w - 4)
@@ -2027,7 +2147,7 @@ def _talk_box(cv, ui, scene):
     if tail and br < r0 + 1 < br + h - 1:
         cv.put(tail[0], r0 + 1, tail[1], col)
     c, r = bc + 2, br + h - 2
-    for i, label in enumerate(TALK_ANSWERS):
+    for i, label in enumerate(t.answers):
         s = " %s " % label
         on = i == t.pick
         cv.put(c, r, s, BG if on else INK, col if on else PANEL, on)
@@ -4127,6 +4247,16 @@ def _system_screen(cv, health):
         r0 += h + gap
 
 
+def _controls_screen(cv, ui):
+    """The merge switch: bin/fm_controls.py draws it and turns it over, the one
+    thing in Mission Control that changes anything."""
+    if ui.controls is None:
+        cv.put(2, 3, "The switch has not been read yet.", SOFT)
+        return
+    ui.controls.fresh()
+    ui.switch_hit = ui.controls.draw(cv, 3, cv.R - 3, time.time())
+
+
 def _later_screen(cv, name):
     cv.put(2, 4, "%s is coming next. Press 1 for the office or 2 for the task board." % name, SOFT)
 
@@ -4730,7 +4860,7 @@ def compose(scene, renderer, ui, cols, rows, now, records_ok=True, notice=None, 
     readings are SystemProbe's; the office's rack sign and the System view share
     the health system_cards() makes of them."""
     cv = Canvas(cols, rows)
-    ui.agent_hits, ui.object_hits, ui.talk_hits, ui.talk_box = [], [], [], None
+    ui.agent_hits, ui.object_hits, ui.talk_hits, ui.talk_box, ui.switch_hit = [], [], [], None, None
     need_r = min_rows(60)
     if cols < MIN_COLS or rows < need_r:
         msg = "Make this pane bigger: Mission Control needs %d x %d, this pane is %d x %d." % (
@@ -4738,15 +4868,18 @@ def compose(scene, renderer, ui, cols, rows, now, records_ok=True, notice=None, 
         cv.put(0, 0, clip(msg, cols), AMBER)
         return cv, True
     t = scene.talk
-    if t is not None and (t.view != ui.view or scene._member(t.key) is None):
+    if t is not None and (t.view != ui.view or (t.thing is None and scene._member(t.key) is None)):
         # Another view, or the agent left: the talk ends and the agent sits back down.
         scene.close_talk()
     ui.talking = scene.talk is not None and scene.talk.closing is None
     _chrome(cv, ui, now)
+    if ui.view == "controls":
+        _controls_screen(cv, ui)
+        return cv, False
     if scene.model is None:
         cv.put(2, 4, notice or "Reading the ship's records...", SOFT)
         return cv, False
-    health = system_cards(readings or {}, scene.crew, scene.model, now, records_ok, agents_ok)
+    health = ui.health = system_cards(readings or {}, scene.crew, scene.model, now, records_ok, agents_ok)
     if ui.view == "office":
         _office_screen(cv, ui, scene, renderer, now, health["ok"], notice)
     elif ui.view == "tasks":
@@ -5099,6 +5232,8 @@ def run(home, config_dir, herdr):
     feed.start()
     probe.start()
     import fm_herdr_names as names  # noqa: E402  - imported here: it imports this module
+    import fm_controls as controls  # noqa: E402  - imported here: it imports this module
+    ui.controls = controls.Switch(home, config_dir)
 
     def named():
         _g, model_, agents_, _me, _ae, _at, read_ = feed.snapshot()
@@ -5249,6 +5384,10 @@ def _handle_input(data, ui, scene, feed):
                     changed = cal_action(ui, scene.model, act) or changed
             elif ui.view in ("office", "team"):
                 changed = _tap(ui, scene, feed, x - 1, y - 1) or changed
+            elif ui.view == "controls":
+                if ui.controls is not None and ui.switch_hit and _hit([ui.switch_hit + (None,)], x - 1, y - 1):
+                    ui.controls.turn(ui)
+                    changed = True
             else:
                 changed = _shelf_mouse(ui, x - 1, y - 1, btn) or changed
             continue
@@ -5264,12 +5403,16 @@ def _handle_input(data, ui, scene, feed):
                 _answer(ui, scene, feed, t.pick)
             else:
                 step = -1 if tok in (b"\x1b[D", b"\x1bOD") else 1
-                t.pick = (t.pick + step) % len(TALK_ANSWERS)
+                t.pick = (t.pick + step) % len(t.answers)
             changed = True
             continue
-        if len(tok) == 1 and b"1" <= tok <= b"9":
-            ui.view = VIEWS[int(tok) - 1]
+        if len(tok) == 1 and tok.decode("latin-1") in TAB_KEYS:
+            ui.view = VIEWS[TAB_KEYS.index(tok.decode("latin-1"))]
             changed = True
+        elif ui.view == "controls" and tok in (b"\r", b"\n", b" "):
+            if ui.controls is not None and ui.switch_hit:
+                ui.controls.turn(ui)
+                changed = True
         elif ui.view == "calendar" and tok in (b"\x1b[C", b"\x1bOC", b"\x1b[D", b"\x1bOD", b"t", b"T", b"v", b"V"):
             act = ("today",) if tok in (b"t", b"T") else ("cycle",) if tok in (b"v", b"V") \
                 else ("move", 1 if tok in (b"\x1b[C", b"\x1bOC") else -1)
@@ -5323,12 +5466,16 @@ def _handle_input(data, ui, scene, feed):
 
 def _answer(ui, scene, feed, i):
     """Open chat moves the captain's view to the agent's pane and ends the talk;
-    What else? has it say another line; Bye ends the talk."""
+    What else? has it say another line; Bye ends the talk. For a thing, its first
+    answer opens its view instead."""
     t = scene.talk
     if t is None:
         return False
     t.pick = i
-    if i == 0:
+    if i == 0 and t.thing is not None:
+        scene.close_talk()
+        ui.view = t.thing
+    elif i == 0:
         m = scene._member(t.key)
         if m is not None:
             _open_chat(ui, m, feed)
@@ -5357,8 +5504,8 @@ def _hit(hits, x, y):
 def _tap(ui, scene, feed, x, y):
     """A tap in the Office or on the Team view: on an answer it answers; on an
     agent it starts a talk in the Office and opens its chat on the Team view; on
-    an office thing it opens that thing's view; and anywhere but the talk box it
-    ends the talk that was open."""
+    an office thing it opens that thing's box, saying what it is; and anywhere
+    but the talk box it ends the talk that was open."""
     talking = ui.talk_box is not None and scene.talk is not None and scene.talk.closing is None
     if talking:
         answer = _hit(ui.talk_hits, x, y)
@@ -5370,6 +5517,9 @@ def _tap(ui, scene, feed, x, y):
     m = next((c for c in scene.crew if c["key"] == agent[4]), None) if agent else None
     if talking and m is not None and m["key"] == scene.talk.key:
         return False
+    thing = _hit(ui.object_hits, x, y) if ui.view == "office" and m is None else None
+    if talking and thing is not None and scene.talk.thing == thing[4]:
+        return False
     if talking:
         scene.close_talk()
     if m is not None:
@@ -5380,10 +5530,8 @@ def _tap(ui, scene, feed, x, y):
         else:
             scene.open_talk(m["key"], ui.view, agent[:4])
         return True
-    thing = _hit(ui.object_hits, x, y) if ui.view == "office" else None
-    if thing is not None:
-        ui.view = thing[4]
-        return True
+    if thing is not None and scene.model is not None:
+        return scene.open_thing(thing[4], thing[:4], thing_lines(thing[4], scene, ui.health, bridge._now()))
     return talking
 
 
@@ -5415,6 +5563,8 @@ def frame(home, config_dir, agents_text, view, cols, rows, fmt, session="default
         scene.observe(model, crew, rows)
     ui = UI()
     ui.view = view
+    import fm_controls as controls  # noqa: E402  - imported here: it imports this module
+    ui.controls = controls.Switch(home, config_dir)
     ui.services = read_services(home) if view == "calendar" else []
     if live:
         readings = dict(read_fast(home, model.get("mates") or []), **read_slow(home, list(herdr)))
@@ -5444,7 +5594,7 @@ def frame(home, config_dir, agents_text, view, cols, rows, fmt, session="default
     if talk is not None and talk.closing is None:
         talk = {"key": talk.key, "view": talk.view, "line": talk.line, "said": talk.said,
                 "lines": [ln["text"] for ln in talk.lines], "kinds": [ln["kind"] for ln in talk.lines],
-                "answer": TALK_ANSWERS[talk.pick]}
+                "thing": talk.thing, "answers": list(talk.answers), "answer": talk.answers[talk.pick]}
     else:
         talk = None
     cols_ = board(model)
@@ -5453,6 +5603,7 @@ def frame(home, config_dir, agents_text, view, cols, rows, fmt, session="default
     health = system_cards(readings or {}, crew, model, bridge._now(), agents_ok=agents_ok)
     return json.dumps({
         "size": [cols, rows], "too_small": small, "room_height": L.height, "view": ui.view, "talk": talk,
+        "controls": {"state": ui.controls.sw["state"], "error": ui.controls.sw["error"]},
         "feed": [{"t": f["t"], "who": f["who"], "text": f["text"]} for f in scene.feed],
         "desks": desks, "actors": actors,
         "upstairs": {"count": len(L.upstairs), "working": sum(1 for m in L.upstairs if m["status"] == "work"),

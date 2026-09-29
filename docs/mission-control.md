@@ -1,10 +1,10 @@
 # Mission Control and the Bridge
 
 Mission Control and the Bridge are ways to watch the whole crew at a glance.
-Mission Control is a live screen in a terminal pane, drawn as a pixel-art office with nine views.
+Mission Control is a live screen in a terminal pane, drawn as a pixel-art office with ten views.
 The Bridge is a web page with five tabs that you can open on an iPad or phone over Tailscale.
 The public page is a copy of Mission Control that anyone can open on the web, with everything private left out.
-All of them only read the crew's records.
+All of them only read the crew's records, with one exception: Mission Control's Controls tab holds the switch that lets the first mate merge green pull requests on the workspace, and turning it over is the only change anything here makes.
 Nothing on any of them changes a record, answers a decision, or sends anything to an agent; decisions are still answered in chat with the first mate.
 
 The pictures on this page come from a made-up demo crew (a garden club, a bakery and a chess league) at 170 columns by 50 rows.
@@ -24,6 +24,7 @@ The commands below are what it runs.
 Mission Control's `start` opens one Herdr workspace named `mission-control` and runs the screen in it; running `start` again never makes a second copy.
 To run the screen in any other terminal, use `bin/fm-mission-control.sh run` and press `q` to leave.
 The pane needs at least 96 columns by 36 rows; a smaller pane shows one line asking for more room.
+When the pane is too narrow for the full tab names, every tab shows a short one (1 Office, 2 Tasks, 3 Asks, 4 Proj, 5 Cal, 6 Team, 7 Mem, 8 Docs, 9 Sys, 0 Ctrl), with the badge shortened to MC on the narrowest panes, so all ten tabs stay on screen to tap down to 96 columns.
 
 The Bridge listens on this Mac's Tailscale address, port 7373 by default, so any device on your tailnet can open it.
 When Tailscale is not running it listens only on this Mac, and `status` says so.
@@ -32,11 +33,11 @@ When Tailscale is not running it listens only on this Mac, and `status` says so.
 
 | Key or tap | What it does |
 |---|---|
-| `1` to `9`, or tap a tab | Switch view |
+| `1` to `9` and `0`, or tap a tab | Switch view; `0` is Controls |
 | up and down | Pick the next or previous thing in the view: an agent, a decision, a project card, a second mate or a page; on Tasks, Calendar and System they jump to the Office and pick an agent there |
-| Enter | On the Office view, the picked agent stands up and talks; on Team it moves your Herdr view to the picked second mate's pane; on Tasks, Projects, Calendar and System it does the same for the agent picked in the Office; on Approvals, Memory and Docs it does nothing |
+| Enter | On the Office view, the picked agent stands up and talks; on Team it moves your Herdr view to the picked second mate's pane; on Tasks, Projects, Calendar and System it does the same for the agent picked in the Office; on Controls it turns the switch over; on Approvals, Memory and Docs it does nothing |
 | Tap an agent | On the Office view, the agent stands up and says one short line, with the answers Open chat, What else? and Bye (see below); on the Team view, move your Herdr view to that agent's pane to open its chat |
-| Tap a thing in the office | Open its view: the corkboard opens Tasks, the calendar Calendar, the bookshelf Memory, the server rack System, the inbox Approvals and the alumni wall Team |
+| Tap a thing in the office | It says what it is in the same kind of box, with the answers Open and its view's name, What else? and Bye: the corkboard opens Tasks, the calendar Calendar, the bookshelf Memory, the server rack System, the inbox Approvals and the alumni wall Team |
 | `p` | Pause or restart the office animation |
 | `q` | Quit |
 
@@ -46,7 +47,7 @@ Each view below lists its own extra keys.
 ## Plain names in Herdr
 
 While Mission Control runs, it also gives Herdr's sidebar plain names, every few seconds.
-Each space reads as the agent it belongs to: the first mate's name, each second mate's name, Mission Control and Controls.
+Each space reads as the agent it belongs to: the first mate's name, each second mate's name, and Mission Control.
 Each agent in the agents list shows who it is: the first mate's name, a second mate's name, or "<name>'s intern" after whoever is in charge of the intern (an agent no record claims reads "<name>'s helper").
 Its job shows as a second, dimmed line.
 A space firstmate still opens for a single intern reads "<name>'s intern · <job>", for example "Denver's intern · BSBA Spec revision 2".
@@ -64,7 +65,7 @@ Every space, tab and window keeps the name it has, so a window you named yoursel
 It never moves, closes or opens anything, and never touches the crew's records.
 `bin/fm_herdr_names.py` has the exact rules.
 
-## The nine views
+## The ten views
 
 ### 1 Office
 
@@ -76,7 +77,8 @@ An agent pane that no record claims still shows, as a helper of the mate whose h
 The inbox by the captain's door counts the decisions waiting on you, and the sign under the server rack reads ok, or check when the System view has something for you to look at.
 The column on the right is recent activity in plain sentences: work finished, interns and helpers arriving or leaving, second mates joining or retiring, and questions for you.
 Who is awake or asleep shows on the desks and in the team list underneath, which says what everyone is doing now, so waking and dozing never crowd the activity column.
-Tapping the corkboard, the calendar, the bookshelf, the server rack, the inbox or the alumni wall opens its view.
+Tapping the corkboard, the calendar, the bookshelf, the server rack, the inbox or the alumni wall opens a box beside it, like an agent's, with one short line saying what it is, taken from what its view shows: the task board's counts, today's date, how many memory pages there are, whether all systems are normal, how many decisions wait on you, or who has retired.
+Open and its view's name opens that view, What else? says another short line, and Bye, Esc or a tap anywhere else closes the box; left, right and Enter answer too.
 
 ![An agent talking: the first mate has stood up from its desk and says one line, with Open chat, What else? and Bye beside it](mission-control/office-talk.png)
 
@@ -158,6 +160,16 @@ The System Map card gives the map's full address to open in Safari, taken from t
 When this home has a public page, the Public page card beside it gives the public page's full address the same way: on Cloudflare the address the scheduled job's last publish recorded (so it appears once `install` has run), or the GitHub Pages address of its repository, and "not published yet" until that address is known.
 The address is always printed whole on one line so you can long-press and copy it from Termius to share; a card whose address is too long for its column spans the full width.
 
+### 0 Controls
+
+Controls holds one switch: "Let <the first mate> merge green pull requests on the workspace", ON or OFF.
+It is the only thing in Mission Control that changes anything.
+Tap the switch, or press Enter or space while it is on screen, and it turns over at once, with no confirmation, since the next tap undoes it; the footer says what changed.
+The tab shows the switch even while the rest of Mission Control is still reading the crew's records.
+Under it the tab says what ON allows, when the switch last changed and what it means right now.
+The switch is always read back from this home's settings, so a change made anywhere else shows by itself, and a settings file that cannot be read shows why while a tap changes nothing.
+The same switch also runs on a screen of its own in any terminal with `bin/fm-controls.sh run`; Controls no longer has its own Herdr space, and `bin/fm-controls.sh stop` closes one left from before.
+
 ## The Bridge
 
 ![The Bridge page on an iPad-sized screen: one card per project with what waits on you](mission-control/bridge.png)
@@ -186,8 +198,8 @@ Tap any box for a card saying what it is, what it does in the workflow, who uses
 
 The public page looks like Mission Control's screen: the same tab bar, office, live activity column and team list.
 Office, Projects, Calendar and Team are open to anyone.
-Tasks, Approvals, Memory, Docs and System stay in the tab bar with a lock; opening one shows a padlock over blurred shapes, and nothing from those views is ever written into the page.
-In the office the corkboard, bookshelf, server rack and inbox carry the same lock, and the wall calendar opens the Calendar.
+Tasks, Approvals, Memory, Docs, System and Controls stay in the tab bar with a lock; opening one shows a padlock over blurred shapes, and nothing from those views, nor the switch on Controls, is ever written into the page.
+Tapping a thing in the office opens its box with one short line built from public counts, such as how many things wait on the captain; its Open button is locked for the corkboard, bookshelf, server rack and inbox, which also carry the lock in the office, and opens the Calendar or Team for the wall calendar and the alumni wall.
 Tapping someone makes them stand up and say one line, like a character in a game: what they are doing, a count from their projects, or a fun fact.
 Its Open chat button is locked, because only you talk to the crew.
 
