@@ -1,0 +1,36 @@
+ MC   1 Office  2 Tasks  3 Asks  4 Proj  5 Cal  6 Team  7 Mem  8 Docs  9 Sys  0 Ctrl   Tue 14:56
+────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                
+ 4 waiting on you    5 queued    1 in flight    3 done this month    oldest decision waiting: 29
+                                                                                                
+┌─ WAITING ON YOU ─4──┐ ┌─ QUEUED ─5──────────┐ ┌─ IN FLIGHT ─1───────┐ ┌─ DONE THIS MONTH ─3─┐ 
+│                     │ │                     │ │                     │ │                     │ 
+│ ■ Alpha       2 Sep │ │ ■ beta              │ │ ■ Alpha             │ │ ■ Alpha      12 Sep │ 
+│   Choose the quiz   │ │   Revisit the venue │ │   Build chapter four│ │   Chapter four notes│ 
+│   format            │ │   later             │ │                     │ │                     │ 
+│                     │ │                     │ │                     │ │                     │ 
+│ ■ beta        3 Sep │ │ ■ Alpha             │ │                     │ │ ■ Alpha       5 Sep │ 
+│   Approve the module│ │   Build the quiz    │ │                     │ │   Chapter three     │ 
+│   outline           │ │   once the format...│ │                     │ │   decks             │ 
+│                     │ │                     │ │                     │ │                     │ 
+│ ■ setup      29 Aug │ │ ■ setup             │ │                     │ │ ■ beta        2 Sep │ 
+│   Tick a profile    │ │   Update the ship's │ │                     │ │   Module one handout│ 
+│   setting only th...│ │   own tooling       │ │                     │ │                     │ 
+│                     │ │                     │ │                     │ │                     │ 
+│ ■ Alpha       8 Sep │ │ ■ beta              │ │                     │ │                     │ 
+│   Decide the chapter│ │   Print the handouts│ │                     │ │                     │ 
+│   five review point │ │                     │ │                     │ │                     │ 
+│                     │ │                     │ │                     │ │                     │ 
+│                     │ │ ■ Alpha             │ │                     │ │                     │ 
+│                     │ │   Add a text layer  │ │                     │ │                     │ 
+│                     │ │   to the chapter... │ │                     │ │                     │ 
+│                     │ │                     │ │                     │ │                     │ 
+│                     │ │                     │ │                     │ │                     │ 
+│                     │ │                     │ │                     │ │                     │ 
+│                     │ │                     │ │                     │ │                     │ 
+│                     │ │                     │ │                     │ │                     │ 
+│                     │ │                     │ │                     │ │                     │ 
+└─────────────────────┘ └─────────────────────┘ └─────────────────────┘ └─────────────────────┘ 
+                                                                                                
+────────────────────────────────────────────────────────────────────────────────────────────────
+ 0-9 switch view   up/down pick an agent   enter talk to it   p pause   q...  updates by itself 

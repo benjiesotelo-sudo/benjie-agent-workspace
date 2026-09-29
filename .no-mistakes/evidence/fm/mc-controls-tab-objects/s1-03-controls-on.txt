@@ -1,0 +1,44 @@
+ MISSION CONTROL   1 Office  2 Tasks  3 Approvals  4 Projects  5 Calendar  6 Team  7 Memory  8 Docs  9 System  0 Controls  Tue 14:54
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                                                    
+  Let Denver merge green pull requests on the workspace: ON                                                                         
+                                                                                                                                    
+  ┌──────────────────────────────────────────────────────────────┐                                                                  
+  │                     the switch is                            │                                                                  
+  │                     ON                                       │                                                                  
+  │                     tap to turn it off                       │                                                                  
+  └──────────────────────────────────────────────────────────────┘                                                                  
+                                                                                                                                    
+  WHAT ON ALLOWS                                                                                                                    
+  Denver may merge pull requests on the workspace once every check passes and there are no conflicts; other projects still wait     
+  for you.                                                                                                                          
+                                                                                                                                    
+  LAST CHANGED                                                                                                                      
+  Turned ON here Tue 29 Sep at 14:54 (just now).                                                                                    
+                                                                                                                                    
+  RIGHT NOW                                                                                                                         
+  Denver may merge green pull requests on the workspace without asking you.                                                         
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ Turned ON: Denver may now merge green pull requests on the workspace.                                            updates by itself 

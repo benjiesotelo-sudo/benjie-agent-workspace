@@ -1,0 +1,44 @@
+ MISSION CONTROL   1 Office  2 Tasks  3 Approvals  4 Projects  5 Calendar  6 Team  7 Memory  8 Docs  9 System  0 Controls  Tue 14:54
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                                                    
+  Let Denver merge green pull requests on the workspace: OFF                                                                        
+                                                                                                                                    
+  ┌──────────────────────────────────────────────────────────────┐                                                                  
+  │                     the switch is                            │                                                                  
+  │                     OFF                                      │                                                                  
+  │                     tap to turn it on                        │                                                                  
+  └──────────────────────────────────────────────────────────────┘                                                                  
+                                                                                                                                    
+  WHAT ON ALLOWS                                                                                                                    
+  Denver may merge pull requests on the workspace once every check passes and there are no conflicts; other projects still wait     
+  for you.                                                                                                                          
+                                                                                                                                    
+  LAST CHANGED                                                                                                                      
+  Turned OFF here Tue 29 Sep at 14:54 (just now).                                                                                   
+                                                                                                                                    
+  RIGHT NOW                                                                                                                         
+  Denver waits for your word before merging any pull request.                                                                       
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+                                                                                                                                    
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ Turned OFF: Denver now waits for your word before any merge.                                                     updates by itself 

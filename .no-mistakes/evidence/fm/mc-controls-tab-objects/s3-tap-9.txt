@@ -1,0 +1,36 @@
+ MC   1 Office  2 Tasks  3 Asks  4 Proj  5 Cal  6 Team  7 Mem  8 Docs  9 Sys  0 Ctrl   Tue 14:56
+────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                
+ ● 4 things need a look: crew monitoring, the Bridge page, Missi...                             
+                                                                                                
+┌─ ● THIS MAC ────────────────────────────────┐ ┌─ ● CREW MONITORING ─────────────────────────┐ 
+│ This Mac: healthy                           │ │ Monitoring the crew: not running, and work  │ 
+│ ● Up since Sun 20 Sep 16:23, 8 days         │ │ is under way                                │ 
+│ ● Processor load 2.3 on 10 cores            │ │ ● Away mode is off                          │ 
+│ ● Memory: 9.7 GB of 16 GB in use            │ │ ● No notifications waiting for the first    │ 
+│ ● Disk: 32 GB free of 228 GB                │ │   mate                                      │ 
+│ ● On the tailnet                            │ │                                             │ 
+└─────────────────────────────────────────────┘ └─────────────────────────────────────────────┘ 
+┌─ ● CREW ────────────────────────────────────┐ ┌─ ● SECOND MATES ────────────────────────────┐ 
+│ Crew: 1 working, 1 asleep, 1 intern out     │ │ Second mates: all 1 window open             │ 
+│ ● Merge switch OFF: every merge waits for   │ │ ● Alpha: window open, home changed 3        │ 
+│   you                                       │ │   minutes ago                               │ 
+└─────────────────────────────────────────────┘ └─────────────────────────────────────────────┘ 
+┌─ ● THE BRIDGE PAGE ─────────────────────────┐ ┌─ ● MISSION CONTROL ─────────────────────────┐ 
+│ The Bridge page: not running                │ │ Mission Control: running in this terminal,  │ 
+│                                             │ │ not in its usual Herdr space                │ 
+└─────────────────────────────────────────────┘ └─────────────────────────────────────────────┘ 
+┌─ ● GITHUB ──────────────────────────────────┐ ┌─ ● TOOLS ───────────────────────────────────┐ 
+│ GitHub: signed in, checked 12 seconds ago   │ │ Tools: 1 of 3 could not be checked          │ 
+│                                             │ │ ● no-mistakes 1.79.0                        │ 
+│                                             │ │ ● herdr: could not be checked               │ 
+│                                             │ │ ● claude 2.1.284                            │ 
+└─────────────────────────────────────────────┘ └─────────────────────────────────────────────┘ 
+┌─ ● SYSTEM MAP ──────────────────────────────┐                                                 
+│ System Map: opens once the Bridge page      │                                                 
+│ answers                                     │                                                 
+└─────────────────────────────────────────────┘                                                 
+                                                                                                
+                                                                                                
+────────────────────────────────────────────────────────────────────────────────────────────────
+ 0-9 switch view   files recheck every 5 s, commands every 5 min   q quit     updates by itself 

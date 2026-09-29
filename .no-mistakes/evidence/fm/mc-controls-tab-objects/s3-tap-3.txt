@@ -1,0 +1,36 @@
+ MC   1 Office  2 Tasks  3 Asks  4 Proj  5 Cal  6 Team  7 Mem  8 Docs  9 Sys  0 Ctrl   Tue 14:56
+────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                
+ 4 decisions wait on you, with 2 agents   oldest since 29 Aug, 31 days ago            read only 
+                                                                                                
+── Denver 3 ────────────────────────────────────────────────────────────────────────────────────
+ ▸   31 days  ■ setup                 Tick a profile setting only the captain can reach         
+     27 days  ■ Alpha                 Choose the quiz format                                    
+     26 days  ■ beta                  Approve the module outline                                
+                                                                                                
+── Alpha 1 ─────────────────────────────────────────────────────────────────────────────────────
+     21 days  ■ Alpha                 Decide the chapter five review point                      
+                                                                                                
+                                                                                                
+                                                                                                
+                                                                                                
+                                                                                                
+                                                                                                
+                                                                                                
+                                                                                                
+                                                                                                
+                                                                                                
+                                                                                                
+                                                                                                
+                                                                                                
+┌─ THE DECISION ───────────────────────────────────────────────────────────────────────────────┐
+│  Tick a profile setting only the captain can reach                                           │
+│  asked 29 Aug, 31 days ago, sits with Denver, the ship's own setup                           │
+│  A body line that the Bridge never shows.                                                    │
+│                                                                                              │
+│                                                                                              │
+│                                                                                              │
+│                                                                                              │
+└──────────────────────────────────────────────────────────────────────────────────────────────┘
+────────────────────────────────────────────────────────────────────────────────────────────────
+ 0-9 switch view   up/down read each decision   answers happen in chat, n...  updates by itself 

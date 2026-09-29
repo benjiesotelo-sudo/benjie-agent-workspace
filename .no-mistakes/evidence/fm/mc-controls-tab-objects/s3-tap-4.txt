@@ -1,0 +1,36 @@
+ MC   1 Office  2 Tasks  3 Asks  4 Proj  5 Cal  6 Team  7 Mem  8 Docs  9 Sys  0 Ctrl   Tue 14:56
+────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                
+ 2 projects    1 active    0 parked    1 quiet             real list, same one the Bridge reads 
+                                                                                                
+┌─────────────────────────────────────────────┐ ┌─────────────────────────────────────────────┐ 
+│ Alpha                               Active  │ │ beta                                 Quiet  │ 
+│ Alpha course materials for a class; decks   │ │ Beta outreach programme, delivered in       │ 
+│ and notes                                   │ │ modules                                     │ 
+│ 2 waiting on you     2 queued               │ │ 1 waiting on you     2 queued               │ 
+│ 1 in flight          2 done this month      │ │ 0 in flight          1 done this month      │ 
+│ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 29%  2/7 │ │ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 25%  1/4 │ 
+│ ■ Alpha in charge                           │ │ ■ Denver in charge                          │ 
+└─────────────────────────────────────────────┘ └─────────────────────────────────────────────┘ 
+                                                                                                
+┌─────────────────────────────────────────────┐                                                 
+│ The setup itself                     Quiet  │                                                 
+│ Housekeeping that belongs to no project,    │                                                 
+│ and work on the first mate itself.          │                                                 
+│ 1 waiting on you     1 queued               │                                                 
+│ 0 in flight          0 done this month      │                                                 
+│ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0%  0/2 │                                                 
+│ ■ Denver in charge                          │                                                 
+└─────────────────────────────────────────────┘                                                 
+                                                                                                
+─ WAITING ON YOU FOR ALPHA ─────────────────────────────────────────────────────────────────────
+   do      Choose the quiz format                                                         2 Sep 
+   decide  Decide the chapter five review point                                           8 Sep 
+                                                                                                
+                                                                                                
+                                                                                                
+                                                                                                
+                                                                                                
+                                                                                                
+────────────────────────────────────────────────────────────────────────────────────────────────
+ 0-9 switch view   up/down pick a project   p pause   q quit                  updates by itself 

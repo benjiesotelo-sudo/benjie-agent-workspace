@@ -1,0 +1,36 @@
+ MC   1 Office  2 Tasks  3 Asks  4 Proj  5 Cal  6 Team  7 Mem  8 Docs  9 Sys  0 Ctrl   Tue 14:57
+────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                
+  Let Denver merge green pull requests on the workspace: OFF                                    
+                                                                                                
+  ┌──────────────────────────────────────────────────────────────┐                              
+  │                     the switch is                            │                              
+  │                     OFF                                      │                              
+  │                     tap to turn it on                        │                              
+  └──────────────────────────────────────────────────────────────┘                              
+                                                                                                
+  WHAT ON ALLOWS                                                                                
+  Denver may merge pull requests on the workspace once every check passes and there are no      
+  conflicts; other projects still wait for you.                                                 
+                                                                                                
+  LAST CHANGED                                                                                  
+  Never changed yet; it starts OFF.                                                             
+                                                                                                
+  RIGHT NOW                                                                                     
+  Denver waits for your word before merging any pull request.                                   
+                                                                                                
+                                                                                                
+                                                                                                
+                                                                                                
+                                                                                                
+                                                                                                
+                                                                                                
+                                                                                                
+                                                                                                
+                                                                                                
+                                                                                                
+                                                                                                
+                                                                                                
+                                                                                                
+────────────────────────────────────────────────────────────────────────────────────────────────
+ 0-9 switch view   tap the switch or Enter: turn it on   q quit               updates by itself 
