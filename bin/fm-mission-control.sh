@@ -76,7 +76,7 @@
 # answers Open <view>, What else? and Bye: the corkboard opens Tasks, the
 # calendar Calendar, the bookshelf Memory, the server rack System, the inbox
 # Approvals and the alumni wall Team. On the Controls tab a tap on the switch,
-# Enter or space turns it over.
+# or Enter or space while it is on screen, turns it over.
 #
 # start, stop and status keep the mission-control workspace through
 # bin/fm-herdr-screen-lib.sh, whose header owns how a workspace is created,

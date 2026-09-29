@@ -187,7 +187,9 @@ CONTROLS. The Controls tab (key 0) is the merge switch, drawn and turned over
 by bin/fm_controls.py, whose header owns its wording and what a turn does, and
 written only through bin/fm_merge_switch.py. A tap on the switch card, Enter
 or space turns it over at once, with no confirmation; the footer says what
-happened. It rereads the switch whenever its files change, so an edit made
+happened. Enter and space turn it only when the last frame drew the switch, so
+a pane too small to show it changes nothing, and the tab is drawn before the
+records are read since it needs none of them. It rereads the switch whenever its files change, so an edit made
 anywhere else shows by itself. frame applies these keys as the live screen
 does, so a frame given Enter on this tab turns the switch over.
 
