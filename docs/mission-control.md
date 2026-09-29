@@ -155,6 +155,8 @@ The health of this Mac and of the crew's plumbing, one card each, with a green, 
 The line at the top reads "All systems normal" or names what needs a look.
 Files are rechecked every 5 seconds and commands every 5 minutes; anything that cannot be read says "could not be checked" rather than guessing.
 The System Map card gives the map's full address to open in Safari, taken from the Bridge page's reading, since the Bridge serves it.
+When this home has a public page, the Public page card beside it gives the public page's full address the same way: on Cloudflare the address the scheduled job's last publish recorded (so it appears once `install` has run), or the GitHub Pages address of its repository, and "not published yet" until that address is known.
+The address is always printed whole on one line so you can long-press and copy it from Termius to share; a card whose address is too long for its column spans the full width.
 
 ## The Bridge
 

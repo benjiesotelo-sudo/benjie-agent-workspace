@@ -319,6 +319,38 @@ print("|".join("%s=%s" % t for t in m.important_links(sys.argv[1])))' "$HOME_DIR
   || fail "important links come from the Bridge's address and the public page's repository: $links"
 pass "the important links Mission Control pins come from the Bridge's address and the public page's setting"
 
+# A Cloudflare public page: the address its last publish recorded, through this home's scheduled job only.
+CF_HOME="$TMP_ROOT/cfship"; CF_AGENTS="$TMP_ROOT/cf-agents"; CF_SITE="$TMP_ROOT/cf-site"
+mkdir -p "$CF_HOME/config" "$CF_AGENTS" "$CF_SITE"
+CF_HOME=$(cd "$CF_HOME" && pwd -P)
+printf '{"public_page": {"host": "cloudflare", "project": "mission-control"}}\n' > "$CF_HOME/config/mission-control.json"
+cf_job() {  # <home the job serves> - writes the publish job's plist naming CF_SITE
+  python3 -c 'import plistlib, sys
+plistlib.dump({"Label": "com.firstmate.mission-control-web",
+               "ProgramArguments": ["/bin/bash", "fm-mission-control-web.sh", "publish", sys.argv[2]],
+               "EnvironmentVariables": {"FM_HOME": sys.argv[1]}}, open(sys.argv[3], "wb"))' \
+    "$1" "$CF_SITE" "$CF_AGENTS/com.firstmate.mission-control-web.plist"
+}
+cf_page() {
+  FM_MCW_AGENT_DIR="$CF_AGENTS" PYTHONPATH="$ROOT/bin" python3 -c '
+import json, sys, fm_system_map as m
+print(json.dumps(m.public_page(sys.argv[1]), sort_keys=True))' "$CF_HOME"
+}
+[ "$(cf_page)" = '{"address": null}' ] || fail "a Cloudflare page with no publish job has no address yet: $(cf_page)"
+cf_job "$CF_HOME"
+printf 'namespace=mission-control-snapshot:abc\nurl=https://old.pages.dev\nurl=https://crew-office.pages.dev\n' \
+  > "$CF_SITE/.cloudflare-published"
+[ "$(cf_page)" = '{"address": "https://crew-office.pages.dev/"}' ] \
+  || fail "a Cloudflare page's address is the last one its publish recorded: $(cf_page)"
+cf_job "$TMP_ROOT/elsewhere"
+[ "$(cf_page)" = '{"address": null}' ] || fail "another home's publish job is not this home's page: $(cf_page)"
+cf_job "$CF_HOME"
+printf 'url=javascript:alert(1)\n' > "$CF_SITE/.cloudflare-published"
+[ "$(cf_page)" = '{"address": null}' ] || fail "a recorded address that is not https is not shown: $(cf_page)"
+printf '{"names": {}}\n' > "$CF_HOME/config/mission-control.json"
+[ "$(cf_page)" = null ] || fail "a home with no public_page has no public page: $(cf_page)"
+pass "a Cloudflare public page's address is the one its own publish job recorded, never guessed"
+
 # --- steps from the current state -----------------------------------------
 
 steps=$(PYTHONPATH="$ROOT/bin" python3 - <<'PY'

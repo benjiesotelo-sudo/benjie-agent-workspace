@@ -1204,6 +1204,32 @@ jq -r '.system.cards[] | select(.title == "System Map") | .head' <<<"$MJ" | grep
   || fail "the map card says it opens once the Bridge answers"
 pass "the System view gives the System Map's address, its dot following the Bridge's reading"
 
+[ "$(jq -r '[.system.cards[] | select(.title == "Public page")] | length' <<<"$SJ")" = 0 ] \
+  || fail "a home with no public page shows no public page card"
+readings "$TMP_ROOT/pub.json" '.public_page = {address: "https://crew-office.pages.dev/"}'
+PJ=$(sys_frame "$TMP_ROOT/pub.json" "" json)
+[ "$(jq -r '[.system.cards[].title] | .[-2:] | join(",")' <<<"$PJ")" = "System Map,Public page" ] \
+  || fail "the public page card sits beside the System Map card: $(jq -c '[.system.cards[].title]' <<<"$PJ")"
+[ "$(dot "$PJ" "Public page")" = green ] || fail "a known public address gives a green dot"
+PT=$(sys_frame "$TMP_ROOT/pub.json")
+grep -q '│ https://crew-office.pages.dev/ ' <<<"$PT" || fail "the public page's full address is printed to tap: $PT"
+grep -q 'more below' <<<"$PT" && fail "the public page card fits beside the System Map card"
+readings "$TMP_ROOT/pub-none.json" '.public_page = {address: null}'
+PJ=$(sys_frame "$TMP_ROOT/pub-none.json" "" json)
+[ "$(dot "$PJ" "Public page")" = amber ] || fail "an unknown public address is amber"
+jq -r '.system.cards[] | select(.title == "Public page") | .head' <<<"$PJ" | grep -q 'not published yet' \
+  || fail "an unknown public address says not published yet, never a guessed link"
+jq -r .system.overall <<<"$PJ" | grep -q 'All systems normal' || fail "an unpublished public page is not a fault"
+pass "the System view gives the public page's address beside the System Map's, only when the home has one"
+
+LONG=https://octo-example-crew.github.io/mission-control-public-office/
+readings "$TMP_ROOT/pub-long.json" '.public_page = {address: "'"$LONG"'"}'
+PN=$(mc "$HOME_DIR" frame --readings "$TMP_ROOT/pub-long.json" --agents "$AGENTS" --view system --size 96x60) \
+  || fail "narrow system frame failed"
+grep -qF "│ $LONG " <<<"$PN" || fail "a long public address stays one unbroken line in a narrow pane: $PN"
+grep -q '● SYSTEM MAP ' <<<"$PN" || fail "the other cards still show beside a full-width address card"
+pass "a public address too long for a narrow card gets a full-width card and is never broken"
+
 L=$(mc "$HOME_DIR" frame --agents "$AGENTS" --view docs)
 grep -q ' 9 System ' <<<"$L" || fail "the tab bar shows all nine views"
 S=$(mc "$HOME_DIR" frame --agents "$AGENTS" --size 80x24)

@@ -5,7 +5,7 @@ The Bridge (bin/fm_bridge.py) serves it at /system-map (the page) and
 /system-map.json (the map), and bin/fm-bridge.sh owns the command surface and
 the address. This module owns what the map reads, which nodes and lines it
 draws, the guided tour, and the page that draws them in the browser.
-Mission Control's Docs view reuses important_links().
+Mission Control's Docs view reuses important_links(), and its System view public_page().
 
 THE SHAPE. Top to bottom, like an automation graph: the captain and every way
 work arrives or wakes the crew; the first mate, with where results show beside
@@ -1351,19 +1351,63 @@ def build_tour(nodes, edges, fm):
     return hops
 
 
-def public_url(home):
-    """The public page's address from config/mission-control.json public_page.repository, or None."""
+PUBLIC_AGENT = "com.firstmate.mission-control-web"   # bin/fm-mission-control-web.sh's LaunchAgent label
+
+
+def _public_settings(home):
+    """config/mission-control.json public_page, or None when the home configures no public page."""
     try:
         with open(os.path.join(home, "config", "mission-control.json"), encoding="utf-8") as fh:
-            repo = ((json.load(fh) or {}).get("public_page") or {}).get("repository")
+            page = (json.load(fh) or {}).get("public_page")
     except (OSError, ValueError, AttributeError):
         return None
-    m = re.fullmatch(r"([A-Za-z0-9-]+)/([A-Za-z0-9._-]+)", repo or "")
-    if not m:
+    return page if isinstance(page, dict) else None
+
+
+def _cloudflare_url(home):
+    """The address the last Cloudflare publish recorded in <folder>/.cloudflare-published, or None.
+
+    The folder is the one this home's scheduled publish job names, as
+    bin/fm-mission-control-web.sh status reads it; a job for another home is not
+    this home's page. Two small file reads, never wrangler or the network."""
+    agents = os.environ.get("FM_MCW_AGENT_DIR") or os.path.expanduser("~/Library/LaunchAgents")
+    try:
+        with open(os.path.join(agents, PUBLIC_AGENT + ".plist"), "rb") as fh:
+            job = plistlib.load(fh)
+        folder = job["ProgramArguments"][3]
+        job_home = job.get("EnvironmentVariables", {}).get("FM_HOME")
+    except (OSError, ValueError, KeyError, IndexError, TypeError, AttributeError, plistlib.InvalidFileException):
         return None
+    if not isinstance(folder, str) or not isinstance(job_home, str) \
+            or os.path.realpath(job_home) != os.path.realpath(home):
+        return None
+    urls = [ln[4:].strip() for ln in (_read(os.path.join(folder, ".cloudflare-published")) or "").splitlines()
+            if ln.startswith("url=")]
+    url = urls[-1] if urls else ""
+    return url.rstrip("/") + "/" if re.fullmatch(r"https://[A-Za-z0-9.-]+/?", url) else None
+
+
+def public_page(home):
+    """None when the home configures no public page, else {"address": its address or None when unknown}.
+
+    host cloudflare: the address the last publish recorded; otherwise the
+    GitHub Pages address of public_page.repository."""
+    page = _public_settings(home)
+    if page is None:
+        return None
+    if str(page.get("host") or "").strip().lower() == "cloudflare":
+        return {"address": _cloudflare_url(home)}
+    m = re.fullmatch(r"([A-Za-z0-9-]+)/([A-Za-z0-9._-]+)", page.get("repository") or "")
+    if not m:
+        return {"address": None}
     owner = m.group(1).lower()
-    return "https://%s.github.io/" % owner + ("" if m.group(2).lower() == owner + ".github.io"
-                                                else m.group(2) + "/")
+    return {"address": "https://%s.github.io/" % owner + ("" if m.group(2).lower() == owner + ".github.io"
+                                                          else m.group(2) + "/")}
+
+
+def public_url(home):
+    """The public page's address (see public_page()), or None."""
+    return (public_page(home) or {}).get("address")
 
 
 def bridge_address(home):

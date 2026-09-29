@@ -199,8 +199,9 @@ five minutes and red past fifteen while work is under way, amber at most
 during the first mate's own turn; away mode; queued wake notifications), the
 crew's counts with the merge switch Controls sets (bin/fm_merge_switch.py,
 only read here), each second mate's window and last home change, the Bridge and
-Mission Control (their own `status` commands), the GitHub sign-in, and tool
-versions. SystemProbe reads files every SYSTEM_FAST seconds and runs the
+Mission Control (their own `status` commands), the GitHub sign-in, tool
+versions, the System Map's address, and the public page's address when the home
+has one (bin/fm_system_map.py public_page(), file reads only). SystemProbe reads files every SYSTEM_FAST seconds and runs the
 commands every SYSTEM_SLOW seconds, each read-only with a timeout, in threads
 off the render loop; a command that is missing or fails reads "could not be
 checked". The office's rack sign shows the same health: " ok ", or "check" in
@@ -3714,7 +3715,17 @@ def read_fast(home, mates):
         "supervision_needed": bool(sources) or "x-watch.check.sh" in names or any(n.endswith(".meta") for n in names),
         "away": ".afk" in names, "queued": queued, "mates": changed,
         "merge_switch": {k: v for k, v in merge_switch.read(home).items() if k in ("state", "error")},
+        "public_page": _public_page(home),
     }
+
+
+def _public_page(home):
+    """bin/fm_system_map.py public_page() for this home: file reads only, None when it cannot tell."""
+    try:
+        import fm_system_map
+        return fm_system_map.public_page(home)
+    except Exception:  # noqa: BLE001 - an unreadable setting shows no public page card
+        return None
 
 
 def _screen_status(argv, env):
@@ -4036,6 +4047,14 @@ def system_cards(r, crew, model, now, records_ok=True, agents_ok=True):
     else:
         card("System Map", "amber", "System Map: opens once the Bridge page answers")
 
+    # The public page: where anyone can see it, only when this home publishes one.
+    pub = r.get("public_page")
+    if pub and pub.get("address"):
+        card("Public page", "green", "Public page: what anyone can see",
+             [("green", "Open in Safari"), (None, pub["address"])])
+    elif pub:
+        card("Public page", "amber", "Public page: not published yet")
+
     looks = [x for c in cards for x in c["looks"]]
     if looks:
         n = len(looks)
@@ -4058,28 +4077,43 @@ def _system_screen(cv, health):
     if C - len(pill) - 1 > len(health["overall"]) + 6:
         cv.put(C - len(pill) - 1, 3, pill, BG, GREEN, True)
     per_row = min(3, max(2, (C - 1) // (SYS_CARD_W + 1)))
-    w = (C - 1 - (per_row - 1)) // per_row
-    tw = w - 6
-    laid = []
-    for c in health["cards"]:
+    narrow = (C - 1 - (per_row - 1)) // per_row
+
+    def lay(c, w):
         body = [(INK, None, ln, 2) for ln in wrap(clean(c["head"]), w - 4)]
         for d, text in c["lines"]:
-            if d is None:       # an address, flush with the dots so it fits whole
-                body += [(SOFT, None, ln, 2) for ln in wrap(clean(text), w - 4)]
+            if d is None:       # an address, flush with the dots and never broken, so it can be tapped whole
+                body.append((SOFT, None, clean(text), 2))
                 continue
-            for j, ln in enumerate(wrap(clean(text), tw)):
+            for j, ln in enumerate(wrap(clean(text), w - 6)):
                 body.append((SOFT, DOTS[d] if j == 0 else None, ln, 4))
-        laid.append((c, body))
+        return body
+
+    # Cards fill rows of per_row; a card with an address too long for a narrow
+    # card takes a row of its own at full width, so the address stays one line.
+    rows, row = [], []           # rows of (card width, [(card, body)])
+    for c in health["cards"]:
+        if any(d is None and len(clean(t)) > narrow - 4 for d, t in c["lines"]):
+            if row:
+                rows.append((narrow, row))
+            rows.append((C - 1, [(c, lay(c, C - 1))]))
+            row = []
+            continue
+        row.append((c, lay(c, narrow)))
+        if len(row) == per_row:
+            rows.append((narrow, row))
+            row = []
+    if row:
+        rows.append((narrow, row))
     r0 = 5
     last = R - 3
-    heights = [2 + max(len(b) for _, b in laid[i:i + per_row]) for i in range(0, len(laid), per_row)]
+    heights = [2 + max(len(b) for _, b in row) for _, row in rows]
     gap = 1 if r0 + sum(heights) + len(heights) - 2 <= last else 0
-    for i in range(0, len(laid), per_row):
-        row = laid[i:i + per_row]
-        h = heights[i // per_row]
-        if r0 + h - 1 > (last if i + per_row >= len(laid) else last - 1):
+    for i, (w, row) in enumerate(rows):
+        h = heights[i]
+        if r0 + h - 1 > (last if i == len(rows) - 1 else last - 1):
             cv.put(1, last, "%s more below; make this pane taller to see them" %
-                   bridge._plural(len(laid) - i, "card"), DIM)
+                   bridge._plural(sum(len(r) for _, r in rows[i:]), "card"), DIM)
             return
         for j, (c, body) in enumerate(row):
             c0 = j * (w + 1)
