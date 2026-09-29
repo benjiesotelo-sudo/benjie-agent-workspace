@@ -1315,6 +1315,13 @@ for size in 132x44 170x50; do
     || fail "at $size the tab bar shows all ten views, Controls last"
 done
 [ "$(mc "$CH" frame --agents "$AGENTS" --keys 0 --format json | jq -r .view)" = controls ] || fail "key 0 opens Controls"
+T=$(mc "$CH" frame --agents "$AGENTS" --size 96x36)
+for tab in '1 Office:office' '2 Tasks:tasks' '3 Asks:approvals' '4 Proj:projects' '5 Cal:calendar' \
+    '6 Team:team' '7 Mem:memory' '8 Docs:docs' '9 Sys:system' '0 Ctrl:controls'; do
+  head -1 <<<"$T" | grep -q " ${tab%%:*} " || fail "at 96 columns the tab bar shows ${tab%%:*}"
+  [ "$(mc "$CH" frame --agents "$AGENTS" --size 96x36 --keys "$(tap_on "$T" " ${tab%%:*} ")" --format json \
+    | jq -r .view)" = "${tab#*:}" ] || fail "at 96 columns tapping ${tab%%:*} opens ${tab#*:}"
+done
 T=$(mc "$CH" frame --agents "$AGENTS" --size 170x50)
 C=$(mc "$CH" frame --agents "$AGENTS" --keys "$(tap_on "$T" ' 0 Controls ')" --size 170x50 --format json)
 [ "$(jq -r .view <<<"$C")" = controls ] || fail "tapping the Controls tab opens it"
@@ -1328,6 +1335,25 @@ for view in office tasks approvals projects calendar team memory docs system; do
   mc "$CH" frame --agents "$AGENTS" --view "$view" --keys "$ENTER $ENTER" >/dev/null || fail "keys on $view failed"
 done
 [ ! -e "$CSET" ] || fail "Enter and space change nothing on any other view"
+mc "$CH" frame --agents "$AGENTS" --view controls --size 80x24 --keys "$ENTER $ENTER" >/dev/null \
+  || fail "Enter on a too-small Controls failed"
+[ ! -e "$CSET" ] || fail "Enter and space change nothing while the switch is not on screen"
+CN="$TMP_ROOT/controls-no-records"
+cp -R "$HOME_DIR" "$CN"
+PYTHONPATH="$ROOT/bin" FM_BRIDGE_NOW=2026-09-20T10:00:00 python3 - "$CN" <<'PY' \
+  || fail "Controls shows and turns the switch before the records are read"
+import os
+import sys
+import fm_controls
+import fm_mission_control as mc
+home = os.path.realpath(sys.argv[1])
+scene, ui = mc.Scene(), mc.UI()
+ui.view, ui.controls = "controls", fm_controls.Switch(home, home + "/config")
+text = mc.compose(scene, mc.Renderer(), ui, 132, 44, mc.bridge._now())[0].text()
+assert "workspace: OFF" in text and "Reading the ship's records" not in text, text
+mc._handle_input(b"\r", ui, scene, None)
+assert ui.controls.sw["state"] == "on", ui.controls.sw
+PY
 C=$(mc "$CH" frame --agents "$AGENTS" --view controls --keys "$ENTER") || fail "Enter on Controls failed"
 grep -q 'Turned ON: Denver may now merge green pull requests on the workspace.' <<<"$C" || fail "Enter turns it ON and says so"
 [ "$(jq -r '.permissions.allow | length' "$CSET")" = 2 ] || fail "ON writes the switch's two rules through its owner"

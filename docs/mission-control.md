@@ -24,6 +24,7 @@ The commands below are what it runs.
 Mission Control's `start` opens one Herdr workspace named `mission-control` and runs the screen in it; running `start` again never makes a second copy.
 To run the screen in any other terminal, use `bin/fm-mission-control.sh run` and press `q` to leave.
 The pane needs at least 96 columns by 36 rows; a smaller pane shows one line asking for more room.
+When the pane is too narrow for the full tab names, every tab shows a short one (1 Office, 2 Tasks, 3 Asks, 4 Proj, 5 Cal, 6 Team, 7 Mem, 8 Docs, 9 Sys, 0 Ctrl), with the badge shortened to MC on the narrowest panes, so all ten tabs stay on screen to tap down to 96 columns.
 
 The Bridge listens on this Mac's Tailscale address, port 7373 by default, so any device on your tailnet can open it.
 When Tailscale is not running it listens only on this Mac, and `status` says so.
@@ -163,7 +164,8 @@ The address is always printed whole on one line so you can long-press and copy i
 
 Controls holds one switch: "Let <the first mate> merge green pull requests on the workspace", ON or OFF.
 It is the only thing in Mission Control that changes anything.
-Tap the switch, or press Enter or space, and it turns over at once, with no confirmation, since the next tap undoes it; the footer says what changed.
+Tap the switch, or press Enter or space while it is on screen, and it turns over at once, with no confirmation, since the next tap undoes it; the footer says what changed.
+The tab shows the switch even while the rest of Mission Control is still reading the crew's records.
 Under it the tab says what ON allows, when the switch last changed and what it means right now.
 The switch is always read back from this home's settings, so a change made anywhere else shows by itself, and a settings file that cannot be read shows why while a tap changes nothing.
 The same switch also runs on a screen of its own in any terminal with `bin/fm-controls.sh run`; Controls no longer has its own Herdr space, and `bin/fm-controls.sh stop` closes one left from before.

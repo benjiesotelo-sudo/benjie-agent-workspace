@@ -312,6 +312,7 @@ FEED_COL = OW + 2
 FEED_MIN_WIDTH = 24
 
 TABS = ["Office", "Tasks", "Approvals", "Projects", "Calendar", "Team", "Memory", "Docs", "System", "Controls"]
+SHORT_TABS = ["Office", "Tasks", "Asks", "Proj", "Cal", "Team", "Mem", "Docs", "Sys", "Ctrl"]  # when TABS do not fit
 VIEWS = ["office", "tasks"] + [t.lower() for t in TABS[2:]]
 READY = ("office", "tasks", "approvals", "projects", "calendar", "team", "memory", "docs", "system", "controls")
 TAB_KEYS = "1234567890"  # the key for each tab, in order: 0 is Controls
@@ -1892,21 +1893,19 @@ class UI:
 def _chrome(cv, ui, now):
     C, R = cv.C, cv.R
     # The widest tab bar that shows every tab: a gap between tabs, then none and the
-    # clock's trailing space dropped, then the badge shortened; past that the tabs
-    # that do not fit are left off, and their keys still switch to them.
-    tabs = [" %s %s " % (TAB_KEYS[i], t) for i, t in enumerate(TABS)]
-    for title, gap, clk in ((" MISSION CONTROL ", 1, now.strftime("%a %H:%M ")),
-                            (" MISSION CONTROL ", 0, now.strftime("%a %H:%M")),
-                            (" MC ", 0, now.strftime("%a %H:%M"))):
+    # clock's trailing space dropped, then the badge shortened, then the same with
+    # every tab's short label, which fits down to MIN_COLS.
+    for names, title, gap, clk in [(n,) + step for n in (TABS, SHORT_TABS) for step in (
+            (" MISSION CONTROL ", 1, now.strftime("%a %H:%M ")),
+            (" MISSION CONTROL ", 0, now.strftime("%a %H:%M")),
+            (" MC ", 0, now.strftime("%a %H:%M")))]:
+        tabs = [" %s %s " % (TAB_KEYS[i], t) for i, t in enumerate(names)]
         if len(title) + 1 + sum(len(s) for s in tabs) + gap * (len(tabs) - 1) <= C - len(clk) - 1:
             break
     cv.put(0, 0, title, BG, H("#2fbf71"), True)
     c = len(title) + 1
     ui.tab_hits = []
-    limit = C - len(clk) - 1
     for i, s in enumerate(tabs):
-        if c + len(s) > limit:
-            break
         on = VIEWS[i] == ui.view
         cv.put(c, 0, s, BG if on else (INK if VIEWS[i] in READY else LABEL), INK if on else None, on)
         ui.tab_hits.append((c, c + len(s), i))
@@ -4872,6 +4871,9 @@ def compose(scene, renderer, ui, cols, rows, now, records_ok=True, notice=None, 
         scene.close_talk()
     ui.talking = scene.talk is not None and scene.talk.closing is None
     _chrome(cv, ui, now)
+    if ui.view == "controls":
+        _controls_screen(cv, ui)
+        return cv, False
     if scene.model is None:
         cv.put(2, 4, notice or "Reading the ship's records...", SOFT)
         return cv, False
@@ -4894,8 +4896,6 @@ def compose(scene, renderer, ui, cols, rows, now, records_ok=True, notice=None, 
         _docs_screen(cv, ui, scene, now)
     elif ui.view == "system":
         _system_screen(cv, health)
-    elif ui.view == "controls":
-        _controls_screen(cv, ui)
     else:
         _later_screen(cv, TABS[VIEWS.index(ui.view)])
     return cv, False
@@ -5408,7 +5408,7 @@ def _handle_input(data, ui, scene, feed):
             ui.view = VIEWS[TAB_KEYS.index(tok.decode("latin-1"))]
             changed = True
         elif ui.view == "controls" and tok in (b"\r", b"\n", b" "):
-            if ui.controls is not None:
+            if ui.controls is not None and ui.switch_hit:
                 ui.controls.turn(ui)
                 changed = True
         elif ui.view == "calendar" and tok in (b"\x1b[C", b"\x1bOC", b"\x1b[D", b"\x1bOD", b"t", b"T", b"v", b"V"):

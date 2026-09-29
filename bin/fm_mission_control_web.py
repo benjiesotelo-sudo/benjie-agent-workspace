@@ -294,10 +294,6 @@ def public_snapshot(model, crew, settings, pub, now):
     return snap
 
 
-THINGS = (("tasks", "Corkboard"), ("calendar", "Wall calendar"), ("memory", "Bookshelf"),
-          ("system", "Server rack"), ("approvals", "Inbox"), ("team", "Alumni wall"))
-
-
 def public_things(snap):
     """What each office thing says on the public page, built only from the public
     snapshot's own fields; the page shows a locked view's Open button locked."""
@@ -324,7 +320,7 @@ def public_things(snap):
                  "The crew today: %s, %s and %s." % (first, plural(kinds.count("mate"), "second mate"),
                                                      plural(kinds.count("helper"), "helper"))],
     }
-    return [{"view": v, "name": name, "lines": lines[v]} for v, name in THINGS]
+    return [{"view": v, "name": name, "lines": lines[v]} for v, (name, _) in mc.THINGS.items()]
 
 
 def events(old, new, now):
